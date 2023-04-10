@@ -21,9 +21,8 @@ from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
-from jarvis.modules.meetings import events, icalendar
-from jarvis.modules.models import models
-from jarvis.modules.models.classes import BackgroundTask
+from jarvis.modules.meetings import events, ics_meetings
+from jarvis.modules.models import classes, models
 from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support, util
 
@@ -34,7 +33,7 @@ smart_listener = Queue()
 def background_tasks() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    tasks: List[BackgroundTask] = list(background_task.validate_tasks())
+    tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     meeting_muter = []
     if models.settings.os == models.supported_platforms.macOS:
@@ -106,7 +105,7 @@ def background_tasks() -> NoReturn:
                     logger.error(error)
                     models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
             start_meetings = time.time()
-            meeting_process = Process(target=icalendar.meetings_writer, args=(smart_listener,))
+            meeting_process = Process(target=ics_meetings.meetings_writer, args=(smart_listener,))
             logger.info("Getting meetings from ICS.") if dry_run else None
             meeting_process.start()
             with db.connection:
@@ -116,20 +115,20 @@ def background_tasks() -> NoReturn:
                 db.connection.commit()
 
         # Mute during meetings
-        if models.env.mute_for_meeting and models.env.ics_url:
+        if models.env.mute_for_meetings and models.env.ics_url:
             while not smart_listener.empty():
                 mutes = smart_listener.get(timeout=2)
                 logger.debug(mutes)
-                meeting_muter.append(mutes)
-            if meeting_times := util.remove_duplicates(input_=meeting_muter):
-                for each_muter in meeting_times:
+                meeting_muter.append(mutes)  # Write to a new list as queue will be empty after executing .get
+            if meeting_muter := util.remove_duplicates(input_=meeting_muter):
+                for each_muter in meeting_muter:
                     for meeting_name, timing_info in each_muter.items():
                         meeting_time = timing_info[0]
                         duration = timing_info[1]
                         if meeting_time == datetime.now().strftime("%I:%M %p"):
                             logger.info("Disabling listener for the meeting '%s'. Will be enabled after %s",
                                         meeting_name, support.time_converter(second=duration))
-                            meeting_times.remove(each_muter)
+                            meeting_muter.remove(each_muter)  # Remove event from new list to avoid repetition
                             listener_controls.put_listener_state(state=False)
                             Timer(function=listener_controls.put_listener_state, interval=duration,
                                   kwargs=dict(state=True)).start()
@@ -173,7 +172,7 @@ def background_tasks() -> NoReturn:
         keywords_handler.rewrite_keywords()
 
         # Re-check for tasks
-        new_tasks: List[BackgroundTask] = list(background_task.validate_tasks(log=False))
+        new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
             logger.warning("New task list found! Re-starting background tasks.")
             logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))

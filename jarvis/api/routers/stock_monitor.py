@@ -8,7 +8,6 @@ import gmailconnector
 import jinja2
 import jwt
 from fastapi import APIRouter, Header, Request
-from gmailconnector.validator import validate_email
 from pydantic import EmailStr
 from webull import webull
 
@@ -115,7 +114,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
         logger.info("%s has been verified.", input_data.email)
     else:
-        result = validate_email(email_address=input_data.email, smtp_check=False)
+        result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)
         logger.debug(result.body)
         if result.ok is False:
             raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
@@ -133,7 +132,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
                 raise APIResponse(status_code=HTTPStatus.OK.real,
                                   detail=[dict(zip(stock_monitor.user_info, each_entry)) for each_entry in db_entry])
             # Format as an HTML table to serve in https://vigneshrao.com/stock-monitor
-            # This is a mess, yet required because JavaScript is not good at handling dataframes
+            # This is a mess, yet required because JavaScript can't handle dataframes and
+            # pandas to html can't include custom buttons
             html_data = """<table border="1" class="dataframe" id="dataframe"><tbody><tr><td><b>Selector</b></td>"""
             html_data += "<td><b>" + "</b></td><td><b>".join((string.capwords(p)
                                                               for p in stock_monitor.user_info)) + "</b></td></tr>"

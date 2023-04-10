@@ -28,17 +28,18 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
 
-    if ' after ' in phrase:
+    # Keywords for which the ' after ' split should not happen.
+    ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+    if ' after ' in phrase and not word_match.word_match(phrase=phrase, match_list=ignore_after):
         if delay_info := timed_delay(phrase=phrase):
             speaker.speak(text=f"I will execute it after {support.time_converter(second=delay_info[1])} "
                                f"{models.env.title}!")
             return False
 
     # Keywords for which the ' and ' split should not happen.
-    multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
-
-    if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=keywords.keywords.avoid) and \
-            not word_match.word_match(phrase=phrase, match_list=multiexec):
+    ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
+        keywords.keywords.distance + keywords.keywords.avoid
+    if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=ignore_and):
         for each in phrase.split(' and '):
             exit_check = conditions.conditions(phrase=each.strip(), should_return=should_return)
             speaker.speak(run=True)

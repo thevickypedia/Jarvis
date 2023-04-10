@@ -277,7 +277,7 @@ def detect_lookup_date(phrase: str) -> Tuple[datetime, str]:
         datetime_obj = datetime.today() + timedelta(days=1)
         addon = "tomorrow"
     else:
-        datetime_obj, addon = humanized_day_to_datetime(phrase=phrase)
+        return humanized_day_to_datetime(phrase=phrase)
     return datetime_obj, addon
 
 

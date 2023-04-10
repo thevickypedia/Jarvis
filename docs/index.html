@@ -6383,8 +6383,8 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.mute_for_meeting">
-<span class="sig-name descname"><span class="pre">mute_for_meeting</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.mute_for_meeting" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.mute_for_meetings">
+<span class="sig-name descname"><span class="pre">mute_for_meetings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.mute_for_meetings" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7619,9 +7619,176 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.modules.meetings.events">
-<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-jarvis.modules.meetings.events" title="Permalink to this heading">¶</a></h1>
-<p>Module to gather events from the chosen macOS application.</p>
+<section id="module-jarvis.modules.meetings.ics">
+<span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-jarvis.modules.meetings.ics" title="Permalink to this heading">¶</a></h1>
+<p>Module to parse meetings information from an ICS data.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ICS</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics.</span></span><span class="sig-name descname"><span class="pre">ICS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for ics events.</p>
+<p>Instantiates the ICS object to load all required attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – Takes the data as dictionary to load attributes in the object.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS.summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS.end">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS.end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS.all_day">
+<span class="sig-name descname"><span class="pre">all_day</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS.all_day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.ICS.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">timedelta</span></em><a class="headerlink" href="#jarvis.modules.meetings.ics.ICS.duration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.convert_to_local_tz">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics.</span></span><span class="sig-name descname"><span class="pre">convert_to_local_tz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ddd_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vDDDTypes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics.convert_to_local_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts any datetime from any timezone to local time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ddd_object</strong> – Parsed Datetime, Date, Duration object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Local datetime object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime.datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.all_day_event">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics.</span></span><span class="sig-name descname"><span class="pre">all_day_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vDDDTypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vDDDTypes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics.all_day_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an event is all day by looking for timestamp in the datetime objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt_start</strong> – Start of the event.</p></li>
+<li><p><strong>dt_end</strong> – End of the event.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the start or end datetime objects don’t have a timestamp.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics.parse_calendar">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics.</span></span><span class="sig-name descname"><span class="pre">parse_calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calendar_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookup_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.meetings.ics.ICS" title="jarvis.modules.meetings.ics.ICS"><span class="pre">ICS</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics.parse_calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parsed the ICS information and yields the events’ information for a specific day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calendar_data</strong> – Extracted ICS data.</p></li>
+<li><p><strong>lookup_date</strong> – Date to extract meetings for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>ICS</em> – Custom ICS object with event summary, start time, end time, duration and all day event flag.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-jarvis.modules.meetings.ics_meetings"></span><p>Module to get meetings information from parsed ICS data.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ICalendar</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics_meetings.meetings_writer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics_meetings.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics_meetings.meetings_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
+<p>This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>queue</strong> – Multiprocessing queue in case mute for meetings is enabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics_meetings.meetings_gatherer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics_meetings.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">custom_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'today'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics_meetings.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ICS data, parse it and frame a statement with meeting information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>custom_date</strong> – Takes custom date as a datetime object.</p></li>
+<li><p><strong>addon</strong> – When the custom date is.</p></li>
+<li><p><strong>queue</strong> – Multiprocessing queue to put events’ time during which the listener will be deactivated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>On success, returns a message saying which event is scheduled at what time.</p></li>
+<li><p>If no events, returns a message saying there are no events today.</p></li>
+<li><p>On failure, returns a message saying Jarvis was unable to read the calendar schedule.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics_meetings.custom_meetings">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics_meetings.</span></span><span class="sig-name descname"><span class="pre">custom_meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics_meetings.custom_meetings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles meeting request for a custom date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A true flag if the custom meetings request matches the supported format.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.meetings.ics_meetings.meetings">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.ics_meetings.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.ics_meetings.meetings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller for meetings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-jarvis.modules.meetings.events"></span><p>Module to gather events from the chosen macOS application.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Events</span>
 </pre></div>
 </div>
@@ -7665,77 +7832,6 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="jarvis.modules.meetings.events.events">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.events.</span></span><span class="sig-name descname"><span class="pre">events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.events.events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for events.</p>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="module-jarvis.modules.meetings.icalendar"></span><p>Module to get meetings information from an ICS url.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ICalendar</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings_writer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_writer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets return value from <code class="docutils literal notranslate"><span class="pre">meetings()</span></code> and writes it to a file.</p>
-<p>This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>queue</strong> – Multiprocessing queue in case mute for meetings is enabled.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings_gatherer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">custom_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Arrow</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'today'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets ICS data and converts into a statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>custom_date</strong> – Takes custom date as an arrow object.</p></li>
-<li><p><strong>addon</strong> – When the custom date is.</p></li>
-<li><p><strong>queue</strong> – Multiprocessing queue to put events’ time during which the listener will be deactivated.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>On success, returns a message saying which event is scheduled at what time.</p></li>
-<li><p>If no events, returns a message saying there are no events today.</p></li>
-<li><p>On failure, returns a message saying Jarvis was unable to read the calendar schedule.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.custom_meetings">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">custom_meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.custom_meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles meeting request for a custom date.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A true flag if the custom meetings request matches the supported format.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.meetings.icalendar.meetings">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.meetings.icalendar.</span></span><span class="sig-name descname"><span class="pre">meetings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.meetings.icalendar.meetings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller for meetings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -7893,59 +7989,9 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.modules.responder">
-<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-jarvis.modules.responder" title="Permalink to this heading">¶</a></h1>
-<p>Module to create a response object using a dictionary.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Responder</span>
-</pre></div>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.responder.Response">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.responder.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.responder.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to format the response, so that it can be accessed as an object variable.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Response</span>
-</pre></div>
-</div>
-<p>Extracts the property <code class="docutils literal notranslate"><span class="pre">ok</span></code> from a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dictionary</strong> – Takes a dictionary of key-value pairs as an argument.</p>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="jarvis.modules.responder.Response.ok">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.responder.Response.ok" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the extracted class variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="jarvis.modules.responder.Response.info">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.responder.Response.info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the extracted class variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> based on the arg value received.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="id6">
-<h1>Retry Handler<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.retry.retry"></span><p>Module that creates a wrapper that can be used to functions that should be retried upon exceptions.</p>
+<section id="module-jarvis.modules.retry.retry">
+<span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-jarvis.modules.retry.retry" title="Permalink to this heading">¶</a></h1>
+<p>Module that creates a wrapper that can be used to functions that should be retried upon exceptions.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Retry</span>
 </pre></div>
 </div>
@@ -8689,8 +8735,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="id7">
-<h1>Telegram<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h1>
+<section id="id6">
+<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.telegram.bot"></span><p>Module for TelegramAPI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Bot</span>
 </pre></div>
@@ -8783,7 +8829,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8804,7 +8850,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8825,7 +8871,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8845,7 +8891,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8866,7 +8912,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8887,7 +8933,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Response class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9088,7 +9134,7 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.file_handler._list_files">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">_list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.file_handler._list_files" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">_list_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.telegram.file_handler._list_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all YAML files from fileio and all log files from logs directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -9116,7 +9162,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.file_handler.get_file">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#jarvis.modules.telegram.file_handler.get_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.file_handler.</span></span><span class="sig-name descname"><span class="pre">get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.file_handler.get_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a particular YAML file from fileio or log file from logs directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -9126,7 +9172,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Returns the Response object to further process send document via API.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9321,8 +9367,8 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.timeout.timeout.timeout">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#jarvis.modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs the given function.</p>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.timeout.timeout.</span></span><span class="sig-name descname"><span class="pre">timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Logger</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.timeout.timeout.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given function and kill it if exceeds the set timeout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -9334,10 +9380,10 @@ last_value: the last value assigned or None</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A custom response class to indicate whether the function completed within the set timeout.</p>
+<dd class="field-even"><p>Boolean flag to indicate if the function completed within the set timeout.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.responder.Response" title="jarvis.modules.responder.Response">Response</a></p>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9958,16 +10004,15 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.logger.custom_logger">Logger</a></li>
 <li><a class="reference internal" href="#config">Config</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.dictionary.dictionary">Meanings</a></li>
-<li><a class="reference internal" href="#module-jarvis.modules.meetings.events">Meetings</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.meetings.ics">Meetings</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.myq.myq">MyQ</a></li>
 <li><a class="reference internal" href="#id5">Offline</a></li>
-<li><a class="reference internal" href="#module-jarvis.modules.responder">Retry Handler</a></li>
-<li><a class="reference internal" href="#id6">Retry Handler</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.retry.retry">Retry Handler</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.util">Utilities</a></li>
-<li><a class="reference internal" href="#id7">Telegram</a></li>
+<li><a class="reference internal" href="#id6">Telegram</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.templates.templates">Templates</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.timeout.timeout">Timeout</a></li>

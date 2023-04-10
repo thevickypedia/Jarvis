@@ -68,8 +68,8 @@
 
 **Reach Out**
 
-[![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/r/13691532)](https://stackoverflow.com/users/13691532/vignesh-rao)
-[![Ask Me | Anything ](https://img.shields.io/badge/Ask%20me-Anything-1abc9c.svg)](https://vigneshrao.com/contact)
+[//]: # ([![StackOverflow]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;]&#40;https://stackoverflow.com/users/13691532/vignesh-rao&#41;)
+[![ askme ](https://img.shields.io/badge/SELECT%20*%20FROM-questions-1abc9c.svg)](https://vigneshrao.com/contact)
 
 ## Kick off
 
@@ -234,7 +234,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 **Calendar/Meeting integrations**
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
-- **MUTE_FOR_MEETING** - Boolean value to disable the listener during meetings. Defaults to `False`
+- **MUTE_FOR_MEETINGS** - Boolean value to disable the listener during meetings. Defaults to `False`
 - **EVENT_APP** - To read events from `outlook` or `calendar` application in `macOS`. Defaults to `calendar` <br>
 :bulb: &nbsp; When `calender` is used, the name of the _calendar_ within the `Calendar.app` should be **Jarvis** <br>
 

@@ -493,10 +493,10 @@ class TelegramBot:
             _, _, filename = payload['text'].partition(' file ')
             if filename:
                 response = file_handler.get_file(filename=filename.strip())
-                if response.ok:
-                    self.send_document(filename=response.info, chat_id=payload['from']['id'])
+                if response['ok']:
+                    self.send_document(filename=response['msg'], chat_id=payload['from']['id'])
                 else:
-                    self.reply_to(payload=payload, response=response.info, parse_mode=None)
+                    self.reply_to(payload=payload, response=response['msg'], parse_mode=None)
             else:
                 self.reply_to(payload=payload, response="No filename was received. "
                                                         "Please include only the filename after the keyword 'file'.")
@@ -520,10 +520,9 @@ class TelegramBot:
             return
 
         # Keywords for which the ' and ' split should not happen.
-        multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
-
-        if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.keywords.avoid) and \
-                not word_match.word_match(phrase=command, match_list=multiexec):
+        ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
+            keywords.keywords.distance + keywords.keywords.avoid
+        if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
             for each in command.split(' and '):
                 if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
                     logger.warning("'%s' is not a part of offline communicator compatible request.", each)
@@ -538,7 +537,10 @@ class TelegramBot:
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{command!r} is not a part of offline communicator compatible request.")
             return
-        if ' after ' in command_lower:
+
+        # Keywords for which the ' after ' split should not happen.
+        ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+        if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=ignore_after):
             if delay_info := commander.timed_delay(phrase=command):
                 logger.info("Request: %s", delay_info[0])
                 self.process_response(payload=payload,

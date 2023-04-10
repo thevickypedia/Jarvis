@@ -1,28 +1,27 @@
 # noinspection PyUnresolvedReferences
-"""Module to get meetings information from an ICS url.
+"""Module to get meetings information from parsed ICS data.
 
 >>> ICalendar
 
 """
 
+import datetime
 import sqlite3
 import time
-from datetime import datetime
 from multiprocessing import Process, Queue
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
-from typing import NoReturn
+from typing import List, NoReturn
 
 import requests
-from arrow import Arrow
-from ics import Calendar
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.meetings import ics
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, support
@@ -44,17 +43,17 @@ def meetings_writer(queue: Queue = None) -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM ics")
         cursor.connection.commit()
-        cursor.execute("INSERT OR REPLACE INTO ics (info, date) VALUES (?,?)", (info,
-                                                                                datetime.now().strftime('%Y_%m_%d'),))
+        cursor.execute("INSERT OR REPLACE INTO ics (info, date) VALUES (?,?)",
+                       (info, datetime.datetime.now().strftime('%Y_%m_%d'),))
         cursor.connection.commit()
     return
 
 
-def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Queue = None) -> str:
-    """Gets ICS data and converts into a statement.
+def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", queue: Queue = None) -> str:
+    """Get ICS data, parse it and frame a statement with meeting information.
 
     Args:
-        custom_date: Takes custom date as an arrow object.
+        custom_date: Takes custom date as a datetime object.
         addon: When the custom date is.
         queue: Multiprocessing queue to put events' time during which the listener will be deactivated.
 
@@ -72,12 +71,15 @@ def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Qu
         logger.error(error)
         return f"I was unable to connect to the internet {models.env.title}! Please check your connection."
     if not response.ok:
-        logger.error(response.status_code)
+        logger.error("[%d]: [%s]", response.status_code, response.text)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
     if custom_date:
-        events = list(Calendar(response.text).timeline.on(day=custom_date))
+        events: List[ics.ICS] = list(ics.parse_calendar(calendar_data=response.text, lookup_date=custom_date))
     else:
-        events = list(Calendar(response.text).timeline.today())
+        now = datetime.datetime.now()
+        events: List[ics.ICS] = list(ics.parse_calendar(
+            calendar_data=response.text, lookup_date=datetime.date(year=now.year, month=now.month, day=now.day))
+        )
     if not events:
         if "last" in addon or "yesterday" in addon:
             return f"You did not have any meetings {addon} {models.env.title}!"
@@ -85,28 +87,27 @@ def meetings_gatherer(custom_date: Arrow = None, addon: str = "today", queue: Qu
     meeting_status, count = "", 0
     for index, event in enumerate(events):
         # Skips if meeting ended earlier than current time
-        try:
-            end_timestamp = event.end.timestamp()
-        except TypeError:
-            end_timestamp = event.end.timestamp
-        if end_timestamp < int(time.time()) and "last" not in addon and "yesterday" not in addon:
+        if time.mktime(event.end.timetuple()) < int(time.time()) and \
+                "last" not in addon and "yesterday" not in addon:
             continue
         count += 1
-        # todo:
-        #  pick a new library to parse ics as the current one doesn't support timezones in the latest stable version
-        #  convert timezone by checking if timezones are in event.extra (ignore converting current timezone)
-        #  consider daylight as meeting might be setup in PST but happening in PDT where the above condition won't pass
-        begin_local = event.begin.strftime("%I:%M %p")
+        begin_local = event.start.strftime("%I:%M %p")
         event_duration = support.time_converter(second=event.duration.total_seconds())
-        if queue and models.env.mute_for_meeting and not event.all_day:
+        if queue and models.env.mute_for_meetings and not event.all_day:
             logger.debug("Adding entry to mute during meetings: %s: %s", begin_local, event_duration)
-            queue.put({event.name: [begin_local, event.duration.total_seconds()]})
+            # create a dict instead of putting the event in queue, as duplicate objects cannot be stripped
+            queue.put({event.summary: [begin_local, event.duration.total_seconds()]})
         if len(events) == 1:
-            meeting_status += f"You have an all day meeting {models.env.title}! {event.name}. " if event.all_day else \
-                f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! {event.name}. "
+            if event.all_day:
+                meeting_status += f"You have an all day meeting {models.env.title}! {event.summary}. "
+            else:
+                meeting_status += f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! " \
+                                  f"{event.summary}. "
         else:
-            meeting_status += f"{event.name} - all day" if event.all_day else \
-                f"{event.name} at {begin_local} for {event_duration}"
+            if event.all_day:
+                meeting_status += f"{event.summary} - all day"
+            else:
+                meeting_status += f"{event.summary} at {begin_local} for {event_duration}"
             meeting_status += ', ' if index + 1 < len(events) else '.'
     if count:
         plural = "meeting" if count == 1 else "meetings"
@@ -132,8 +133,10 @@ def custom_meetings(phrase: str) -> bool:
     """
     if tuple_res := support.detect_lookup_date(phrase):
         datetime_obj, addon = tuple_res
-        arrow_obj = Arrow(year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day)
-        meeting_status = meetings_gatherer(custom_date=arrow_obj, addon=addon)
+        meeting_status = meetings_gatherer(
+            custom_date=datetime.date(year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day),
+            addon=addon
+        )
         speaker.speak(meeting_status)
         return True
 
@@ -151,11 +154,11 @@ def meetings(phrase: str) -> None:
     with db.connection:
         cursor = db.connection.cursor()
         meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
-    if meeting_status and meeting_status[1] == datetime.now().strftime('%Y_%m_%d'):
+    if meeting_status and meeting_status[1] == datetime.datetime.now().strftime('%Y_%m_%d'):
         speaker.speak(text=meeting_status[0])
     elif meeting_status:
         logger.warning("Date in meeting status (%s) does not match the current date (%s)" %
-                       (meeting_status[1], datetime.now().strftime('%Y_%m_%d')))
+                       (meeting_status[1], datetime.datetime.now().strftime('%Y_%m_%d')))
         logger.info("Starting adhoc process to update ics table.")
         Process(target=meetings_writer).start()
         speaker.speak(text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two.")

@@ -1,6 +1,6 @@
 import os
 
-version = "2.0"
+version = "2.1"
 
 install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 

@@ -197,7 +197,7 @@ class EnvConfig(BaseSettings):
     root_password: str = Field(default=None, env='ROOT_PASSWORD')
 
     # Mute during meetings
-    mute_for_meeting: bool = Field(default=False, env='MUTE_FOR_MEETING')
+    mute_for_meetings: bool = Field(default=False, env='MUTE_FOR_MEETINGS')
 
     # Built-in speaker config
     voice_name: str = Field(default=None, env='VOICE_NAME')

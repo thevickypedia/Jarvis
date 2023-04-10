@@ -6,13 +6,13 @@
 """
 
 import os
+from typing import Dict
 
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.responder import Response
 
 
-def _list_files():
+def _list_files() -> Dict[str, str]:
     """Get all YAML files from fileio and all log files from logs directory.
 
     Returns:
@@ -36,7 +36,7 @@ def list_files() -> str:
     return f"{joined_logs}\n\n{joined_fileio}"
 
 
-def get_file(filename: str) -> Response:
+def get_file(filename: str) -> Dict:
     """Download a particular YAML file from fileio or log file from logs directory.
 
     Args:
@@ -48,23 +48,23 @@ def get_file(filename: str) -> Response:
     """
     allowed_files = _list_files()
     if filename not in allowed_files["fileio"] + allowed_files["logs"]:
-        return Response(dictionary={'ok': False,
-                                    'msg': f"{filename!r} is either unavailable or not allowed. "
-                                           "Please use the command 'list files' to get a list of downloadable files."})
+        return {'ok': False,
+                'msg': f"{filename!r} is either unavailable or not allowed. "
+                       "Please use the command 'list files' to get a list of downloadable files."}
     if filename.endswith(".log"):
         if path := [__path for __path, __directory, __file in os.walk("logs") if filename in __file]:
             target_file = os.path.join(path[0], filename)
         else:
             logger.critical("ATTENTION::'%s' wasn't found.", filename)
-            return Response(dictionary={
+            return {
                 "ok": False,
                 "msg": f"{filename!r} was not found. "
                        "Please use the command 'list files' to get a list of downloadable files."
-            })
+            }
     else:
         target_file = os.path.join(models.fileio.root, filename)
     logger.info("Requested file: '%s' for download.", filename)
-    return Response(dictionary={'ok': True, 'msg': target_file})
+    return {'ok': True, 'msg': target_file}
 
 
 def put_file(filename: str, file_content: bytes) -> str:

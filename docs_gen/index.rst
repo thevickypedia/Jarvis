@@ -741,13 +741,19 @@ Meanings
 Meetings
 ========
 
-.. automodule:: jarvis.modules.meetings.events
+.. automodule:: jarvis.modules.meetings.ics
    :members:
    :undoc-members:
 
 ====
 
-.. automodule:: jarvis.modules.meetings.icalendar
+.. automodule:: jarvis.modules.meetings.ics_meetings
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: jarvis.modules.meetings.events
    :members:
    :undoc-members:
 
@@ -769,13 +775,6 @@ Offline
 =======
 
 .. automodule:: jarvis.modules.offline.compatibles
-   :members:
-   :undoc-members:
-
-Retry Handler
-=============
-
-.. automodule:: jarvis.modules.responder
    :members:
    :undoc-members:
 
