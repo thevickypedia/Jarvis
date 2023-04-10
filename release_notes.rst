@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+7.2.7 (04/10/2023)
+------------------
+- Replace string to `enum` for condition on linux OS
+- Update release notes
+
+7.2.6 (04/10/2023)
+------------------
+- Use `icalendar` to parse meetings from ICS
+- Create a wrapper for icalendar
+- Remove unwanted objects to avoid extra overhead
+- Ignore after keyword in delay functions for after keywords
+
 7.2.5 (04/09/2023)
 ------------------
 - Disable security mode trigger via offline on Linux
