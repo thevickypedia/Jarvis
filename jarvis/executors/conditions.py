@@ -45,7 +45,7 @@ from jarvis.modules.conditions import keywords as keywords_mod
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.meetings.events import events
-from jarvis.modules.meetings.icalendar import meetings
+from jarvis.modules.meetings.ics_meetings import meetings
 from jarvis.modules.models.models import settings
 from jarvis.modules.utils import shared, support
 

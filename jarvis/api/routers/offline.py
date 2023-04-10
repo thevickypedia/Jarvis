@@ -85,10 +85,9 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                           detail=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
 
     # Keywords for which the ' and ' split should not happen.
-    multiexec = keywords.keywords.send_notification + keywords.keywords.reminder + keywords.keywords.distance
-
-    if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.keywords.avoid) and \
-            not word_match.word_match(phrase=command, match_list=multiexec):
+    ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
+        keywords.keywords.distance + keywords.keywords.avoid
+    if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
         and_response = ""
         for each in command.split(' and '):
             if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
@@ -110,7 +109,10 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
                                  'Please try an instruction that does not require an user interaction.')
-    if ' after ' in command.lower():
+
+    # Keywords for which the ' after ' split should not happen.
+    ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+    if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))
             raise APIResponse(status_code=HTTPStatus.OK.real,

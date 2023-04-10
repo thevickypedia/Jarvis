@@ -8,14 +8,14 @@
 import multiprocessing
 import time
 from logging import Logger
-from typing import Callable, Union
+from typing import Callable, Dict, List, Tuple, Union
 
-from jarvis.modules.responder import Response
+from pydantic import PositiveFloat, PositiveInt
 
 
-def timeout(seconds: Union[int, float], function: Callable,
-            args: Union[list, tuple] = None, kwargs: dict = None, logger: Logger = None) -> Response:
-    """Runs the given function.
+def timeout(seconds: Union[PositiveInt, PositiveFloat], function: Callable,
+            args: Union[List, Tuple] = None, kwargs: Dict = None, logger: Logger = None) -> bool:
+    """Run the given function and kill it if exceeds the set timeout.
 
     Args:
         seconds: Timeout after which the said function has to be terminated.
@@ -25,8 +25,8 @@ def timeout(seconds: Union[int, float], function: Callable,
         logger: Logger to optionally log the timeout events.
 
     Returns:
-        Response:
-        A custom response class to indicate whether the function completed within the set timeout.
+        bool:
+        Boolean flag to indicate if the function completed within the set timeout.
     """
     process = multiprocessing.Process(target=function, args=args or [], kwargs=kwargs or {})
     _start = time.time()
@@ -47,11 +47,5 @@ def timeout(seconds: Union[int, float], function: Callable,
         except ValueError as error:
             # Expected when join timeout is insufficient. The resources will be released eventually but not immediately.
             logger.error(error) if logger else None
-        return Response(dictionary={
-            "ok": False,
-            "msg": f"Function [{function.__name__}] exceeded {seconds} seconds."
-        })
-    return Response(dictionary={
-        "ok": True,
-        "msg": f"Function [{function.__name__}] completed in {exec_time} seconds."
-    })
+        return False
+    return True

@@ -36,7 +36,8 @@ def system_info() -> NoReturn:
         if not shared.hosted_device.get('os_version'):
             logger.warning("hosted_device information was not loaded during startup. Reloading now.")
             shared.hosted_device = hosted_device_info()
-        system = f"{shared.hosted_device.get('os_name', models.settings.os)} {shared.hosted_device['os_version']}"
+        system = f"{shared.hosted_device.get('os_name', models.settings.os)} " \
+                 f"{shared.hosted_device.get('os_version', '')}"
     speaker.speak(text=f"You're running {system}, with {models.settings.physical_cores} "
                        f"physical cores and {models.settings.logical_cores} logical cores. Your physical drive "
                        f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "

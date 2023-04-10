@@ -140,7 +140,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         light_location = ""
 
     # # FUTURE: Works only for same operation - Implementing different operations is too much work with little to gain
-    # # FUTURE: Add 'keywords' for 'lights' to 'multiexec' var
+    # # FUTURE: Add 'keywords' for 'lights' to 'ignore_and' var
     # elif 'and' in phrase.split():
     #     host_names, light_location = [], []
     #     for section in phrase.split(' and '):
