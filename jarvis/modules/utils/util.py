@@ -6,6 +6,7 @@
 """
 
 import contextlib
+import difflib
 import hashlib
 import os
 import random
@@ -15,7 +16,6 @@ import string
 import sys
 import uuid
 from datetime import datetime
-from difflib import SequenceMatcher
 from typing import Any, Hashable, List, NoReturn, Union
 
 
@@ -75,7 +75,7 @@ def get_closest_match(text: str, match_list: list) -> str:
         str:
         Returns the text that matches closest in the list.
     """
-    closest_match = [{"key": key, "val": SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
+    closest_match = [{"key": key, "val": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
     return sorted(closest_match, key=lambda d: d["val"], reverse=True)[0].get("key")
 
 
@@ -346,3 +346,12 @@ def get_free_port() -> int:
         sock.bind(('', 0))
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock.getsockname()[1]
+
+
+def write_screen(text: Any) -> NoReturn:
+    """Write text to a screen that can be cleared later.
+
+    Args:
+        text: Text to be written.
+    """
+    sys.stdout.write(f"\r{text}")

@@ -29,7 +29,7 @@ docker run \
     -w "{CWD}" \
     --user "{UID}:{GID}" \
     --cidfile {DOCKER_CID} \
-    rhasspy/larynx
+    thevickypedia/speech-synthesis
 """
 
 
@@ -88,7 +88,7 @@ def speech_synthesizer() -> NoReturn:
             models.env.home = models.env.home.__str__()
             client = docker.from_env()
             result = client.containers.run(
-                image="rhasspy/larynx",
+                image="thevickypedia/speech-synthesis",
                 ports={f"{models.env.speech_synthesis_port}/tcp": models.env.speech_synthesis_port},
                 environment=[f"HOME={models.env.home}"],
                 volumes={models.env.home: {"bind": models.env.home, "mode": "rw"}},

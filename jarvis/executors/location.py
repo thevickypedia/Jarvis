@@ -2,7 +2,6 @@ import math
 import os
 import re
 import ssl
-import sys
 import time
 import webbrowser
 from typing import Dict, NoReturn, Tuple, Union
@@ -19,7 +18,7 @@ from jarvis.executors import files, internet
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import shared, support, util
 
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -40,8 +39,8 @@ def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
             return float(results.client["lat"]), float(results.client["lon"])
     except ConfigRetrievalError as error:
         logger.error(error)
-        sys.stdout.write("\rFailed to get location based on IP. Hand modify it at "
-                         f"'{os.path.abspath(models.fileio.location)}'")
+        util.write_screen(text="Failed to get location based on IP. Hand modify it at "
+                               f"'{os.path.abspath(models.fileio.location)}'")
         time.sleep(5)
     return 37.230881, -93.3710393  # Default to SGF latitude and longitude
 
@@ -151,14 +150,12 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     if origin:
         # if starting_point is received gets latitude and longitude of that location
         desired_start = geo_locator.geocode(origin)
-        sys.stdout.write(f"\r{desired_start.address} **")
         start = desired_start.latitude, desired_start.longitude
         start_check = None
     else:
         current_location = files.get_location()
         start = (current_location["latitude"], current_location["longitude"])
         start_check = "My Location"
-    sys.stdout.write("::TO::") if origin else sys.stdout.write("\r::TO::")
     desired_location = geo_locator.geocode(destination)
     if desired_location:
         end = desired_location.latitude, desired_location.longitude
@@ -168,7 +165,6 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         speaker.speak(text=f"I don't think {destination} exists {models.env.title}!")
         return
     miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
-    sys.stdout.write(f"** {desired_location.address} - {miles}")
     if shared.called["directions"]:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
         shared.called["directions"] = False

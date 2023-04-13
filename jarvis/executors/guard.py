@@ -1,6 +1,5 @@
 import os
 import shutil
-import sys
 import time
 from datetime import datetime
 from multiprocessing import Process, current_process
@@ -132,7 +131,7 @@ def security_runner(offline: bool = True) -> NoReturn:
     face_object = face.FaceNet()
     while True:
         # Listens for any recognizable speech and saves it to a notes file
-        sys.stdout.write("\rSECURITY MODE")
+        util.write_screen(text="SECURITY MODE")
         converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
         if not get_state(log=False) or word_match.word_match(phrase=converted,

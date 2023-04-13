@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.2.8 (04/13/2023)
+------------------
+- Fix file mode in mic plotter for Linux
+- Move all screen writes to a function
+
 7.2.7 (04/10/2023)
 ------------------
 - Replace string to `enum` for condition on linux OS

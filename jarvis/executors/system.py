@@ -3,7 +3,6 @@ import platform
 import re
 import shutil
 import subprocess
-import sys
 from datetime import datetime
 from typing import Dict, NoReturn
 
@@ -108,7 +107,7 @@ def system_vitals() -> None:
     if shared.called_by_offline:
         speaker.speak(text=output)
         return
-    sys.stdout.write(f'\r{output}')
+    util.write_screen(text=output)
     speaker.speak(text=f"Your {shared.hosted_device.get('device')} was last booted on {restart_time}. "
                        f"Current boot time is: {restart_duration}.")
     if second >= 259_200:  # 3 days

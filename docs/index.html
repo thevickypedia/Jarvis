@@ -2904,11 +2904,14 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="crontab"></span><h1>Crontab<a class="headerlink" href="#module-jarvis.executors.crontab" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.crontab.crontab_executor">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.crontab.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.crontab.crontab_executor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.crontab.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">statement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.crontab.crontab_executor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes a cron statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>statement</strong> – Cron statement to be executed.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statement</strong> – Cron statement to be executed.</p></li>
+<li><p><strong>log_file</strong> – Log file for crontab execution logs.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition warning">
@@ -3761,7 +3764,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">errno</span>
     <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8734,6 +8737,17 @@ last_value: the last value assigned or None</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.util.write_screen">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">write_screen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.write_screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write text to a screen that can be cleared later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Text to be written.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="id6">
 <h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
@@ -9574,8 +9588,8 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS.audio_output">
-<span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.audio_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes the currently used audio output source as AudioOutputSource instance on the screen.</p>
+<span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AudioOutputSource</span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.audio_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the currently used audio output source as AudioOutputSource instance.</p>
 </dd></dl>
 
 <dl class="py method">

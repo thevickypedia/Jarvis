@@ -6,7 +6,6 @@
 """
 
 import socket
-import sys
 import time
 from collections.abc import Generator
 from typing import List, NoReturn
@@ -19,7 +18,7 @@ from pywebostv.controls import (ApplicationControl, AudioOutputSource,
 from jarvis.modules.exceptions import TVError
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared
+from jarvis.modules.utils import shared, util
 
 
 class LGWebOS:
@@ -72,12 +71,12 @@ class LGWebOS:
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:
-                sys.stdout.write('\rConnected to the TV.')
+                util.write_screen(text='Connected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
                 playsound(sound=models.indicators.tv_connect, block=False)
                 self._reconnect = True
-                sys.stdout.write('\rPlease accept the connection request on your TV.')
+                util.write_screen(text='Please accept the connection request on your TV.')
 
         if self._reconnect:
             self._reconnect = False
@@ -210,10 +209,9 @@ class LGWebOS:
         app_id = self.app.get_current()
         return [x for x in self.app.list_apps() if app_id == x["id"]][0]['title']
 
-    def audio_output(self) -> NoReturn:
-        """Writes the currently used audio output source as AudioOutputSource instance on the screen."""
-        media_output_source = self.media.get_audio_output()
-        sys.stdout.write(f'{media_output_source}')
+    def audio_output(self) -> AudioOutputSource:
+        """Returns the currently used audio output source as AudioOutputSource instance."""
+        return self.media.get_audio_output()
 
     def audio_output_source(self) -> List[AudioOutputSource]:
         """Checks the list of audio output sources available.
@@ -222,9 +220,7 @@ class LGWebOS:
             list:
             List of ``AudioOutputSource`` instances.
         """
-        audio_outputs = self.media.list_audio_output_sources()
-        sys.stdout.write(f'{audio_outputs}')
-        return audio_outputs
+        return self.media.list_audio_output_sources()
 
     def set_audio_output_source(self) -> NoReturn:
         """Sets to a particular AudioOutputSource instance."""

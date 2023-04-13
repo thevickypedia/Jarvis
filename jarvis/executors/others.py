@@ -3,7 +3,6 @@ import os
 import random
 import re
 import subprocess
-import sys
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -123,7 +122,6 @@ def music(phrase: str = None) -> NoReturn:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    sys.stdout.write("\rScanning music files...")
     get_all_files = (os.path.join(root, f) for root, _, files in os.walk(os.path.join(models.env.home, "Music")) for f
                      in files)
     if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
@@ -160,7 +158,7 @@ def google_home(device: str = None, file: str = None) -> None:
             except IOError as error:
                 import errno
                 if error.errno != errno.EPIPE:
-                    sys.stdout.write(error)
+                    util.write_screen(error)
 
     Args:
         device: Name of the Google home device on which the music has to be played.
@@ -171,7 +169,6 @@ def google_home(device: str = None, file: str = None) -> None:
 
     if not shared.called_by_offline:
         speaker.speak(text=f'Scanning your IP range for Google Home devices {models.env.title}!', run=True)
-        sys.stdout.write('\rScanning your IP range for Google Home devices..')
     network_id = '.'.join(network_id.split('.')[:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str]:
@@ -299,7 +296,6 @@ def news(news_source: str = 'fox') -> None:
         support.no_env_vars()
         return
 
-    sys.stdout.write(f'\rGetting news from {news_source} news.')
     news_client = NewsApiClient(api_key=models.env.news_api)
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
@@ -319,7 +315,7 @@ def news(news_source: str = 'fox') -> None:
 
 def report() -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
-    sys.stdout.write("\rStarting today's report")
+    util.write_screen(text="Starting today's report")
     shared.called['report'] = True
     date_time.current_date()
     date_time.current_time()

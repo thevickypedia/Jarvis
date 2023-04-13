@@ -1,6 +1,7 @@
 import os
 import shutil
 import warnings
+from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
 from typing import Dict, List, NoReturn, Union
@@ -125,7 +126,11 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     if models.env.plot_mic and models.settings.os == models.supported_platforms.linux:
         # Function cannot be called directly using a child process when microphone is already being called for Linux
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
-        process_dict[graph_mic.plot_mic.__name__] = Process(target=crontab_executor, args=(statement,))
+        process_dict[graph_mic.plot_mic.__name__] = Process(
+            target=crontab_executor,
+            kwargs={'statement': statement,
+                    'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))}
+        )
     elif models.env.plot_mic:
         process_dict[graph_mic.plot_mic.__name__] = Process(target=graph_mic.plot_mic)
     if models.env.author_mode:
