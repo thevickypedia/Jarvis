@@ -1,6 +1,5 @@
 import string
 import struct
-import sys
 import traceback
 from datetime import datetime
 from typing import NoReturn
@@ -19,7 +18,7 @@ from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import custom_handler, logger
 from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import shared, support, util
 
 
 def restart_checker() -> NoReturn:
@@ -122,7 +121,7 @@ class Activator:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             while True:
-                sys.stdout.write(f"\r{self.label}")
+                util.write_screen(text=self.label)
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
                                          self.audio_stream.read(num_frames=self.detector.frame_length,
                                                                 exception_on_overflow=False))
@@ -179,16 +178,16 @@ def start() -> NoReturn:
     logger.info("Current Process ID: %d", models.settings.pid)
     controls.starter()
     if internet.ip_address() and internet.public_ip_info():
-        sys.stdout.write(f"\rINTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
+        util.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
         ControlPeripheral(logger=logger).enable()
         if models.env.wifi_ssid and models.env.wifi_password and not \
                 ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
                                   logger=logger).wifi_connector():
-            sys.stdout.write("\rBUMMER::Unable to connect to the Internet")
+            util.write_screen(text="BUMMER::Unable to connect to the Internet")
             speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                "Please check your connection.", run=True)
-    sys.stdout.write(f"\rCurrent Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
+    util.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = system.hosted_device_info()
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,

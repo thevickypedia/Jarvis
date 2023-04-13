@@ -1,5 +1,4 @@
 import string
-import sys
 from typing import Union
 
 import gmailconnector
@@ -12,7 +11,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import shared, support, util
 
 
 def read_gmail() -> None:
@@ -22,7 +21,7 @@ def read_gmail() -> None:
         support.no_env_vars()
         return
 
-    sys.stdout.write("\rFetching unread emails..")
+    util.write_screen(text="Fetching unread emails..")
     reader = gmailconnector.ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
     response = reader.instantiate()
     if response.ok:

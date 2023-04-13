@@ -6,7 +6,6 @@
 """
 
 import random
-import sys
 from multiprocessing import current_process
 
 from pyttsx3.engine import Engine
@@ -16,6 +15,7 @@ from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.utils import util
 
 
 def voice_default() -> Engine:
@@ -48,7 +48,7 @@ def voice_changer(phrase: str = None) -> None:
     for ind, voice in enumerate(models.voices):
         models.audio_driver.setProperty("voice", models.voices[ind].id)
         speaker.speak(text=f"I am {voice.name} {models.env.title}!")
-        sys.stdout.write(f"\rVoice module has been re-configured to {ind}::{voice.name}")
+        util.write_screen(f"Voice module has been re-configured to {ind}::{voice.name}")
         if ind < len(choices_to_say):
             speaker.speak(text=choices_to_say[ind])
         else:

@@ -120,14 +120,14 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         with db.connection:
             cursor = db.connection.cursor()
             cursor.execute("UPDATE children SET plot_mic=null")
-            cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (os.getpid(),))
+            cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,))
             db.connection.commit()
         if os.path.isfile(models.fileio.processes):
             with open(models.fileio.processes) as file:
                 dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
             if dump.get(plot_mic.__name__):
                 dump[plot_mic.__name__] = subprocess_id
-                with open(models.fileio.processes) as file:
+                with open(models.fileio.processes, 'w') as file:
                     yaml.dump(data=dump, stream=file)
             else:
                 logger.critical("ATTENTION::Missing %s's process ID in '%s'" %

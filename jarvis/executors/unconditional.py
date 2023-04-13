@@ -1,5 +1,4 @@
 import re
-import sys
 import webbrowser
 
 import inflect
@@ -13,6 +12,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.utils import util
 
 
 def alpha(text: str) -> bool:
@@ -122,8 +122,8 @@ def google_maps(query: str) -> bool:
         speaker.speak(text=f"The {option}, {item['Name']}, with {item['Rating']} rating, "
                            f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
                            f"{miles} away. {next_val}", run=True)
-        sys.stdout.write(f"\r{item['Name']} -- {item['Rating']} -- "
-                         f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
+        util.write_screen(text=f"{item['Name']} -- {item['Rating']} -- "
+                               f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break

@@ -1,5 +1,4 @@
-import sys
-from difflib import SequenceMatcher
+import difflib
 from typing import NoReturn, Union
 
 from pyicloud import PyiCloudService
@@ -30,7 +29,7 @@ def device_selector(phrase: str) -> Union[AppleDevice, None]:
     devices = [device for device in icloud_api.devices]
     devices_str = [{str(device).split(":")[0].strip(): str(device).split(":")[1].strip()} for device in devices]
     closest_match = [
-        (SequenceMatcher(a=phrase, b=key).ratio() + SequenceMatcher(a=phrase, b=val).ratio()) / 2
+        (difflib.SequenceMatcher(a=phrase, b=key).ratio() + difflib.SequenceMatcher(a=phrase, b=val).ratio()) / 2
         for device in devices_str for key, val in device.items()
     ]
     index = closest_match.index(max(closest_match))
@@ -118,7 +117,7 @@ def locate(phrase: str) -> None:
     if shared.called_by_offline:
         locate_device(target_device=target_device)
         return
-    sys.stdout.write(f"\rLocating your {target_device}")
+    logger.info("Locating your %s", target_device)
     target_device.play_sound()
     before_keyword, keyword, after_keyword = str(target_device).partition(":")  # partitions the hostname info
     if before_keyword == "Accessory":

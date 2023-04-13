@@ -1,5 +1,4 @@
 import random
-import sys
 import time
 from threading import Thread
 
@@ -84,7 +83,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
         elif 'volume' in phrase_lower:
             speaker.speak(text=f"The current volume on your {nickname} is, {shared.tv[nickname].get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:
-            sys.stdout.write(f'\r{list(shared.tv[nickname].get_apps())}')
+            util.write_screen(text=list(shared.tv[nickname].get_apps()))
             speaker.speak(text=f'App list on your screen {models.env.title}!', run=True)
             time.sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:

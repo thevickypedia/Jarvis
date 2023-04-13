@@ -7,11 +7,11 @@
 
 import socket
 import struct
-import sys
 import time
 from typing import NoReturn
 
 from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.utils import util
 
 
 def check_number_range(number: int) -> int:
@@ -177,7 +177,7 @@ class MagicHomeApi:
                            0x00, 0xf0, 0xaa]
                 self.send_bytes(*(message + [calculate_checksum(message)]))
         else:
-            sys.stdout.write("\rIncompatible device type received.")
+            util.write_screen(text="Incompatible device type received.")
 
     def send_preset_function(self, preset_number: int, speed: int) -> NoReturn:
         """Send a preset command to a device.
@@ -215,12 +215,11 @@ class MagicHomeApi:
         check_connection_time = time.time() - self.latest_connection
         try:
             if check_connection_time >= 290:
-                sys.stdout.write("\rConnection timed out, reestablishing.")
+                util.write_screen(text="Connection timed out, re-establishing.")
                 self.sock.connect((self.device_ip, self.API_PORT))
             message_length = len(bytes_)
             self.sock.send(struct.pack("B" * message_length, *bytes_))
         except socket.error as error:
-            error_msg = f"\rSocket error on {self.device_ip}: {error}"
-            sys.stdout.write(error_msg)
+            error_msg = f"Socket error on {self.device_ip}: {error}"
             logger.error("%s while performing '%s'", error_msg, self.operation)
         self.sock.close()

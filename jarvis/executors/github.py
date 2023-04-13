@@ -1,6 +1,5 @@
 import os
 import re
-import sys
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -65,8 +64,6 @@ def github_controller(target: list) -> None:
         speaker.speak(text=f"I've cloned {cloned} on your home directory {models.env.title}!")
         return
     elif len(target) <= 3:
-        newest = [new.split('/')[-1] for new in target]
-        sys.stdout.write(f"\r{', '.join(newest)}")
         speaker.speak(text=f"I found {len(target)} results. On your screen {models.env.title}! "
                            "Which one shall I clone?", run=True)
         if not (converted := listener.listen()):

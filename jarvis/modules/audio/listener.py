@@ -4,7 +4,6 @@
 >>> Listener
 
 """
-import sys
 from typing import Union
 
 from playsound import playsound
@@ -14,7 +13,7 @@ from speech_recognition import (Microphone, Recognizer, RequestError,
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import support
+from jarvis.modules.utils import support, util
 
 recognizer = Recognizer()
 microphone = Microphone(device_index=models.env.microphone_index)
@@ -42,7 +41,7 @@ def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
     with microphone as source:
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
-            sys.stdout.write("\rListener activated...") if stdout else None
+            util.write_screen(text="Listener activated...") if stdout else None
             listened = recognizer.listen(source=source, timeout=models.env.timeout,
                                          phrase_time_limit=models.env.phrase_limit)
             playsound(sound=models.indicators.end, block=False) if sound else None
