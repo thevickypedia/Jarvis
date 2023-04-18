@@ -216,8 +216,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
 - **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
 - **MAPS_API** - API Key for maps from [Google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+- **WOLFRAM_API** - API Key from [wolfram alpha](https://www.wolframalpha.com/)
 - **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
-- **WOLFRAM_API_KEY** - API Key from wolfram alpha.
 
 **[Email/SMS notifications](https://github.com/thevickypedia/gmail-connector)**
 - **GMAIL_USER** - Gmail account username to send and read emails.
@@ -307,6 +307,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ROBINHOOD_ENDPOINT_AUTH** - Authentication token to access the robinhood portfolio which is generated every hour.
 - **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
 - **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
+- **STOCK_MONITOR_API** - API key(s) to skip OTP validation for `/stock-monitor` endpoint.
 
 **Custom Feature Flag**
 - **AUTHOR_MODE** - Enables reverse proxy tunnel (to expose API endpoint), robinhood portfolio scan (every hour) and stock monitoring (every 15 minutes). Defaults to `False`

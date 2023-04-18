@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.2.9 (04/17/2023)
+------------------
+- Create apikey authentication for stock monitor
+- Use constant-time compare for authentication
+- Update docs and bump version
+
 7.2.8 (04/13/2023)
 ------------------
 - Fix file mode in mic plotter for Linux

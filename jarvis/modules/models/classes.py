@@ -224,7 +224,7 @@ class EnvConfig(BaseSettings):
 
     # Third party api config
     weather_api: str = Field(default=None, env='WEATHER_API')
-    wolfram_api_key: str = Field(default=None, env='WOLFRAM_API_KEY')
+    wolfram_api: str = Field(default=None, env='WOLFRAM_API')
     maps_api: str = Field(default=None, env='MAPS_API')
     news_api: str = Field(default=None, env='NEWS_API')
 
@@ -247,6 +247,9 @@ class EnvConfig(BaseSettings):
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
     sync_meetings: PositiveInt = Field(default=3_600, env='SYNC_MEETINGS')
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
+
+    # Stock monitor apikey
+    stock_monitor_api: List[str] = Field(default=None, env="STOCK_MONITOR_API")
 
     # Surveillance config
     surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')

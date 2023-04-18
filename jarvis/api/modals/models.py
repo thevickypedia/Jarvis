@@ -6,7 +6,7 @@ from jarvis.modules.models import models
 
 
 class OfflineCommunicatorModal(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``OfflineCommunicatorModal``.
+    """BaseModel that handles input data for ``OfflineCommunicatorModal``.
 
     >>> OfflineCommunicatorModal
 
@@ -18,7 +18,7 @@ class OfflineCommunicatorModal(BaseModel):
 
 
 class StockMonitorModal(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``StockMonitorModal``.
+    """BaseModel that handles input data for ``StockMonitorModal``.
 
     >>> StockMonitorModal
 
@@ -27,11 +27,12 @@ class StockMonitorModal(BaseModel):
     email: EmailStr
     token: Any
     request: Any
+    apikey: str = None
     plaintext: bool = False
 
 
 class CameraIndexModal(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``CameraIndexModal``.
+    """BaseModel that handles input data for ``CameraIndexModal``.
 
     >>> CameraIndexModal
 
@@ -41,7 +42,7 @@ class CameraIndexModal(BaseModel):
 
 
 class SpeechSynthesisModal(BaseModel):
-    """BaseModel that handles input data for the API which is treated as members for the class ``SpeechSynthesisModal``.
+    """BaseModel that handles input data for ``SpeechSynthesisModal``.
 
     >>> SpeechSynthesisModal
 
