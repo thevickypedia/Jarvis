@@ -31,9 +31,9 @@ def alpha(text: str) -> bool:
     References:
         `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
     """
-    if not models.env.wolfram_api_key:
+    if not models.env.wolfram_api:
         return False
-    alpha_client = wolframalpha.Client(app_id=models.env.wolfram_api_key)
+    alpha_client = wolframalpha.Client(app_id=models.env.wolfram_api)
     try:
         res = alpha_client.query(text)
     except Exception:  # noqa

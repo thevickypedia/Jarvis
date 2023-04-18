@@ -1,6 +1,7 @@
 import asyncio
 import mimetypes
 import os
+import secrets
 import time
 from datetime import datetime
 from http import HTTPStatus
@@ -120,7 +121,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-        if token == surveillance.token:
+        if secrets.compare_digest(token, surveillance.token):
             surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
             rendered = jinja2.Template(templates.origin.surveillance).render(CLIENT_ID=surveillance.client_id)
             content_type, _ = mimetypes.guess_type(rendered)

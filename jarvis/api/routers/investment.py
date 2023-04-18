@@ -1,5 +1,6 @@
 import mimetypes
 import os
+import secrets
 from datetime import datetime
 from http import HTTPStatus
 from threading import Thread
@@ -100,7 +101,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-        if token == robinhood.token:
+        if secrets.compare_digest(token, robinhood.token):
             robinhood.token = None
             if not os.path.isfile(models.fileio.robinhood):
                 raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')

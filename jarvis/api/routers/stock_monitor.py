@@ -1,3 +1,4 @@
+import secrets
 import string
 from datetime import datetime
 from http import HTTPStatus
@@ -21,6 +22,13 @@ from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
 
 router = APIRouter()
+
+
+def apikey_is_allowed(apikey: str) -> bool:
+    """Compares apikey and returns True if apikey is allowed."""
+    for key in models.env.stock_monitor_api:
+        if secrets.compare_digest(key, apikey):
+            return True
 
 
 async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 300):
@@ -68,6 +76,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
         - request: Takes the Request class as an argument.
         - input_data: Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.
+        - email_otp: One Time Passcode (OTP) received via email.
 
             - token: Authentication token.
             - email: Email to which the notifications have to be triggered.
@@ -106,19 +115,26 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
-    sent_dict = stock_monitor_helper.otp_sent
-    recd_dict = stock_monitor_helper.otp_recd
-    email_otp = email_otp or request.headers.get('email_otp')
-    if email_otp:
-        recd_dict[input_data.email] = email_otp
-    if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
-        logger.info("%s has been verified.", input_data.email)
-    else:
-        result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)
-        logger.debug(result.body)
-        if result.ok is False:
-            raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
-        await send_otp_stock_monitor(email_address=input_data.email)
+    # apikey from user and env vars are present and it is allowed
+    if input_data.apikey and models.env.stock_monitor_api and apikey_is_allowed(input_data.apikey):
+        logger.info("%s has been verified using apikey", input_data.email)
+    elif input_data.apikey and models.env.stock_monitor_api:  # both vars are present but don't match
+        logger.info("%s sent an invalid API key", input_data.email)
+        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+    else:  # If any one is missing trigger OTP
+        sent_dict = stock_monitor_helper.otp_sent
+        recd_dict = stock_monitor_helper.otp_recd
+        email_otp = email_otp or request.headers.get('email_otp')
+        if email_otp:
+            recd_dict[input_data.email] = email_otp
+        if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
+            logger.info("%s has been verified.", input_data.email)
+        else:
+            result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)
+            logger.debug(result.body)
+            if result.ok is False:
+                raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
+            await send_otp_stock_monitor(email_address=input_data.email)
 
     if input_data.request == "GET":
         logger.info("'%s' requested their data.", input_data.email)
@@ -139,7 +155,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
                                                               for p in stock_monitor.user_info)) + "</b></td></tr>"
             rows = ""
             for ind, each_entry in enumerate(db_entry):
-                row = f'<tr><td align="center"><input value="{ind}" id="radio_{ind}" type="radio"></td><td>'
+                # give same name to all the radio buttons to enable single select
+                row = f'<tr><td align="center"><input value="{ind}" id="radio_{ind}" type="radio" name="read"></td><td>'
                 row += "</td><td>".join(str(i) for i in each_entry) + "</td>"
                 rows += row
             html_data += rows + "</tr></tbody></table>"
@@ -182,8 +199,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
 
     if stock_monitor.stock_list and decoded['Ticker'] not in stock_monitor.stock_list:
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f"{decoded['Ticker']!r} not a part of NASDAQ stock list [OR] Jarvis currently doesn't "
-                                 f"support tracking prices for {decoded['Ticker']!r}")
+                          detail=f"{decoded['Ticker']!r} is not a part of NASDAQ stock list [OR] Jarvis currently "
+                                 f"doesn't support tracking prices for {decoded['Ticker']!r}")
 
     # Forms a tuple of the new entry provided by the user
     new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),

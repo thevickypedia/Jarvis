@@ -10,6 +10,7 @@ import json
 import logging
 import os
 import random
+import secrets
 import string
 import sys
 import time
@@ -36,6 +37,13 @@ importlib.reload(module=logging)
 db = database.Database(database=models.fileio.base_db)
 
 USER_TITLE = {}
+
+
+def username_is_valid(username: str) -> bool:
+    """Compares username and returns True if username is allowed."""
+    for user in models.env.bot_users:
+        if secrets.compare_digest(user, username):
+            return True
 
 
 def greeting() -> str:
@@ -317,7 +325,7 @@ class TelegramBot:
             self.send_message(chat_id=chat['id'],
                               response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
             return False
-        if chat['id'] not in models.env.bot_chat_ids or chat['username'] not in models.env.bot_users:
+        if chat['id'] not in models.env.bot_chat_ids or not username_is_valid(username=chat['username']):
             logger.info("%s: %s" % (chat['username'], payload['text'])) if payload.get('text') else None
             logger.error("Unauthorized chatID [%d] or userName [%s]" % (chat['id'], chat['username']))
             self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
