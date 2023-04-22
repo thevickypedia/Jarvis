@@ -4,7 +4,7 @@ import string
 import traceback
 from http import HTTPStatus
 from threading import Thread
-from typing import NoReturn
+from typing import NoReturn, Union
 
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse
@@ -33,6 +33,36 @@ def kill_power() -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'FastAPI'))
         cursor.connection.commit()
+
+
+async def process_ok_response(response: str, input_data: OfflineCommunicatorModal) -> Union[bytes, FileResponse]:
+    """Processes responses for 200 messages. Response is framed as synthesized or native based on input data.
+
+    Args:
+        response: Takes the response as text.
+        input_data: Input data modal.
+
+    Returns:
+        Union[bytes, FileResponse]:
+        FileResponse in case of native audio or bytes in case of speech synthesized response.
+    """
+    if input_data.speech_timeout:
+        logger.info("Storing response as %s", models.fileio.speech_synthesis_wav)
+        if binary := await speech_synthesis.speech_synthesis(input_data=SpeechSynthesisModal(
+                text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
+        ), raise_for_status=False):
+            return binary
+        else:
+            input_data.native_audio = True  # try native voice if SpeechSynthesis fails
+    if input_data.native_audio:
+        if native_audio_wav := tts_stt.text_to_audio(text=response):
+            logger.info("Storing response as %s in native audio.", native_audio_wav)
+            Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
+            return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
+                                filename="synthesized.wav", status_code=HTTPStatus.OK.real)
+        logger.error("Failed to generate audio file in native voice.")
+    # Send response as text if requested so or if all other options fail
+    raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
 @router.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
@@ -81,8 +111,8 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     if word_match.word_match(phrase=command, match_list=keywords.keywords.kill) and 'override' in command.lower():
         logger.info("STOP override has been requested.")
         Thread(target=kill_power).start()
-        raise APIResponse(status_code=HTTPStatus.OK.real,
-                          detail=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
+        return await process_ok_response(response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
+                                         input_data=input_data)
 
     # Keywords for which the ' and ' split should not happen.
     ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
@@ -102,7 +132,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                     logger.error(traceback.format_exc())
                     and_response += error.__str__()
         logger.info("Response: %s", and_response.strip())
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=and_response.strip())
+        return await process_ok_response(response=and_response, input_data=input_data)
 
     if not word_match.word_match(phrase=command, match_list=compatibles.offline_compatible()):
         logger.warning("'%s' is not a part of offline compatible request.", command)
@@ -115,9 +145,9 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))
-            raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=f'I will execute it after {support.time_converter(second=delay_info[1])} '
-                                     f'{models.env.title}!')
+            return await process_ok_response(response='I will execute it after '
+                                                      f'{support.time_converter(second=delay_info[1])} '
+                                                      f'{models.env.title}!', input_data=input_data)
     try:
         response = offline.offline_communicator(command=command)
     except Exception as error:
@@ -130,22 +160,4 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}, daemon=True).start()
         return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
                             filename=os.path.basename(response), status_code=HTTPStatus.OK.real)
-    if input_data.speech_timeout:
-        logger.info("Storing response as %s", models.fileio.speech_synthesis_wav)
-        if binary := await speech_synthesis.speech_synthesis(input_data=SpeechSynthesisModal(
-                text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
-        ), raise_for_status=False):
-            return binary
-    elif input_data.native_audio:
-        if native_audio_wav := tts_stt.text_to_audio(text=response):
-            logger.info("Storing response as %s in native audio.", native_audio_wav)
-            Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
-            return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
-                                filename="synthesized.wav", status_code=HTTPStatus.OK.real)
-        else:
-            raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
-                              detail="Failed to generate audio file in native voice. "
-                                     "This feature can be flaky at times as it relies on native wav to kernel specific "
-                                     "wav conversion. Please use `speech_timeout` instead to get an audio response.")
-    else:
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
+    return await process_ok_response(response=response, input_data=input_data)

@@ -63,9 +63,7 @@ class CronExpression:
             fields.append('')
 
         if len(fields) < 6:
-            raise InvalidArgument(
-                f"{line!r} has invalid cron expression!"
-            )
+            raise InvalidArgument(f"{line!r} has invalid cron expression!")
 
         minutes, hours, dom, months, dow, self.comment = fields
         self.expression = ' '.join(fields[:5])
@@ -83,9 +81,7 @@ class CronExpression:
         try:
             self.compute_numtab()
         except TypeError:
-            raise InvalidArgument(
-                f"{line!r} has invalid cron expression!"
-            )
+            raise InvalidArgument(f"{line!r} has invalid cron expression!")
         if len(epoch) == 5:
             y, mo, d, h, m = epoch
             self.epoch = (y, mo, d, h, m, epoch_utc_offset)
@@ -119,9 +115,7 @@ class CronExpression:
         for field_str, span in zip(self.string_tab, self.FIELD_RANGES):
             split_field_str = field_str.split(',')
             if len(split_field_str) > 1 and "*" in split_field_str:
-                raise InvalidArgument(
-                    "\"*\" must be alone in a field."
-                )
+                raise InvalidArgument("\"*\" must be alone in a field.")
 
             unified = set()
             for cron_atom in split_field_str:
@@ -280,9 +274,7 @@ def parse_atom(parse: str, minmax: tuple) -> set:
         if minmax[0] <= value <= minmax[1]:
             return {value}
         else:
-            raise InvalidArgument(
-                f"Invalid bounds: {parse}"
-            )
+            raise InvalidArgument(f"invalid bounds: {parse}")
     elif '-' in parse or '/' in parse:
         divide = parse.split('/')
         subrange = divide[0]
@@ -294,16 +286,12 @@ def parse_atom(parse: str, minmax: tuple) -> set:
             # Example: a-b
             prefix, suffix = [int(n) for n in subrange.split('-')]
             if prefix < minmax[0] or suffix > minmax[1]:
-                raise InvalidArgument(
-                    f"Invalid bounds: {parse}"
-                )
+                raise InvalidArgument(f"invalid bounds: {parse}")
         elif subrange == '*':
             # Include all values with the given range
             prefix, suffix = minmax
         else:
-            raise InvalidArgument(
-                f"Unrecognized symbol: {subrange}"
-            )
+            raise InvalidArgument(f"unrecognized symbol: {subrange}")
 
         if prefix < suffix:
             # Example: 7-10

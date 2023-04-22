@@ -39,9 +39,7 @@ class WakeOnLan:
         if len(macaddress) == 17:
             macaddress = macaddress.replace(macaddress[2], "")
         elif len(macaddress) != 12:
-            raise InvalidArgument(
-                f"Invalid mac address: {macaddress}"
-            )
+            raise InvalidArgument(f"invalid mac address: {macaddress}")
         return bytes.fromhex("F" * 12 + macaddress * 16)
 
     def send_packet(self, *mac_addresses: str, ip_address: str = BROADCAST_IP, port: int = DEFAULT_PORT,

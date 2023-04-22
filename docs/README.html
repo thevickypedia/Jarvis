@@ -286,6 +286,14 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using an <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
+<p><strong>Scheduled Weather Alert</strong></p>
+<ul class="simple">
+<li><p><strong>WEATHER_ALERT</strong> - Time (in 24h <code class="docutils literal notranslate"><span class="pre">HH:MM</span></code> format) when the weather alert should be fired - Example: <code class="docutils literal notranslate"><span class="pre">09:00</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
+This feature can also be enabled from <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> by using the keyword <code class="docutils literal notranslate"><span class="pre">weather</span></code> in phrase for the <code class="docutils literal notranslate"><span class="pre">task</span></code></p>
+</div></blockquote>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/pywifi-controls">Wi-Fi Controls</a></strong></p>
 <ul class="simple">
 <li><p><strong>WIFI_SSID</strong> - SSID of the wireless connection.</p></li>
@@ -331,7 +339,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <span class="w">    </span>-v<span class="w"> </span>/etc/ssl/certs:/etc/ssl/certs<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-w<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--user<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>rhasspy/larynx
+<span class="w">    </span>thevickypedia/speech-synthesis
 </pre></div>
 </div>
 <p>:bulb:   Speech Synthesis can run on a docker container for better voices but, response might be negligibly slower. If you don’t have docker installed or simply don’t want to use it, set the <code class="docutils literal notranslate"><span class="pre">SPEECH_SYNTHESIS_TIMEOUT</span></code> env var to 0. This is also done automatically if failed to launch a docker container upon startup.</p>

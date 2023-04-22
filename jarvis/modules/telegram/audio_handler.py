@@ -61,8 +61,6 @@ def audio_converter_win(input_filename: Union[FilePath, str], output_audio_forma
         os.remove(input_filename)
         if os.path.isfile(output_filename):
             return output_filename
-        raise FileNotFoundError(
-            f"{output_filename} was not found after exporting audio to {output_audio_format}"
-        )
+        raise FileNotFoundError(f"{output_filename} was not found after exporting audio to {output_audio_format}")
     except FileNotFoundError as error:  # raised by audio.export when conversion fails
         logger.error(error)

@@ -527,6 +527,12 @@ Weather
    :members:
    :undoc-members:
 
+====
+
+.. automodule:: jarvis.executors.weather_monitor
+   :members:
+   :undoc-members:
+
 Word Match
 ==========
 

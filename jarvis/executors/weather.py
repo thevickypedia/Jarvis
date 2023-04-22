@@ -2,6 +2,7 @@ import json
 import urllib.error
 import urllib.request
 from datetime import datetime
+from typing import Any, Optional, Tuple, Union
 
 import inflect
 
@@ -13,13 +14,14 @@ from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support
 
 
-def weather(phrase: str = None) -> None:
+def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, int, int, Optional[str]], None]:
     """Says weather at any location if a specific location is mentioned.
 
     Says weather at current location by getting IP using reverse geocoding if no place is received.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
+        monitor: Takes a boolean value to simply return the weather response.
     """
     if not models.env.weather_api:
         logger.warning("Weather apikey not found.")
@@ -147,6 +149,15 @@ def weather(phrase: str = None) -> None:
     temp_feel_f = int(temperature.k2f(arg=response['current']['feels_like']))
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
+    if monitor:
+        if 'alerts' in response:
+            alerts = response['alerts'][0]['event']
+            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
+            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
+            alert = f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
+        else:
+            alert = None
+        return condition, high, low, temp_f, alert
     if phrase:
         if 'sunrise' in phrase or 'sun rise' in phrase or ('sun' in phrase and 'rise' in phrase):
             if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
@@ -201,8 +212,5 @@ def weather(phrase: str = None) -> None:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
         end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
-    else:
-        alerts, start_alert, end_alert = None, None, None
-    if alerts and start_alert and end_alert:
         output += f' You have a weather alert for {alerts} between {start_alert} and {end_alert}'
     speaker.speak(text=output)

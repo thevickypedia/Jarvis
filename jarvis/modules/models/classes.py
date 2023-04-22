@@ -6,15 +6,19 @@
 """
 
 import getpass
+import importlib
 import os
 import pathlib
 import platform
 import socket
+import subprocess
 import sys
 from collections import ChainMap
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Union
+from multiprocessing import current_process
+from threading import Thread
+from typing import Dict, List, NoReturn, Optional, Union
 
 import psutil
 import pyttsx3
@@ -24,10 +28,11 @@ from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       validator)
 
 from jarvis import indicators, scripts
-from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
+from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
+                                       UnsupportedOS)
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
-audio_driver = pyttsx3.init()
+module: Dict[str, pyttsx3.Engine] = {}
 if not os.environ.get('AWS_DEFAULT_REGION'):
     os.environ['AWS_DEFAULT_REGION'] = 'us-west-2'  # Required when vpn-server is imported
 
@@ -80,6 +85,58 @@ settings = Settings()
 # Changes to Windows_NT because of BaseSettings
 if settings.os.startswith('Windows'):
     settings.os = "Windows"
+
+
+def import_module() -> NoReturn:
+    """Instantiates pyttsx3 after importing ``nsss`` drivers beforehand."""
+    if settings.os == "Darwin":
+        importlib.import_module("pyttsx3.drivers.nsss")
+    module['pyttsx3'] = pyttsx3.init()
+
+
+def dynamic_rate() -> int:
+    """Speech rate based on the Operating System."""
+    if settings.os == "Linux":
+        return 1
+    return 200
+
+
+def test_and_load_audio_driver() -> pyttsx3.Engine:
+    """Get audio driver by instantiating pyttsx3.
+
+    Returns:
+        pyttsx3.Engine:
+        Audio driver.
+    """
+    try:
+        subprocess.run(["python3", "-c", "import pyttsx3; pyttsx3.init()"], check=True)
+    except subprocess.CalledProcessError as error:
+        if error.returncode == -11:  # Segmentation fault error code
+            if current_process().name == "MainProcess":
+                print(f"\033[91mERROR:{'':<6}Segmentation fault when loading audio driver "
+                      "(interrupted by signal 11: SIGSEGV)\033[0m")
+                print(f"\033[93mWARNING:{'':<4}Trying alternate solution...\033[0m")
+            thread = Thread(target=import_module)
+            thread.start()
+            thread.join(timeout=10)
+            if module.get('pyttsx3'):
+                if current_process().name == "MainProcess":
+                    print(f"\033[92mINFO:{'':<7}Instantiated audio driver successfully\033[0m")
+                return module['pyttsx3']
+            else:
+                raise SegmentationError(
+                    "Segmentation fault when loading audio driver (interrupted by signal 11: SIGSEGV)"
+                )
+        else:
+            return pyttsx3.init()
+    else:
+        return pyttsx3.init()
+
+
+try:
+    audio_driver = test_and_load_audio_driver()
+except (SegmentationError, Exception):  # resolve to speech-synthesis
+    audio_driver = None
 
 
 class Sensitivity(float or PositiveInt, Enum):
@@ -201,7 +258,8 @@ class EnvConfig(BaseSettings):
 
     # Built-in speaker config
     voice_name: str = Field(default=None, env='VOICE_NAME')
-    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=audio_driver.getProperty("rate"), env='VOICE_RATE')
+    _rate = audio_driver.getProperty("rate") if audio_driver else dynamic_rate()
+    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate, env='VOICE_RATE')
 
     # Peripheral config
     camera_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='CAMERA_INDEX')
@@ -305,6 +363,7 @@ class EnvConfig(BaseSettings):
 
     # Background tasks
     crontab: List[str] = Field(default=[], env='CRONTAB')
+    weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')  # get as str and store as datetime
 
     # WiFi config
     wifi_ssid: str = Field(default=None, env='WIFI_SSID')
@@ -360,7 +419,19 @@ class EnvConfig(BaseSettings):
             if datetime.strptime(value, "%d-%B"):
                 return value
         except ValueError:
-            raise InvalidEnvVars('format should be DD-MM')
+            raise InvalidEnvVars("format should be 'DD-MM'")
+
+    # noinspection PyMethodParameters
+    @validator("weather_alert", pre=True, allow_reuse=True)
+    def parse_weather_alert(cls, value: str) -> Union[str, None, datetime]:
+        """Validates date value to be in DD-MM format."""
+        if not value:
+            return
+        try:
+            if val := datetime.strptime(value, '%H:%M'):
+                return val
+        except ValueError:
+            raise InvalidEnvVars("format should be 'HH:MM'")
 
 
 env = EnvConfig()

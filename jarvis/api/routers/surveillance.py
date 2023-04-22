@@ -71,7 +71,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             logger.error(auth_stat.json())
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
         surveillance.token = util.keygen_uuid(length=16)
-        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT='surveillance',
+        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'surveillance' endpoint",
                                                                              TOKEN=surveillance.token,
                                                                              EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
@@ -121,9 +121,10 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-        if secrets.compare_digest(token, surveillance.token):
+        # token might be present because its added as headers but surveillance.token will be cleared after one time auth
+        if surveillance.token and secrets.compare_digest(token, surveillance.token):
             surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
-            rendered = jinja2.Template(templates.origin.surveillance).render(CLIENT_ID=surveillance.client_id)
+            rendered = jinja2.Template(templates.endpoint.surveillance).render(CLIENT_ID=surveillance.client_id)
             content_type, _ = mimetypes.guess_type(rendered)
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
                                 content=rendered, media_type=content_type)

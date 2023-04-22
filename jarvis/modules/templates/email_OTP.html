@@ -15,7 +15,8 @@
                             <tr>
                               <td style="padding:18px 32px;line-height:22px;text-align:inherit" height="100%" valign="top">
                                 <div>
-                                  <br>A recent login to {{ ENDPOINT }} endpoint was flagged by Jarvis API. If this was you, please use this code to access the {{ ENDPOINT }} endpoint: <br>
+                                  <br>A recent request on {{ ENDPOINT }} with your email address was flagged by Jarvis API.<br>
+                                    Please use this code to complete verification.<br>If this wasn't you, please use the contact link below to report immediately.<br>
                                 </div>
                               </td>
                             </tr>
@@ -35,8 +36,8 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout:fixed">
                           <tbody>
                             <tr>
-                              <td style="padding:18px 32px;line-height:22px;text-align:inherit" height="100%" valign="top" bgcolor=""> This code will expire after 5 minutes. <br>
-                                <br>This security feature helps ensure only '{{ EMAIL }}' can access the {{ ENDPOINT }} endpoint.
+                              <td style="padding:18px 32px;line-height:22px;text-align:inherit" height="100%" valign="top" bgcolor=""> This code will expire after {{ TIMEOUT }}.<br>
+                                <br>This security feature helps ensure only '{{ EMAIL }}' can access {{ ENDPOINT }} endpoint.
                               </td>
                             </tr>
                           </tbody>

@@ -26,8 +26,11 @@ def speaker_volume(level: int) -> NoReturn:
     Args:
         level: Takes the volume level as an argument.
     """
-    logger.info("Jarvis' volume has been set to %d" % level + "%")
-    models.audio_driver.setProperty('volume', level / 100)
+    if models.audio_driver:
+        logger.info("Jarvis' volume has been set to %d" % level + "%")
+        models.audio_driver.setProperty('volume', level / 100)
+    else:
+        logger.warning("Setting Jarvis' volume is not available for speech-synthesis")
 
 
 def volume(phrase: str = None, level: int = None) -> NoReturn:

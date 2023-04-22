@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+7.3.0 (04/22/2023)
+------------------
+- Feature improvements and bug fixes on `JarvisAPI`
+- Support audio responses for multiple and timed tasks
+- Exhaust all audio options before returning string
+- Resolve edge case scenario in pyttsx3
+- Enable speech-synthesis if audio driver fails
+- Create weather alert monitor to notify harsh weather
+- Remove redundant template
+
 7.2.9 (04/17/2023)
 ------------------
 - Create apikey authentication for stock monitor

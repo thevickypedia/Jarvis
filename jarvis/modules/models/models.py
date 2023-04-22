@@ -20,14 +20,15 @@ from jarvis.modules.camera.camera import Camera
 from jarvis.modules.crontab.expression import CronExpression
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (CameraError, EgressErrors,
-                                       InvalidEnvVars, MissingEnvVars)
+                                       InvalidEnvVars, MissingEnvVars,
+                                       SegmentationError)
 from jarvis.modules.models.classes import (Indicators, RecognizerSettings,
                                            audio_driver, env, fileio, settings,
                                            supported_platforms)
 from jarvis.modules.utils import util
 
 # Shared across other modules
-voices: Union[list, object] = audio_driver.getProperty("voices")
+voices: Union[list, object] = audio_driver.getProperty("voices") if audio_driver else []
 indicators = Indicators()
 # TABLES to be created in `fileio.base_db`
 TABLES = {
@@ -74,10 +75,8 @@ def _main_process_validations() -> NoReturn:
 
     for keyword in env.wake_words:
         if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
-            raise InvalidEnvVars(
-                f"Detecting {keyword!r} is unsupported!\n"
-                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
-            )
+            raise InvalidEnvVars(f"Detecting {keyword!r} is unsupported!\n"
+                                 f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}")
 
     # If sensitivity is an integer or float, converts it to a list
     if isinstance(env.sensitivity, float) or isinstance(env.sensitivity, PositiveInt):
@@ -100,19 +99,18 @@ def _global_validations() -> NoReturn:
                 "ROOT_PASSWORD due to terminal automations."
             )
 
-    voice_names = [__voice.name for __voice in voices]
-    if not env.voice_name:
-        _set_default_voice_name()
-    elif env.voice_name not in voice_names:
-        if main:
-            raise InvalidEnvVars(
-                f"{env.voice_name!r} is not available.\nAvailable voices are: {', '.join(voice_names)}"
-            )
-        else:
+    if voice_names := [__voice.name for __voice in voices]:
+        if not env.voice_name:
             _set_default_voice_name()
-            warnings.warn(
-                f"{env.voice_name!r} is not available. Defaulting to {env.voice_name!r}"
-            )
+        elif env.voice_name not in voice_names:
+            if main:
+                raise InvalidEnvVars(f"{env.voice_name!r} is not available.\n"
+                                     f"Available voices are: {', '.join(voice_names)}")
+            else:
+                _set_default_voice_name()
+                warnings.warn(
+                    f"{env.voice_name!r} is not available. Defaulting to {env.voice_name!r}"
+                )
 
     if env.website and env.website.startswith("http"):
         env.website = env.website.lstrip(f"{env.website.scheme}://")
@@ -125,9 +123,7 @@ def _global_validations() -> NoReturn:
     # However it will NOT work in this use case, since the type hint is HttpUrl
     if env.ics_url and not env.ics_url.endswith('.ics'):
         if main:
-            raise InvalidEnvVars(
-                "'ICS_URL' should end with .ics"
-            )
+            raise InvalidEnvVars("'ICS_URL' should end with .ics")
         else:
             env.ics_url = None
             warnings.warn(
@@ -155,7 +151,10 @@ def _global_validations() -> NoReturn:
         settings.limited = True
     if env.limited is False:  # If env var is set as False to brute force full version on a device with < 4 processors
         settings.limited = False
-
+    if settings.limited is True and env.weather_alert:
+        warnings.warn(
+            "weather alert cannot function on limited mode"
+        )
     # Validates crontab expression if provided
     for expression in env.crontab:
         CronExpression(expression)
@@ -201,7 +200,7 @@ def _global_validations() -> NoReturn:
     # Validate voice for speech synthesis
     try:
         response = requests.get(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
-                                timeout=(1, 1))  # Set connect and read timeout to bare minimum
+                                timeout=(3, 3))  # Set connect and read timeout explicitly
         if response.ok:
             available_voices = [value.get('id').replace('/', '_') for key, value in response.json().items()]
             if env.speech_synthesis_voice not in available_voices:
@@ -216,7 +215,16 @@ def _global_validations() -> NoReturn:
                         f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
                     )
     except EgressErrors:
-        pass
+        if not audio_driver:
+            raise SegmentationError(
+                f"\n\n{settings.bot} needs either an audio driver OR speech-synthesis to run in Docker container\n"
+                f"normally {settings.bot} will try to launch the Docker container to run speech-synthesis.\n"
+                "However if audio driver is unavailable, the docker container should be launched manually or "
+                "the audio driver should be fixed.\n"
+                "Refer:\n"
+                "   https://github.com/thevickypedia/Jarvis/wiki#os-agnostic-voice-model\n"
+                "   https://stackoverflow.com/a/76050539/13691532"
+            )
 
 
 _global_validations()

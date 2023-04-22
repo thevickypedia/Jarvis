@@ -48,7 +48,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         if not auth_stat.ok:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
         robinhood.token = util.keygen_uuid(length=16)
-        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT='robinhood',
+        rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'robinhood' endpoint",
                                                                              TOKEN=robinhood.token,
                                                                              EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
@@ -101,7 +101,8 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-        if secrets.compare_digest(token, robinhood.token):
+        # token might be present because its added as headers but robinhood.token will be cleared after one time auth
+        if robinhood.token and secrets.compare_digest(token, robinhood.token):
             robinhood.token = None
             if not os.path.isfile(models.fileio.robinhood):
                 raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
