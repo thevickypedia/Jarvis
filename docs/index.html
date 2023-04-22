@@ -1266,6 +1266,26 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.offline.process_ok_response">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">process_ok_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.OfflineCommunicatorModal" title="jarvis.api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.offline.process_ok_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes responses for 200 messages. Response is framed as synthesized or native based on input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response</strong> – Takes the response as text.</p></li>
+<li><p><strong>input_data</strong> – Input data modal.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>FileResponse in case of native audio or bytes in case of speech synthesized response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[bytes, FileResponse]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.offline.offline_communicator_api">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.OfflineCommunicatorModal" title="jarvis.api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.offline.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
@@ -4013,7 +4033,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>speech_synthesizer: Initiates larynx docker image for speech synthesis.</p></li>
+<li><p>speech_synthesizer: Initiates docker container for speech synthesis.</p></li>
 <li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
 <li><p>fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.</p></li>
 <li><p>background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.</p></li>
@@ -4466,14 +4486,24 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <span id="weather"></span><h1>Weather<a class="headerlink" href="#module-jarvis.executors.weather" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.weather.weather">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.weather.weather" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.weather.weather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says weather at any location if a specific location is mentioned.</p>
 <p>Says weather at current location by getting IP using reverse geocoding if no place is received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+<li><p><strong>monitor</strong> – Takes a boolean value to simply return the weather response.</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-jarvis.executors.weather_monitor"></span><dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.weather_monitor.monitor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather_monitor.</span></span><span class="sig-name descname"><span class="pre">monitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.weather_monitor.monitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weather monitoring system to trigger notifications for high, low weather and severe weather alert.</p>
 </dd></dl>
 
 </section>
@@ -4542,7 +4572,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.speaker.speech_synthesizer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SSQuality.Medium_Quality</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SSQuality.Medium_Quality</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a post call to docker container for speech synthesis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4571,7 +4601,7 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
 <li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the <code class="docutils literal notranslate"><span class="pre">audio_driver.say</span></code> loop.</p></li>
-<li><p><strong>block</strong> – Takes a boolean flag to wait other tasks while speaking. [Applies only for larynx running on docker]</p></li>
+<li><p><strong>block</strong> – Takes a boolean flag to await other tasks while speaking. [Applies only for speech-synthesis on docker]</p></li>
 </ul>
 </dd>
 </dl>
@@ -6408,6 +6438,11 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig._rate">
+<span class="sig-name descname"><span class="pre">_rate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200.0</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig._rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.voice_rate">
 <span class="sig-name descname"><span class="pre">voice_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.voice_rate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6728,6 +6763,11 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.weather_alert">
+<span class="sig-name descname"><span class="pre">weather_alert</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.weather_alert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.wifi_ssid">
 <span class="sig-name descname"><span class="pre">wifi_ssid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.wifi_ssid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6778,6 +6818,12 @@ last_value: the last value assigned or None</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.parse_birthday">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_birthday</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.parse_birthday" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates date value to be in DD-MM format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.parse_weather_alert">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_weather_alert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">datetime</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.parse_weather_alert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates date value to be in DD-MM format.</p>
 </dd></dl>
 
@@ -7185,6 +7231,15 @@ last_value: the last value assigned or None</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="jarvis.modules.exceptions.SegmentationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">SegmentationError</span></span><a class="headerlink" href="#jarvis.modules.exceptions.SegmentationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">SegmentationError</span></code> raised when the code exits with SIGSEGV.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SegmentationError</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -9360,10 +9415,10 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.templates.templates.OriginTemplates">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">OriginTemplates</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.OriginTemplates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.EndpointTemplates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">EndpointTemplates</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.EndpointTemplates" title="Permalink to this definition">¶</a></dt>
 <dd><p>HTML templates used for hosting endpoints.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OriginTemplates</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">EndpointTemplates</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -9384,15 +9439,15 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.templates.templates.origin">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.origin" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.OriginTemplates" title="jarvis.modules.templates.templates.OriginTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">OriginTemplates</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.generic">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">generic</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.generic" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.GenericTemplates" title="jarvis.modules.templates.templates.GenericTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericTemplates</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.endpoint">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.EndpointTemplates" title="jarvis.modules.templates.templates.EndpointTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">EndpointTemplates</span></code></a></p>
 </dd></dl>
 
 </section>

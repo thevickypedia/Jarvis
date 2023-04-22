@@ -11,6 +11,7 @@ from datetime import datetime
 from threading import Thread
 from typing import NoReturn, Union
 
+import pynotification
 import requests
 from playsound import playsound
 
@@ -18,11 +19,15 @@ from jarvis.executors import files
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, util
+from jarvis.modules.utils import shared, support, util
+
+SS_HEADERS = {
+    "Content-Type": "text/plain"
+}
 
 
 def speech_synthesizer(text: str,
-                       timeout: Union[int, float] = models.env.speech_synthesis_timeout,
+                       timeout: Union[int, float] = None,
                        quality: str = models.env.speech_synthesis_quality,
                        voice: str = models.env.speech_synthesis_voice) -> bool:
     """Makes a post call to docker container for speech synthesis.
@@ -53,8 +58,8 @@ def speech_synthesizer(text: str,
     try:
         response = requests.post(
             url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
-            headers={"Content-Type": "text/plain"}, params={"voice": voice, "vocoder": quality}, data=text,
-            verify=False, timeout=timeout
+            headers=SS_HEADERS, params={"voice": voice, "vocoder": quality}, data=text, verify=False,
+            timeout=timeout or models.env.speech_synthesis_timeout  # set timeout here as speak() sets it on demand
         )
         if response.ok:
             with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
@@ -69,7 +74,7 @@ def speech_synthesizer(text: str,
     except EgressErrors as error:
         logger.error(error)
         logger.info("Disabling speech synthesis")
-        # Purposely exclude timeout since, larynx takes more time during first iteration to download the required voice
+        # Purposely exclude timeout since, speech-synthesis takes more time initially to download the required voice
         if not any((isinstance(error, TimeoutError), isinstance(error, requests.Timeout))):
             models.env.speech_synthesis_timeout = 0
 
@@ -80,8 +85,10 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     Args:
         text: Takes the text that has to be spoken as an argument.
         run: Takes a boolean flag to choose whether to run the ``audio_driver.say`` loop.
-        block: Takes a boolean flag to wait other tasks while speaking. [Applies only for larynx running on docker]
+        block: Takes a boolean flag to await other tasks while speaking. [Applies only for speech-synthesis on docker]
     """
+    if not models.audio_driver:
+        models.env.speech_synthesis_timeout = 10
     caller = sys._getframe(1).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
     if caller != 'conditions':  # function where all the magic happens
         Thread(target=frequently_used, kwargs={"function_name": caller}).start()
@@ -98,9 +105,14 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
                 os.path.isfile(models.fileio.speech_synthesis_wav):
             playsound(sound=models.fileio.speech_synthesis_wav, block=block)
             os.remove(models.fileio.speech_synthesis_wav)
-        else:
+        elif models.audio_driver:
             models.audio_driver.say(text=text)
-    if run and not shared.called_by_offline:
+        else:
+            support.flush_screen()
+            pynotification.pynotifier(message="speech-synthesis became unavailable when audio driver was faulty\n"
+                                              "resolving to on-screen response", title="AUDIO ERROR", dialog=True)
+            print(text)
+    if run and models.audio_driver and not shared.called_by_offline:
         logger.debug("Speaker called by: '%s'", caller)
         models.audio_driver.runAndWait()
 

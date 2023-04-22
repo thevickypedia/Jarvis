@@ -201,8 +201,9 @@ class Investment:
         s2 = s2.replace('\n', '\n\t\t\t')
         s1 = s1.replace('\n', '\n\t\t\t')
 
-        rendered = jinja2.Template(templates.origin.robinhood).render(TITLE=title, SUMMARY=web_text, PROFIT=profit_web,
-                                                                      LOSS=loss_web, WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
+        rendered = jinja2.Template(templates.endpoint.robinhood).render(TITLE=title, SUMMARY=web_text,
+                                                                        PROFIT=profit_web, LOSS=loss_web,
+                                                                        WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
         with open(models.fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
         self.logger.info("Static file '%s' has been generated.", models.fileio.robinhood)

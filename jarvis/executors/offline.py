@@ -13,7 +13,7 @@ from pydantic import HttpUrl
 from jarvis._preexec import keywords_handler  # noqa
 from jarvis.executors import (alarm, automation, background_task, conditions,
                               crontab, listener_controls, others, remind,
-                              word_match)
+                              weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.crontab import expression
@@ -41,12 +41,14 @@ def background_tasks() -> NoReturn:
     start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True
+    w_alert = {'time': ''}
     while True:
+        now = datetime.now()
         # Trigger background tasks
         for i, task in enumerate(tasks):
             if task_dict[i] + task.seconds <= time.time() or dry_run:  # Checks a particular tasks' elapsed time
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
-                if datetime.now().hour in task.ignore_hours:
+                if now.hour in task.ignore_hours:
                     logger.debug("'%s' skipped honoring ignore hours", task)
                 else:
                     logger.debug("Executing %s", task.task)
@@ -75,13 +77,20 @@ def background_tasks() -> NoReturn:
         # Trigger automation
         if os.path.isfile(models.fileio.automation):
             if exec_task := automation.auto_helper(offline_list=offline_list):
-                logger.debug("Executing %s", exec_task)
-                try:
-                    response = offline_communicator(command=exec_task) or "No response for automated task"
-                    logger.info("Response %s", response)
-                except Exception as error:
-                    logger.error(error)
-                    logger.error(traceback.format_exc())
+                # Check and trigger monitor only if it wasn't run previously, avoid duplicate check within a minute
+                if "weather" in exec_task.lower() and w_alert['time'] != now.strftime('%H:%M'):
+                    # run as daemon and not store in children table as this won't take long
+                    logger.info("Initiating weather alert monitor")
+                    Process(target=weather_monitor.monitor, daemon=True).start()
+                    w_alert['time'] = now.strftime('%H:%M')
+                else:
+                    logger.debug("Executing %s", exec_task)
+                    try:
+                        response = offline_communicator(command=exec_task) or "No response for automated task"
+                        logger.info("Response %s", response)
+                    except Exception as error:
+                        logger.error(error)
+                        logger.error(traceback.format_exc())
 
         # Sync events from the event app specified (calendar/outlook)
         if start_events + models.env.sync_events <= time.time() or dry_run:
@@ -125,7 +134,7 @@ def background_tasks() -> NoReturn:
                     for meeting_name, timing_info in each_muter.items():
                         meeting_time = timing_info[0]
                         duration = timing_info[1]
-                        if meeting_time == datetime.now().strftime("%I:%M %p"):
+                        if meeting_time == now.strftime("%I:%M %p"):
                             logger.info("Disabling listener for the meeting '%s'. Will be enabled after %s",
                                         meeting_name, support.time_converter(second=duration))
                             meeting_muter.remove(each_muter)  # Remove event from new list to avoid repetition
@@ -136,17 +145,17 @@ def background_tasks() -> NoReturn:
         # Trigger alarms
         if alarm_state := support.lock_files(alarm_files=True):
             for each_alarm in alarm_state:
-                if each_alarm == datetime.now().strftime("%I_%M_%p.lock") or \
-                        each_alarm == datetime.now().strftime("%I_%M_%p_repeat.lock") or \
-                        each_alarm == datetime.now().strftime("%A_%I_%M_%p_repeat.lock"):
+                if each_alarm == now.strftime("%I_%M_%p.lock") or \
+                        each_alarm == now.strftime("%I_%M_%p_repeat.lock") or \
+                        each_alarm == now.strftime("%A_%I_%M_%p_repeat.lock"):
                     Process(target=alarm.executor).start()
                     if each_alarm.endswith("_repeat.lock"):
                         os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", f"_{each_alarm}"))
                     else:
                         os.remove(os.path.join("alarm", each_alarm))
                 elif each_alarm.startswith('_') and not \
-                        (each_alarm == datetime.now().strftime("_%I_%M_%p_repeat.lock") or
-                         each_alarm == datetime.now().strftime("_%A_%I_%M_%p_repeat.lock")):
+                        (each_alarm == now.strftime("_%I_%M_%p_repeat.lock") or
+                         each_alarm == now.strftime("_%A_%I_%M_%p_repeat.lock")):
                     os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
 
         # Trigger reminders
@@ -163,10 +172,19 @@ def background_tasks() -> NoReturn:
                 else:
                     remind_msg = remind_msg.replace('.lock', '')
                 remind_msg = remind_msg.replace('_', ' ')
-                if remind_time == datetime.now().strftime("%I_%M_%p"):
+                if remind_time == now.strftime("%I_%M_%p"):
                     logger.info("Executing reminder: %s", each_reminder)
                     Thread(target=remind.executor, kwargs={'message': remind_msg, 'contact': name}).start()
                     os.remove(os.path.join("reminder", reminder_file))
+
+        # Trigger weather alert system
+        # If a weather alert time is given and the current time matches with the given time proceed
+        if models.env.weather_alert and now.strftime('%H:%M') == models.env.weather_alert.strftime('%H:%M'):
+            # Check and trigger monitor only if it wasn't run previously, avoid duplicate check within a minute
+            if w_alert['time'] != now.strftime('%H:%M'):
+                logger.info("Initiating weather alert monitor")
+                Process(target=weather_monitor.monitor, daemon=True).start()
+                w_alert['time'] = now.strftime('%H:%M')
 
         # Rewrite keywords
         keywords_handler.rewrite_keywords()

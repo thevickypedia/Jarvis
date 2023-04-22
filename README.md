@@ -242,6 +242,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using an `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
+**Scheduled Weather Alert**
+- **WEATHER_ALERT** - Time (in 24h `HH:MM` format) when the weather alert should be fired - Example: `09:00`
+> Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
+> This feature can also be enabled from `automation.yaml` by using the keyword `weather` in phrase for the `task`
+
 **[Wi-Fi Controls](https://github.com/thevickypedia/pywifi-controls)**
 - **WIFI_SSID** - SSID of the wireless connection.
 - **WIFI_PASSWORD** - Password for the wireless connection.
@@ -284,7 +289,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
         -v /etc/ssl/certs:/etc/ssl/certs \
         -w "${PWD}" \
         --user "$(id -u):$(id -g)" \
-        rhasspy/larynx
+        thevickypedia/speech-synthesis
     ```
 
     :bulb: &nbsp; Speech Synthesis can run on a docker container for better voices but, response might be negligibly slower. If you don't have docker installed or simply don't want to use it, set the `SPEECH_SYNTHESIS_TIMEOUT` env var to 0. This is also done automatically if failed to launch a docker container upon startup.

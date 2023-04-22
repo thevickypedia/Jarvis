@@ -158,3 +158,11 @@ class CoverNotOnline(SystemError):
     def __str__(self) -> str:
         """Returns a printable representational of the error message."""
         return repr(self.msg)
+
+
+class SegmentationError(EnvironmentError):
+    """Custom ``SegmentationError`` raised when the code exits with SIGSEGV.
+
+    >>> SegmentationError
+
+    """

@@ -32,9 +32,7 @@ def delete_db() -> NoReturn:
         logger.info("Removing %s", models.fileio.base_db)
         os.remove(models.fileio.base_db)
     if os.path.isfile(models.fileio.base_db):
-        raise FileExistsError(
-            f"{models.fileio.base_db} still exists!"
-        )
+        raise FileExistsError(f"{models.fileio.base_db} still exists!")
     return
 
 
@@ -109,7 +107,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
 
     See Also:
-        - speech_synthesizer: Initiates larynx docker image for speech synthesis.
+        - speech_synthesizer: Initiates docker container for speech synthesis.
         - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
         - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.

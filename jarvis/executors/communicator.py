@@ -1,4 +1,3 @@
-import string
 from typing import Union
 
 import gmailconnector
@@ -98,7 +97,6 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         - Boolean flag to indicate the email was sent successfully.
         - Error response from gmail-connector.
     """
-    body = string.capwords(body)
     if not subject:
         subject = "Message from Jarvis" if recipient == models.env.recipient else f"Message from {models.env.name}"
     rendered = jinja2.Template(source=templates.email.notification).render(SENDER=title or models.env.name,

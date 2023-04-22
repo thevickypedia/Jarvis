@@ -33,9 +33,6 @@ class EmailTemplates:
         with open(os.path.join(os.path.dirname(__file__), 'email_OTP.html')) as file:
             one_time_passcode = file.read()
 
-        with open(os.path.join(os.path.dirname(__file__), 'stock_monitor_OTP.html')) as file:
-            stock_monitor_otp = file.read()
-
         with open(os.path.join(os.path.dirname(__file__), 'email.html')) as file:
             notification = file.read()
 
@@ -43,10 +40,10 @@ class EmailTemplates:
             car_report = file.read()
 
 
-class OriginTemplates:
+class EndpointTemplates:
     """HTML templates used for hosting endpoints.
 
-    >>> OriginTemplates
+    >>> EndpointTemplates
 
     """
 
@@ -71,5 +68,5 @@ class GenericTemplates:
 
 
 email = EmailTemplates
-origin = OriginTemplates
 generic = GenericTemplates
+endpoint = EndpointTemplates
