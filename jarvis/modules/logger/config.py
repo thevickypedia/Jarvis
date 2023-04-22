@@ -39,11 +39,14 @@ class AddProcessName(Filter):
 
 
 def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
-    """Remove existing handlers and adds a new handler when a subprocess kicks in.
+    """Remove existing handlers and adds a new handler when a child process kicks in.
 
     Args:
         filename: Filename where the subprocess should log.
         log_format: Custom log format dedicated for each process.
+
+    See Also:
+        This will override the main logger and add a new logger pointing to the given filename.
 
     Returns:
         str:

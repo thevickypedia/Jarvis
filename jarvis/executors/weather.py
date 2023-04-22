@@ -1,4 +1,5 @@
 import json
+import string
 import urllib.error
 import urllib.request
 from datetime import datetime
@@ -152,9 +153,9 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
     if monitor:
         if 'alerts' in response:
             alerts = response['alerts'][0]['event']
-            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")
-            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%I:%M %p")
-            alert = f'You have a weather alert for {alerts} between {start_alert} and {end_alert}'
+            start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%m-%d %H:%M")
+            end_alert = datetime.fromtimestamp(response['alerts'][0]['end']).strftime("%m-%d %H:%M")
+            alert = f'{string.capwords(alerts)} from {start_alert} to {end_alert}'
         else:
             alert = None
         return condition, high, low, temp_f, alert

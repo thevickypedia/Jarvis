@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.3.1 (04/22/2023)
+------------------
+- Optimizations to weather alert system
+
 7.3.0 (04/22/2023)
 ------------------
 - Feature improvements and bug fixes on `JarvisAPI`
