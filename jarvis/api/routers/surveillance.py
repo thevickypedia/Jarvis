@@ -79,6 +79,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                                         html_body=rendered)
         if mail_stat.ok:
             logger.debug(mail_stat.body)
+            logger.info("Token will be reset in 5 minutes.")
             Thread(target=timeout_otp.reset_surveillance, args=(300,)).start()
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail="Authentication success. Please enter the OTP sent via email:")

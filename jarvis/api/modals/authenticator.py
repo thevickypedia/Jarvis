@@ -7,10 +7,10 @@ from fastapi.security import HTTPBasicCredentials, HTTPBearer
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 
-security = HTTPBearer()
+SECURITY = HTTPBearer()
 
 
-async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
+async def offline_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) -> None:
     """Validates the token if mentioned as a dependency.
 
     Args:
@@ -28,7 +28,7 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(security)) ->
     raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
 
 
-async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
+async def robinhood_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) -> None:
     """Validates the token if mentioned as a dependency.
 
     Args:
@@ -46,7 +46,7 @@ async def robinhood_has_access(token: HTTPBasicCredentials = Depends(security)) 
     raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
 
 
-async def surveillance_has_access(token: HTTPBasicCredentials = Depends(security)) -> None:
+async def surveillance_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) -> None:
     """Validates the token if mentioned as a dependency.
 
     Args:

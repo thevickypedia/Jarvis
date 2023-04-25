@@ -19,13 +19,14 @@ from enum import Enum
 from multiprocessing import current_process
 from threading import Thread
 from typing import Dict, List, NoReturn, Optional, Union
+from uuid import UUID
 
 import psutil
 import pyttsx3
 from packaging.version import Version
-from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
-                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
-                      validator)
+from pydantic import (BaseConfig, BaseModel, BaseSettings, DirectoryPath,
+                      EmailStr, Field, FilePath, HttpUrl, PositiveFloat,
+                      PositiveInt, constr, validator)
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
@@ -85,6 +86,16 @@ settings = Settings()
 # Changes to Windows_NT because of BaseSettings
 if settings.os.startswith('Windows'):
     settings.os = "Windows"
+
+
+class VehicleAuthorization(BaseConfig):
+    """Wrapper to store vehicle authorization."""
+
+    device_id: str = None
+    access_token: Union[str, UUID] = None
+    expiration: float = None
+    auth_token: str = None
+    refresh_token: Union[str, UUID] = None
 
 
 def import_module() -> NoReturn:
@@ -307,7 +318,7 @@ class EnvConfig(BaseSettings):
     sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
 
     # Stock monitor apikey
-    stock_monitor_api: List[str] = Field(default=None, env="STOCK_MONITOR_API")
+    stock_monitor_api: Dict[EmailStr, str] = Field(default={}, env="STOCK_MONITOR_API")
 
     # Surveillance config
     surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')

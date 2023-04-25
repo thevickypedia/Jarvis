@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+7.3.2 (04/25/2023)
+------------------
+- Optimize JLR API response time for car operations
+- Restrict CORS to improve security on API
+- Convert stock_monitor_api env var to dict
+- Use requests module for car connection
+- Convert stock monitor api to header authentication
+- Upgrade dependencies in version_locked_requirements.txt
+- Fix cron job trigger
+
 7.3.1 (04/22/2023)
 ------------------
 - Optimizations to weather alert system

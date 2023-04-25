@@ -30,6 +30,7 @@ from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 
+inflect_engine = inflect.engine()
 days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 db = database.Database(database=models.fileio.base_db)
 
@@ -402,7 +403,7 @@ def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
         str:
         String version of the number.
     """
-    result = inflect.engine().number_to_words(num=input_)
+    result = inflect_engine.number_to_words(num=input_)
     return result[0].upper() + result[1:] if capitalize else result
 
 
@@ -417,7 +418,7 @@ def pluralize(count: int, word: str) -> str:
         str:
         String formatted time in singular or plural.
     """
-    return f"{count} {inflect.engine().plural(text=word, count=count)}"
+    return f"{count} {inflect_engine.plural(text=word, count=count)}"
 
 
 def time_converter(second: float) -> str:

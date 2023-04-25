@@ -54,7 +54,7 @@ class RokuECP:
                 logger.error("%d - %s", response.status_code, response.text)
                 raise TVError
 
-    def make_call(self, path, method) -> requests.Response:
+    def make_call(self, path: str, method: str) -> requests.Response:
         """Makes a session call using the path and method provided.
 
         Args:
@@ -98,7 +98,7 @@ class RokuECP:
         Args:
             limit: Number of iterations to increase the volume.
         """
-        for _ in range(limit):
+        for _ in range(limit + 1):
             self.make_call(path='/keypress/VolumeUp', method='POST')
 
     def decrease_volume(self, limit: int = 10) -> NoReturn:
@@ -107,7 +107,7 @@ class RokuECP:
         Args:
             limit: Number of iterations to decrease the volume.
         """
-        for _ in range(limit):
+        for _ in range(limit + 1):
             self.make_call(path='/keypress/VolumeDown', method='POST')
 
     def mute(self) -> NoReturn:
@@ -153,7 +153,7 @@ class RokuECP:
         """
         self.make_call(path=f'/keypress/{val}', method='POST')
 
-    def _set_vol_executor(self, target) -> NoReturn:
+    def _set_vol_executor(self, target: int) -> NoReturn:
         """Executed in thread to set volume to a specific level.
 
         With the lack of a better option, volume is decreased to zero and then increased to the required level.

@@ -39,8 +39,8 @@ def enable_cors() -> NoReturn:
         CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST"],
+        allow_headers=["host", "user-agent", "authorization", "email_otp", "apikey"],
     )
 
 

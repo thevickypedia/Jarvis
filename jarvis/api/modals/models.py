@@ -27,7 +27,6 @@ class StockMonitorModal(BaseModel):
     email: EmailStr
     token: Any
     request: Any
-    apikey: str = None
     plaintext: bool = False
 
 

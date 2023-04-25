@@ -313,6 +313,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SURVEILLANCE_ENDPOINT_AUTH** - Token to access webcam live feed via Jarvis API.
 - **SURVEILLANCE_SESSION_TIMEOUT** - Session time out for `/surveillance`. Defaults to 300 seconds.
 - **STOCK_MONITOR_API** - API key(s) to skip OTP validation for `/stock-monitor` endpoint.
+> Entry should be a dictionary of with email as `key` and `token` as value. Eg: `'{"user@example.com": "@lfaROm$o"}'`
 
 **Custom Feature Flag**
 - **AUTHOR_MODE** - Enables reverse proxy tunnel (to expose API endpoint), robinhood portfolio scan (every hour) and stock monitoring (every 15 minutes). Defaults to `False`

@@ -1,6 +1,7 @@
 import os
 import shutil
 
+from jarvis.api import triggers
 from jarvis.modules.utils import util
 
 
@@ -45,13 +46,13 @@ def rh_cron_schedule(extended: bool = False) -> str:
         str:
         A crontab expression running every 30 minutes during market hours based on the current timezone.
     """
-    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'triggers', 'stock_report.py')}"
+    job = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_report.py')}"
     tz = util.get_timezone()
     if tz not in MarketHours.hours['REGULAR'] or tz not in MarketHours.hours['EXTENDED']:
         tz = 'OTHER'
     start = MarketHours.hours['EXTENDED'][tz]['OPEN'] if extended else MarketHours.hours['REGULAR'][tz]['OPEN']
     end = MarketHours.hours['EXTENDED'][tz]['CLOSE'] if extended else MarketHours.hours['REGULAR'][tz]['CLOSE']
-    return f"*/30 {start}-{end} * * 1-5 {command}"
+    return f"*/30 {start}-{end} * * 1-5 {job}"
 
 
 def sm_cron_schedule(include_weekends: bool = True) -> str:
@@ -64,7 +65,7 @@ def sm_cron_schedule(include_weekends: bool = True) -> str:
         str:
         A crontab expression running every 15 minutes.
     """
-    command = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join('api', 'triggers', 'stock_monitor.py')}"
+    job = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_monitor.py')}"
     if include_weekends:
-        return f"*/15 * * * * {command}"
-    return f"*/15 * * * 1-5 {command}"
+        return f"*/15 * * * * {job}"
+    return f"*/15 * * * 1-5 {job}"

@@ -8,12 +8,11 @@ See Also:
 """
 
 import json
-import os
 import time
-import urllib.error
-import urllib.request
 from typing import Dict, NoReturn, Union
 from uuid import UUID, uuid4
+
+import requests
 
 from jarvis.modules.logger.custom_logger import logger
 
@@ -30,20 +29,19 @@ def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
         dict:
         JSON loaded response from post request.
     """
-    request = urllib.request.Request(url=url, headers=headers)
     if data:
-        request.data = bytes(json.dumps(data), encoding="utf8")
-
-    response = urllib.request.build_opener().open(request)
-
-    if not 200 <= response.code <= 300:
-        logger.debug("Response: %d", response.code)
-        raise urllib.error.HTTPError(code=response.code, msg='HTTPError', url=url,
-                                     hdrs=response.headers, fp=response.fp)
-
-    charset = response.info().get('charset', 'utf-8')
-    if resp_data := response.read().decode(charset):
-        return json.loads(resp_data)
+        if data.get('grant_type', '') == 'password':
+            headers['Connection'] = 'close'
+        response = requests.post(url=url, headers=headers, data=bytes(json.dumps(data), "utf-8"))
+    else:
+        response = requests.get(url=url, headers=headers)
+    if not response.ok:
+        logger.debug("Response: %d", response.status_code)
+        response.raise_for_status()
+    try:
+        return response.json()
+    except json.JSONDecodeError as error:
+        logger.warning(error)
 
 
 class Connect:
@@ -57,9 +55,9 @@ class Connect:
     IFOP_BASE_URL = "https://ifop.prod-row.jlrmotor.com/ifop/jlr"
     IF9_BASE_URL = "https://if9.prod-row.jlrmotor.com/if9/jlr"
 
-    def __init__(self, username: str = os.environ.get('USERNAME'), password: str = os.environ.get('PASSWORD'),
-                 device_id: Union[UUID, str] = None, refresh_token=os.environ.get('TOKEN'),
-                 china_servers: bool = False, auth_expiry: int = 0):
+    def __init__(self, username: str, password: str = None, device_id: Union[UUID, str] = None,
+                 refresh_token: Union[UUID, str] = None, auth_expiry: Union[int, float] = 0,
+                 china_servers: bool = False):
         """Initiates all the class variables.
 
         Args:
@@ -67,7 +65,7 @@ class Connect:
             password: Login password.
             device_id: Car's device ID. Defaults to UUID4.
             refresh_token: Token to login instead of email and password.
-            china_servers: Boolean flag whether to use China servers.
+            china_servers: Boolean flag to use China servers.
             auth_expiry: Duration (in seconds) to expire. Defaults to 0 forcing to re-authenticate.
         """
         if not device_id:
@@ -109,7 +107,7 @@ class Connect:
             JSON loaded response from post request.
         """
         if time.time() > self.expiration:
-            logger.debug('Authentication expired, reconnecting.')
+            logger.warning('Authentication expired, reconnecting.')
             self.connect()
             if headers['Authorization']:
                 headers['Authorization'] = self.head['Authorization']
