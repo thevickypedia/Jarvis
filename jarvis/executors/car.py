@@ -3,24 +3,76 @@ import time
 import urllib.error
 import urllib.request
 from datetime import datetime
+from multiprocessing import current_process
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, NoReturn, Tuple, Union
 
 import gmailconnector
 import jinja2
-from playsound import playsound
+import requests
+from pydantic import BaseConfig
 
 from jarvis.executors import communicator, files, location, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.car import connector, controller
 from jarvis.modules.logger.custom_logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 from jarvis.modules.temperature import temperature
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
+
+AUTHORIZATION = classes.VehicleAuthorization()
+
+
+class VehicleConnection(BaseConfig):
+    """Module to create vehicle connection."""
+
+    vin: str = None
+    connection: connector.Connect = None
+
+
+connection_object = VehicleConnection()
+
+
+def create_connection() -> NoReturn:
+    """Creates a new connection and stores the refresh token and device ID in a dedicated object.
+
+    Returns:
+        Tuple[connector.Connect, str]:
+        Connection object and the primary vehicle's VIN number as a tuple.
+    """
+    if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
+        # this might never happen, as the connection and vin are reused until auth expiry anyway
+        connection = connector.Connect(username=models.env.car_email, refresh_token=AUTHORIZATION.refresh_token,
+                                       device_id=AUTHORIZATION.device_id)
+    else:
+        connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass,
+                                       auth_expiry=time.time() + 86_400)
+    try:
+        connection.connect()
+    except requests.HTTPError as error:
+        logger.error(error)
+        connection.head = None
+    if connection.head:
+        AUTHORIZATION.device_id = connection.device_id
+        AUTHORIZATION.access_token = connection.access_token
+        AUTHORIZATION.expiration = connection.expiration
+        AUTHORIZATION.auth_token = connection.auth_token
+        AUTHORIZATION.refresh_token = connection.refresh_token
+        logger.debug(AUTHORIZATION.__dict__)
+        vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
+        if vin := [vehicle_.get('vin') for vehicle_ in vehicles if vehicle_.get('role', '') == 'Primary']:
+            connection_object.connection = connection
+            connection_object.vin = vin[0]
+
+
+pname = current_process().name
+if pname in ('MainProcess', 'telegram_api', 'fast_api'):  # Initiate connection only for main and offline communicators
+    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]) and create_connection():
+        logger.info("Created a new vehicle authorization connection for '%s'", pname)
 
 
 def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[int, str], int]:
@@ -228,10 +280,7 @@ def car(phrase: str) -> None:
                     'honk': ['honk', 'blink', 'horn'],
                     'locate': ['locate', 'where']}
 
-    if word_match.word_match(phrase=phrase, match_list=util.matrix_to_flat_list(list(allowed_dict.values()))):
-        if not shared.called_by_offline:
-            playsound(sound=models.indicators.exhaust, block=False)
-    else:
+    if not word_match.word_match(phrase=phrase, match_list=util.matrix_to_flat_list(list(allowed_dict.values()))):
         speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your car?")
         Thread(target=support.unrecognized_dumper, args=[{"CAR": phrase}]).start()
         return
@@ -366,14 +415,10 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
     """
     control = None
     try:
-        connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass)
-        connection.connect()
-        if not connection.head:
-            return
-        vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
-        primary_vehicle = [each_vehicle for each_vehicle in vehicles if each_vehicle.get("role") == "Primary"][0]
-        control = controller.Control(vin=primary_vehicle.get("vin"), connection=connection)
-
+        # no need to check for expiration as connection will be reset in connector module
+        if not connection_object.connection:
+            create_connection()
+        control = controller.Control(connection=connection_object.connection, vin=connection_object.vin)
         attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)
         response = {}
         if operation == "LOCK":
@@ -449,10 +494,12 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             logger.error(error)
             car_name = "car"
         return car_name
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
-        if operation == "SECURE" and hasattr(error, "code") and error.code == 409 and control and retry:
+    except requests.HTTPError as error:
+        # Happens when security mode is already enabled
+        if operation == "SECURE" and \
+                error.__dict__.get('response') and \
+                error.__dict__['response'].status_code == 409 and \
+                control and retry:
             return vehicle(operation="SECURE_EXIST", retry=False)
-        logger.error(error.__dict__)
-        if hasattr(error, "url") and hasattr(error, "code"):
-            logger.error("Failed to connect to %s with error code: %d while performing %s" %
-                         (error.url, error.code, operation))
+        logger.error(error)
+        logger.error("Failed to connect while performing %s" % operation)

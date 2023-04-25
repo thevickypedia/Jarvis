@@ -46,7 +46,7 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Unio
 
     plt.title(ticker)
     plt.xlabel("Timeseries")
-    plt.ylabel("300 bars with 1 hour interval")
+    plt.ylabel(f"{bars} plots with 1 hour interval")
 
     if bars > 600:
         ax.xaxis.set_major_locator(matplotlib.dates.YearLocator())

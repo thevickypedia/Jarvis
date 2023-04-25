@@ -24,13 +24,6 @@ from jarvis.modules.utils import support, util
 router = APIRouter()
 
 
-def apikey_is_allowed(apikey: str) -> bool:
-    """Compares apikey and returns True if apikey is allowed."""
-    for key in models.env.stock_monitor_api:
-        if secrets.compare_digest(key, apikey):
-            return True
-
-
 async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 300):
     """Send one time password via email.
 
@@ -57,9 +50,8 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
                                     html_body=rendered)
     if mail_stat.ok:
         logger.debug(mail_stat.body)
-        if models.env.debug:  # Why do all the conversions if it's not going to be logged anyway
-            logger.info("Token will be reset in %s." %
-                        support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
+        logger.info("Token will be reset in %s." %
+                    support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
         Thread(target=timeout_otp.reset_stock_monitor, args=(email_address, reset_timeout)).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
@@ -70,7 +62,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
 
 @router.post(path="/stock-monitor")
 async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
-                            email_otp: Optional[str] = Header(None)):
+                            email_otp: Optional[str] = Header(None), apikey: Optional[str] = Header(None)):
     """`Stock monitor api endpoint <https://vigneshrao.com/stock-monitor>`__.
 
     Args:
@@ -117,18 +109,21 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
                           detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
 
     # apikey from user and env vars are present and it is allowed
-    if input_data.apikey and models.env.stock_monitor_api and apikey_is_allowed(input_data.apikey):
+    apikey = apikey or request.headers.get('apikey')
+    if apikey and \
+            models.env.stock_monitor_api.get(input_data.email) and \
+            secrets.compare_digest(models.env.stock_monitor_api[input_data.email], apikey):
         logger.info("%s has been verified using apikey", input_data.email)
-    elif input_data.apikey and models.env.stock_monitor_api:  # both vars are present but don't match
+    elif apikey and models.env.stock_monitor_api.get(input_data.email):  # both vars are present but don't match
         logger.info("%s sent an invalid API key", input_data.email)
         raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
-    else:  # If any one is missing trigger OTP
+    else:  # If apikey auth fails or unsupported
         sent_dict = stock_monitor_helper.otp_sent
         recd_dict = stock_monitor_helper.otp_recd
         email_otp = email_otp or request.headers.get('email_otp')
         if email_otp:
             recd_dict[input_data.email] = email_otp
-        if recd_dict.get(input_data.email, 'DO_NOT') == sent_dict.get(input_data.email, 'MATCH'):
+        if secrets.compare_digest(recd_dict.get(input_data.email, 'DO_NOT'), sent_dict.get(input_data.email, 'MATCH')):
             logger.info("%s has been verified.", input_data.email)
         else:
             result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)

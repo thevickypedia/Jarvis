@@ -365,6 +365,9 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 <li><p><strong>SURVEILLANCE_SESSION_TIMEOUT</strong> - Session time out for <code class="docutils literal notranslate"><span class="pre">/surveillance</span></code>. Defaults to 300 seconds.</p></li>
 <li><p><strong>STOCK_MONITOR_API</strong> - API key(s) to skip OTP validation for <code class="docutils literal notranslate"><span class="pre">/stock-monitor</span></code> endpoint.</p></li>
 </ul>
+<blockquote>
+<div><p>Entry should be a dictionary of with email as <code class="docutils literal notranslate"><span class="pre">key</span></code> and <code class="docutils literal notranslate"><span class="pre">token</span></code> as value. Eg: <code class="docutils literal notranslate"><span class="pre">'{&quot;user&#64;example.com&quot;:</span> <span class="pre">&quot;&#64;lfaROm$o&quot;}'</span></code></p>
+</div></blockquote>
 <p><strong>Custom Feature Flag</strong></p>
 <ul class="simple">
 <li><p><strong>AUTHOR_MODE</strong> - Enables reverse proxy tunnel (to expose API endpoint), robinhood portfolio scan (every hour) and stock monitoring (every 15 minutes). Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
