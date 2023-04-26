@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.3.3 (04/26/2023)
+------------------
+- Implement `retry` logic for vehicle connection
+- Remove redundancies from car controller
+- Expand exception handler on car controls
+- Disable mouse click on image in email template
+
 7.3.2 (04/25/2023)
 ------------------
 - Optimize JLR API response time for car operations

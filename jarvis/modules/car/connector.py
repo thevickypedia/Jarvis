@@ -13,8 +13,17 @@ from typing import Dict, NoReturn, Union
 from uuid import UUID, uuid4
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from jarvis.modules.logger.custom_logger import logger
+
+SESSION = requests.Session()
+RETRY = Retry(connect=3, backoff_factor=1.5)
+ADAPTER = HTTPAdapter(max_retries=RETRY)
+SESSION.mount('http://', adapter=ADAPTER)
+SESSION.mount('https://', adapter=ADAPTER)
+SESSION.headers = {}  # Headers can't be set to SESSION as they change for each call
 
 
 def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
@@ -32,9 +41,9 @@ def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
     if data:
         if data.get('grant_type', '') == 'password':
             headers['Connection'] = 'close'
-        response = requests.post(url=url, headers=headers, data=bytes(json.dumps(data), "utf-8"))
+        response = SESSION.post(url=url, headers=headers, data=bytes(json.dumps(data), "utf-8"))
     else:
-        response = requests.get(url=url, headers=headers)
+        response = SESSION.get(url=url, headers=headers)
     if not response.ok:
         logger.debug("Response: %d", response.status_code)
         response.raise_for_status()
@@ -106,10 +115,14 @@ class Connect:
             dict:
             JSON loaded response from post request.
         """
+        if headers:
+            headers = {**self.head.copy(), **headers}
+        else:
+            headers = self.head.copy()
         if time.time() > self.expiration:
             logger.warning('Authentication expired, reconnecting.')
             self.connect()
-            if headers['Authorization']:
+            if headers.get('Authorization'):
                 headers['Authorization'] = self.head['Authorization']
         return _open(url=f"{url}/{command}", headers=headers, data=data)
 

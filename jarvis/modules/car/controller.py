@@ -7,7 +7,7 @@ See Also:
     **API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
 """
 
-from typing import Dict, List, NoReturn, Union
+from typing import Callable, Dict, List, NoReturn, Union
 
 from jarvis.modules.car.connector import Connect
 
@@ -21,7 +21,7 @@ class Control:
 
     """
 
-    def __init__(self, vin: str, connection: Connect):
+    def __init__(self, vin: str, connection: Union[Connect, Callable]):
         """Instantiates a super class with incoming data and existing connection.
 
         Args:
@@ -30,7 +30,7 @@ class Control:
         """
         self.connection = connection
         self.vin = vin
-        self.IF9_BASE_URL = f'https://if9.prod-row.jlrmotor.com/if9/jlr/vehicles/{self.vin}'
+        self.IF9_BASE_URL = connection.IF9_BASE_URL + "/vehicles/" + self.vin
 
     def get_contact_info(self, mcc: str = '+1') -> Dict:
         """Get Road Side Assistance and Secure Vehicle Tracker contact information.
@@ -42,8 +42,7 @@ class Control:
             dict:
             A dictionary of contact info.
         """
-        headers = self.connection.head.copy()
-        return self.post_data(command=f'contactinfo/{mcc}', headers=headers)
+        return self.post_data(command=f'contactinfo/{mcc}')
 
     def get_attributes(self) -> Dict:
         """Requests all vehicle attributes.
@@ -52,9 +51,8 @@ class Control:
             dict:
             A dictionary of all attributes of the vehicle as key value pairs.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.ngtp.org.VehicleAttributes-v3+json"
-        return self.post_data(command='attributes', headers=headers)
+        return self.post_data(command='attributes',
+                              headers={"Accept": "application/vnd.ngtp.org.VehicleAttributes-v3+json"})
 
     def get_status(self, ev: bool = False) -> Dict:
         """Makes a call to get the status of the vehicle.
@@ -66,9 +64,8 @@ class Control:
             dict:
             A dictionary of the vehicle's status information.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.ngtp.org.if9.healthstatus-v3+json"
-        result = self.post_data(command='status?includeInactive=true', headers=headers)
+        result = self.post_data(command='status?includeInactive=true',
+                                headers={"Accept": "application/vnd.ngtp.org.if9.healthstatus-v3+json"})
 
         if ev:
             core_status_list = result['vehicleStatus']['coreStatus']
@@ -85,11 +82,10 @@ class Control:
             dict:
             A dictionary of the status report.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
-        headers["Content-Type"] = DEFAULT_CONTENT_TYPE
         vhs_data = self._authenticate_service(service_name="VHS")
-        return self.post_data(command='healthstatus', headers=headers, data=vhs_data)
+        return self.post_data(command='healthstatus', data=vhs_data,
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
+                                       "Content-Type": DEFAULT_CONTENT_TYPE})
 
     def get_departure_timers(self) -> Dict:
         """Get departure timers for specified vehicle.
@@ -98,9 +94,8 @@ class Control:
             dict:
             A dictionary of the departure timer information.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.DepartureTimerSettings-v1+json"
-        return self.post_data(command="departuretimers", headers=headers)
+        return self.post_data(command="departuretimers",
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.DepartureTimerSettings-v1+json"})
 
     def get_wakeup_time(self) -> Dict:
         """Get configured wakeup time for specified vehicle.
@@ -109,9 +104,8 @@ class Control:
             dict:
             A dictionary of wakeup time information.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.VehicleWakeupTime-v2+json"
-        return self.post_data(command="wakeuptime", headers=headers)
+        return self.post_data(command="wakeuptime",
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.VehicleWakeupTime-v2+json"})
 
     def get_subscription_packages(self) -> List[Dict]:
         """Get list of subscription packages for a specific vehicle.
@@ -133,9 +127,8 @@ class Control:
             list:
             List of all trips information.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.ngtp.org.triplist-v2+json"
-        return self.post_data(command=f'trips?count={count}', headers=headers).get('trips', [])
+        return self.post_data(command=f'trips?count={count}',
+                              headers={"Accept": "application/vnd.ngtp.org.triplist-v2+json"}).get('trips', [])
 
     def get_guardian_mode_alarms(self) -> List:
         """Gets all the scheduled Guardian mode time periods.
@@ -144,10 +137,9 @@ class Control:
             list:
             Returns a list of Guardian Mode alarm schedules.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianStatus-v1+json"
-        headers["Accept-Encoding"] = "gzip,deflate"
-        return self.post_data(command='gm/alarms', headers=headers)
+        return self.post_data(command='gm/alarms',
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.GuardianStatus-v1+json",
+                                       "Accept-Encoding": "gzip,deflate"})
 
     def get_guardian_mode_alerts(self):
         """Gets the latest Guardian Mode alert for the specified vehicle.
@@ -155,10 +147,9 @@ class Control:
         Returns:
             Returns the latest Guardian Mode alert for the specified vehicle.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/wirelesscar.GuardianAlert-v1+json"
-        headers["Accept-Encoding"] = "gzip,deflate"
-        return self.post_data(command='gm/alerts', headers=headers)
+        return self.post_data(command='gm/alerts',
+                              headers={"Accept": "application/wirelesscar.GuardianAlert-v1+json",
+                                       "Accept-Encoding": "gzip,deflate"})
 
     def get_guardian_mode_status(self) -> Dict:
         """Get the Guardian Mode status indicating whether Guardian Mode is active.
@@ -167,9 +158,8 @@ class Control:
             dict:
             Status of guardian mode as a dictionary.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianStatus-v1+json"
-        return self.post_data(command='gm/status', headers=headers)
+        return self.post_data(command='gm/status',
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.GuardianStatus-v1+json"})
 
     def get_guardian_mode_settings_user(self) -> Dict:
         """Alarm, SMS and push notification settings (System) for guardian mode.
@@ -178,9 +168,8 @@ class Control:
             dict:
             A dictionary of current settings.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianUserSettings-v1+json"
-        return self.post_data(command='gm/settings/user', headers=headers)
+        return self.post_data(command='gm/settings/user',
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.GuardianUserSettings-v1+json"})
 
     def get_guardian_mode_settings_system(self) -> Dict:
         """Alarm, SMS and push notification settings (User) for guardian mode.
@@ -189,9 +178,8 @@ class Control:
             dict:
             A dictionary of current settings.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianSystemSettings-v1+json"
-        return self.post_data(command='gm/settings/system', headers=headers)
+        return self.post_data(command='gm/settings/system',
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.GuardianSystemSettings-v1+json"})
 
     def get_trip(self, trip_id: int, page: int = 1) -> Dict:
         """Get data associated with a specific trip.
@@ -223,7 +211,7 @@ class Control:
             dict:
             A dictionary of the service information.
         """
-        return self.post_data(command="services", headers=self.connection.head.copy())
+        return self.post_data(command="services")
 
     def get_service_status(self, service_id: str) -> Dict:
         """Get a particular service information of the vehicle.
@@ -235,9 +223,8 @@ class Control:
             dict:
             A dictionary of the service information.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
-        return self.post_data(command=f'services/{service_id}', headers=headers)
+        return self.post_data(command=f'services/{service_id}',
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"})
 
     def get_rcc_target_value(self):
         """Get target temperature for the Vehicle climate.
@@ -246,7 +233,7 @@ class Control:
             dict:
             A dictionary of the target temperature information.
         """
-        return self.post_data(command='settings/ClimateControlRccTargetTemp', headers=self.connection.head.copy())
+        return self.post_data(command='settings/ClimateControlRccTargetTemp')
 
     def set_attributes(self, nickname: str, registration_number: str) -> None:
         """Set attributes for the vehicle profile.
@@ -267,10 +254,10 @@ class Control:
         Args:
             pin: Master PIN of the vehicle.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        return self.post_data(command="lock", headers=headers,
-                              data=self._authenticate_service(pin=pin, service_name="RDL"))
+        return self.post_data(
+            command="lock", data=self._authenticate_service(pin=pin, service_name="RDL"),
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+        )
 
     def unlock(self, pin: int) -> Dict:
         """Unlock the vehicle.
@@ -278,10 +265,10 @@ class Control:
         Args:
             pin: Master PIN of the vehicle.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        return self.post_data(command="unlock", headers=headers,
-                              data=self._authenticate_service(pin=pin, service_name="RDU"))
+        return self.post_data(
+            command="unlock", data=self._authenticate_service(pin=pin, service_name="RDU"),
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+        )
 
     def reset_alarm(self, pin: int) -> None:
         """Reset the vehicle alarm.
@@ -289,18 +276,16 @@ class Control:
         Args:
             pin: Master PIN of the vehicle.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = DEFAULT_CONTENT_TYPE
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
-        self.post_data(command="unlock", headers=headers,
+        self.post_data(command="unlock",
+                       headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
+                                "Content-Type": DEFAULT_CONTENT_TYPE},
                        data=self._authenticate_service(pin=pin, service_name="ALOFF"))
 
     def honk_blink(self) -> Dict:
         """Honk the horn and flash the lights associated with the specified vehicle."""
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json"
-        headers["Content-Type"] = DEFAULT_CONTENT_TYPE
-        return self.post_data(command="honkBlink", headers=headers,
+        return self.post_data(command="honkBlink",
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
+                                       "Content-Type": DEFAULT_CONTENT_TYPE},
                               data=self._authenticate_vin_protected_service(service_name="HBLF"))
 
     def remote_engine_start(self, pin: int, target_temperature: int) -> Dict:
@@ -310,11 +295,11 @@ class Control:
             pin: Master PIN of the vehicle.
             target_temperature: Target temperature when started.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
         return {"set_rcc_temp": self.set_rcc_target_temperature(pin=pin, target_temperature=target_temperature),
-                "engine_on": self.post_data(command="engineOn", headers=headers,
-                                            data=self._authenticate_service(pin=pin, service_name="REON"))}
+                "engine_on": self.post_data(
+                    command="engineOn", data=self._authenticate_service(pin=pin, service_name="REON"),
+                    headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+                )}
 
     def remote_engine_stop(self, pin: int) -> Dict:
         """Turn off the vehicle remotely.
@@ -322,10 +307,10 @@ class Control:
         Args:
             pin: Master PIN of the vehicle.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"
-        return self.post_data(command="engineOff", headers=headers,
-                              data=self._authenticate_service(pin=pin, service_name="REOFF"))
+        return self.post_data(
+            command="engineOff", data=self._authenticate_service(pin=pin, service_name="REOFF"),
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+        )
 
     def set_rcc_target_temperature(self, pin: int, target_temperature: int) -> Dict:
         """Set climate control with a target temperature.
@@ -334,14 +319,13 @@ class Control:
             pin: Master PIN of the vehicle.
             target_temperature: Target temperature that has to be set.
         """
-        headers = self.connection.head.copy()
         self._prov_command(pin=pin, expiration_time=None, mode="provisioning")
         service_parameters = {
             "key": "ClimateControlRccTargetTemp",
             "value": str(target_temperature),
             "applied": 1
         }
-        return self.post_data(command="settings", headers=headers, data=service_parameters)
+        return self.post_data(command="settings", data=service_parameters)
 
     def preconditioning_start(self, celsius: float) -> Dict:
         """Start the climate preconditioning at the specified temperature.
@@ -412,13 +396,13 @@ class Control:
             dict:
             A dictionary response.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json"
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf-8"
-
         ecc_data = self._authenticate_vin_protected_service(service_name="ECC")
         ecc_data['serviceParameters'] = service_parameters
-        return self.post_data(command="preconditioning", headers=headers, data=ecc_data)
+        return self.post_data(
+            command="preconditioning", data=ecc_data,
+            headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json",
+                     "Content-Type": "application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf-8"}
+        )
 
     def charging_stop(self) -> None:
         """Stop charging the EV."""
@@ -647,12 +631,13 @@ class Control:
             dict:
             A dictionary response.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json"
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf-8"
         cp_data = self._authenticate_vin_protected_service(service_name="CP")
         cp_data[service_parameter_key] = service_parameters
-        return self.post_data(command="chargeProfile", headers=headers, data=cp_data)
+        return self.post_data(
+            command="chargeProfile", data=cp_data,
+            headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json",
+                     "Content-Type": "application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf-8"}
+        )
 
     def set_wakeup_time(self, wakeup_time: int) -> Dict:
         """Set wakeup time.
@@ -692,10 +677,9 @@ class Control:
         Args:
             wakeup_data: Data from wake up controllers.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v3+json"
-        headers["Content-Type"] = DEFAULT_CONTENT_TYPE
-        return self.post_data(command="swu", headers=headers, data=wakeup_data)
+        return self.post_data(command="swu", data=wakeup_data,
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v3+json",
+                                       "Content-Type": DEFAULT_CONTENT_TYPE})
 
     def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = None) -> Dict:
         """Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.
@@ -725,12 +709,11 @@ class Control:
             dict:
             A dictionary response.
         """
-        headers = self.connection.head.copy()
-        headers["Accept"] = "application/vnd.wirelesscar.ngtp.if9.GuardianAlarmList-v1+json"
         gm_data = self._authenticate_service(pin=pin, service_name="GM")
         gm_data["endTime"] = expiration_time
         gm_data["status"] = "ACTIVE"
-        return self.post_data(command="gm/alarms", headers=headers, data=gm_data)
+        return self.post_data(command="gm/alarms", data=gm_data,
+                              headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.GuardianAlarmList-v1+json"})
 
     def enable_transport_mode(self, pin: int, expiration_time: Union[int, float] = None) -> Dict:
         """Allows the vehicle to be transported without InControl triggering a vehicle theft alarm.
@@ -781,13 +764,14 @@ class Control:
             dict:
             A dictionary response.
         """
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json"
         prov_data = self._authenticate_service(pin=pin, service_name="PROV")
         prov_data["serviceCommand"] = mode
         prov_data["startTime"] = None
         prov_data["endTime"] = expiration_time
-        return self.post_data(command="prov", headers=headers, data=prov_data)
+        return self.post_data(
+            command="prov", data=prov_data,
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json"}
+        )
 
     def _authenticate_vin_protected_service(self, service_name: str) -> Dict:
         """Authenticates services that use VIN for auth.
@@ -816,11 +800,11 @@ class Control:
             "serviceName": service_name,
             "pin": pin
         }
-        headers = self.connection.head.copy()
-        headers["Content-Type"] = "application/vnd.wirelesscar.ngtp.if9.AuthenticateRequest-v2+json; charset=utf-8"
-        return self.post_data(command=f"users/{self.connection.user_id}/authenticate", headers=headers, data=data)
+        return self.post_data(
+            command=f"users/{self.connection.user_id}/authenticate", data=data,
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.AuthenticateRequest-v2+json; charset=utf-8"})
 
-    def post_data(self, command: str, headers: dict, data: dict = None) -> Union[dict, list]:
+    def post_data(self, command: str, headers: dict = None, data: dict = None) -> Union[dict, list]:
         """Posts the data from ``Control`` module to ``Connect`` module.
 
         Args:

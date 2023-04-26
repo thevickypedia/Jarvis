@@ -18,15 +18,15 @@ from datetime import datetime
 from enum import Enum
 from multiprocessing import current_process
 from threading import Thread
-from typing import Dict, List, NoReturn, Optional, Union
+from typing import Callable, Dict, List, NoReturn, Optional, Union
 from uuid import UUID
 
 import psutil
 import pyttsx3
 from packaging.version import Version
-from pydantic import (BaseConfig, BaseModel, BaseSettings, DirectoryPath,
-                      EmailStr, Field, FilePath, HttpUrl, PositiveFloat,
-                      PositiveInt, constr, validator)
+from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
+                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
+                      validator)
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
@@ -49,7 +49,7 @@ class SupportedPlatforms(str, Enum):
 supported_platforms = SupportedPlatforms
 
 
-class Settings(BaseSettings):
+class Settings(BaseModel):
     """Loads most common system values that do not change.
 
     >>> Settings
@@ -83,19 +83,24 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-# Changes to Windows_NT because of BaseSettings
+# Intermittently changes to Windows_NT because of pydantic
 if settings.os.startswith('Windows'):
     settings.os = "Windows"
 
 
-class VehicleAuthorization(BaseConfig):
+class VehicleAuthorization(BaseModel):
     """Wrapper to store vehicle authorization."""
 
-    device_id: str = None
-    access_token: Union[str, UUID] = None
-    expiration: float = None
-    auth_token: str = None
-    refresh_token: Union[str, UUID] = None
+    device_id: Optional[str]
+    expiration: Optional[float]
+    refresh_token: Optional[Union[str, UUID]]
+
+
+class VehicleConnection(BaseModel):
+    """Module to create vehicle connection."""
+
+    vin: Optional[str]
+    connection: Optional[Callable]
 
 
 def import_module() -> NoReturn:
@@ -160,7 +165,7 @@ class Sensitivity(float or PositiveInt, Enum):
     sensitivity: Union[float, PositiveInt]
 
 
-class RecognizerSettings(BaseSettings):
+class RecognizerSettings(BaseModel):
     """Settings for speech recognition.
 
     >>> RecognizerSettings
