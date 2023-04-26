@@ -13,28 +13,19 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import gmailconnector
 import jinja2
 import requests
-from pydantic import BaseConfig
 
 from jarvis.executors import communicator, files, location, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.car import connector, controller
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import classes, models
 from jarvis.modules.temperature import temperature
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
+CONNECTION = classes.VehicleConnection()
 AUTHORIZATION = classes.VehicleAuthorization()
-
-
-class VehicleConnection(BaseConfig):
-    """Module to create vehicle connection."""
-
-    vin: str = None
-    connection: connector.Connect = None
-
-
-connection_object = VehicleConnection()
 
 
 def create_connection() -> NoReturn:
@@ -58,15 +49,13 @@ def create_connection() -> NoReturn:
         connection.head = None
     if connection.head:
         AUTHORIZATION.device_id = connection.device_id
-        AUTHORIZATION.access_token = connection.access_token
         AUTHORIZATION.expiration = connection.expiration
-        AUTHORIZATION.auth_token = connection.auth_token
         AUTHORIZATION.refresh_token = connection.refresh_token
         logger.debug(AUTHORIZATION.__dict__)
         vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
         if vin := [vehicle_.get('vin') for vehicle_ in vehicles if vehicle_.get('role', '') == 'Primary']:
-            connection_object.connection = connection
-            connection_object.vin = vin[0]
+            CONNECTION.connection = connection
+            CONNECTION.vin = vin[0]
 
 
 pname = current_process().name
@@ -416,9 +405,9 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
     control = None
     try:
         # no need to check for expiration as connection will be reset in connector module
-        if not connection_object.connection:
+        if not CONNECTION.connection:
             create_connection()
-        control = controller.Control(connection=connection_object.connection, vin=connection_object.vin)
+        control = controller.Control(connection=CONNECTION.connection, vin=CONNECTION.vin)
         attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)
         response = {}
         if operation == "LOCK":
@@ -494,7 +483,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             logger.error(error)
             car_name = "car"
         return car_name
-    except requests.HTTPError as error:
+    except EgressErrors as error:
         # Happens when security mode is already enabled
         if operation == "SECURE" and \
                 error.__dict__.get('response') and \

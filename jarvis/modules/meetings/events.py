@@ -74,8 +74,8 @@ def events_gatherer() -> str:
     process = subprocess.Popen(["/usr/bin/osascript", models.fileio.event_script] + [str(arg) for arg in [1, 3]],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
-    # Undo unspecified changes done by ScriptEditor (should only be necessary when repo is cloned)
-    os.system(f"git checkout -- {models.fileio.event_script} >/dev/null 2>&1")
+    # Undo unspecified changes done by ScriptEditor (should only be necessary when package is not pip installed)
+    os.system(f"git reset {models.fileio.event_script} >/dev/null 2>&1")
     # noinspection GrazieInspection
     if error := process.returncode:  # stores non zero error
         err_msg = err.decode("UTF-8")
