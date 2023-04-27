@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.3.4 (04/26/2023)
+------------------
+- Run `py3-tts` test on current python `bin`
+- Run pre-checks on meetings in background tasks
+
 7.3.3 (04/26/2023)
 ------------------
 - Implement `retry` logic for vehicle connection
