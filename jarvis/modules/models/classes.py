@@ -10,6 +10,7 @@ import importlib
 import os
 import pathlib
 import platform
+import shutil
 import socket
 import subprocess
 import sys
@@ -125,7 +126,7 @@ def test_and_load_audio_driver() -> pyttsx3.Engine:
         Audio driver.
     """
     try:
-        subprocess.run(["python3", "-c", "import pyttsx3; pyttsx3.init()"], check=True)
+        subprocess.run([shutil.which(cmd="python"), "-c", "import pyttsx3; pyttsx3.init()"], check=True)
     except subprocess.CalledProcessError as error:
         if error.returncode == -11:  # Segmentation fault error code
             if current_process().name == "MainProcess":
