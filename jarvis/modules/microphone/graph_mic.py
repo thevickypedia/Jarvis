@@ -11,7 +11,6 @@ References:
 
 import os
 import queue
-import sys
 from struct import Struct
 from typing import List, NoReturn, Optional, Tuple, Union, cast
 
@@ -24,15 +23,7 @@ from matplotlib.axes import Subplot
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 
-sys.path.insert(0, os.getcwd())
-
-from jarvis.modules.database import database  # noqa
-from jarvis.modules.logger import config  # noqa
-from jarvis.modules.logger.custom_logger import logger  # noqa
-from jarvis.modules.models import models  # noqa
-
 QUEUE = queue.Queue()
-db = database.Database(database=models.fileio.base_db)
 
 
 class Settings:
@@ -114,26 +105,27 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         dark_mode: Sets graph background to almost black
     """
     config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
-    if models.settings.os == models.supported_platforms.linux:  # Since called by subprocess on Linux
-        subprocess_id = os.getpid()
-        logger.info("Writing process ID [%d] into [plot_mic] children table.", subprocess_id)
-        with db.connection:
-            cursor = db.connection.cursor()
-            cursor.execute("UPDATE children SET plot_mic=null")
-            cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,))
-            db.connection.commit()
-        if os.path.isfile(models.fileio.processes):
-            with open(models.fileio.processes) as file:
-                dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-            if dump.get(plot_mic.__name__):
-                dump[plot_mic.__name__] = subprocess_id
-                with open(models.fileio.processes, 'w') as file:
-                    yaml.dump(data=dump, stream=file)
-            else:
-                logger.critical("ATTENTION::Missing %s's process ID in '%s'" %
-                                (plot_mic.__name__, models.fileio.processes))
-        else:
-            logger.critical("ATTENTION::Missing '%s'", models.fileio.processes)
+    subprocess_id = os.getpid()
+    logger.info("Updating process ID [%d] in [plot_mic] children table.", subprocess_id)
+    db = database.Database(database=models.fileio.base_db)
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute("UPDATE children SET plot_mic=null")
+        cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,))
+        db.connection.commit()
+    logger.info("Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id)
+    if os.path.isfile(models.fileio.processes):
+        with open(models.fileio.processes) as file:
+            dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        if not dump.get(plot_mic.__name__):
+            logger.critical("ATTENTION::Missing %s's process ID in '%s'" %
+                            (plot_mic.__name__, models.fileio.processes))
+        # WATCH OUT: for changes in docstring in "processor.py -> create_process_mapping() -> Handles -> plot_mic"
+        dump[plot_mic.__name__] = [subprocess_id, "Plot microphone usage in real time"]
+        with open(models.fileio.processes, 'w') as file:
+            yaml.dump(data=dump, stream=file)
+    else:
+        logger.critical("ATTENTION::Missing '%s'", models.fileio.processes)
     logger.info("Feeding all arguments into dict.")
     if not channels:
         channels = [1]
@@ -179,7 +171,7 @@ def _kick_off() -> NoReturn:
     ax.yaxis.grid(True)
     ax.tick_params(bottom=False, top=False, labelbottom=False,
                    right=False, left=False, labelleft=False)
-    # Labels are not set, but if it is to be set then set padding at least to 2
+    # Labels are not set, but if it is to be set, then set padding at least to 2
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Frequency')
     fig.tight_layout(pad=0)  # no padding
@@ -199,6 +191,10 @@ def _kick_off() -> NoReturn:
         matplotlib.pyplot.show()
 
 
-# This is required for Linux, since plotting microphone is started using commandline
 if __name__ == '__main__':
+    from jarvis.modules.database import database
+    from jarvis.modules.logger import config
+    from jarvis.modules.logger.custom_logger import logger
+    from jarvis.modules.models import models
+
     plot_mic()

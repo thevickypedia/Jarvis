@@ -1,24 +1,69 @@
-import json
 import string
-import urllib.error
-import urllib.request
 from datetime import datetime
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Dict, NoReturn, Optional, Tuple, Union
 
 import inflect
+import requests
+from requests.models import PreparedRequest
 
 from jarvis.executors import files, location, word_match
 from jarvis.modules.audio import speaker
+from jarvis.modules.conditions import keywords
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support
+
+
+def make_request(request: PreparedRequest) -> Union[Dict, NoReturn]:
+    """Get weather information from OpenWeatherMap API.
+
+    Args:
+        request: Prepared request with URL and query params wrapped.
+
+    Returns:
+        dict:
+        JSON response from api.
+    """
+    try:
+        response = requests.get(url=request.url)
+        if response.ok:
+            return response.json()
+        else:
+            response.raise_for_status()
+    except EgressErrors + (requests.JSONDecodeError,) as error:
+        logger.error(error)
+
+
+def weather_responder(coordinates: Dict[str, float]) -> 'make_request':
+    """Get weather information via api call.
+
+    Args:
+        coordinates: GEO coordinates to prepare query params.
+
+    Returns:
+        'make_request':
+        Returns the response from 'make_request'
+    """
+    # todo: preparing request has increased latency, work on alternate
+    prepared_request = PreparedRequest()
+    params = dict(**coordinates, **dict(exclude="minutely,hourly", appid=models.env.weather_api,
+                                        units=models.env.temperature_unit))
+    prepared_request.prepare_url(url="https://api.openweathermap.org/data/2.5/onecall", params=params)
+    return make_request(request=prepared_request)
+    # todo: investigate why `weather` endpoint doesn't return daily data
+    # logger.info("Retrying with 'weather' endpoint")
+    # prepared_request.prepare_url(url="https://api.openweathermap.org/data/2.5/weather", params=params)
+    # return make_request(request=prepared_request)
 
 
 def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, int, int, Optional[str]], None]:
     """Says weather at any location if a specific location is mentioned.
 
     Says weather at current location by getting IP using reverse geocoding if no place is received.
+
+    References:
+        - https://www.weather.gov/mlb/seasonal_wind_threat
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -31,8 +76,10 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
 
     place = None
     if phrase:
-        place = support.get_capitalized(phrase=phrase, ignore=('Sunday', 'Monday', 'Tuesday',
-                                                               'Wednesday', 'Thursday', 'Friday', 'Saturday'))
+        # ignore days in week and the keywords for weather as they are guaranteed to not be places
+        place = support.get_capitalized(phrase=phrase,
+                                        ignore=support.days_in_week +
+                                        tuple(string.capwords(w) for w in keywords.keywords.weather))
         phrase = phrase.lower()
     if place:
         logger.info("Identified place: %s", place)
@@ -56,12 +103,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         state = address.get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
-    weather_url = f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,' \
-                  f'hourly&appid={models.env.weather_api}'
-    try:
-        response = json.loads(urllib.request.urlopen(url=weather_url).read())  # loads the response in a json
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
-        logger.error(error)
+    if not (response := weather_responder(dict(lat=lat, lon=lon))):
         speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
         return
 
@@ -111,10 +153,10 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
             alerts, start_alert, end_alert = None, None, None
         during_key = response['daily'][key]
         condition = during_key['weather'][0]['description']
-        high = int(temperature.k2f(during_key['temp']['max']))
-        low = int(temperature.k2f(during_key['temp']['min']))
-        temp_f = int(temperature.k2f(during_key['temp'][when]))
-        temp_feel_f = int(temperature.k2f(during_key['feels_like'][when]))
+        high = int(during_key['temp']['max'])
+        low = int(during_key['temp']['min'])
+        temp_f = int(during_key['temp'][when])
+        temp_feel_f = int(during_key['feels_like'][when])
         sunrise = datetime.fromtimestamp(during_key['sunrise']).strftime("%I:%M %p")
         sunset = datetime.fromtimestamp(during_key['sunset']).strftime("%I:%M %p")
         if 'sunrise' in phrase or 'sun rise' in phrase or ('sun' in phrase and 'rise' in phrase):
@@ -133,10 +175,12 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
                 tense = "was"
             speaker.speak(text=f"{tell} in {weather_location}, sunset {tense} at {sunset}")
             return
-        output = f"The weather in {weather_location} {tell} would be {temp_f}\N{DEGREE SIGN}F, with a high of " \
-                 f"{high}, and a low of {low}. "
-        if temp_feel_f != temp_f and condition not in ("clear sky", "broken clouds", "fog"):
-            output += f"But due to {condition} it will fee like it is {temp_feel_f}\N{DEGREE SIGN}F. "
+        output = f"The weather in {weather_location} {tell} would be " \
+                 f"{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, " \
+                 f"with a high of {high}, and a low of {low}. "
+        if temp_feel_f != temp_f and condition not in ("clear sky", "broken clouds", "fog", "few clouds"):
+            output += f"But due to {condition} it will fee like it is " \
+                      f"{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}. "
         output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
         if alerts and start_alert and end_alert:
             output += f'There is a weather alert for {alerts} between {start_alert} and {end_alert}'
@@ -144,10 +188,10 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         return
 
     condition = response['current']['weather'][0]['description']
-    high = int(temperature.k2f(arg=response['daily'][0]['temp']['max']))
-    low = int(temperature.k2f(arg=response['daily'][0]['temp']['min']))
-    temp_f = int(temperature.k2f(arg=response['current']['temp']))
-    temp_feel_f = int(temperature.k2f(arg=response['current']['feels_like']))
+    high = int(response['daily'][0]['temp']['max'])
+    low = int(response['daily'][0]['temp']['min'])
+    temp_f = int(response['current']['temp'])
+    temp_feel_f = int(response['current']['feels_like'])
     sunrise = datetime.fromtimestamp(response['daily'][0]['sunrise']).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response['daily'][0]['sunset']).strftime("%I:%M %p")
     if monitor:
@@ -197,18 +241,27 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
             weather_suggest = "I would not recommend thick clothes today."
         else:
             feeling, weather_suggest = '', ''
-        wind_speed = response['current']['wind_speed']
-        if wind_speed > 10:
+        # open weather map returns wind speed as miles/hour if temperature is set to imperial, otherwise in metre/second
+        # how is threshold determined? Refer: https://www.weather.gov/mlb/seasonal_wind_threat
+        if models.env.temperature_unit == models.TemperatureUnits.IMPERIAL:
+            wind_speed = response['current']['wind_speed']
+            threshold = 25  # ~ equivalent for 40 kms
+        else:
+            wind_speed = response['current']['wind_speed'] * 3.6
+            threshold = 40  # ~ equivalent for 25 miles
+        if wind_speed > threshold:
             output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, but due to the current wind ' \
-                     f'conditions (which is {wind_speed} miles per hour), it feels like {temp_feel_f}\N{DEGREE SIGN}.' \
-                     f' {weather_suggest}'
+                     f'conditions (which is {wind_speed} {models.env.distance_unit} per hour), it feels like ' \
+                     f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
         else:
             output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, and it currently feels like ' \
                      f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
     else:
-        output = f'The weather in {weather_location} is {temp_f}\N{DEGREE SIGN}F, with a high of {high}, and a low ' \
-                 f'of {low}. It currently feels like {temp_feel_f}\N{DEGREE SIGN}F, and the current condition is ' \
-                 f'{condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
+        output = f'The weather in {weather_location} is ' \
+                 f'{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, with a high of {high}, ' \
+                 f'and a low of {low}. It currently feels like ' \
+                 f'{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}, ' \
+                 f'and the current condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")

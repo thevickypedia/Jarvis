@@ -2,8 +2,6 @@
 
 import logging
 import math
-import os
-import sys
 from datetime import datetime
 from typing import NoReturn, Tuple
 
@@ -11,12 +9,6 @@ import jinja2
 import requests
 from pyrh import Robinhood
 from pyrh.exceptions import InvalidTickerSymbol
-
-sys.path.insert(0, os.getcwd())
-
-from jarvis.modules.exceptions import EgressErrors  # noqa
-from jarvis.modules.models import models  # noqa
-from jarvis.modules.templates import templates  # noqa
 
 
 class Investment:
@@ -217,9 +209,17 @@ class Investment:
 
 
 if __name__ == '__main__':
+    # imports within __main__ to avoid potential/future path error and circular import
+    # override 'current_process().name' to avoid being set as 'MainProcess'
+    # importing at top level requires setting current_process().name at top level which will in turn override any import
+    from multiprocessing import current_process
+    current_process().name = "Crontab"
     from jarvis.executors import crontab
+    from jarvis.modules.exceptions import EgressErrors
     from jarvis.modules.logger import config
     from jarvis.modules.logger.custom_logger import logger as main_logger
+    from jarvis.modules.models import models
+    from jarvis.modules.templates import templates
 
     config.multiprocessing_logger(filename=crontab.LOG_FILE)
     for log_filter in main_logger.filters:

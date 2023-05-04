@@ -55,6 +55,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
         hostname: Takes the hostname of a device as an argument.
         localhost: Takes a boolean value to behave differently in case of localhost.
     """
+    # WATCH OUT: for changes in function name
     log = False if current_process().name == "background_tasks" else True
     try:
         _hostname, _alias_list, _ipaddr_list = socket.gethostbyname_ex(hostname)
@@ -506,6 +507,6 @@ def connected_to_network() -> bool:
             socket_.connect(("8.8.8.8", 80))
         return True
     except OSError as error:
-        logger.error("OSError [%d]: %s" % (error.errno, error.strerror))
+        logger.error("OSError [%d]: %s", error.errno, error.strerror)
     except Exception as error:
         logger.critical(error)

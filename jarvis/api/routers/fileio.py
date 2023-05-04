@@ -48,7 +48,7 @@ async def get_file(filename: str):
             target_file = os.path.join(path[0], filename)
         else:
             logger.critical("ATTENTION::'%s' wasn't found.", filename)
-            raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
+            raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)
     else:
         target_file = os.path.join(models.fileio.root, filename)
     logger.info("Requested file: '%s' for download.", filename)

@@ -16,7 +16,6 @@ from jarvis.executors import (alarm, automation, background_task, conditions,
                               weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
-from jarvis.modules.crontab import expression
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
@@ -60,13 +59,15 @@ def background_tasks() -> NoReturn:
                         logger.warning("Removing %s from background tasks.", task)
                         background_task.remove_corrupted(task=task)
 
-        # Trigger cron jobs
+        # Trigger cron jobs once during start up (regardless of schedule) and follow schedule after that
         if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
             start_cron = time.time()
-            for cron in models.env.crontab:
-                job = expression.CronExpression(line=cron)
-                if job.check_trigger():
-                    logger.debug("Executing cron job: %s", job.comment)
+            for job in models.env.crontab:
+                if job.check_trigger() or dry_run:
+                    if dry_run:
+                        logger.info("Executing cron job: %s during startup", job.comment)
+                    else:
+                        logger.debug("Executing cron job: %s", job.comment)
                     cron_process = Process(target=crontab.crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -253,10 +254,10 @@ def tunneling() -> NoReturn:
         logger.info("JarvisHelper is not available to trigger an ngrok tunneling through %d", models.env.offline_port)
         endpoint = rf'http://{models.env.offline_host}:{models.env.offline_port}'
         logger.info('However offline communicator can still be accessed via '
-                    '%s/offline-communicator for API calls and %s/docs for docs.' % (endpoint, endpoint))
+                    '%s/offline-communicator for API calls and %s/docs for docs.', endpoint, endpoint)
 
 
-def on_demand_offline_automation(task: str) -> Union[str, None]:
+def ondemand_offline_automation(task: str) -> Union[str, None]:
     """Makes a ``POST`` call to offline-communicator to execute a said task.
 
     Args:

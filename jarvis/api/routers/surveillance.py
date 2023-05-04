@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from http import HTTPStatus
 from multiprocessing import Process, Queue
-from threading import Thread
+from threading import Thread, Timer
 
 import gmailconnector
 import jinja2
@@ -80,7 +80,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         if mail_stat.ok:
             logger.debug(mail_stat.body)
             logger.info("Token will be reset in 5 minutes.")
-            Thread(target=timeout_otp.reset_surveillance, args=(300,)).start()
+            Timer(function=timeout_otp.reset_surveillance, interval=300).start()
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail="Authentication success. Please enter the OTP sent via email:")
         else:
@@ -121,7 +121,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         """
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+                              detail=HTTPStatus.UNAUTHORIZED.phrase)
         # token might be present because its added as headers but surveillance.token will be cleared after one time auth
         if surveillance.token and secrets.compare_digest(token, surveillance.token):
             surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
@@ -162,7 +162,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
         if not token:
             logger.warning('/video-feed was accessed directly.')
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+                              detail=HTTPStatus.UNAUTHORIZED.phrase)
         if token != surveillance.token:
             raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                               detail='Requires authentication since endpoint uses single-use token.')

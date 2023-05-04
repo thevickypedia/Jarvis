@@ -3,7 +3,7 @@ import os
 import secrets
 from datetime import datetime
 from http import HTTPStatus
-from threading import Thread
+from threading import Timer
 
 import gmailconnector
 import jinja2
@@ -57,7 +57,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
         if mail_stat.ok:
             logger.debug(mail_stat.body)
             logger.info("Token will be reset in 5 minutes.")
-            Thread(target=timeout_otp.reset_robinhood, args=(300,)).start()
+            Timer(function=timeout_otp.reset_robinhood, interval=300).start()
             raise APIResponse(status_code=HTTPStatus.OK.real,
                               detail="Authentication success. Please enter the OTP sent via email:")
         else:
@@ -102,7 +102,7 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
 
         if not token:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                              detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+                              detail=HTTPStatus.UNAUTHORIZED.phrase)
         # token might be present because its added as headers but robinhood.token will be cleared after one time auth
         if robinhood.token and secrets.compare_digest(token, robinhood.token):
             robinhood.token = None

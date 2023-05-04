@@ -125,7 +125,7 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
     if models.settings.os == models.supported_platforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
-            logger.error("Failed to fetch %s with exit code [%s]: %s" % (target, error, err))
+            logger.error("Failed to fetch %s with exit code [%s]: %s", target, error, err)
             return
         # noinspection PyTypeChecker
         return dict(map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if

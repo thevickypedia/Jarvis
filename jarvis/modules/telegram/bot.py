@@ -21,7 +21,7 @@ import requests
 from pydantic import FilePath
 
 from jarvis._preexec import keywords_handler  # noqa
-from jarvis.executors import commander, offline, word_match
+from jarvis.executors import commander, offline, others, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -70,12 +70,12 @@ def get_title_by_name(name: str) -> str:
     """
     logger.info("Identifying gender for %s", name)
     try:
-        response = requests.get(url=f"https://api.genderize.io/?name={name}")
+        response = requests.get(url=f"https://api.genderize.io/?name={name}", timeout=(3, 3))
     except EgressErrors as error:
         logger.critical(error)
-        return 'sir'
+        return models.env.title
     if not response.ok:
-        return 'sir'
+        return models.env.title
     if response.json().get('gender', 'Unidentified').lower() == 'female':
         logger.info("%s has been identified as female.", name)
         return 'mam'
@@ -234,40 +234,49 @@ class TelegramBot:
         return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendPhoto', files=files,
                                   payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
-    def reply_to(self, payload: dict, response: str, parse_mode: Union[str, None] = 'markdown') -> requests.Response:
+    def reply_to(self, payload: dict, response: str, parse_mode: Union[str, None] = 'markdown',
+                 retry: bool = False) -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
             payload: Payload received, to extract information from.
             response: Message to be sent to the user.
             parse_mode: Parse mode. Defaults to ``markdown``
+            retry: Retry reply in case reply failed because of parsing.
 
         Returns:
             Response:
             Response class.
         """
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
-                                  payload={'chat_id': payload['from']['id'],
-                                           'reply_to_message_id': payload['message_id'],
-                                           'text': response, 'parse_mode': parse_mode})
+        result = self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
+                                    payload={'chat_id': payload['from']['id'],
+                                             'reply_to_message_id': payload['message_id'],
+                                             'text': response, 'parse_mode': parse_mode})
+        if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
+            logger.warning("Retrying response as plain text with no parsing")
+            self.reply_to(payload=payload, response=response, parse_mode=None, retry=True)
+        return result
 
-    def send_message(self, chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown') -> requests.Response:
+    def send_message(self, chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown',
+                     retry: bool = False) -> requests.Response:
         """Generates a payload to reply to a message received.
 
         Args:
             chat_id: Chat ID.
             response: Message to be sent to the user.
             parse_mode: Parse mode. Defaults to ``markdown``
+            retry: Retry reply in case reply failed because of parsing.
 
         Returns:
             Response:
             Response class.
         """
-        if parse_mode:
-            payload = {'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode}
-        else:
-            payload = {'chat_id': chat_id, 'text': response}
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage', payload=payload)
+        result = self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
+                                    payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
+        if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
+            logger.warning("Retrying response as plain text with no parsing")
+            self.send_message(chat_id=chat_id, response=response, parse_mode=None, retry=True)
+        return result
 
     def poll_for_messages(self) -> NoReturn:
         """Polls ``api.telegram.org`` for new messages.
@@ -321,13 +330,13 @@ class TelegramBot:
         """
         chat = payload['from']
         if chat['is_bot']:
-            logger.error("Bot %s accessed %s" % (chat['username'], payload.get('text')))
+            logger.error("Bot %s accessed %s", chat['username'], payload.get('text'))
             self.send_message(chat_id=chat['id'],
                               response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
             return False
         if chat['id'] not in models.env.bot_chat_ids or not username_is_valid(username=chat['username']):
-            logger.info("%s: %s" % (chat['username'], payload['text'])) if payload.get('text') else None
-            logger.error("Unauthorized chatID [%d] or userName [%s]" % (chat['id'], chat['username']))
+            logger.info("%s: %s", chat['username'], payload['text']) if payload.get('text') else None
+            logger.error("Unauthorized chatID [%d] or userName [%s]", chat['id'], chat['username'])
             self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
             return False
         if not USER_TITLE.get(payload['from']['username']):
@@ -347,7 +356,7 @@ class TelegramBot:
         if int(time.time()) - payload['date'] < 60:
             return True
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
-        logger.warning("Request timed out when %s requested %s" % (payload['from']['username'], payload.get('text')))
+        logger.warning("Request timed out when %s requested %s", payload['from']['username'], payload.get('text'))
         logger.warning("Request time: %s", request_time)
         if "override" in payload.get('text', '').lower() and not \
                 word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
@@ -457,6 +466,10 @@ class TelegramBot:
 
         Args:
             payload: Payload received, to extract information from.
+
+        See Also:
+            - | Requesting files and secrets are considered as special requests, so they cannot be combined with
+              | other requests using 'and' or 'also'
         """
         if payload.get('text', '').lower() == 'help':
             self.send_message(chat_id=payload['from']['id'],
@@ -508,6 +521,18 @@ class TelegramBot:
             else:
                 self.reply_to(payload=payload, response="No filename was received. "
                                                         "Please include only the filename after the keyword 'file'.")
+            return
+        # this feature for telegram bot relies on Jarvis API to function
+        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords.secrets) and \
+                word_match.word_match(phrase=payload['text'], match_list=('list', 'get')):
+            res = others.secrets(phrase=payload['text'])
+            if len(res.split()) == 1:
+                res = "The secret requested can be accessed from '_secure-send_' endpoint using the token below.\n\n" \
+                      "*Note* that the secret cannot be retrieved again using the same token and the token will " \
+                      f"expire in 5 minutes.\n\n{res}"
+                self.send_message(chat_id=payload['from']['id'], response=res)
+            else:
+                self.send_message(chat_id=payload['from']['id'], response=res, parse_mode=None)
             return
         self.jarvis(payload=payload)
 

@@ -153,6 +153,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. Mandatory for `Linux`
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
+- **DISTANCE_UNIT** - Unit in which speed/distance should be measured. Defaults to `miles`
+- **TEMPERATURE_UNIT** - Unit in which temperature should be measured. Defaults to `fahrenheit`
 - **PLOT_MIC** - Boolean value whether to show microphone usage in realtime. Defaults to `True`
 - **LOG_RETENTION** - Number of days to store the logs. Defaults to `10`
 - **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>

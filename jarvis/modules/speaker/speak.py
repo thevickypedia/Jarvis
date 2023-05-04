@@ -107,7 +107,7 @@ class Speaker:
         """Speaks the voice name in all available english voices."""
         for voice in self.get_english_voices():
             self.set_voice(voice_index=voice['index'])
-            logger.info("Speaker voice [%s]: '%s'" % (voice['index'], voice['name']))
+            logger.info("Speaker voice [%s]: '%s'", voice['index'], voice['name'])
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
     def run(self, text: str = None) -> NoReturn:

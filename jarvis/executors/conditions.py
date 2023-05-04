@@ -29,6 +29,7 @@ from jarvis.executors.others import (abusive, apps, facts, flip_a_coin,
                                      notes, photo, repeat, report, version)
 from jarvis.executors.remind import reminder
 from jarvis.executors.robinhood import robinhood
+from jarvis.executors.simulator import simulation
 from jarvis.executors.system import system_info, system_vitals
 from jarvis.executors.todo_list import todo
 from jarvis.executors.tv import television
@@ -50,6 +51,7 @@ from jarvis.modules.models.models import settings
 from jarvis.modules.utils import shared, support
 
 
+# todo: use loop to replace giant condition block
 def conditions(phrase: str, should_return: bool = False) -> bool:
     """Conditions function is used to check the message processed.
 
@@ -233,8 +235,7 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
         version()
 
     elif word_match(phrase=phrase, match_list=keywords.simulation):
-        from jarvis.executors.simulator import run_simulation
-        run_simulation()
+        simulation()
 
     elif word_match(phrase=phrase, match_list=conversation.form):
         speak(text="I am a program, I'm without form.")

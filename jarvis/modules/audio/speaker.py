@@ -132,6 +132,7 @@ def frequently_used(function_name: str) -> NoReturn:
     except Exception as error:  # Commonly raises key error or type error but don't care, log it and remove the file
         logger.error(error)
         logger.warning(data)
-        os.remove(models.fileio.frequent)
+        if os.path.isfile(models.fileio.frequent):
+            os.remove(models.fileio.frequent)
         return
     files.put_frequent(data=data)

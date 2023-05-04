@@ -17,13 +17,14 @@ from pydantic import PositiveInt
 
 from jarvis.api.squire.scheduler import rh_cron_schedule, sm_cron_schedule
 from jarvis.modules.camera.camera import Camera
-from jarvis.modules.crontab.expression import CronExpression
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (CameraError, EgressErrors,
                                        InvalidEnvVars, MissingEnvVars,
                                        SegmentationError)
-from jarvis.modules.models.classes import (Indicators, RecognizerSettings,
-                                           audio_driver, env, fileio, settings,
+from jarvis.modules.models.classes import (DistanceUnits, Indicators,
+                                           RecognizerSettings,
+                                           TemperatureUnits, audio_driver, env,
+                                           fileio, settings,
                                            supported_platforms)
 from jarvis.modules.utils import util
 
@@ -43,6 +44,16 @@ TABLES = {
     "listener": ("state",),
 }
 KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
+
+# If distance is requested in miles, then temperature is brute forced to imperial units
+if env.distance_unit == DistanceUnits.MILES:
+    env.temperature_unit = TemperatureUnits.IMPERIAL
+if env.temperature_unit == TemperatureUnits.IMPERIAL:
+    temperature_symbol = "F"
+elif env.temperature_unit == TemperatureUnits.METRIC:
+    temperature_symbol = "C"
+else:
+    raise InvalidEnvVars  # taken care by pydantic
 
 
 def _set_default_voice_name():
@@ -155,9 +166,10 @@ def _global_validations() -> NoReturn:
         warnings.warn(
             "weather alert cannot function on limited mode"
         )
-    # Validates crontab expression if provided
-    for expression in env.crontab:
-        CronExpression(expression)
+    if env.author_mode and settings.limited:
+        warnings.warn(
+            "'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode."
+        )
 
     # Validate if able to read camera only if a camera env var is set,
     try:
@@ -231,7 +243,3 @@ _global_validations()
 # settings.bot is initiated with "jarvis" but later changed when custom wake words are used
 if settings.bot == "jarvis" and current_process().name == "MainProcess":
     _main_process_validations()
-
-# Needs to be set for all processes but should happen after main process validations are done
-# Because keyword paths are changed for legacy macOS during main process validations
-settings.wake_words = list(pvporcupine.KEYWORD_PATHS.keys())

@@ -697,12 +697,6 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.fast.run_robinhood">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">run_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.run_robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs in a dedicated process during startup, if the file was modified earlier than the past hour.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.fast.start_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
@@ -1288,7 +1282,7 @@ last_value: the last value assigned or None</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>- request</strong> – Takes the Request class as an argument.</p></li>
-<li><p><strong>- input_data</strong> – Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.</p>
+<li><p><strong>- input_data</strong> – Takes the following arguments as an <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code> object.</p>
 <ul>
 <li><p>command: The task which Jarvis has to do.</p></li>
 <li><p>native_audio: Whether the response should be as an audio file with the server’s built-in voice.</p></li>
@@ -1305,19 +1299,30 @@ last_value: the last value assigned or None</p>
 <li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
 </ul>
 </dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Keeps waiting for the record response in the database table offline</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the audio file as a response if audio request is made.</p>
+<dd class="field-odd"><p>Returns the audio file as a response if the output is requested as audio.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>FileResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.api.routers.secure_send">
+<span id="routers-securesend"></span><h1>Routers - SecureSend<a class="headerlink" href="#module-jarvis.api.routers.secure_send" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.secure_send.secure_send_api">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.secure_send.</span></span><span class="sig-name descname"><span class="pre">secure_send_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.secure_send.secure_send_api" title="Permalink to this definition">¶</a></dt>
+<dd><p>API endpoint to share/retrieve secrets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- 200</strong> – For a successful authentication (secret will be returned)</p></li>
+<li><p><strong>- 400</strong> – For a bad request if headers are passed with underscore</p></li>
+<li><p><strong>- 401</strong> – For a failed authentication (if the access token doesn’t match)</p></li>
+<li><p><strong>- 404</strong> – If the <code class="docutils literal notranslate"><span class="pre">secure_send</span></code> mapping file is unavailable</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1667,7 +1672,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.scheduler.rh_cron_schedule">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">rh_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.rh_cron_schedule" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">rh_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.rh_cron_schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">stock_report.py</span></code>. Determines cron schedule based on current timezone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1683,27 +1688,27 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A crontab expression running every 30 minutes during market hours based on the current timezone.</p>
+<dd class="field-odd"><p>Crontab expression object running every 30 minutes during market hours based on the current timezone.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
+<dd class="field-even"><p><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression">CronExpression</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.scheduler.sm_cron_schedule">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">sm_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_weekends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.sm_cron_schedule" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">sm_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_weekends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.sm_cron_schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">stock_monitor.py</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>include_weekends</strong> – Takes a boolean flag to run cron schedule over the weekends.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A crontab expression running every 15 minutes.</p>
+<dd class="field-even"><p>Crontab expression object running every 15 minutes.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression">CronExpression</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1867,38 +1872,25 @@ last_value: the last value assigned or None</p>
 <span id="squire-timeout-otp"></span><h1>Squire - Timeout OTP<a class="headerlink" href="#module-jarvis.api.squire.timeout_otp" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.timeout_otp.reset_robinhood">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_robinhood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets robinhood token after the set time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.timeout_otp.reset_stock_monitor">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_stock_monitor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_stock_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EmailStr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_stock_monitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets stock monitor OTP after the set time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>email_address</strong> – Email address that should be cleared.</p></li>
-<li><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>email_address</strong> – Email address that should be cleared.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.timeout_otp.reset_surveillance">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_surveillance" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.timeout_otp.</span></span><span class="sig-name descname"><span class="pre">reset_surveillance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.timeout_otp.reset_surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets surveillance token after the set time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>after</strong> – Number of seconds after which the token has to be invalidated.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -2294,11 +2286,25 @@ last_value: the last value assigned or None</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response after turning on the vehicle.</p>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>API climate controls (Conversion): 31 is LO, 57 is HOT
+Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>API docs are misleading to believe that the temperature arg is Celsius, but not really.</p></li>
+</ul>
+<p><a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo#59910c25-c107-4335-b178-22e343782b41">https://documenter.getpostman.com/view/6250319/RznBMzqo#59910c25-c107-4335-b178-22e343782b41</a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Response after turning on the vehicle.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2423,11 +2429,6 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>API climate controls: 31 is LO, 57 is HOT
-Car Climate controls: 58 is LO, 84 is HOT</p>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -3043,6 +3044,42 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.files.get_location">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#jarvis.executors.files.get_location" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the location file and returns the location data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_secure_send">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_secure_send</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_secure_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get existing secure string information from the mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of secure send data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.delete_secure_send">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">delete_secure_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.delete_secure_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a particular secure key dictionary stored in the mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – Key in dictionary to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_secure_send">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_secure_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.files.put_secure_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a particular secure key dictionary to the mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Data dict that has to be added.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -3702,8 +3739,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.offline.on_demand_offline_automation">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">on_demand_offline_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.offline.on_demand_offline_automation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.offline.ondemand_offline_automation">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">ondemand_offline_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.offline.ondemand_offline_automation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a <code class="docutils literal notranslate"><span class="pre">POST</span></code> call to offline-communicator to execute a said task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3917,6 +3954,57 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.others.version">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.others.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaks the version information along with the current version on GitHub.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.others.get_aws_secrets">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">get_aws_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.get_aws_secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get secrets from AWS secretsmanager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Get name of the particular secret.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the value of the secret or list of all secrets’ names.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Union[str, Dict[str]], List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.others.get_aws_params">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">get_aws_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.get_aws_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get SSM parameters from AWS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Get name of the particular parameter.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the value of the parameter or list of all parameter names.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.others.secrets">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.others.secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle getting secrets from AWS or local env vars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response to the user.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4171,8 +4259,8 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.simulator.run_simulation">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.simulator.</span></span><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.simulator.run_simulation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.simulator.simulation">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.simulator.</span></span><span class="sig-name descname"><span class="pre">simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.simulator.simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates simulation in a dedicated process logging into a dedicated file.</p>
 </dd></dl>
 
@@ -4488,10 +4576,48 @@ Car Climate controls: 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.weather">
 <span id="weather"></span><h1>Weather<a class="headerlink" href="#module-jarvis.executors.weather" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.weather.make_request">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PreparedRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.weather.make_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get weather information from OpenWeatherMap API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Prepared request with URL and query params wrapped.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON response from api.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.weather.weather_responder">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather_responder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">make_request</span></span></span><a class="headerlink" href="#jarvis.executors.weather.weather_responder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get weather information via api call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>coordinates</strong> – GEO coordinates to prepare query params.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the response from ‘make_request’</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>‘make_request’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.weather.weather">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.weather.weather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Says weather at any location if a specific location is mentioned.</p>
 <p>Says weather at current location by getting IP using reverse geocoding if no place is received.</p>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.weather.gov/mlb/seasonal_wind_threat">https://www.weather.gov/mlb/seasonal_wind_threat</a></p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -6406,6 +6532,16 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.distance_unit">
+<span class="sig-name descname"><span class="pre">distance_unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DistanceUnits</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.distance_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.temperature_unit">
+<span class="sig-name descname"><span class="pre">temperature_unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TemperatureUnits</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.temperature_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.home">
 <span class="sig-name descname"><span class="pre">home</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.home" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6762,7 +6898,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.crontab">
-<span class="sig-name descname"><span class="pre">crontab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.crontab" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">crontab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.crontab" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6960,6 +7096,11 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.speech_synthesis_id">
 <span class="sig-name descname"><span class="pre">speech_synthesis_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.speech_synthesis_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.secure_send">
+<span class="sig-name descname"><span class="pre">secure_send</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.secure_send" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8513,6 +8654,12 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.util.miles_to_kms">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">miles_to_kms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">miles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.miles_to_kms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes miles as an argument and returns it in kilometers.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.utils.util.kms_to_miles">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">kms_to_miles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.kms_to_miles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes kilometers as an argument and returns it in miles.</p>
@@ -8999,7 +9146,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.reply_to">
-<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.reply_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -9007,6 +9154,7 @@ last_value: the last value assigned or None</p>
 <li><p><strong>payload</strong> – Payload received, to extract information from.</p></li>
 <li><p><strong>response</strong> – Message to be sent to the user.</p></li>
 <li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+<li><p><strong>retry</strong> – Retry reply in case reply failed because of parsing.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -9020,7 +9168,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.bot.TelegramBot.send_message">
-<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'markdown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#jarvis.modules.telegram.bot.TelegramBot.send_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a payload to reply to a message received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -9028,6 +9176,7 @@ last_value: the last value assigned or None</p>
 <li><p><strong>chat_id</strong> – Chat ID.</p></li>
 <li><p><strong>response</strong> – Message to be sent to the user.</p></li>
 <li><p><strong>parse_mode</strong> – Parse mode. Defaults to <code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+<li><p><strong>retry</strong> – Retry reply in case reply failed because of parsing.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -9145,6 +9294,16 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><p><strong>payload</strong> – Payload received, to extract information from.</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">Requesting files and secrets are considered as special requests, so they cannot be combined with</div>
+<div class="line">other requests using ‘and’ or ‘also’</div>
+</div>
+</li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -10038,6 +10197,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.helper">Routers - Helper</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.offline">Routers - Offline</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.speech_synthesis">Routers - SpeechSynthesis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_monitor">Routers - StockMonitor</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.surveillance">Routers - Surveillance</a></li>

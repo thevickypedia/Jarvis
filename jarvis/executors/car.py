@@ -20,7 +20,6 @@ from jarvis.modules.car import connector, controller
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import classes, models
-from jarvis.modules.temperature import temperature
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
@@ -44,7 +43,7 @@ def create_connection() -> NoReturn:
                                        auth_expiry=time.time() + 86_400)
     try:
         connection.connect()
-    except requests.HTTPError as error:
+    except requests.RequestException as error:
         logger.error(error)
         connection.head = None
     if connection.head:
@@ -58,10 +57,12 @@ def create_connection() -> NoReturn:
             CONNECTION.vin = vin[0]
 
 
-pname = current_process().name
-if pname in ('MainProcess', 'telegram_api', 'fast_api'):  # Initiate connection only for main and offline communicators
-    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]) and create_connection():
-        logger.info("Created a new vehicle authorization connection for '%s'", pname)
+# Initiate connection only for main and offline communicators
+# WATCH OUT: for changes in function name
+if current_process().name in ('MainProcess', 'telegram_api', 'fast_api'):
+    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+        logger.info("Creating a new vehicle authorization connection for '%s'", current_process().name)
+        Thread(target=create_connection).start()
 
 
 def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[int, str], int]:
@@ -72,10 +73,10 @@ def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[in
         A tuple of current temperature and target temperature.
     """
     try:
-        current_temp = int(temperature.k2f(arg=json.loads(urllib.request.urlopen(
+        current_temp = int(json.loads(urllib.request.urlopen(
             url=f"https://api.openweathermap.org/data/2.5/onecall?lat={latitude}&"
-                f"lon={longitude}&exclude=minutely,hourly&appid={models.env.weather_api}"
-        ).read())['current']['temp']))
+                f"lon={longitude}&exclude=minutely,hourly&appid={models.env.weather_api}&units=imperial"
+        ).read())['current']['temp'])
     except (urllib.error.HTTPError, urllib.error.URLError) as error:
         logger.error(error)
         return "unknown", 66
@@ -101,6 +102,15 @@ class Operations:
 
         Args:
             phrase: Takes the phrase spoken as an argument.
+
+        See Also:
+            API climate controls (Conversion): 31 is LO, 57 is HOT
+            Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT
+
+        Warnings:
+            - API docs are misleading to believe that the temperature arg is Celsius, but not really.
+
+            https://documenter.getpostman.com/view/6250319/RznBMzqo#59910c25-c107-4335-b178-22e343782b41
 
         Returns:
             str:
@@ -249,10 +259,6 @@ def car(phrase: str) -> None:
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-
-    See Also:
-        API climate controls: 31 is LO, 57 is HOT
-        Car Climate controls: 58 is LO, 84 is HOT
     """
     if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
         phrase = phrase.lower()
@@ -345,14 +351,17 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
                 overall_status['status'][dict_['key']] = dict_['value']
             if dict_.get('key', '') == "ENGINE_COOLANT_TEMP":
                 overall_status['status'][dict_['key']] = f"{dict_['value']}\N{DEGREE SIGN}F"
-            if dict_.get('key', '') == "ODOMETER_MILES":
-                overall_status['status'][dict_['key']] = f"{int(dict_['value']):02,} miles"
+            if dict_.get('key', '') == f"ODOMETER_{models.env.distance_unit.upper()}":
+                overall_status['status'][dict_['key']] = f"{int(dict_['value']):02,} {models.env.distance_unit}"
             if dict_.get('key', '') == "FUEL_LEVEL_PERC":
                 overall_status['status'][dict_['key']] = dict_['value'] + '%'
             if dict_.get('key', '') == "BATTERY_VOLTAGE":
                 overall_status['status'][dict_['key']] = dict_['value'] + 'v'
             if dict_.get('key', '') == "DISTANCE_TO_EMPTY_FUEL":
-                overall_status['status'][dict_['key']] = f"{int(util.kms_to_miles(float(dict_['value']))):02,} miles"
+                distance_to_empty_fuel = float(dict_['value'])
+                if models.env.distance_unit == models.DistanceUnits.MILES:  # Convert to miles if custom unit is set
+                    distance_to_empty_fuel = util.kms_to_miles(float(dict_['value']))
+                overall_status['status'][dict_['key']] = f"{int(distance_to_empty_fuel):02,} {models.env.distance_unit}"
             if dict_.get('key', '') in ["TYRE_PRESSURE_FRONT_LEFT", "TYRE_PRESSURE_FRONT_RIGHT",
                                         "TYRE_PRESSURE_REAR_LEFT", "TYRE_PRESSURE_REAR_RIGHT"]:
                 overall_status['status'][dict_['key']] = f"{round(int(dict_['value']) * 14.696 / 100)} psi"
@@ -379,7 +388,7 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
                f"{attributes.get('modelYear', '')}"
     mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     response = mail_obj.send_email(subject=f"{car_name} Report - {datetime.now().strftime('%c')}",
-                                   sender="Jarvis", html_body=rendered)
+                                   sender="Jarvis", html_body=rendered, recipient=models.env.recipient)
     if response.ok:
         logger.info("Report has been sent via email.")
         return f"Vehicle report has been sent via email {models.env.title}!"
@@ -491,4 +500,4 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
                 control and retry:
             return vehicle(operation="SECURE_EXIST", retry=False)
         logger.error(error)
-        logger.error("Failed to connect while performing %s" % operation)
+        logger.error("Failed to connect while performing %s", operation)

@@ -14,7 +14,7 @@ from jarvis.api.modals.models import (OfflineCommunicatorModal,
                                       SpeechSynthesisModal)
 from jarvis.api.routers import speech_synthesis
 from jarvis.api.squire.logger import logger
-from jarvis.executors import commander, offline, word_match
+from jarvis.executors import commander, offline, others, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -72,7 +72,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     Args:
 
         - request: Takes the Request class as an argument.
-        - input_data: Takes the following arguments as OfflineCommunicatorModal class instead of a QueryString.
+        - input_data: Takes the following arguments as an ``OfflineCommunicatorModal`` object.
 
             - command: The task which Jarvis has to do.
             - native_audio: Whether the response should be as an audio file with the server's built-in voice.
@@ -85,19 +85,15 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         - 204: If empty command was received.
         - 422: If the request is not part of offline compatible words.
 
-    See Also:
-
-        - Keeps waiting for the record response in the database table offline
-
     Returns:
 
         FileResponse:
-        Returns the audio file as a response if audio request is made.
+        Returns the audio file as a response if the output is requested as audio.
     """
-    logger.debug("Connection received from %s via %s using %s" %
-                 (request.client.host, request.headers.get('host'), request.headers.get('user-agent')))
+    logger.debug("Connection received from %s via %s using %s",
+                 request.client.host, request.headers.get('host'), request.headers.get('user-agent'))
     if not (command := input_data.command.strip()):
-        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
+        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase)
 
     logger.info("Request: %s", command)
     if 'alarm' in command.lower() or 'remind' in command.lower():
@@ -113,6 +109,15 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         Thread(target=kill_power).start()
         return await process_ok_response(response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
                                          input_data=input_data)
+
+    if word_match.word_match(phrase=command, match_list=keywords.keywords.secrets) and \
+            word_match.word_match(phrase=command, match_list=('list', 'get')):
+        response = others.secrets(phrase=command)
+        if len(response.split()) == 1:
+            response = "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n" \
+                       "Note that the secret cannot be retrieved again using the same token and the token will " \
+                       f"expire in 5 minutes.\n\n{response}"
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
     # Keywords for which the ' and ' split should not happen.
     ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \

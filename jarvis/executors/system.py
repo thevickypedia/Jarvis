@@ -137,7 +137,7 @@ def get_distributor_info_linux() -> Dict[str, str]:
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
-            logger.error("[%d]: %s" % (error.returncode, result))
+            logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)
         return {}

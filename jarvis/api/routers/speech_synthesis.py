@@ -78,7 +78,7 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
     if not (text := input_data.text.strip()):
         logger.error('Empty requests cannot be processed.')
         if raise_for_status:
-            raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.__dict__['phrase'])
+            raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase)
         else:
             return
     if not speaker.speech_synthesizer(text=text, timeout=input_data.timeout or len(text), quality=input_data.quality,
@@ -86,7 +86,7 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
         logger.error("Speech synthesis could not process the request.")
         if raise_for_status:
             raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real,
-                              detail=HTTPStatus.INTERNAL_SERVER_ERROR.__dict__['phrase'])
+                              detail=HTTPStatus.INTERNAL_SERVER_ERROR.phrase)
         else:
             return
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
@@ -97,4 +97,4 @@ async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: b
                             filename="synthesized.wav", status_code=HTTPStatus.OK.real)
     logger.error("File Not Found: %s", models.fileio.speech_synthesis_wav)
     if raise_for_status:
-        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.__dict__['phrase'])
+        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)
