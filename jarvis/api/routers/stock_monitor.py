@@ -2,7 +2,7 @@ import secrets
 import string
 from datetime import datetime
 from http import HTTPStatus
-from threading import Thread
+from threading import Timer
 from typing import Optional
 
 import gmailconnector
@@ -52,7 +52,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
         logger.debug(mail_stat.body)
         logger.info("Token will be reset in %s." %
                     support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
-        Thread(target=timeout_otp.reset_stock_monitor, args=(email_address, reset_timeout)).start()
+        Timer(function=timeout_otp.reset_stock_monitor, args=(email_address,), interval=reset_timeout).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
     else:
@@ -106,7 +106,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     if input_data.request not in ("GET", "PUT", "DELETE"):
         logger.warning("'%s' is not in the allowed request list.", input_data.request)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=HTTPStatus.UNPROCESSABLE_ENTITY.__dict__['phrase'])
+                          detail=HTTPStatus.UNPROCESSABLE_ENTITY.phrase)
 
     # apikey from user and env vars are present and it is allowed
     apikey = apikey or request.headers.get('apikey')
@@ -116,11 +116,11 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         logger.info("%s has been verified using apikey", input_data.email)
     elif apikey and models.env.stock_monitor_api.get(input_data.email):  # both vars are present but don't match
         logger.info("%s sent an invalid API key", input_data.email)
-        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.__dict__['phrase'])
+        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
     else:  # If apikey auth fails or unsupported
         sent_dict = stock_monitor_helper.otp_sent
         recd_dict = stock_monitor_helper.otp_recd
-        email_otp = email_otp or request.headers.get('email_otp')
+        email_otp = email_otp or request.headers.get('email-otp')  # variable will be _ but headers should always be `-`
         if email_otp:
             recd_dict[input_data.email] = email_otp
         if secrets.compare_digest(recd_dict.get(input_data.email, 'DO_NOT'), sent_dict.get(input_data.email, 'MATCH')):

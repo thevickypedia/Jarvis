@@ -36,19 +36,23 @@ def alpha(text: str) -> bool:
     alpha_client = wolframalpha.Client(app_id=models.env.wolfram_api)
     try:
         res = alpha_client.query(text)
-    except Exception:  # noqa
+    except Exception as error:
+        logger.warning(error)
         return False
     if res['@success'] == 'false':
+        logger.warning(res)
         return False
     else:
         try:
             response = next(res.results).text.splitlines()[0]
             response = re.sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
             if response == '(no data available)':
+                logger.warning(response)
                 return False
             speaker.speak(text=response)
             return True
-        except (StopIteration, AttributeError):
+        except (StopIteration, AttributeError) as error:
+            logger.warning(error)
             return False
 
 
@@ -73,26 +77,28 @@ def google_maps(query: str) -> bool:
     except EgressErrors as error:
         logger.error(error)
         return False
-    collection = response.json()['results']
+    collection = response.json().get('results', [])
     required = []
-    for element in range(len(collection)):
+    for data in collection:
         try:
             required.append({
-                "Name": collection[element]['name'],
-                "Rating": collection[element]['rating'],
-                "Location": collection[element]['geometry']['location'],
+                "Name": data['name'],
+                "Rating": data['rating'],
+                "Location": data['geometry']['location'],
                 "Address": re.search('(.*)Rd|(.*)Ave|(.*)St |(.*)St,|(.*)Blvd|(.*)Ct',
-                                     collection[element]['formatted_address']).group().replace(',', '')
+                                     data['formatted_address']).group().replace(',', '')
             })
-        except (AttributeError, KeyError):
-            pass
+        except (AttributeError, KeyError) as error:
+            logger.warning(error)
     if required:
         required = sorted(required, key=lambda sort: sort['Rating'], reverse=True)
     else:
+        logger.warning("No results were found")
         return False
 
     current_location = files.get_location()
     if not all((current_location.get('latitude'), current_location.get('longitude'))):
+        logger.warning("Coordinates are missing")
         return False
     results = len(required)
     speaker.speak(text=f"I found {results} results {models.env.title}!") if results != 1 else None
@@ -104,8 +110,11 @@ def google_maps(query: str) -> bool:
             .replace(' Blvd', ' Boulevard').replace(' Ct', ' Court')
         latitude, longitude = item['Location']['lat'], item['Location']['lng']
         end = f"{latitude},{longitude}"
-        far = round(geodesic(start, end).miles)
-        miles = f'{far} miles' if far > 1 else f'{far} mile'
+        if models.env.distance_unit == models.DistanceUnits.MILES:
+            far = round(geodesic(start, end).miles)
+        else:
+            far = round(geodesic(start, end).kilometers)
+        dist = f"{far} {models.env.distance_unit}" if far > 1 else f"{far} {models.env.distance_unit.rstrip('s')}"
         n += 1
         if results == 1:
             option = 'only option I found is'
@@ -121,7 +130,7 @@ def google_maps(query: str) -> bool:
             next_val = 'How about that?'
         speaker.speak(text=f"The {option}, {item['Name']}, with {item['Rating']} rating, "
                            f"on{''.join([j for j in item['Address'] if not j.isdigit()])}, which is approximately "
-                           f"{miles} away. {next_val}", run=True)
+                           f"{dist} away. {next_val}", run=True)
         util.write_screen(text=f"{item['Name']} -- {item['Rating']} -- "
                                f"{''.join([j for j in item['Address'] if not j.isdigit()])}")
         if converted := listener.listen():

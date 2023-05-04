@@ -47,10 +47,11 @@ def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
     if not response.ok:
         logger.debug("Response: %d", response.status_code)
         response.raise_for_status()
+    # not all functions return a JSON response and I don't have an EV to test which does and which doesn't so ¯\_(ツ)_/¯
     try:
         return response.json()
     except json.JSONDecodeError as error:
-        logger.warning(error)
+        logger.debug(error)
 
 
 class Connect:

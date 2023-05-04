@@ -82,7 +82,10 @@ class Activator:
 
         self.detector = pvporcupine.create(**arguments)
         self.audio_stream = self.open_stream()
-        self.label = f"Awaiting: [{label}]"
+        if models.settings.limited:
+            self.label = f"Awaiting: [{label}] - Limited Mode"
+        else:
+            self.label = f"Awaiting: [{label}]"
 
     def open_stream(self) -> pyaudio.Stream:
         """Initializes an audio stream.

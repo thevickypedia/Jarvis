@@ -74,9 +74,7 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
                       run=True)
         return
     lookup = str(target_device).split(":")[0].strip()
-    if not location:
-        speaker.speak(text=f"I wasn't able to locate your {lookup} {models.env.title}! It is probably offline.")
-    else:
+    if device_location:
         if shared.called_by_offline:
             post_code = device_location.get("postcode", "").split("-")[0]
         else:
@@ -90,6 +88,8 @@ def locate_device(target_device: AppleDevice) -> NoReturn:
         phone_name = stat["name"]
         speaker.speak(text=f"{iphone_location}. Some more details. {bat_percent} Name: {phone_name}, "
                            f"Model: {device_model}")
+    else:
+        speaker.speak(text=f"I wasn't able to locate your {lookup} {models.env.title}! It is probably offline.")
 
 
 def locate(phrase: str) -> None:

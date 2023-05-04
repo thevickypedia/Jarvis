@@ -2,6 +2,7 @@ import os
 import shutil
 
 from jarvis.api import triggers
+from jarvis.modules.crontab.expression import CronExpression
 from jarvis.modules.utils import util
 
 
@@ -32,7 +33,7 @@ class MarketHours:
     }
 
 
-def rh_cron_schedule(extended: bool = False) -> str:
+def rh_cron_schedule(extended: bool = False) -> CronExpression:
     """Creates a cron expression for ``stock_report.py``. Determines cron schedule based on current timezone.
 
     Args:
@@ -43,8 +44,8 @@ def rh_cron_schedule(extended: bool = False) -> str:
         - default(regular): Regular market hours.
 
     Returns:
-        str:
-        A crontab expression running every 30 minutes during market hours based on the current timezone.
+        CronExpression:
+        Crontab expression object running every 30 minutes during market hours based on the current timezone.
     """
     job = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_report.py')}"
     tz = util.get_timezone()
@@ -52,20 +53,20 @@ def rh_cron_schedule(extended: bool = False) -> str:
         tz = 'OTHER'
     start = MarketHours.hours['EXTENDED'][tz]['OPEN'] if extended else MarketHours.hours['REGULAR'][tz]['OPEN']
     end = MarketHours.hours['EXTENDED'][tz]['CLOSE'] if extended else MarketHours.hours['REGULAR'][tz]['CLOSE']
-    return f"*/30 {start}-{end} * * 1-5 {job}"
+    return CronExpression(f"*/30 {start}-{end} * * 1-5 {job}")
 
 
-def sm_cron_schedule(include_weekends: bool = True) -> str:
+def sm_cron_schedule(include_weekends: bool = True) -> CronExpression:
     """Creates a cron expression for ``stock_monitor.py``.
 
     Args:
         include_weekends: Takes a boolean flag to run cron schedule over the weekends.
 
     Returns:
-        str:
-        A crontab expression running every 15 minutes.
+        CronExpression:
+        Crontab expression object running every 15 minutes.
     """
     job = f"cd {os.getcwd()} && {shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_monitor.py')}"
     if include_weekends:
-        return f"*/15 * * * * {job}"
-    return f"*/15 * * * 1-5 {job}"
+        return CronExpression(f"*/15 * * * * {job}")
+    return CronExpression(f"*/15 * * * 1-5 {job}")

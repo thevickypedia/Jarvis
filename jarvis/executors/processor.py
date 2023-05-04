@@ -121,16 +121,13 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         fast_api.__name__: Process(target=fast_api),
         background_tasks.__name__: Process(target=background_tasks)
     }
-    if models.env.plot_mic and models.settings.os == models.supported_platforms.linux:
-        # Function cannot be called directly using a child process when microphone is already being called for Linux
+    if models.env.plot_mic:
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
         process_dict[graph_mic.plot_mic.__name__] = Process(
             target=crontab_executor,
             kwargs={'statement': statement,
                     'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))}
         )
-    elif models.env.plot_mic:
-        process_dict[graph_mic.plot_mic.__name__] = Process(target=graph_mic.plot_mic)
     if models.env.author_mode:
         process_dict[tunneling.__name__] = Process(target=tunneling)
     if all((models.env.wifi_ssid, models.env.wifi_password)):
@@ -160,9 +157,9 @@ def stop_child_processes() -> NoReturn:
                 proc = psutil.Process(pid=pid)
             except psutil.NoSuchProcess:
                 # Occurs commonly since child processes run only for a short time and `INSERT OR REPLACE` leaves dupes
-                logger.debug("Process [%s] PID not found %d" % (category, pid))
+                logger.debug("Process [%s] PID not found %d", category, pid)
                 continue
-            logger.info("Stopping process [%s] with PID: %d" % (category, pid))
+            logger.info("Stopping process [%s] with PID: %d", category, pid)
             support.stop_process(pid=proc.pid)
 
 
@@ -172,5 +169,5 @@ def stop_processes(func_name: str = None) -> NoReturn:
     for func, process in shared.processes.items():
         if func_name and func_name != func:
             continue
-        logger.info("Stopping process [%s] with PID: %d" % (func, process.pid))
+        logger.info("Stopping process [%s] with PID: %d", func, process.pid)
         support.stop_process(pid=process.pid)

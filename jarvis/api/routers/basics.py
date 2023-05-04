@@ -30,7 +30,7 @@ async def health():
 
         - 200: For a successful health check.
     """
-    raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.__dict__['phrase'])
+    raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.phrase)
 
 
 @router.get(path="/favicon.ico", include_in_schema=False)

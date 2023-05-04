@@ -78,7 +78,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
         logger.critical(mail_res.json())
 
 
-def run_simulation() -> NoReturn:
+def simulation(*args) -> NoReturn:
     """Initiates simulation in a dedicated process logging into a dedicated file."""
     simulation_data = get_simulation_data()
     if not simulation_data:

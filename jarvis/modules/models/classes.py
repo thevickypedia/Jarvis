@@ -30,13 +30,14 @@ from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       validator)
 
 from jarvis import indicators, scripts
+from jarvis.modules.crontab.expression import CronExpression
 from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
                                        UnsupportedOS)
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
 module: Dict[str, pyttsx3.Engine] = {}
 if not os.environ.get('AWS_DEFAULT_REGION'):
-    os.environ['AWS_DEFAULT_REGION'] = 'us-west-2'  # Required when vpn-server is imported
+    os.environ['AWS_DEFAULT_REGION'] = 'us-east-2'  # Required when vpn-server is imported
 
 
 class SupportedPlatforms(str, Enum):
@@ -180,6 +181,28 @@ class RecognizerSettings(BaseModel):
     non_speaking_duration: Union[PositiveInt, float] = 2
 
 
+class TemperatureUnits(str, Enum):
+    """Types of temperature units supported by Jarvis.
+
+    >>> TemperatureUnits
+
+    """
+
+    METRIC: str = 'metric'
+    IMPERIAL: str = 'imperial'
+
+
+class DistanceUnits(str, Enum):
+    """Types of distance units supported by Jarvis.
+
+    >>> DistanceUnits
+
+    """
+
+    MILES: str = 'miles'
+    KILOMETER: str = 'kilometers'
+
+
 class EventApp(str, Enum):
     """Types of event applications supported by Jarvis.
 
@@ -262,6 +285,10 @@ class EnvConfig(BaseSettings):
     >>> EnvConfig
 
     """
+
+    # Custom units
+    distance_unit: DistanceUnits = Field(default=DistanceUnits.MILES, env='DISTANCE_UNIT')
+    temperature_unit: TemperatureUnits = Field(default=TemperatureUnits.IMPERIAL, env='TEMPERATURE_UNIT')
 
     # System config
     home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
@@ -379,7 +406,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: PositiveInt = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    crontab: List[str] = Field(default=[], env='CRONTAB')
+    crontab: List[CronExpression] = Field(default=[], env='CRONTAB')
     weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')  # get as str and store as datetime
 
     # WiFi config
@@ -502,6 +529,9 @@ class FileIO(BaseModel):
     # Store log file name in a variable as it is used in multiple modules with file IO
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
     speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join('fileio', 'speech_synthesis_%d-%m-%Y.cid'))
+
+    # Secure Send
+    secure_send: FilePath = os.path.join('fileio', 'secure_send.yaml')
 
 
 fileio = FileIO()

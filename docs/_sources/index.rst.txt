@@ -168,6 +168,13 @@ Routers - Offline
    :members:
    :undoc-members:
 
+Routers - SecureSend
+====================
+
+.. automodule:: jarvis.api.routers.secure_send
+   :members:
+   :undoc-members:
+
 Routers - SpeechSynthesis
 =========================
 

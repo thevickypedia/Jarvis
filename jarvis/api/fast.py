@@ -1,7 +1,5 @@
-import os
 import time
-from datetime import datetime
-from multiprocessing import Process, current_process
+from multiprocessing import current_process
 from threading import Thread
 from typing import Any, NoReturn
 
@@ -13,7 +11,6 @@ from jarvis._preexec import keywords_handler  # noqa
 from jarvis.api import routers
 from jarvis.api.squire import discover, stockmonitor_squire
 from jarvis.api.squire.logger import logger
-from jarvis.api.triggers.stock_report import Investment
 from jarvis.modules.models import models
 
 # Initiate API
@@ -40,11 +37,13 @@ def enable_cors() -> NoReturn:
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["GET", "POST"],
-        allow_headers=["host", "user-agent", "authorization", "email_otp", "apikey"],
+        allow_headers=["authorization", "access_token", "apikey", "email-otp",
+                       "host", "user-agent"],
     )
 
 
 # Include all the routers
+# WATCH OUT: for changes in function name
 if current_process().name == "fast_api":  # Avoid looping when called by subprocesses
     enable_cors()
     for route in discover.routes(routers=routers.__path__[0]):
@@ -63,17 +62,6 @@ def update_keywords(buffer: int = 10) -> NoReturn:
         time.sleep(buffer)
 
 
-def run_robinhood() -> NoReturn:
-    """Runs in a dedicated process during startup, if the file was modified earlier than the past hour."""
-    if os.path.isfile(models.fileio.robinhood):
-        modified = int(os.stat(models.fileio.robinhood).st_mtime)
-        logger.info("%s was generated on %s.", models.fileio.robinhood, datetime.fromtimestamp(modified).strftime('%c'))
-        if int(time.time()) - modified < 3_600:  # generates new file only if the file is older than an hour
-            return
-    logger.info('Initiated robinhood gatherer.')
-    Investment(logger=logger).report_gatherer()
-
-
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
@@ -81,5 +69,3 @@ async def start_robinhood() -> Any:
     Thread(target=update_keywords).start()
     if models.env.author_mode:
         stockmonitor_squire.nasdaq()
-        if all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass]):
-            Process(target=run_robinhood).start()

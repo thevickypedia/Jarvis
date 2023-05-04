@@ -86,7 +86,7 @@ class ThreadExecutor:
         for future in as_completed(futures):
             if future.exception():
                 thread_except += 1
-                logger.error("Thread processing for '%s' received an exception: %s" % (iterator, future.exception()))
+                logger.error("Thread processing for '%s' received an exception: %s", iterator, future.exception())
         return thread_except
 
     def avail_check(self, function_to_call: Callable) -> NoReturn:
@@ -160,7 +160,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     host_names = util.matrix_to_flat_list(input_=host_names)
     host_names = list(filter(None, host_names))  # remove None values
     if light_location and not host_names:
-        logger.warning("No hostname values found for %s in %s" % (light_location, models.fileio.smart_devices))
+        logger.warning("No hostname values found for %s in %s", light_location, models.fileio.smart_devices)
         speaker.speak(text=f"I'm sorry {models.env.title}! You haven't mentioned the host names of {light_location!r} "
                            "lights.")
         return

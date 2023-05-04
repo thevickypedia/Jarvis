@@ -1,6 +1,23 @@
 Release Notes
 =============
 
+7.3.5 (05/04/2023)
+------------------
+- Create a feature to send env vars/secrets securely
+- Create a retry logic in TelegramAPI for parsing errors
+- Kick off all cron jobs during startup
+- Fix a bug in location request failing for offline process
+- Support different units for temperature and distance
+- Add *args to functions associated to conditions
+- Avoid converting to dict for APIResponse
+- Convert Thread to Timer for reset OTPs
+- Remove revaluation of CronExpression
+- Change headers to use hyphen instead of underscore
+- Add more logging towards unrecognized models
+- Add todos for next release
+- Update .gitignore and docs
+- Release alpha version
+
 7.3.4 (04/26/2023)
 ------------------
 - Run `py3-tts` test on current python `bin`

@@ -42,6 +42,11 @@ def get_timezone() -> str:
     return datetime.utcnow().astimezone().tzname()
 
 
+def miles_to_kms(miles: Union[int, float]) -> float:
+    """Takes miles as an argument and returns it in kilometers."""
+    return round(miles / 0.621371, 2)
+
+
 def kms_to_miles(kms: Union[int, float]) -> float:
     """Takes kilometers as an argument and returns it in miles."""
     return round(kms * 0.621371, 2)

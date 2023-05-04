@@ -164,13 +164,16 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
     if not all(isinstance(v, float) for v in start) or not all(isinstance(v, float) for v in end):
         speaker.speak(text=f"I don't think {destination} exists {models.env.title}!")
         return
-    miles = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
+    if models.env.distance_unit == models.DistanceUnits.MILES:
+        dist = round(geodesic(start, end).miles)  # calculates miles from starting point to destination
+    else:
+        dist = round(geodesic(start, end).kilometers)
     if shared.called["directions"]:
         # calculates drive time using d = s/t and distance calculation is only if location is same country
         shared.called["directions"] = False
         avg_speed = 60
-        t_taken = miles / avg_speed
-        if miles < avg_speed:
+        t_taken = dist / avg_speed
+        if dist < avg_speed:
             drive_time = int(t_taken * 60)
             speaker.speak(text=f"It might take you about {drive_time} minutes to get there {models.env.title}!")
         else:
@@ -180,12 +183,12 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
             else:
                 speaker.speak(text=f"It might take you about {drive_time} hours to get there {models.env.title}!")
     elif start_check:
-        text = f"{models.env.title}! You're {miles} miles away from {destination}. "
+        text = f"{models.env.title}! You're {dist} {models.env.distance_unit} away from {destination}. "
         if not shared.called["locate_places"]:
             text += f"You may also ask where is {destination}"
         speaker.speak(text=text)
     else:
-        speaker.speak(text=f"{origin} is {miles} miles away from {destination}.")
+        speaker.speak(text=f"{origin} is {dist} {models.env.distance_unit} away from {destination}.")
     return
 
 

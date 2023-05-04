@@ -47,6 +47,7 @@ ffmpeg
 hidden
 temp_*.py
 temp_*.sh
+temp_*/
 
 # pypi package files
 dist
