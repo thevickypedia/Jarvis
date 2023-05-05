@@ -73,3 +73,8 @@ def about_me(*args) -> NoReturn:
     speak(text=f"I am {settings.bot}. A virtual assistant designed by Mr.Raauv. "
                "I'm just a pre-programmed virtual assistant, trying to become a natural language UI. "
                "I can seamlessly take care of your daily tasks, and also help with most of your work!")
+
+
+def not_allowed_offline() -> NoReturn:
+    """Response for tasks not supported via offline communicator."""
+    speak(text="That's not supported via offline communicator.")

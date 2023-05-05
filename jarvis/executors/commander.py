@@ -11,7 +11,6 @@ from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support, util
 
 
@@ -74,8 +73,7 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if word_match.word_match(phrase=phrase, match_list=compatibles.offline_compatible()) and \
-            not word_match.word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
+    if not word_match.word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
             not word_match.word_match(phrase=phrase, match_list=keywords.keywords.reminder):
         split_ = phrase.split('after')
         if task := split_[0].strip():

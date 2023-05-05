@@ -22,7 +22,6 @@ from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, models
-from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
@@ -33,7 +32,6 @@ def background_tasks() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
-    offline_list = compatibles.offline_compatible() + keywords.keywords.restart_control
     meeting_muter = []
     if models.settings.os == models.supported_platforms.macOS:
         events.event_app_launcher()
@@ -77,7 +75,7 @@ def background_tasks() -> NoReturn:
 
         # Trigger automation
         if os.path.isfile(models.fileio.automation):
-            if exec_task := automation.auto_helper(offline_list=offline_list):
+            if exec_task := automation.auto_helper():
                 # Check and trigger monitor only if it wasn't run previously, avoid duplicate check within a minute
                 if "weather" in exec_task.lower() and w_alert['time'] != now.strftime('%H:%M'):
                     # run as daemon and not store in children table as this won't take long

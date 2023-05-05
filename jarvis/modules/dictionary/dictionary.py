@@ -9,7 +9,7 @@ import re
 from typing import Dict, Union
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet
 
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
@@ -31,11 +31,16 @@ def meaning(term: str) -> Union[Dict, None]:
         logger.error(error)
         return
     if not response.ok:
-        logger.error('Failed to get the meaning')
+        logger.error("Failed to get meaning for '%s'", term)
         return
     html = BeautifulSoup(response.text, "html.parser")
-    types = html.findAll("h3")
-    lists = html.findAll("ul")
+    types: ResultSet = html.findAll("h3")
+    lists: ResultSet = html.findAll("ul")
+    if not lists:
+        if types:
+            logger.error(types[0].text)
+        logger.error("Failed to get meaning for '%s'", term)
+        return
     out = {}
     for a in types:
         reg = str(lists[types.index(a)])

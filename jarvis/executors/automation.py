@@ -7,7 +7,6 @@ from typing import NoReturn, Union
 import yaml
 from deepdiff import DeepDiff
 
-from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -55,11 +54,8 @@ def rewrite_automator(write_data: dict) -> NoReturn:
         yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
 
 
-def auto_helper(offline_list: list) -> Union[str, None]:
+def auto_helper() -> Union[str, None]:
     """Runs in a thread to help the automator function in the main module.
-
-    Args:
-        offline_list: List of offline compatible keywords.
 
     Returns:
         str:
@@ -80,9 +76,8 @@ def auto_helper(offline_list: list) -> Union[str, None]:
         return
 
     for automation_time, automation_info in automation_data.items():
-        if not (exec_task := automation_info.get("task")) or \
-                not word_match.word_match(phrase=exec_task, match_list=offline_list):
-            logger.error("Following entry doesn't have a task or the task is not a part of offline compatible.")
+        if not (exec_task := automation_info.get("task")):
+            logger.error("Following entry doesn't have a task.")
             logger.error("%s - %s", automation_time, automation_info)
             automation_data.pop(automation_time)
             rewrite_automator(write_data=automation_data)

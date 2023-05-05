@@ -20,7 +20,6 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
-from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import support
 
 router = APIRouter()
@@ -83,7 +82,6 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         APIResponse:
         - 200: A dictionary with the command requested and the response for it from Jarvis.
         - 204: If empty command was received.
-        - 422: If the request is not part of offline compatible words.
 
     Returns:
 
@@ -125,25 +123,14 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
     if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
         and_response = ""
         for each in command.split(' and '):
-            if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
-                logger.warning("'%s' is not a part of offline compatible request.", each)
-                and_response += f'{each!r} is not a part of off-line communicator compatible request.\n\n' \
-                                'Please try an instruction that does not require an user interaction.'
-            else:
-                try:
-                    and_response += f"{offline.offline_communicator(command=each)}\n"
-                except Exception as error:
-                    logger.error(error)
-                    logger.error(traceback.format_exc())
-                    and_response += error.__str__()
+            try:
+                and_response += f"{offline.offline_communicator(command=each)}\n"
+            except Exception as error:
+                logger.error(error)
+                logger.error(traceback.format_exc())
+                and_response += error.__str__()
         logger.info("Response: %s", and_response.strip())
         return await process_ok_response(response=and_response, input_data=input_data)
-
-    if not word_match.word_match(phrase=command, match_list=compatibles.offline_compatible()):
-        logger.warning("'%s' is not a part of offline compatible request.", command)
-        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f'"{command}" is not a part of off-line communicator compatible request.\n\n'
-                                 'Please try an instruction that does not require an user interaction.')
 
     # Keywords for which the ' after ' split should not happen.
     ignore_after = keywords.keywords.meetings + keywords.keywords.avoid

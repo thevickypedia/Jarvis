@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.3.9 (05/05/2023)
+------------------
+- Remove restriction on offline tasks
+- Fix bug on meanings for words
+- Restrict certain tasks on offline commands
+- Add exception handler for connection error
+- Reorder keywords_base.py
+
 7.3.8 (05/05/2023)
 ------------------
 - Replace ``Wolfram-Alpha`` with ``OpenAI`` API wrapper

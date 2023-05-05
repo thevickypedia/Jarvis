@@ -7,12 +7,10 @@ from typing import NoReturn, Union
 import yaml
 from pydantic.error_wrappers import ValidationError
 
-from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.models.classes import BackgroundTask
-from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import support
 
 
@@ -77,7 +75,7 @@ def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
 
 
 def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
-    """Validates each background task if it is offline compatible.
+    """Validates each of the background tasks.
 
     Args:
         log: Takes a boolean flag to suppress info level logging.
@@ -111,11 +109,7 @@ def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 logger.error(error)
                 remove_corrupted(t)
                 continue
-            if word_match.word_match(phrase=task.task, match_list=compatibles.offline_compatible()):
-                if log:
-                    logger.info("'%s' will be executed every %s",
-                                task.task, support.time_converter(second=task.seconds))
-                yield task
-            else:
-                logger.error("'%s' is not a part of offline communication compatible request.", task.task)
-                remove_corrupted(task=task)
+            if log:
+                logger.info("'%s' will be executed every %s",
+                            task.task, support.time_converter(second=task.seconds))
+            yield task

@@ -142,6 +142,8 @@ def kill_alarm(phrase: str) -> None:
     else:
         speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
                            f"Please let me know which {word} you want to remove.", run=True)
+        if shared.called_by_offline:
+            return
         if not (converted := listener.listen()):
             return
         alarm_time = converted.split()[0]

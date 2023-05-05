@@ -38,17 +38,9 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         car=['car', 'vehicle'],
         garage=['garage'],
         weather=['weather', 'temperature', 'sunrise', 'sun rise', 'sunset', 'sun set'],
+
         # ORDER OF THE ABOVE SHOULD BE RETAINED, AS THE CONDITION LOOP WILL RUN IN THE SAME ORDER
         # internal
-        ok=['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going'],
-        exit_=['exit', 'quit', 'no', 'nope', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',
-               'talk to you later', "that's it", 'that is it', 'never mind', 'nevermind', 'thats it'],
-        kill=['kill', 'terminate yourself', 'stop running'],
-        avoid=['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
-               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
-               'cloud', 'update'],
-        ngrok=['ngrok', 'public url'],
-        secrets=['secret', 'secrets', 'param', 'params', 'parameter', 'parameters'],
 
         meetings=['meeting', 'meetings'],
         events=['event', 'events'],
@@ -104,4 +96,13 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         sentry=['sleep', 'activate sentry mode'],
         restart_control=['restart', 'reboot'],
         shutdown=['shutdown', 'shut down', 'terminate'],
+        ok=['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going'],
+        exit_=['exit', 'quit', 'no', 'nope', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',
+               'talk to you later', "that's it", 'that is it', 'never mind', 'nevermind', 'thats it'],
+        kill=['kill', 'terminate yourself', 'stop running'],
+        avoid=['sun', 'moon', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto',
+               'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
+               'cloud', 'update'],
+        ngrok=['ngrok', 'public url'],
+        secrets=['secret', 'secrets', 'param', 'params', 'parameter', 'parameters']
     )
