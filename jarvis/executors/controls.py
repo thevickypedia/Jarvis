@@ -70,7 +70,7 @@ def exit_process() -> NoReturn:
             split_val = file.replace('.lock', '').split('|')
             reminders.update({split_val[0]: split_val[-1]})
     if reminders:
-        logger.info("JARVIS::Deleting Reminders - %s", reminders)
+        logger.info("Deleting Reminders - %s", reminders)
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
@@ -92,7 +92,7 @@ def exit_process() -> NoReturn:
                       f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
 
 
-def sleep_control() -> bool:
+def sleep_control(*args) -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
     Thread(target=pybrightness.decrease).start()
     pywslocker.lock()
@@ -101,12 +101,22 @@ def sleep_control() -> bool:
     return True
 
 
-def sentry() -> bool:
+def sentry(*args) -> bool:
     """Speaks sentry mode message and sets greeting value to false."""
     speaker.speak(text=f"Activating sentry mode, enjoy yourself {models.env.title}!")
     if shared.greeting:
         shared.greeting = False
     return True
+
+
+def kill(*args) -> NoReturn:
+    """Kills active listener.
+
+    Raises:
+        StopSignal:
+        To stop main process.
+    """
+    raise StopSignal
 
 
 def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
@@ -116,8 +126,8 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
         quiet: Take a boolean flag to restart without warning.
     """
-    if phrase and ('pc' in phrase.lower() or 'computer' in phrase.lower() or 'machine' in phrase.lower()):
-        logger.info("JARVIS::Restart for %s has been requested.", shared.hosted_device.get('device'))
+    if phrase:
+        logger.info("Restart for %s has been requested.", shared.hosted_device.get('device'))
         restart()
     else:
         caller = sys._getframe(1).f_code.co_name  # noqa
@@ -211,7 +221,7 @@ def terminator() -> NoReturn:
     os._exit(1)  # noqa
 
 
-def shutdown(proceed: bool = False) -> NoReturn:
+def shutdown(*args, proceed: bool = False) -> NoReturn:
     """Gets confirmation and turns off the machine.
 
     Args:
@@ -225,7 +235,7 @@ def shutdown(proceed: bool = False) -> NoReturn:
         converted = listener.listen()
     else:
         converted = 'yes'
-    if converted and word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])

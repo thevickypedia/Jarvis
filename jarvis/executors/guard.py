@@ -96,7 +96,7 @@ def politely_disable() -> NoReturn:
         put_state(state=False)
 
 
-def guard_disable() -> NoReturn:
+def guard_disable(*args) -> NoReturn:
     """Checks the state of security mode, sets flag to False if currently enabled.
 
     See Also:
@@ -162,7 +162,7 @@ def security_runner(offline: bool = True) -> NoReturn:
             Thread(target=threat_notify, args=(converted, face_detected,)).start()
 
 
-def guard_enable() -> NoReturn:
+def guard_enable(*args) -> NoReturn:
     """Security Mode will enable camera and microphone in the background.
 
     Notes:

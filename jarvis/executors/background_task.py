@@ -1,6 +1,6 @@
-import collections
 import os
 import warnings
+from collections import OrderedDict
 from collections.abc import Generator
 from typing import NoReturn, Union
 
@@ -55,7 +55,7 @@ def compare_tasks(dict1: dict, dict2: dict) -> bool:
         dict1.pop('ignore_hours')
     if 'ignore_hours' in dict2 and dict2['ignore_hours'] == [] and 'ignore_hours' not in dict1:
         dict2.pop('ignore_hours')
-    if collections.OrderedDict(sorted(dict1.items())) == collections.OrderedDict(sorted(dict2.items())):
+    if OrderedDict(sorted(dict1.items())) == OrderedDict(sorted(dict2.items())):
         return True
 
 

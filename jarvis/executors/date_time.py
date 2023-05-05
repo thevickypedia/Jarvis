@@ -41,7 +41,7 @@ def current_time(converted: str = None) -> None:
         speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
 
 
-def current_date() -> None:
+def current_date(*args) -> None:
     """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = inflect.engine().ordinal(datetime.now().strftime("%d"))

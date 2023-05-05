@@ -62,7 +62,7 @@ def watcher(rh, result: list) -> str:
     return output
 
 
-def robinhood() -> None:
+def robinhood(*args) -> None:
     """Gets investment details from robinhood API."""
     if not all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]):
         logger.warning("Robinhood username, password or QR code not found.")

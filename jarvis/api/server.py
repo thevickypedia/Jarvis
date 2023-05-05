@@ -1,4 +1,3 @@
-import contextlib
 import logging
 import os.path
 
@@ -6,32 +5,11 @@ import requests
 import uvicorn
 
 from jarvis.executors import port_handler
+from jarvis.modules.builtin_overrides import APIServer
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-
-
-class APIServer(uvicorn.Server):
-    """Shared servers state that is available between all protocol instances.
-
-    >>> APIServer
-
-    See Also:
-        Overrides `uvicorn.server.Server <https://github.com/encode/uvicorn/blob/master/uvicorn/server.py#L48>`__
-
-    References:
-        https://github.com/encode/uvicorn/issues/742#issuecomment-674411676
-    """
-
-    def install_signal_handlers(self) -> None:
-        """Overrides ``install_signal_handlers`` in ``uvicorn.Server`` module."""
-        pass
-
-    @contextlib.contextmanager
-    def run_in_parallel(self) -> None:
-        """Initiates ``Server.run`` in a dedicated process."""
-        self.run()
 
 
 def fast_api() -> None:

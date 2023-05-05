@@ -1,6 +1,22 @@
 Release Notes
 =============
 
+7.3.6 (05/05/2023)
+------------------
+- Reduce latency on text classification
+- Remove giant if else condition to looping
+- Reduce latency on weather response
+- Replace ``PreparedRequest`` with ``OrderedDict``
+- Combine both conversations and keywords in lookup
+- Extend custom units for system vitals
+- Use ordered dict to retain keywords order
+- Create a dedicated builtin override section
+- Fix a bug on extracting enum object value
+- Remove password protection on secure-send
+- Set main process' name to JARVIS
+- Some more minor bug fixes and improvements
+- Release production ready version
+
 7.3.5 (05/04/2023)
 ------------------
 - Create a feature to send env vars/secrets securely

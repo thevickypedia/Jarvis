@@ -232,19 +232,19 @@ def google_home(device: str = None, file: str = None) -> None:
             speaker.speak(text=f"Enjoy your music {models.env.title}!", run=True)
 
 
-def jokes() -> NoReturn:
+def jokes(*args) -> NoReturn:
     """Uses jokes lib to say chucknorris jokes."""
     speaker.speak(text=random.choice([geek, icanhazdad, chucknorris, icndb])())
 
 
-def flip_a_coin() -> NoReturn:
+def flip_a_coin(*args) -> NoReturn:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound(sound=models.indicators.coin, block=True) if not shared.called_by_offline else None
     speaker.speak(text=f"""{random.choice(['You got', 'It landed on',
                                            "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}""")
 
 
-def facts() -> NoReturn:
+def facts(*args) -> NoReturn:
     """Tells a random fact."""
     speaker.speak(text=get_fact(filter_enabled=False))
 
@@ -284,7 +284,7 @@ def meaning(phrase: str) -> None:
             speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
 
 
-def notes() -> None:
+def notes(*args) -> None:
     """Listens to the user and saves it as a text file."""
     if (converted := listener.listen()) or 'exit' in converted or 'quit' in converted or \
             'Xzibit' in converted:
@@ -308,11 +308,18 @@ def news(news_source: str = 'fox') -> None:
     news_client = NewsApiClient(api_key=models.env.news_api)
     try:
         all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
-    except newsapi_exception.NewsAPIException:
-        speaker.speak(text=f"I wasn't able to get the news {models.env.title}! "
-                           "I think the News API broke, you may try after sometime.")
+    except newsapi_exception.NewsAPIException as error:
+        logger.error(error)
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
         return
-
+    if all_articles.get('status', 'fail') != 'ok':
+        logger.warning(all_articles)
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
+        return
+    if all_articles.get('totalResults', 0) == 0 or all_articles.get('articles', []) == []:
+        logger.warning(all_articles)
+        speaker.speak(text=f"I wasn't able to find any news around you {models.env.title}!")
+        return
     speaker.speak(text="News around you!")
     speaker.speak(text=' '.join([article['title'] for article in all_articles['articles']]))
     if shared.called_by_offline:
@@ -322,7 +329,7 @@ def news(news_source: str = 'fox') -> None:
         speaker.speak(run=True)
 
 
-def report() -> NoReturn:
+def report(*args) -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     util.write_screen(text="Starting today's report")
     shared.called['report'] = True
@@ -363,8 +370,7 @@ def time_travel() -> None:
     todo_list.get_todo()
     communicator.read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
-    phrase = listener.listen()
-    if phrase and word_match.word_match(phrase=phrase.lower(), match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords.ok):
         news()
 
 
@@ -378,7 +384,7 @@ def abusive(phrase: str) -> NoReturn:
     speaker.speak(text="I don't respond to abusive words. Ask me nicely, you might get a response.")
 
 
-def photo() -> str:
+def photo(*args) -> str:
     """Captures a picture of the ambience using the connected camera.
 
     Returns:
@@ -427,12 +433,12 @@ def pypi_versions(package_name: str) -> List[str]:
         return pypi
 
 
-def version() -> NoReturn:
+def version(*args) -> NoReturn:
     """Speaks the version information along with the current version on GitHub."""
     text = f"I'm currently running on version {module_version}"
     if versions := pypi_versions(package_name="jarvis-ironman"):
         pkg_version = versions[-1]
-        if module_version == pkg_version:
+        if module_version == pkg_version or pkg_version == f"{module_version}0":
             text += ", I'm up to date."
         else:
             text += f", but the latest released version is {pkg_version}"
@@ -489,6 +495,14 @@ def secrets(phrase: str) -> str:
     """
     text = phrase.lower().split()
 
+    if 'create' in text:
+        before, part, after = phrase.partition("for")
+        if custom_secret := after.strip():
+            key = util.keygen_uuid()
+            files.put_secure_send(data={key: {'secret': custom_secret}})
+        else:
+            return "Please specify the secret to create after the keyword 'for'\n" \
+                   "example: create and share secret for drogon589#"
     if 'list' in text:  # calling list will always create a new list in the dict regardless of what exists
         if 'aws' in text:
             SECRET_STORAGE['aws'] = []  # reset everytime list param is called
@@ -519,14 +533,14 @@ def secrets(phrase: str) -> str:
                 return "Please use 'list secret' before using 'get secret'"
             if 'ssm' in text:
                 try:
-                    key = util.keygen_uuid(length=16)
+                    key = util.keygen_uuid()
                     files.put_secure_send(data={key: {aws_key: get_aws_params(name=aws_key)}})
                     return key
                 except Exception as error:  # if secret is removed between 'list' and 'get'
                     logger.error(error)
             else:
                 try:
-                    key = util.keygen_uuid(length=16)
+                    key = util.keygen_uuid()
                     files.put_secure_send(data={key: {aws_key: get_aws_secrets(name=aws_key)}})
                     return key
                 except Exception as error:  # if secret is removed between 'list' and 'get'
@@ -539,7 +553,7 @@ def secrets(phrase: str) -> str:
                 local_key = local_key[0]
             else:
                 return "No local params were found matching your request."
-            key = util.keygen_uuid(length=16)
+            key = util.keygen_uuid()
             files.put_secure_send(data={key: {local_key: models.env.__dict__[local_key]}})
             return key
         return "Please specify which type of secret you want the value for: 'aws' or 'local'"

@@ -83,7 +83,7 @@ def write_current_location() -> NoReturn:
                   stream=location_writer, default_flow_style=False)
 
 
-def location() -> NoReturn:
+def location(*args) -> NoReturn:
     """Gets the user's current location."""
     current_location = files.get_location()
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
@@ -183,12 +183,12 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
             else:
                 speaker.speak(text=f"It might take you about {drive_time} hours to get there {models.env.title}!")
     elif start_check:
-        text = f"{models.env.title}! You're {dist} {models.env.distance_unit} away from {destination}. "
+        text = f"{models.env.title}! You're {dist} {models.env.distance_unit.value} away from {destination}. "
         if not shared.called["locate_places"]:
             text += f"You may also ask where is {destination}"
         speaker.speak(text=text)
     else:
-        speaker.speak(text=f"{origin} is {dist} {models.env.distance_unit} away from {destination}.")
+        speaker.speak(text=f"{origin} is {dist} {models.env.distance_unit.value} away from {destination}.")
     return
 
 

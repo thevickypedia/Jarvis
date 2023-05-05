@@ -34,7 +34,7 @@ stock_db.create_table(table_name="stock", columns=stock_monitor.user_info)
 ws_manager = ConnectionManager()
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
     @router.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
     async def authenticate_surveillance(cam: CameraIndexModal):
         """Tests the given camera index, generates a token for the endpoint to authenticate.
@@ -88,7 +88,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
     @router.get('/surveillance')
     async def monitor(token: str = None):
         """Serves the monitor page's frontend after updating it with video origin and websocket origins.
@@ -134,7 +134,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                               detail='Requires authentication since endpoint uses single-use token.')
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
     @router.get('/video-feed')
     async def video_feed(request: Request, token: str = None):
         """Authenticates the request, and returns the frames generated as a StreamingResponse.
@@ -184,7 +184,7 @@ if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
                                  status_code=HTTPStatus.PARTIAL_CONTENT.real)
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or models.env.surveillance_endpoint_auth:
+if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
     @router.websocket("/ws/{client_id}")
     async def websocket_endpoint(websocket: WebSocket, client_id: int):
         """Initiates a websocket connection.

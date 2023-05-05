@@ -213,7 +213,8 @@ if __name__ == '__main__':
     # override 'current_process().name' to avoid being set as 'MainProcess'
     # importing at top level requires setting current_process().name at top level which will in turn override any import
     from multiprocessing import current_process
-    current_process().name = "Crontab"
+
+    current_process().name = "StockReport"
     from jarvis.executors import crontab
     from jarvis.modules.exceptions import EgressErrors
     from jarvis.modules.logger import config

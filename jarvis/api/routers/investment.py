@@ -22,8 +22,8 @@ from jarvis.modules.utils import util
 router = APIRouter()
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
-                                              models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
+if os.environ.get('pre_commit') or all([models.env.robinhood_user, models.env.robinhood_pass,
+                                        models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @router.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood():
         """Authenticates the request and generates single use token.
@@ -65,8 +65,8 @@ if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
 
 # Conditional endpoint: Condition matches without env vars during docs generation
-if not os.getcwd().endswith("Jarvis") or all([models.env.robinhood_user, models.env.robinhood_pass,
-                                              models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
+if os.environ.get('pre_commit') or all([models.env.robinhood_user, models.env.robinhood_pass,
+                                        models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
     @router.get(path="/investment", response_class=HTMLResponse)
     async def robinhood_path(request: Request, token: str = None):
         """Serves static file.

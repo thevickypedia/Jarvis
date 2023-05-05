@@ -7,35 +7,14 @@
 
 import os
 from datetime import datetime
-from logging import Filter, Formatter, LogRecord
+from logging import Formatter
 from multiprocessing import current_process
 
 from pydantic import BaseModel
 
+from jarvis.modules.builtin_overrides import AddProcessName
 from jarvis.modules.logger.custom_logger import (DEFAULT_LOG_FORM,
                                                  custom_handler, logger)
-
-
-class AddProcessName(Filter):
-    """Wrapper that overrides ``logging.Filter`` to add ``processName`` to the existing log format.
-
-    >>> AddProcessName
-
-    """
-
-    def __init__(self, process_name: str):
-        """Instantiates super class.
-
-        Args:
-            process_name: Takes name of the process to be added as argument.
-        """
-        self.process_name = process_name
-        super().__init__()
-
-    def filter(self, record: LogRecord) -> bool:
-        """Overrides built-in."""
-        record.processName = self.process_name
-        return True
 
 
 def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:

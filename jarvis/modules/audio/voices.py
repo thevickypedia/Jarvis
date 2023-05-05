@@ -23,7 +23,7 @@ def voice_default() -> Engine:
     if models.settings.invoker != "sphinx-build":
         for voice in models.voices:
             if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
-                if current_process().name == 'MainProcess':
+                if current_process().name == 'JARVIS':
                     logger.debug(voice.__dict__)
                 models.audio_driver.setProperty("voice", voice.id)
                 models.audio_driver.setProperty("rate", models.env.voice_rate)
@@ -62,6 +62,6 @@ def voice_changer(phrase: str = None) -> None:
             voice_default()
             speaker.speak(text=f"Reverting the changes to default voice module {models.env.title}!")
             return
-        elif word_match.word_match(phrase=keyword.lower(), match_list=keywords.keywords.ok):
+        elif word_match.word_match(phrase=keyword, match_list=keywords.keywords.ok):
             speaker.speak(text=random.choice(conversation.acknowledgement))
             return

@@ -130,7 +130,7 @@ def test_and_load_audio_driver() -> pyttsx3.Engine:
         subprocess.run([shutil.which(cmd="python"), "-c", "import pyttsx3; pyttsx3.init()"], check=True)
     except subprocess.CalledProcessError as error:
         if error.returncode == -11:  # Segmentation fault error code
-            if current_process().name == "MainProcess":
+            if current_process().name == "JARVIS":
                 print(f"\033[91mERROR:{'':<6}Segmentation fault when loading audio driver "
                       "(interrupted by signal 11: SIGSEGV)\033[0m")
                 print(f"\033[93mWARNING:{'':<4}Trying alternate solution...\033[0m")
@@ -138,7 +138,7 @@ def test_and_load_audio_driver() -> pyttsx3.Engine:
             thread.start()
             thread.join(timeout=10)
             if module.get('pyttsx3'):
-                if current_process().name == "MainProcess":
+                if current_process().name == "JARVIS":
                     print(f"\033[92mINFO:{'':<7}Instantiated audio driver successfully\033[0m")
                 return module['pyttsx3']
             else:
@@ -200,7 +200,7 @@ class DistanceUnits(str, Enum):
     """
 
     MILES: str = 'miles'
-    KILOMETER: str = 'kilometers'
+    KILOMETERS: str = 'kilometers'
 
 
 class EventApp(str, Enum):
@@ -287,8 +287,8 @@ class EnvConfig(BaseSettings):
     """
 
     # Custom units
-    distance_unit: DistanceUnits = Field(default=DistanceUnits.MILES, env='DISTANCE_UNIT')
-    temperature_unit: TemperatureUnits = Field(default=TemperatureUnits.IMPERIAL, env='TEMPERATURE_UNIT')
+    distance_unit: DistanceUnits = Field(default=None, env='DISTANCE_UNIT')
+    temperature_unit: TemperatureUnits = Field(default=None, env='TEMPERATURE_UNIT')
 
     # System config
     home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
