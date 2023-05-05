@@ -255,12 +255,19 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <ul class="simple">
 <li><p><strong>GIT_USER</strong> - GitHub Username</p></li>
 <li><p><strong>GIT_PASS</strong> - GitHub Token</p></li>
+<li><p><strong>BIRTHDAY</strong> - Birth date in the format DD-MM - Example: <code class="docutils literal notranslate"><span class="pre">24-April</span></code></p></li>
 <li><p><strong>WEATHER_API</strong> - API Key from <a class="reference external" href="https://openweathermap.org/">openweathermap</a></p></li>
 <li><p><strong>NEWS_API</strong> - API Key from <a class="reference external" href="https://newsapi.org/docs/client-libraries/python">newsapi</a></p></li>
 <li><p><strong>MAPS_API</strong> - API Key for maps from <a class="reference external" href="https://developers.google.com/maps/documentation/maps-static/get-api-key">Google</a></p></li>
-<li><p><strong>WOLFRAM_API</strong> - API Key from <a class="reference external" href="https://www.wolframalpha.com/">wolfram alpha</a></p></li>
-<li><p><strong>BIRTHDAY</strong> - Birth date in the format DD-MM - Example: <code class="docutils literal notranslate"><span class="pre">24-April</span></code></p></li>
+<li><p><strong>OPENAI_API</strong> - API Key from <a class="reference external" href="https://platform.openai.com/account/api-keys">openai</a></p></li>
+<li><p><strong>OPENAI_REUSE_THRESHOLD</strong> - This is the threshold for sequence matching repeated requests. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
+<blockquote>
+<div><p>Setting the <code class="docutils literal notranslate"><span class="pre">OPENAI_REUSE_THRESHOLD</span></code> (<strong>range:</strong> <code class="docutils literal notranslate"><span class="pre">0.5</span></code> to <code class="docutils literal notranslate"><span class="pre">0.9</span></code>) will try to avoid hitting OpenAI API more frequently
+for repeated identical requests.<br>
+This threshold is the <code class="docutils literal notranslate"><span class="pre">ratio</span></code> of acceptable result for <code class="docutils literal notranslate"><span class="pre">SequenceMatching</span></code> between a new request and
+historically identical request.</p>
+</div></blockquote>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/gmail-connector">Email/SMS notifications</a></strong></p>
 <ul class="simple">
 <li><p><strong>GMAIL_USER</strong> - Gmail account username to send and read emails.</p></li>

@@ -3,7 +3,6 @@ import webbrowser
 
 import inflect
 import requests
-import wolframalpha
 from geopy.distance import geodesic
 
 from jarvis.executors import files, word_match
@@ -13,47 +12,6 @@ from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import util
-
-
-def alpha(text: str) -> bool:
-    """Uses wolfram alpha API to fetch results for uncategorized phrases heard.
-
-    Args:
-        text: Takes the voice recognized statement as argument.
-
-    Notes:
-        Handles broad ``Exception`` clause raised when Full Results API did not find an input parameter while parsing.
-
-    Returns:
-        bool:
-        Boolean True if wolfram alpha API is unable to fetch consumable results.
-
-    References:
-        `Error 1000 <https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)>`__
-    """
-    if not models.env.wolfram_api:
-        return False
-    alpha_client = wolframalpha.Client(app_id=models.env.wolfram_api)
-    try:
-        res = alpha_client.query(text)
-    except Exception as error:
-        logger.warning(error)
-        return False
-    if res['@success'] == 'false':
-        logger.warning(res)
-        return False
-    else:
-        try:
-            response = next(res.results).text.splitlines()[0]
-            response = re.sub(r'(([0-9]+) \|)', '', response).replace(' |', ':').strip()
-            if response == '(no data available)':
-                logger.warning(response)
-                return False
-            speaker.speak(text=response)
-            return True
-        except (StopIteration, AttributeError) as error:
-            logger.warning(error)
-            return False
 
 
 def google_maps(query: str) -> bool:

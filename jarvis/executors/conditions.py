@@ -1,4 +1,5 @@
 import warnings
+from multiprocessing import current_process
 from threading import Thread
 
 from jarvis.executors.alarm import kill_alarm, set_alarm  # noqa
@@ -33,7 +34,7 @@ from jarvis.executors.static_responses import (about_me, age,  # noqa
 from jarvis.executors.system import system_info, system_vitals  # noqa
 from jarvis.executors.todo_list import todo  # noqa
 from jarvis.executors.tv import television  # noqa
-from jarvis.executors.unconditional import alpha, google_maps
+from jarvis.executors.unconditional import google_maps
 from jarvis.executors.volume import volume  # noqa
 from jarvis.executors.vpn_server import vpn_server  # noqa
 from jarvis.executors.weather import weather  # noqa
@@ -46,17 +47,17 @@ from jarvis.modules.exceptions import StopSignal  # noqa
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.meetings.events import events  # noqa
 from jarvis.modules.meetings.ics_meetings import meetings  # noqa
+from jarvis.modules.transformer import gpt
 from jarvis.modules.utils import shared, support  # noqa
 
 
-def conditions(phrase: str, should_return: bool = False) -> bool:
+def conditions(phrase: str) -> bool:
     """Conditions function is used to check the message processed.
 
     Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-        should_return: A boolean flag sent by ``Activator`` to indicate that the ``else`` part shouldn't be executed.
 
     Raises:
         StopSignal:
@@ -92,21 +93,23 @@ def conditions(phrase: str, should_return: bool = False) -> bool:
                     continue
 
             # Stand alone - Internally used
-            if category in ("avoid", "ok", "exit_", "kill", "avoid", "ngrok", "secrets"):
+            if category in ("avoid", "ok", "exit_", "avoid", "ngrok", "secrets"):
                 continue
 
-            modules = globals()
-            if modules.get(category):
-                modules[category](phrase)
+            modules = globals()  # load all imported function names
+            if modules.get(category):  # keyword category matches function name
+                modules[category](phrase)  # call function with phrase as arg by default
                 if category in ("sleep_control", "sentry"):
-                    return True
+                    return True  # repeat listeners are ended and wake word detection is activated
             else:
+                # edge case scenario if a category has matched but the function name is incorrect or not imported
                 warnings.warn("Condition matched for '%s' but there is not function to call." % category)
             return False
-    logger.info("Received unrecognized lookup parameter: %s", phrase)
-    if should_return:
-        Thread(target=support.unrecognized_dumper, args=[{'ACTIVATOR': phrase}]).start()
+    pname = current_process().name
+    if pname not in ('JARVIS', 'telegram_api', 'fast_api'):  # GPT instance available only for communicable processes
+        logger.warning("%s reached unrecognized category", pname)
         return False
+    logger.info("Received unrecognized lookup parameter: %s", phrase)
     Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
-    if not alpha(text=phrase):
-        google_maps(query=phrase)
+    if not google_maps(query=phrase):
+        gpt.instance.query(phrase=phrase)

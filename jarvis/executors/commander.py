@@ -15,12 +15,11 @@ from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support, util
 
 
-def split_phrase(phrase: str, should_return: bool = False) -> 'conditions.conditions':
+def split_phrase(phrase: str) -> 'conditions.conditions':
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-        should_return: A boolean flag sent to ``conditions`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
         conditions.conditions:
@@ -41,10 +40,10 @@ def split_phrase(phrase: str, should_return: bool = False) -> 'conditions.condit
         keywords.keywords.distance + keywords.keywords.avoid
     if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=ignore_and):
         for each in phrase.split(' and '):
-            exit_check = conditions.conditions(phrase=each.strip(), should_return=should_return)
+            exit_check = conditions.conditions(phrase=each.strip())
             speaker.speak(run=True)
     else:
-        exit_check = conditions.conditions(phrase=phrase.strip(), should_return=should_return)
+        exit_check = conditions.conditions(phrase=phrase.strip())
     return exit_check
 
 
@@ -115,14 +114,13 @@ def renew() -> None:
         speaker.speak(run=True)
 
 
-def initiator(phrase: str = None, should_return: bool = False) -> None:
+def initiator(phrase: str = None) -> None:
     """When invoked by ``Activator``, checks for the right keyword to wake up and gets into action.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-        should_return: Flag to return the function if nothing is heard.
     """
-    if not phrase and should_return:
+    if not phrase:
         return
     support.flush_screen()
     inactive_msg = f"My listeners are currently inactive {models.env.title}!"
@@ -154,7 +152,7 @@ def initiator(phrase: str = None, should_return: bool = False) -> None:
         initialize()
     else:
         if phrase:
-            split_phrase(phrase=phrase, should_return=should_return)
+            split_phrase(phrase=phrase)
         elif listener_controls.get_listener_state():
             speaker.speak(text=random.choice(conversation.wake_up3))
             initialize()

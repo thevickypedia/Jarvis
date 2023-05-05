@@ -111,7 +111,7 @@ class Activator:
         audio_engine.close(stream=self.audio_stream)
         if phrase := listener.listen(sound=False):
             try:
-                commander.initiator(phrase=phrase, should_return=True)
+                commander.initiator(phrase=phrase)
             except Exception as error:
                 logger.critical(error)
                 logger.error(traceback.format_exc())
