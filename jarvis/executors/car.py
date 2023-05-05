@@ -59,7 +59,7 @@ def create_connection() -> NoReturn:
 
 # Initiate connection only for main and offline communicators
 # WATCH OUT: for changes in function name
-if current_process().name in ('MainProcess', 'telegram_api', 'fast_api'):
+if current_process().name in ('JARVIS', 'telegram_api', 'fast_api'):
     if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
         logger.info("Creating a new vehicle authorization connection for '%s'", current_process().name)
         Thread(target=create_connection).start()
@@ -351,8 +351,8 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
                 overall_status['status'][dict_['key']] = dict_['value']
             if dict_.get('key', '') == "ENGINE_COOLANT_TEMP":
                 overall_status['status'][dict_['key']] = f"{dict_['value']}\N{DEGREE SIGN}F"
-            if dict_.get('key', '') == f"ODOMETER_{models.env.distance_unit.upper()}":
-                overall_status['status'][dict_['key']] = f"{int(dict_['value']):02,} {models.env.distance_unit}"
+            if dict_.get('key', '') == f"ODOMETER_{models.env.distance_unit.value.upper()}":
+                overall_status['status'][dict_['key']] = f"{int(dict_['value']):02,} {models.env.distance_unit.value}"
             if dict_.get('key', '') == "FUEL_LEVEL_PERC":
                 overall_status['status'][dict_['key']] = dict_['value'] + '%'
             if dict_.get('key', '') == "BATTERY_VOLTAGE":
@@ -361,7 +361,8 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
                 distance_to_empty_fuel = float(dict_['value'])
                 if models.env.distance_unit == models.DistanceUnits.MILES:  # Convert to miles if custom unit is set
                     distance_to_empty_fuel = util.kms_to_miles(float(dict_['value']))
-                overall_status['status'][dict_['key']] = f"{int(distance_to_empty_fuel):02,} {models.env.distance_unit}"
+                overall_status['status'][dict_['key']] = f"{int(distance_to_empty_fuel):02,} " \
+                                                         f"{models.env.distance_unit.value}"
             if dict_.get('key', '') in ["TYRE_PRESSURE_FRONT_LEFT", "TYRE_PRESSURE_FRONT_RIGHT",
                                         "TYRE_PRESSURE_REAR_LEFT", "TYRE_PRESSURE_REAR_RIGHT"]:
                 overall_status['status'][dict_['key']] = f"{round(int(dict_['value']) * 14.696 / 100)} psi"

@@ -141,7 +141,7 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
             return process.decode(encoding='UTF-8').strip()
 
 
-def speed_test() -> None:
+def speed_test(*args) -> None:
     """Initiates speed test and says the ping rate, download and upload speed.
 
     References:

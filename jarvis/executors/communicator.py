@@ -13,7 +13,7 @@ from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
 
-def read_gmail() -> None:
+def read_gmail(*args) -> None:
     """Reads unread emails from the gmail account for which the credentials are stored in env variables."""
     if not all([models.env.gmail_user, models.env.gmail_pass]):
         logger.warning("Gmail username and password not found.")

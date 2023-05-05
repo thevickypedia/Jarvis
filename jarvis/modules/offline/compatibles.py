@@ -7,7 +7,7 @@
 
 from typing import List
 
-from jarvis.modules.conditions import conversation
+from jarvis.modules.conditions import conversation as conversation_mod
 from jarvis.modules.conditions import keywords as keywords_mod
 from jarvis.modules.utils import util
 
@@ -20,6 +20,7 @@ def offline_compatible() -> List[str]:
         Flat list from a matrix (list of lists) after removing the duplicates.
     """
     keywords = keywords_mod.keywords
+    conversation = conversation_mod.conversation_mapping()
     offline_words = [keywords.sleep_control,
                      keywords.set_alarm,
                      keywords.current_time,
@@ -66,13 +67,13 @@ def offline_compatible() -> List[str]:
                      keywords.background_tasks,
                      keywords.version,
                      keywords.simulation,
-                     conversation.age,
-                     conversation.about_me,
-                     conversation.capabilities,
-                     conversation.form,
-                     conversation.greeting,
-                     conversation.languages,
-                     conversation.what,
-                     conversation.whats_up,
-                     conversation.who]
+                     conversation['age'],
+                     conversation['about_me'],
+                     conversation['capabilities'],
+                     conversation['form'],
+                     conversation['greeting'],
+                     conversation['languages'],
+                     conversation['what'],
+                     conversation['whats_up'],
+                     conversation['who']]
     return util.remove_duplicates(input_=util.matrix_to_flat_list(input_=offline_words))

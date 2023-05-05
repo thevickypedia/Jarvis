@@ -45,18 +45,40 @@ TABLES = {
 }
 KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
 
-# If distance is requested in miles, then temperature is brute forced to imperial units
-if env.distance_unit == DistanceUnits.MILES:
-    env.temperature_unit = TemperatureUnits.IMPERIAL
-if env.temperature_unit == TemperatureUnits.IMPERIAL:
-    temperature_symbol = "F"
-elif env.temperature_unit == TemperatureUnits.METRIC:
-    temperature_symbol = "C"
-else:
-    raise InvalidEnvVars  # taken care by pydantic
+
+def _distance_temperature_brute_force() -> NoReturn:
+    """Convert distance and temperature so that, metric goes with kilometers and imperial with miles."""
+    # If distance is requested in miles, then temperature is brute forced to imperial units
+    if env.distance_unit == DistanceUnits.MILES:
+        env.temperature_unit = TemperatureUnits.IMPERIAL
+
+    # If temperature is requested in imperial, then distance is brute forced to miles
+    if env.temperature_unit == TemperatureUnits.IMPERIAL:
+        env.distance_unit = DistanceUnits.MILES
+
+    # If neither temperature nor distance is set, then defaults temperature to imperial and distance to miles
+    if not env.distance_unit and not env.temperature_unit:
+        env.distance_unit = DistanceUnits.MILES
+        env.temperature_unit = TemperatureUnits.IMPERIAL
+
+    if not env.distance_unit:
+        # If distance is not set, but temperature is requested as imperial, then defaults distance to miles
+        if env.temperature_unit == TemperatureUnits.IMPERIAL:
+            env.distance_unit = DistanceUnits.MILES
+        # If distance is not set, but temperature is requested as metric, then defaults distance to kilometers
+        elif env.temperature_unit == TemperatureUnits.METRIC:
+            env.distance_unit = DistanceUnits.KILOMETERS
+
+    if not env.temperature_unit:
+        # If temperature is not set, but distance is requested as miles, then defaults temperature to imperial
+        if env.distance_unit == DistanceUnits.MILES:
+            env.temperature_unit = TemperatureUnits.IMPERIAL
+        # If temperature is not set, but distance is requested as kms, then defaults temperature to metric
+        elif env.distance_unit == DistanceUnits.KILOMETERS:
+            env.temperature_unit = TemperatureUnits.METRIC
 
 
-def _set_default_voice_name():
+def _set_default_voice_name() -> NoReturn:
     """Set default voice name based on the Operating System."""
     if settings.os == supported_platforms.macOS:
         env.voice_name = "Daniel"
@@ -101,7 +123,7 @@ def _main_process_validations() -> NoReturn:
 
 def _global_validations() -> NoReturn:
     """Validations that should happen for all processes including parent and child."""
-    main = True if current_process().name == "MainProcess" else False
+    main = True if current_process().name == "JARVIS" else False
     # Validate root password present for linux systems
     if settings.os == supported_platforms.linux:
         if not env.root_password:
@@ -237,9 +259,15 @@ def _global_validations() -> NoReturn:
                 "   https://github.com/thevickypedia/Jarvis/wiki#os-agnostic-voice-model\n"
                 "   https://stackoverflow.com/a/76050539/13691532"
             )
+    _distance_temperature_brute_force()
 
 
 _global_validations()
+# Required at top level to let other modules access it
+if env.temperature_unit == TemperatureUnits.IMPERIAL:
+    temperature_symbol = "F"
+elif env.temperature_unit == TemperatureUnits.METRIC:
+    temperature_symbol = "C"
 # settings.bot is initiated with "jarvis" but later changed when custom wake words are used
-if settings.bot == "jarvis" and current_process().name == "MainProcess":
+if current_process().name == "JARVIS":
     _main_process_validations()

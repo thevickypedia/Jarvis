@@ -124,7 +124,7 @@ def events_gatherer() -> str:
     return event_status
 
 
-def events() -> None:
+def events(*args) -> None:
     """Controller for events."""
     with db.connection:
         cursor = db.connection.cursor()

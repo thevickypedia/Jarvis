@@ -18,7 +18,7 @@ from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support, util
 
 
-def system_info() -> NoReturn:
+def system_info(*args) -> NoReturn:
     """Tells the system configuration."""
     disk_usage = shutil.disk_usage("/")
     total = support.size_converter(byte_size=disk_usage.total)
@@ -38,12 +38,12 @@ def system_info() -> NoReturn:
         system = f"{shared.hosted_device.get('os_name', models.settings.os)} " \
                  f"{shared.hosted_device.get('os_version', '')}"
     speaker.speak(text=f"You're running {system}, with {models.settings.physical_cores} "
-                       f"physical cores and {models.settings.logical_cores} logical cores. Your physical drive "
+                       f"physical cores, and {models.settings.logical_cores} logical cores. Your physical drive "
                        f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "
                        f"RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory.")
 
 
-def system_vitals() -> None:
+def system_vitals(*args) -> None:
     """Reads system vitals.
 
     See Also:
@@ -84,14 +84,19 @@ def system_vitals() -> None:
             ).decode('utf-8')
 
         if cpu_temp:
-            cpu = f'Your current average CPU temperature is ' \
-                  f'{util.format_nos(input_=temperature.c2f(arg=util.extract_nos(input_=cpu_temp)))}' \
-                  f'\N{DEGREE SIGN}F. '
+            if models.env.temperature_unit == models.TemperatureUnits.METRIC:
+                cpu_temp = util.format_nos(input_=util.extract_nos(input_=cpu_temp))
+            else:
+                cpu_temp = util.format_nos(input_=temperature.c2f(arg=util.extract_nos(input_=cpu_temp)))
+            cpu = f'Your current average CPU temperature is {cpu_temp}\N{DEGREE SIGN}{models.temperature_symbol}. '
             output += cpu
             speaker.speak(text=cpu)
         if gpu_temp:
-            gpu = f'GPU temperature is {util.format_nos(temperature.c2f(util.extract_nos(gpu_temp)))}' \
-                  f'\N{DEGREE SIGN}F. '
+            if models.env.temperature_unit == models.TemperatureUnits.METRIC:
+                gpu_temp = util.format_nos(input_=util.extract_nos(input_=gpu_temp))
+            else:
+                gpu_temp = util.format_nos(input_=temperature.c2f(arg=util.extract_nos(input_=gpu_temp)))
+            gpu = f'GPU temperature is {gpu_temp}\N{DEGREE SIGN}{models.temperature_symbol}. '
             output += gpu
             speaker.speak(text=gpu)
         if fan_speed:
@@ -117,9 +122,8 @@ def system_vitals() -> None:
                                f"more than {warn} days. You must consider a reboot for better performance. Would you "
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
-            response = listener.listen()
-            if word_match.word_match(phrase=response.lower(), match_list=keywords.keywords.ok):
-                logger.info("JARVIS::Restarting %s", shared.hosted_device.get('device'))
+            if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords.ok):
+                logger.info("Restarting %s", shared.hosted_device.get('device'))
                 controls.restart(ask=False)
 
 

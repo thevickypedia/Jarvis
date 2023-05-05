@@ -1,21 +1,19 @@
 import os
 import warnings
+from collections import OrderedDict
 from typing import NoReturn
 
 import yaml
 
-from jarvis.modules.conditions import keywords, keywords_base
+from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
+from jarvis.modules.conditions import conversation, keywords, keywords_base
 from jarvis.modules.utils import util
 
 # Used by docs
 if not os.path.isdir('fileio'):
     os.makedirs(name='fileio')
 
-keywords_src = keywords_base.keyword_mapping()
-keywords_dst = os.path.join('fileio', 'keywords.yaml')
-
-get_time = lambda file: os.stat(file).st_mtime  # noqa: E731
-_updated = {'time': 0.0}  # Initiate a dict
+_updated = {'time': 0.0}  # Instantiate a dict to store last updated time
 
 
 def rewrite_keywords(init: bool = False) -> NoReturn:
@@ -24,14 +22,17 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
     Args:
         init: Takes a boolean flag to suppress logging when triggered for the first time.
     """
+    get_time = lambda file: os.stat(file).st_mtime  # noqa: E731
+    keywords_src = OrderedDict(**keywords_base.keyword_mapping(), **conversation.conversation_mapping())
+    keywords_dst = os.path.join('fileio', 'keywords.yaml')
     if os.path.isfile(keywords_dst):
         modified = get_time(keywords_dst)
         if _updated['time'] == modified:
             return  # Avoid reading when there are clearly no changes made
         _updated['time'] = modified
-        with open(keywords_dst) as file:
+        with open(keywords_dst) as dst_file:
             try:
-                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+                data = ordered_load(stream=dst_file, Loader=yaml.SafeLoader) or {}
             except yaml.YAMLError as error:
                 warnings.warn(message=str(error))
                 data = None
@@ -53,8 +54,8 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
                     f"\nRe-sourcing {keywords_dst!r} from base."
                 )
 
-    with open(keywords_dst, 'w') as file:
-        yaml.dump(stream=file, data=keywords_src, indent=4)
+    with open(keywords_dst, 'w') as dst_file:
+        ordered_dump(stream=dst_file, data=keywords_src, indent=4)
     _updated['time'] = get_time(keywords_dst)
     keywords.keywords = util.Dict2Class(keywords_src)
 

@@ -114,7 +114,10 @@ def google_maps(query: str) -> bool:
             far = round(geodesic(start, end).miles)
         else:
             far = round(geodesic(start, end).kilometers)
-        dist = f"{far} {models.env.distance_unit}" if far > 1 else f"{far} {models.env.distance_unit.rstrip('s')}"
+        if far > 1:
+            dist = f"{far} {models.env.distance_unit.value}"
+        else:
+            dist = f"{far} {models.env.distance_unit.value.rstrip('s')}"
         n += 1
         if results == 1:
             option = 'only option I found is'

@@ -76,15 +76,15 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
             - request: Request type. Takes any of GET/PUT/DELETE
             - plaintext: Takes a boolean flag if a plain text response is expected for GET request.
 
-        - email_otp: Received as argument when run on localhost, received as http headers when run with JavaScript.
+    See Also:
 
-            - token is not required for GET requests.
-            - For PUT and DELETE requests, token should be a JWT of the following keys:
-                - Ticker: Stock ticker.
-                - Max: Max price for notification.
-                - Min: Min price for notification.
-                - Correction: Correction percentage.
-            - Use `https://vigneshrao.com/jwt <https://vigneshrao.com/jwt>`__ for conversion.
+        - token is not required for GET requests.
+        - For PUT and DELETE requests, token should be a JWT of the following keys:
+            - Ticker: Stock ticker.
+            - Max: Max price for notification.
+            - Min: Min price for notification.
+            - Correction: Correction percentage.
+        - Use `https://vigneshrao.com/jwt <https://vigneshrao.com/jwt>`__ for conversion.
 
     Raises:
 

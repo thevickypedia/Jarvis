@@ -1,10 +1,11 @@
 import string
+from collections import OrderedDict
 from datetime import datetime
 from typing import Any, Dict, NoReturn, Optional, Tuple, Union
+from urllib.parse import urlencode
 
 import inflect
 import requests
-from requests.models import PreparedRequest
 
 from jarvis.executors import files, location, word_match
 from jarvis.modules.audio import speaker
@@ -15,18 +16,18 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 
-def make_request(request: PreparedRequest) -> Union[Dict, NoReturn]:
+def make_request(url: str) -> Union[Dict, NoReturn]:
     """Get weather information from OpenWeatherMap API.
 
     Args:
-        request: Prepared request with URL and query params wrapped.
+        url: URL to make GET request.
 
     Returns:
         dict:
         JSON response from api.
     """
     try:
-        response = requests.get(url=request.url)
+        response = requests.get(url=url)
         if response.ok:
             return response.json()
         else:
@@ -35,26 +36,24 @@ def make_request(request: PreparedRequest) -> Union[Dict, NoReturn]:
         logger.error(error)
 
 
-def weather_responder(coordinates: Dict[str, float]) -> 'make_request':
+def weather_responder(lat: float, lon: float) -> 'make_request':
     """Get weather information via api call.
 
     Args:
-        coordinates: GEO coordinates to prepare query params.
+        lat: Latitude of location to get weather info.
+        lon: Longitude of location to get weather info.
 
     Returns:
-        'make_request':
+        make_request:
         Returns the response from 'make_request'
     """
-    # todo: preparing request has increased latency, work on alternate
-    prepared_request = PreparedRequest()
-    params = dict(**coordinates, **dict(exclude="minutely,hourly", appid=models.env.weather_api,
-                                        units=models.env.temperature_unit))
-    prepared_request.prepare_url(url="https://api.openweathermap.org/data/2.5/onecall", params=params)
-    return make_request(request=prepared_request)
+    query_string = urlencode(OrderedDict(lat=lat, lon=lon, exclude="minutely,hourly",
+                                         appid=models.env.weather_api,
+                                         units=models.env.temperature_unit.value))
+    return make_request('https://api.openweathermap.org/data/2.5/onecall?' + query_string)
     # todo: investigate why `weather` endpoint doesn't return daily data
     # logger.info("Retrying with 'weather' endpoint")
-    # prepared_request.prepare_url(url="https://api.openweathermap.org/data/2.5/weather", params=params)
-    # return make_request(request=prepared_request)
+    # return make_request('https://api.openweathermap.org/data/2.5/weather?' + query_string)
 
 
 def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, int, int, Optional[str]], None]:
@@ -103,14 +102,14 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         state = address.get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
-    if not (response := weather_responder(dict(lat=lat, lon=lon))):
+    if not (response := weather_responder(lat=lat, lon=lon)):
         speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
         return
 
     weather_location = f'{city} {state}'.replace('None', '') if city != state else city or state
 
-    if phrase and word_match.word_match(phrase=phrase, match_list=('tomorrow', 'day after', 'next week',
-                                                                   'tonight', 'afternoon', 'evening')):
+    if word_match.word_match(phrase=phrase, match_list=('tomorrow', 'day after', 'next week',
+                                                        'tonight', 'afternoon', 'evening')):
         # when the weather info was requested
         if 'tonight' in phrase:
             key = 0
@@ -251,7 +250,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
             threshold = 40  # ~ equivalent for 25 miles
         if wind_speed > threshold:
             output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, but due to the current wind ' \
-                     f'conditions (which is {wind_speed} {models.env.distance_unit} per hour), it feels like ' \
+                     f'conditions (which is {wind_speed} {models.env.distance_unit.value} per hour), it feels like ' \
                      f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
         else:
             output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, and it currently feels like ' \

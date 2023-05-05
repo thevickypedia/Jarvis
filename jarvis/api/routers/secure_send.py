@@ -4,7 +4,6 @@ from typing import Optional
 
 from fastapi import APIRouter, Header, Request
 
-from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
 from jarvis.api.squire.logger import logger
 from jarvis.executors import files
 from jarvis.modules.exceptions import APIResponse
@@ -13,10 +12,13 @@ from jarvis.modules.models import models
 router = APIRouter()
 
 
-# todo: Create public access to sharing secrets
-@router.post(path="/secure-send", dependencies=OFFLINE_PROTECTOR)
+@router.post(path="/secure-send")
 async def secure_send_api(request: Request, access_token: Optional[str] = Header(None)):
     """API endpoint to share/retrieve secrets.
+
+    Args:
+        request: FastAPI request module.
+        access_token: Access token for the secret to be retrieved.
 
     Raises:
 
@@ -30,8 +32,6 @@ async def secure_send_api(request: Request, access_token: Optional[str] = Header
     key = access_token or request.headers.get('access-token')
     if not key:
         logger.warning("'access-token' not received in headers")
-        if request.headers.get('access_token'):
-            raise APIResponse(status_code=HTTPStatus.BAD_REQUEST.real, detail="Headers should have '-' instead of '_'")
         raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
     if os.path.isfile(models.fileio.secure_send):
         secure_strings = files.get_secure_send()

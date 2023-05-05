@@ -472,6 +472,13 @@ Simulator
    :members:
    :undoc-members:
 
+StaticResponses
+===============
+
+.. automodule:: jarvis.executors.static_responses
+   :members:
+   :undoc-members:
+
 System
 ======
 
@@ -591,6 +598,13 @@ Auth Bearer
 ===========
 
 .. automodule:: jarvis.modules.auth_bearer
+   :members:
+   :undoc-members:
+
+Built-In Overrides
+==================
+
+.. automodule:: jarvis.modules.builtin_overrides
    :members:
    :undoc-members:
 

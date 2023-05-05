@@ -3,6 +3,7 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
+export pre_commit=1;
 branch="$(git rev-parse --abbrev-ref HEAD)"
 checker=$(git diff --name-only "$(git merge-base "$branch" HEAD)")
 if [[ ! $checker =~ release_notes.rst ]]; then

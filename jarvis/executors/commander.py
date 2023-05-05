@@ -15,7 +15,7 @@ from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support, util
 
 
-def split_phrase(phrase: str, should_return: bool = False) -> bool:
+def split_phrase(phrase: str, should_return: bool = False) -> 'conditions.conditions':
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
 
     Args:
@@ -23,7 +23,7 @@ def split_phrase(phrase: str, should_return: bool = False) -> bool:
         should_return: A boolean flag sent to ``conditions`` to indicate that the ``else`` part shouldn't be executed.
 
     Returns:
-        bool:
+        conditions.conditions:
         Return value from ``conditions()``
     """
     exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
@@ -103,8 +103,6 @@ def renew() -> None:
         - This function runs only for a minute.
         - split_phrase(converted) is a condition so that, loop breaks when if sleep in ``conditions()`` returns True.
     """
-    if not listener_controls.get_listener_state():
-        return
     for i in range(3):
         if i:
             converted = listener.listen(sound=False) or ""
