@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.3.8 (05/05/2023)
+------------------
+- Replace ``Wolfram-Alpha`` with ``OpenAI`` API wrapper
+- Use OpenAI api for unmatched phrases
+- Remove the usage of return flag in conditions
+- Update version_locked_requirements.txt
+- Release beta version to test
+
 7.3.7 (05/05/2023)
 ------------------
 - Fix inconsistent offline compatibles

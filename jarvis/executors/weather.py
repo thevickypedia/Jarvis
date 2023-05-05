@@ -16,16 +16,21 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 
-def make_request(url: str) -> Union[Dict, NoReturn]:
+def make_request(lat: float, lon: float) -> Union[Dict, NoReturn]:
     """Get weather information from OpenWeatherMap API.
 
     Args:
-        url: URL to make GET request.
+        lat: Latitude of location to get weather info.
+        lon: Longitude of location to get weather info.
 
     Returns:
         dict:
         JSON response from api.
     """
+    query_string = urlencode(OrderedDict(lat=lat, lon=lon, exclude="minutely,hourly",
+                                         appid=models.env.weather_api,
+                                         units=models.env.temperature_unit.value))
+    url = 'https://api.openweathermap.org/data/2.5/onecall?' + query_string
     try:
         response = requests.get(url=url)
         if response.ok:
@@ -34,26 +39,6 @@ def make_request(url: str) -> Union[Dict, NoReturn]:
             response.raise_for_status()
     except EgressErrors + (requests.JSONDecodeError,) as error:
         logger.error(error)
-
-
-def weather_responder(lat: float, lon: float) -> 'make_request':
-    """Get weather information via api call.
-
-    Args:
-        lat: Latitude of location to get weather info.
-        lon: Longitude of location to get weather info.
-
-    Returns:
-        make_request:
-        Returns the response from 'make_request'
-    """
-    query_string = urlencode(OrderedDict(lat=lat, lon=lon, exclude="minutely,hourly",
-                                         appid=models.env.weather_api,
-                                         units=models.env.temperature_unit.value))
-    return make_request('https://api.openweathermap.org/data/2.5/onecall?' + query_string)
-    # todo: investigate why `weather` endpoint doesn't return daily data
-    # logger.info("Retrying with 'weather' endpoint")
-    # return make_request('https://api.openweathermap.org/data/2.5/weather?' + query_string)
 
 
 def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, int, int, Optional[str]], None]:
@@ -102,7 +87,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         state = address.get('state', 'Unknown')
         lat = current_location['latitude']
         lon = current_location['longitude']
-    if not (response := weather_responder(lat=lat, lon=lon)):
+    if not (response := make_request(lat=lat, lon=lon)):
         speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
         return
 

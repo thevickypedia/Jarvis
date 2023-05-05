@@ -215,11 +215,16 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 ### Features
 - **GIT_USER** - GitHub Username
 - **GIT_PASS** - GitHub Token
+- **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
 - **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
 - **MAPS_API** - API Key for maps from [Google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
-- **WOLFRAM_API** - API Key from [wolfram alpha](https://www.wolframalpha.com/)
-- **BIRTHDAY** - Birth date in the format DD-MM - Example: `24-April`
+- **OPENAI_API** - API Key from [openai](https://platform.openai.com/account/api-keys)
+- **OPENAI_REUSE_THRESHOLD** - This is the threshold for sequence matching repeated requests. Defaults to `None`
+> Setting the `OPENAI_REUSE_THRESHOLD` (**range:** `0.5` to `0.9`) will try to avoid hitting OpenAI API more frequently 
+> for repeated identical requests.<br>
+> This threshold is the `ratio` of acceptable result for `SequenceMatching` between a new request and 
+> historically identical request.
 
 **[Email/SMS notifications](https://github.com/thevickypedia/gmail-connector)**
 - **GMAIL_USER** - Gmail account username to send and read emails.

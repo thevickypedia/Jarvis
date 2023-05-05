@@ -2632,15 +2632,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-jarvis.executors.conditions" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.conditions.conditions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conditions function is used to check the message processed.</p>
 <p>Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
-<li><p><strong>should_return</strong> – A boolean flag sent by <code class="docutils literal notranslate"><span class="pre">Activator</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2662,14 +2659,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="commander"></span><h1>Commander<a class="headerlink" href="#module-jarvis.executors.commander" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.commander.split_phrase">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">conditions</span></span></span><a class="headerlink" href="#jarvis.executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">conditions</span></span></span><a class="headerlink" href="#jarvis.executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
-<li><p><strong>should_return</strong> – A boolean flag sent to <code class="docutils literal notranslate"><span class="pre">conditions</span></code> to indicate that the <code class="docutils literal notranslate"><span class="pre">else</span></code> part shouldn’t be executed.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
@@ -2730,14 +2724,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.commander.initiator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
 <dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
-<li><p><strong>should_return</strong> – Flag to return the function if nothing is heard.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4472,29 +4463,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.unconditional">
 <span id="unconditional"></span><h1>Unconditional<a class="headerlink" href="#module-jarvis.executors.unconditional" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.unconditional.alpha">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.unconditional.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.unconditional.alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses wolfram alpha API to fetch results for uncategorized phrases heard.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> – Takes the voice recognized statement as argument.</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Handles broad <code class="docutils literal notranslate"><span class="pre">Exception</span></code> clause raised when Full Results API did not find an input parameter while parsing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Boolean True if wolfram alpha API is unable to fetch consumable results.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://products.wolframalpha.com/show-steps-api/documentation/#:~:text=(Error%201000)">Error 1000</a></p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.unconditional.google_maps">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.unconditional.</span></span><span class="sig-name descname"><span class="pre">google_maps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.unconditional.google_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses google’s places api to get places nearby or any particular destination.</p>
@@ -4625,25 +4593,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="weather"></span><h1>Weather<a class="headerlink" href="#module-jarvis.executors.weather" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.weather.make_request">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.weather.make_request" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.weather.make_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get weather information from OpenWeatherMap API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> – URL to make GET request.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>JSON response from api.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.weather.weather_responder">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.weather.</span></span><span class="sig-name descname"><span class="pre">weather_responder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">make_request</span></span></span><a class="headerlink" href="#jarvis.executors.weather.weather_responder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get weather information via api call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -4652,10 +4603,10 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the response from ‘make_request’</p>
+<dd class="field-even"><p>JSON response from api.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>make_request</p>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6806,11 +6757,6 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.wolfram_api">
-<span class="sig-name descname"><span class="pre">wolfram_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.wolfram_api" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.maps_api">
 <span class="sig-name descname"><span class="pre">maps_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.maps_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6818,6 +6764,16 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.news_api">
 <span class="sig-name descname"><span class="pre">news_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.news_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_api">
+<span class="sig-name descname"><span class="pre">openai_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_reuse_threshold">
+<span class="sig-name descname"><span class="pre">openai_reuse_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_reuse_threshold" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7215,6 +7171,11 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.training_data">
 <span class="sig-name descname"><span class="pre">training_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.training_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.gpt_data">
+<span class="sig-name descname"><span class="pre">gpt_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.gpt_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -9814,6 +9775,103 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.modules.transformer.gpt">
+<span id="transformer"></span><h1>Transformer<a class="headerlink" href="#module-jarvis.modules.transformer.gpt" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.dump_history">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">dump_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.dump_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump responses from GPT to a yaml file for future response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Request from user.</p></li>
+<li><p><strong>response</strong> – Response from GPT.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.existing_response">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">existing_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.existing_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return existing response if new request closely matches historical requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Request from user.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Reusing responses is not enabled by default.</p></li>
+<li><p>To enable reusing responses, set the env var <code class="docutils literal notranslate"><span class="pre">OPENAI_REUSE_THRESHOLD</span></code> to a value between 0.5 and 0.9</p></li>
+<li><p>This value will choose how close the request should match with a historic request before reusing the response.</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>This can be a problem for phrases like:</dt><dd><ul>
+<li><p><cite>what is the height of Mount Everest</cite></p></li>
+<li><p><cite>what is the height of Mount Rushmore</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis#env-variables">env-variables section of read me</a> about <code class="docutils literal notranslate"><span class="pre">OPENAI_REUSE_THRESHOLD</span></code></p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the closest matching response stored in historical transactions.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">ChatGPT</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for OpenAI’s ChatGPT API.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ChatGPT</span>
+</pre></div>
+</div>
+<p>Initiates authentication to GPT api.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.MESSAGES">
+<span class="sig-name descname"><span class="pre">MESSAGES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.MESSAGES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates authentication and prepares GPT responses ready to be audio fed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries ChatGPT api with the request and speaks the response.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Even without authentication, this plugin can fetch responses from a mapping file.</p></li>
+<li><p>This allows, reuse-ability for requests in identical pattern.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-jarvis.modules.tv.lg">
 <span id="tv-connector"></span><h1>TV Connector<a class="headerlink" href="#module-jarvis.modules.tv.lg" title="Permalink to this heading">¶</a></h1>
 <p>Module for LG tv operations.</p>
@@ -10444,6 +10502,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.templates.templates">Templates</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.timeout.timeout">Timeout</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.transformer.gpt">Transformer</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.tv.lg">TV Connector</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>

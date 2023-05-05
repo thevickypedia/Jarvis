@@ -326,9 +326,10 @@ class EnvConfig(BaseSettings):
 
     # Third party api config
     weather_api: str = Field(default=None, env='WEATHER_API')
-    wolfram_api: str = Field(default=None, env='WOLFRAM_API')
     maps_api: str = Field(default=None, env='MAPS_API')
     news_api: str = Field(default=None, env='NEWS_API')
+    openai_api: str = Field(default=None, env='OPENAI_API')
+    openai_reuse_threshold: float = Field(default=None, ge=0.5, le=0.9, env='OPENAI_REUSE_THRESHOLD')
 
     # Communication config
     gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
@@ -514,6 +515,7 @@ class FileIO(BaseModel):
     # Future useful
     frequent: FilePath = os.path.join('fileio', 'frequent.yaml')
     training_data: FilePath = os.path.join('fileio', 'training_data.yaml')
+    gpt_data: FilePath = os.path.join('fileio', 'gpt_history.yaml')
 
     # Jarvis internal
     location: FilePath = os.path.join('fileio', 'location.yaml')

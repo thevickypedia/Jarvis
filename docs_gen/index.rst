@@ -873,6 +873,13 @@ Timeout
    :members:
    :undoc-members:
 
+Transformer
+===========
+
+.. automodule:: jarvis.modules.transformer.gpt
+   :members:
+   :undoc-members:
+
 TV Connector
 ============
 

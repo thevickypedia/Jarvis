@@ -296,7 +296,7 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     if word_match.word_match(phrase=command, match_list=keywords.keywords.photo):
         return others.photo()
     # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response
-    conditions.conditions(phrase=command, should_return=True)
+    conditions.conditions(phrase=command)
     shared.called_by_offline = False
     if response := shared.text_spoken:
         shared.text_spoken = None
