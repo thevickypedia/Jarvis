@@ -7,12 +7,11 @@ from typing import Dict, List, NoReturn
 import gmailconnector
 import yaml
 
-from jarvis.executors import offline, word_match
+from jarvis.executors import offline
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.offline import compatibles
 from jarvis.modules.utils import shared, support
 
 
@@ -41,15 +40,11 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
     """
     start = time.time()
     log_file = config.multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
-    offline_compatible = compatibles.offline_compatible()
     successful, failed = 0, 0
     shared.called_by_offline = True
     for category, task_list in simulation_data.items():
         logger.info("Requesting category: %s", category)
         for task in task_list:
-            if not word_match.word_match(phrase=task, match_list=offline_compatible):
-                logger.warning("'%s' is not an offline compatible request.", task)
-                continue
             logger.info("Request: %s", task)
             try:
                 response = offline.offline_communicator(command=task)

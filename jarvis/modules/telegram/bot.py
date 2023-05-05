@@ -28,7 +28,6 @@ from jarvis.modules.database import database
 from jarvis.modules.exceptions import BotInUse, EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.offline import compatibles
 from jarvis.modules.telegram import audio_handler, file_handler
 from jarvis.modules.utils import support, util
 
@@ -557,18 +556,7 @@ class TelegramBot:
             keywords.keywords.distance + keywords.keywords.avoid
         if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
             for each in command.split(' and '):
-                if not word_match.word_match(phrase=each, match_list=compatibles.offline_compatible()):
-                    logger.warning("'%s' is not a part of offline communicator compatible request.", each)
-                    self.send_message(chat_id=payload['from']['id'],
-                                      response=f"{each!r} is not a part of offline communicator compatible request.")
-                else:
-                    self.executor(command=each, payload=payload)
-            return
-
-        if not word_match.word_match(phrase=command, match_list=compatibles.offline_compatible()):
-            logger.warning("'%s' is not a part of offline communicator compatible request.", command)
-            self.send_message(chat_id=payload['from']['id'],
-                              response=f"{command!r} is not a part of offline communicator compatible request.")
+                self.executor(command=each, payload=payload)
             return
 
         # Keywords for which the ' after ' split should not happen.

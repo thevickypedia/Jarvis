@@ -156,17 +156,22 @@ class ChatGPT:
         self.MESSAGES.append(
             {"role": "user", "content": phrase},
         )
-        chat: OpenAIObject = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=self.MESSAGES
-        )
+        try:
+            chat: OpenAIObject = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo", messages=self.MESSAGES
+            )
+        except OpenAIError as error:
+            logger.error(error)
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")
+            return
         if chat.choices:
             reply = chat.choices[0].message.content
             self.MESSAGES.append({"role": "assistant", "content": reply})
             Thread(target=dump_history, args=(phrase, reply)).start()
             speaker.speak(text=reply)
         else:
-            logger.critical(chat)
-            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the Open AI.")
+            logger.error(chat)
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")
 
 
 if current_process().name in ('JARVIS', 'telegram_api', 'fast_api'):

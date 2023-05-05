@@ -30,7 +30,8 @@ from jarvis.executors.robinhood import robinhood  # noqa
 from jarvis.executors.simulator import simulation  # noqa
 from jarvis.executors.static_responses import (about_me, age,  # noqa
                                                capabilities, form, greeting,
-                                               languages, what, whats_up, who)
+                                               languages, not_allowed_offline,
+                                               what, whats_up, who)
 from jarvis.executors.system import system_info, system_vitals  # noqa
 from jarvis.executors.todo_list import todo  # noqa
 from jarvis.executors.tv import television  # noqa
@@ -92,9 +93,15 @@ def conditions(phrase: str) -> bool:
                 if not ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):
                     continue
 
-            # Stand alone - Internally used
+            # Stand alone - Internally used [skip for both main and offline processes]
             if category in ("avoid", "ok", "exit_", "avoid", "ngrok", "secrets"):
                 continue
+
+            # Requires manual intervention [skip for offline communicator]
+            if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes',
+                                                         'music', 'voice_changer', 'restart_control', 'shutdown'):
+                not_allowed_offline()
+                return False
 
             modules = globals()  # load all imported function names
             if modules.get(category):  # keyword category matches function name

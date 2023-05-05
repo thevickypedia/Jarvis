@@ -798,13 +798,6 @@ MyQ
    :members:
    :undoc-members:
 
-Offline
-=======
-
-.. automodule:: jarvis.modules.offline.compatibles
-   :members:
-   :undoc-members:
-
 Retry Handler
 =============
 

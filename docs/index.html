@@ -1133,20 +1133,6 @@ last_value: the last value assigned or None</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.helper.offline_compatible">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.helper.offline_compatible" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the list of api compatible words.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the list of api-compatible words as a dictionary.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[str, List[str]]</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-jarvis.api.routers.investment">
 <span id="routers-investment"></span><h1>Routers - Investment<a class="headerlink" href="#module-jarvis.api.routers.investment" title="Permalink to this heading">¶</a></h1>
@@ -1264,7 +1250,6 @@ last_value: the last value assigned or None</p>
 <li><p><a class="reference internal" href="#jarvis.modules.exceptions.APIResponse" title="jarvis.modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
 <li><p><strong>- 200</strong> – A dictionary with the command requested and the response for it from Jarvis.</p></li>
 <li><p><strong>- 204</strong> – If empty command was received.</p></li>
-<li><p><strong>- 422</strong> – If the request is not part of offline compatible words.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -2142,17 +2127,14 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.automation.auto_helper">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offline_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs in a thread to help the automator function in the main module.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>offline_list</strong> – List of offline compatible keywords.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Task to be executed.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Task to be executed.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2205,7 +2187,7 @@ last_value: the last value assigned or None</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.background_task.validate_tasks">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.background_task.</span></span><span class="sig-name descname"><span class="pre">validate_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.background_task.validate_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates each background task if it is offline compatible.</p>
+<dd><p>Validates each of the background tasks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>log</strong> – Takes a boolean flag to suppress info level logging.</p>
@@ -4301,6 +4283,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.static_responses.about_me">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.static_responses.</span></span><span class="sig-name descname"><span class="pre">about_me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.static_responses.about_me" title="Permalink to this definition">¶</a></dt>
 <dd><p>Response for about me.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.static_responses.not_allowed_offline">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.static_responses.</span></span><span class="sig-name descname"><span class="pre">not_allowed_offline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.static_responses.not_allowed_offline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Response for tasks not supported via offline communicator.</p>
 </dd></dl>
 
 </section>
@@ -8319,27 +8307,6 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="id5">
-<h1>Offline<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
-<span class="target" id="module-jarvis.modules.offline.compatibles"></span><p>Modules to store offline compatible words and wrap as a list.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Compatibles</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.offline.compatibles.offline_compatible">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.offline.compatibles.</span></span><span class="sig-name descname"><span class="pre">offline_compatible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.offline.compatibles.offline_compatible" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">Keywords</span></code> and <code class="docutils literal notranslate"><span class="pre">Conversation</span></code> classes to get the variables that do not require user interaction.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Flat list from a matrix (list of lists) after removing the duplicates.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-jarvis.modules.retry.retry">
 <span id="retry-handler"></span><h1>Retry Handler<a class="headerlink" href="#module-jarvis.modules.retry.retry" title="Permalink to this heading">¶</a></h1>
 <p>Module that creates a wrapper that can be used to functions that should be retried upon exceptions.</p>
@@ -9103,8 +9070,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="id6">
-<h1>Telegram<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
+<section id="id5">
+<h1>Telegram<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.telegram.bot"></span><p>Module for TelegramAPI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Bot</span>
 </pre></div>
@@ -10493,12 +10460,11 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.meetings.ics">Meetings</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.myq.myq">MyQ</a></li>
-<li><a class="reference internal" href="#id5">Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.retry.retry">Retry Handler</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.util">Utilities</a></li>
-<li><a class="reference internal" href="#id6">Telegram</a></li>
+<li><a class="reference internal" href="#id5">Telegram</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.templates.templates">Templates</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.timeout.timeout">Timeout</a></li>

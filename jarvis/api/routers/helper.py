@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
 from jarvis.modules.conditions import conversation as conversation_mod
 from jarvis.modules.conditions import keywords as keywords_mod
-from jarvis.modules.offline import compatibles
 
 router = APIRouter()
 
@@ -30,15 +29,3 @@ async def conversations():
         Key-value pairs of the conversation file.
     """
     return {k: v for k, v in conversation_mod.__dict__.items() if isinstance(v, list)}
-
-
-@router.get(path="/api-compatible", dependencies=OFFLINE_PROTECTOR)
-async def offline_compatible():
-    """Returns the list of api compatible words.
-
-    Returns:
-
-        Dict[str, List[str]]:
-        Returns the list of api-compatible words as a dictionary.
-    """
-    return {"compatible": compatibles.offline_compatible()}
