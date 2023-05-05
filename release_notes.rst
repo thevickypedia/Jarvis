@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.3.7 (05/05/2023)
+------------------
+- Fix inconsistent offline compatibles
+- Remove todo for NLTK since compute time is high
+
 7.3.6 (05/05/2023)
 ------------------
 - Reduce latency on text classification
