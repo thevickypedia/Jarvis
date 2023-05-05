@@ -49,7 +49,6 @@ from jarvis.modules.meetings.ics_meetings import meetings  # noqa
 from jarvis.modules.utils import shared, support  # noqa
 
 
-# todo: tokenzie and lemmatize using NLTK and compare performance
 def conditions(phrase: str, should_return: bool = False) -> bool:
     """Conditions function is used to check the message processed.
 
