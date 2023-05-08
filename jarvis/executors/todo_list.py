@@ -87,7 +87,7 @@ def add_todo() -> None:
                 return
     with tdb.connection:
         cursor = tdb.connection.cursor()
-        cursor.execute("INSERT OR REPLACE INTO tasks (category, item) VALUES (?,?)", (category, item))
+        cursor.execute("INSERT or REPLACE INTO tasks (category, item) VALUES (?,?)", (category, item))
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
     category_continue = listener.listen()

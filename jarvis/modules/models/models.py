@@ -41,6 +41,7 @@ TABLES = {
     "vpn": ("state",),
     "party": ("pid",),
     "guard": ("state", "trigger"),
+    "robinhood": ("summary",),
     "listener": ("state",),
 }
 KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`

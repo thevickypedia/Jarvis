@@ -36,7 +36,7 @@ class Investment:
             self.result = []
         self.rh = rh
 
-    def watcher(self) -> Tuple[str, str, str, str]:
+    def watcher(self) -> Tuple[str, str, str, str, str]:
         """Gathers all the information and wraps into parts of strings to create an HTML file.
 
         Returns:
@@ -44,14 +44,14 @@ class Investment:
             Returns a tuple of portfolio header, profit, loss, and current profit/loss compared from purchased.
         """
         shares_total, loss_dict, profit_dict = [], {}, {}
-        n, n_ = 0, 0
+        num_stocks, num_shares = 0, 0
         self.logger.info('Gathering portfolio.')
         for data in self.result:
             shares_count = int(data['quantity'].split('.')[0])
             if not shares_count:
                 continue
-            n += 1
-            n_ += shares_count
+            num_stocks += 1
+            num_shares += shares_count
             share_id = str(data['instrument'].split('/')[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
@@ -101,15 +101,20 @@ class Investment:
                    'The above values might differ from overall profit/loss if multiple shares ' \
                    'of the stock were purchased at different prices.'
         net_worth = round(float(self.rh.equity()), 2)
-        output = f'Total number of stocks purchased: {n:,}\n'
-        output += f'Total number of shares owned: {n_:,}\n'
+        output = f'Total number of stocks purchased: {num_stocks:,}\n'
+        output += f'Total number of shares owned: {num_shares:,}\n'
         output += f'\nCurrent value of your total investment is: ${net_worth:,}'
         total_buy = round(math.fsum(shares_total), 2)
         output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
         total_diff = round(float(net_worth - total_buy), 2)
+        rh_text = f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares sir. " \
+                  f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you " \
+                  f"purchased. Currently we are on an overall "
         if total_diff < 0:
+            rh_text += f"loss of ${round(total_diff):,} {models.env.title}"
             output += f'\n\nOverall Loss: ${total_diff:,}'
         else:
+            rh_text += f"profit of ${round(total_diff):,} {models.env.title}"
             output += f'\n\nOverall Profit: ${total_diff:,}'
         yesterday_close = round(float(self.rh.equity_previous_close()), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
@@ -118,7 +123,7 @@ class Investment:
             output += f"\nCurrent Dip: ${two_day_diff:,}"
         else:
             output += f"\nCurrent Spike: ${two_day_diff:,}"
-        return port_msg, profit_output, loss_output, output
+        return port_msg, profit_output, loss_output, output, rh_text
 
     def watchlist(self, interval: str = 'hour', strict: bool = False) -> Tuple[str, str]:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
@@ -178,7 +183,7 @@ class Investment:
             return
         current_time = datetime.now()
 
-        port_head, profit, loss, overall_result = self.watcher()
+        port_head, profit, loss, overall_result, summary = self.watcher()
         s1, s2 = self.watchlist()
         self.logger.info('Generating HTMl file.')
 
@@ -199,6 +204,12 @@ class Investment:
         with open(models.fileio.robinhood, 'w') as static_file:
             static_file.write(rendered)
         self.logger.info("Static file '%s' has been generated.", models.fileio.robinhood)
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("DELETE FROM robinhood;")
+            cursor.execute("INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,))
+            db.connection.commit()
+        self.logger.info("Stored summary in database.")
 
     def report_gatherer(self) -> NoReturn:
         """Runs gatherer to call other dependent methods."""
@@ -216,13 +227,15 @@ if __name__ == '__main__':
 
     current_process().name = "StockReport"
     from jarvis.executors import crontab
+    from jarvis.modules.database import database
     from jarvis.modules.exceptions import EgressErrors
-    from jarvis.modules.logger import config
-    from jarvis.modules.logger.custom_logger import logger as main_logger
+    from jarvis.modules.logger import config, custom_logger
     from jarvis.modules.models import models
     from jarvis.modules.templates import templates
 
     config.multiprocessing_logger(filename=crontab.LOG_FILE)
-    for log_filter in main_logger.filters:
-        main_logger.removeFilter(filter=log_filter)
-    Investment(logger=main_logger).report_gatherer()
+    for log_filter in custom_logger.logger.filters:
+        custom_logger.logger.removeFilter(filter=log_filter)
+
+    db = database.Database(database=models.fileio.base_db)
+    Investment(logger=custom_logger.logger).report_gatherer()

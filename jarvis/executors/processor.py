@@ -156,7 +156,7 @@ def stop_child_processes() -> NoReturn:
             try:
                 proc = psutil.Process(pid=pid)
             except psutil.NoSuchProcess:
-                # Occurs commonly since child processes run only for a short time and `INSERT OR REPLACE` leaves dupes
+                # Occurs commonly since child processes run only for a short time and `INSERT or REPLACE` leaves dupes
                 logger.debug("Process [%s] PID not found %d", category, pid)
                 continue
             logger.info("Stopping process [%s] with PID: %d", category, pid)

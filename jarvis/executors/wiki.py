@@ -28,7 +28,7 @@ def wikipedia_(phrase: str) -> None:
         result = WikipediaPage(keyword).summary
     except DisambiguationError as error:
         logger.error(error)
-        speaker.speak(text=f"Your keyword has multiple results {models.env.title}. {' '.join(error.options)}"
+        speaker.speak(text=f"Your keyword has multiple results {models.env.title}. {' '.join(error.options)}. "
                            "Please pick one and try again.")
         if shared.called_by_offline:
             return

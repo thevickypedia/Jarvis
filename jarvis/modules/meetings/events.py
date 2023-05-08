@@ -35,7 +35,7 @@ def events_writer() -> NoReturn:
     This function runs in a dedicated process to avoid wait time when events information is requested.
     """
     info = events_gatherer()
-    query = f"INSERT OR REPLACE INTO {models.env.event_app} (info, date) VALUES " \
+    query = f"INSERT or REPLACE INTO {models.env.event_app} (info, date) VALUES " \
             f"{(info, datetime.now().strftime('%Y_%m_%d'))}"
     with db.connection:
         cursor = db.connection.cursor()

@@ -10,7 +10,6 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
 db = database.Database(database=models.fileio.base_db)
-colors = list(preset_values.PRESET_VALUES.values())
 
 
 def turn_off(host: str) -> NoReturn:
@@ -62,10 +61,9 @@ def preset(device_ip, color: int = None, speed: int = 100) -> NoReturn:
         color: Preset value extracted from list of color codes. Defaults to a random color code.
         speed: Speed of color change. Defaults to 100.
     """
-    smart_lights.MagicHomeApi(device_ip=device_ip,
-                              operation='Preset Values',
-                              device_type=2).send_preset_function(preset_number=color or random.choice(colors),
-                                                                  speed=speed)
+    smart_lights.MagicHomeApi(device_ip=device_ip, operation='Preset Values', device_type=2).send_preset_function(
+        preset_number=color or random.choice(list(preset_values.PRESET_VALUES.values())), speed=speed
+    )
 
 
 def runner(host_ip: List[str]) -> NoReturn:

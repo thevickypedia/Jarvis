@@ -10,7 +10,7 @@ from typing import List
 
 
 def keyword_mapping() -> OrderedDict[str, List[str]]:
-    """Returns a dictionary of base keywords mapping.
+    """Returns an ordered dictionary of base keywords mapping.
 
     See Also:
         - Keywords should have both singular and plural forms wherever possible.
