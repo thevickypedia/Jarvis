@@ -63,7 +63,7 @@ def put_listener_state(state: bool) -> NoReturn:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM listener")
         if state:
-            cursor.execute("INSERT or REPLACE INTO listener (state) VALUES (?) ", (state,))
+            cursor.execute("INSERT or REPLACE INTO listener (state) VALUES (?);", (state,))
             cursor.execute("UPDATE listener SET state=(?)", (state,))
         else:
             cursor.execute("UPDATE listener SET state=null")

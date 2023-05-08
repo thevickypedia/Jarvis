@@ -5,13 +5,11 @@
 
 """
 
-import importlib
 import json
 import logging
 import os
 import random
 import secrets
-import string
 import sys
 import time
 import traceback
@@ -29,8 +27,6 @@ from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import audio_handler, file_handler
 from jarvis.modules.utils import support, util
-
-importlib.reload(module=logging)
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -543,8 +539,9 @@ class TelegramBot:
         command_lower = command.lower()
         if 'alarm' in command_lower or 'remind' in command_lower:
             command = command_lower
-        else:
-            command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
+        # todo: Check if this required
+        # else:
+        #     command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
         if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return

@@ -24,7 +24,6 @@ from jarvis.modules.models import classes, models
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
-smart_listener = Queue()
 
 
 def background_tasks() -> NoReturn:
@@ -37,6 +36,7 @@ def background_tasks() -> NoReturn:
     start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True
+    smart_listener = Queue()
     w_alert = {'time': ''}
     while True:
         now = datetime.now()

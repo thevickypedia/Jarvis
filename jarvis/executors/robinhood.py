@@ -6,9 +6,12 @@ from pyrh import Robinhood
 from pyrh.exceptions import InvalidInstrumentId, InvalidTickerSymbol
 
 from jarvis.modules.audio import speaker
+from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
+
+db = database.Database(database=models.fileio.base_db)
 
 
 def watcher(rh, result: list) -> str:
@@ -69,6 +72,14 @@ def robinhood(*args) -> None:
         support.no_env_vars()
         return
 
+    # Tries to get information from DB from the hourly CRON job for stock report
+    with db.connection:
+        cursor = db.connection.cursor()
+        state = cursor.execute("SELECT summary FROM robinhood").fetchone()
+    if state and state[0]:
+        logger.info("Retrieved summary stored by hourly stock report")
+        speaker.speak(text=state[0])
+        return
     rh = Robinhood()
     rh.login(username=models.env.robinhood_user, password=models.env.robinhood_pass, qr_code=models.env.robinhood_qr)
     raw_result = rh.positions()

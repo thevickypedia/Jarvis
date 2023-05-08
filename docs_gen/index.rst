@@ -353,6 +353,13 @@ Files
    :members:
    :undoc-members:
 
+Functions
+=========
+
+.. automodule:: jarvis.executors.functions
+   :members:
+   :undoc-members:
+
 Garage Door
 ===========
 

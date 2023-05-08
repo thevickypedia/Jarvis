@@ -35,7 +35,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
-# set to accessible only via offline communicators
+# set to be accessible only via offline communicators
 # WATCH OUT: for changes in function name
 if current_process().name in ("fast_api", "telegram_api"):
     SECRET_STORAGE = {'aws': [], 'local': []}

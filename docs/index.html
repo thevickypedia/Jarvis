@@ -1973,7 +1973,7 @@ last_value: the last value assigned or None</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.api.triggers.stock_report.Investment.watcher">
-<span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.watcher" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.watcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gathers all the information and wraps into parts of strings to create an HTML file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -3006,6 +3006,27 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> – Data dict that has to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.functions">
+<span id="functions"></span><h1>Functions<a class="headerlink" href="#module-jarvis.executors.functions" title="Permalink to this heading">¶</a></h1>
+<p>Creates a dictionary with the keyword category as key and the function to be called as value.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Functions</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.functions.function_mapping">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.functions.</span></span><span class="sig-name descname"><span class="pre">function_mapping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.functions.function_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an ordered dictionary of functions mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OrderedDict of category and keywords as key-value pairs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>OrderedDict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6082,7 +6103,7 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.conditions.keywords_base.keyword_mapping">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.conditions.keywords_base.</span></span><span class="sig-name descname"><span class="pre">keyword_mapping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.conditions.keywords_base.keyword_mapping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of base keywords mapping.</p>
+<dd><p>Returns an ordered dictionary of base keywords mapping.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -10395,6 +10416,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.face">Face</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.files">Files</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.functions">Functions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.myq_controller">Garage Door</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.github">GitHub</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.guard">Guard</a></li>

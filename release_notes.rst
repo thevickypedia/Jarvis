@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.4.1 (05/08/2023)
+------------------
+- Optimize memory usage and remove globals
+- Reduce top level variable declarations
+- Create function mapping dict in place of globals
+- Reuse stock report for robinhood summarization
+
 7.4.0 (05/07/2023)
 ------------------
 - Add info to response on failed lights functions
