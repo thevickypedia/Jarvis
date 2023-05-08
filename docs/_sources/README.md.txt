@@ -327,40 +327,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 
 </details>
 
-### Background Tasks
-There are two options to run background tasks on Jarvis.
-
-- Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a `background_tasks.yaml` file stored in `fileio` directory.
-    <details>
-    <summary><strong><i>Setup Instructions</i></strong></summary>
-
-  This is the sample content of `background_tasks.yaml`
-
-    ```yaml
-    - seconds: 1_800
-      task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
-      ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
-        - 5
-        - 22
-    - seconds: 10_800
-      task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
-      ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
-    ```
-    </details>
-
-- **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
-    <details>
-    <summary><strong><i>Sample value</i></strong></summary>
-
-    ```yaml
-    [
-      "0 0 * * 1-5/2 find /var/log -delete",
-      "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
-    ]
-    ```
-    </details>
-
-### Contacts
+### Contacts [Optional]
 Jarvis can send on demand notifications using a ``contacts.yaml`` file stored in ``fileio`` directory. Uses [gmail-connector](https://pypi.org/project/gmail-connector/) for SMS and email notifications.
 
 <details>
@@ -378,7 +345,7 @@ email:
 ```
 </details>
 
-### Smart Devices
+### Smart Devices [Optional]
 A source file `smart_devices.yaml` is used to store smart devices' hostnames.
 Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7GY43L), `LGWebOS` and `Roku` for TVs.
 
@@ -413,8 +380,6 @@ hallway basement:
 kitchen:
   - 'HOSTNAMES'
 living room:
-  - 'HOSTNAMES'
-party mode:  # Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled
   - 'HOSTNAMES'
 living room tv:
   hostname: 'HOSTNAME'
@@ -463,6 +428,39 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
   task: restart all background processes
 ```
 </details>
+
+### Background Tasks [Optional]
+There are two options to run background tasks on Jarvis.
+
+- Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a `background_tasks.yaml` file stored in `fileio` directory.
+    <details>
+    <summary><strong><i>Setup Instructions</i></strong></summary>
+
+  This is the sample content of `background_tasks.yaml`
+
+    ```yaml
+    - seconds: 1_800
+      task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
+      ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
+        - 5
+        - 22
+    - seconds: 10_800
+      task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
+      ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
+    ```
+    </details>
+
+- **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
+    <details>
+    <summary><strong><i>Sample value</i></strong></summary>
+
+    ```yaml
+    [
+      "0 0 * * 1-5/2 find /var/log -delete",
+      "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
+    ]
+    ```
+    </details>
 
 ### Simulation Setup [Optional]
 Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 

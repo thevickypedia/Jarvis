@@ -147,13 +147,6 @@ Routers - FileIO
    :members:
    :undoc-members:
 
-Routers - Helper
-================
-
-.. automodule:: jarvis.api.routers.helper
-   :members:
-   :undoc-members:
-
 Routers - Investment
 ====================
 

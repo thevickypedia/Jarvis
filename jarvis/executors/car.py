@@ -1,7 +1,4 @@
-import json
 import time
-import urllib.error
-import urllib.request
 from datetime import datetime
 from multiprocessing import current_process
 from multiprocessing.context import \
@@ -12,9 +9,8 @@ from typing import Dict, List, NoReturn, Tuple, Union
 
 import gmailconnector
 import jinja2
-import requests
 
-from jarvis.executors import communicator, files, location, word_match
+from jarvis.executors import communicator, files, location, weather, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.car import connector, controller
 from jarvis.modules.exceptions import EgressErrors
@@ -28,22 +24,19 @@ AUTHORIZATION = classes.VehicleAuthorization()
 
 
 def create_connection() -> NoReturn:
-    """Creates a new connection and stores the refresh token and device ID in a dedicated object.
-
-    Returns:
-        Tuple[connector.Connect, str]:
-        Connection object and the primary vehicle's VIN number as a tuple.
-    """
+    """Creates a new connection and stores the refresh token and device ID in a dedicated object."""
     if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
         # this might never happen, as the connection and vin are reused until auth expiry anyway
         connection = connector.Connect(username=models.env.car_email, refresh_token=AUTHORIZATION.refresh_token,
                                        device_id=AUTHORIZATION.device_id)
+        logger.info("Using refresh token to create a connection with JLR API")
     else:
         connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass,
                                        auth_expiry=time.time() + 86_400)
+        logger.info("Using password to create a connection with JLR API")
     try:
         connection.connect()
-    except requests.RequestException as error:
+    except EgressErrors as error:
         logger.error(error)
         connection.head = None
     if connection.head:
@@ -53,6 +46,7 @@ def create_connection() -> NoReturn:
         logger.debug(AUTHORIZATION.__dict__)
         vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
         if vin := [vehicle_.get('vin') for vehicle_ in vehicles if vehicle_.get('role', '') == 'Primary']:
+            logger.info("Created connection on VIN: %s", vin[0])
             CONNECTION.connection = connection
             CONNECTION.vin = vin[0]
 
@@ -73,11 +67,10 @@ def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[in
         A tuple of current temperature and target temperature.
     """
     try:
-        current_temp = int(json.loads(urllib.request.urlopen(
-            url=f"https://api.openweathermap.org/data/2.5/onecall?lat={latitude}&"
-                f"lon={longitude}&exclude=minutely,hourly&appid={models.env.weather_api}&units=imperial"
-        ).read())['current']['temp'])
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        response = weather.make_request(lat=latitude, lon=longitude)
+        if not (current_temp := response.get('current', {}).get('temp')):
+            return "unknown", 66
+    except EgressErrors as error:
         logger.error(error)
         return "unknown", 66
     target_temp = 83 if current_temp < 45 else 57 if current_temp > 70 else 66

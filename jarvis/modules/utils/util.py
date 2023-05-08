@@ -300,7 +300,22 @@ def matrix_to_flat_list(input_: List[list]) -> List:
         list:
         Flat list.
     """
-    return sum(input_, []) or [item for sublist in input_ for item in sublist]
+    if filter(lambda x: isinstance(x, list), input_):  # do conversion only if it is a real matrix
+        return sum(input_, []) or [item for sublist in input_ for item in sublist]
+    return input_
+
+
+def remove_none(input_: List[Any]) -> List[Any]:
+    """Removes None values from a list.
+
+    Args:
+        input_: Takes a list as an argument.
+
+    Returns:
+        list:
+        Clean list without None values.
+    """
+    return list(filter(None, input_))
 
 
 def remove_duplicates(input_: List[Any]) -> List[Any]:

@@ -10,7 +10,6 @@ import yaml
 from playsound import playsound
 from pywifi import ControlConnection, ControlPeripheral
 
-from jarvis._preexec import keywords_handler  # noqa
 from jarvis.executors import (commander, controls, internet, listener_controls,
                               location, processor, system)
 from jarvis.modules.audio import listener, speaker
@@ -123,6 +122,7 @@ class Activator:
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
+            wake_len = len(models.env.wake_words)
             while True:
                 util.write_screen(text=self.label)
                 pcm = struct.unpack_from("h" * self.detector.frame_length,
@@ -130,10 +130,10 @@ class Activator:
                                                                 exception_on_overflow=False))
                 result = self.detector.process(pcm=pcm)
                 if models.settings.legacy:
-                    if len(models.env.wake_words) == 1 and result:
+                    if wake_len == 1 and result:
                         models.settings.bot = models.env.wake_words[0]
                         self.executor()
-                    elif len(models.env.wake_words) > 1 and result >= 0:
+                    elif wake_len > 1 and result >= 0:
                         models.settings.bot = models.env.wake_words[result]
                         self.executor()
                 else:
@@ -142,7 +142,6 @@ class Activator:
                         self.executor()
                 if models.settings.limited:
                     continue
-                keywords_handler.rewrite_keywords()
                 restart_checker()
                 if flag := support.check_stop():
                     logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])

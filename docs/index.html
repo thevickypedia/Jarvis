@@ -54,10 +54,10 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="README.html#peripherals">Peripherals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks">Background Tasks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#contacts">Contacts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices">Smart Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#contacts-optional">Contacts [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices-optional">Smart Devices [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks-optional">Background Tasks [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>
@@ -681,17 +681,6 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.fast.update_keywords">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">update_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.update_keywords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets initiated in a thread to update keywords upon file modification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>buffer</strong> – Interval in seconds before each update.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.fast.start_robinhood">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
@@ -1057,6 +1046,20 @@ last_value: the last value assigned or None</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.basics.keywords">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.basics.</span></span><span class="sig-name descname"><span class="pre">keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.basics.keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the keywords and conversations into a dictionary of key-value pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Key-value pairs of the keywords file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.api.routers.fileio">
 <span id="routers-fileio"></span><h1>Routers - FileIO<a class="headerlink" href="#module-jarvis.api.routers.fileio" title="Permalink to this heading">¶</a></h1>
@@ -1098,37 +1101,6 @@ last_value: the last value assigned or None</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file</strong> – Takes the UploadFile object as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-jarvis.api.routers.helper">
-<span id="routers-helper"></span><h1>Routers - Helper<a class="headerlink" href="#module-jarvis.api.routers.helper" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.helper.keywords">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.helper.keywords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the keywords.py file into a dictionary of key-value pairs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Key-value pairs of the keywords file.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[str, List[str]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.helper.conversations">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.helper.</span></span><span class="sig-name descname"><span class="pre">conversations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.helper.conversations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the conversation.py file into a dictionary of key-value pairs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Key-value pairs of the conversation file.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[str, List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2205,14 +2177,6 @@ last_value: the last value assigned or None</p>
 <dt class="sig sig-object py" id="jarvis.executors.car.create_connection">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.car.create_connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new connection and stores the refresh token and device ID in a dedicated object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Connection object and the primary vehicle’s VIN number as a tuple.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple[<a class="reference internal" href="#jarvis.modules.car.connector.Connect" title="jarvis.modules.car.connector.Connect">connector.Connect</a>, str]</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -3357,56 +3321,9 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.executors.lights">
 <span id="lights"></span><h1>Lights<a class="headerlink" href="#module-jarvis.executors.lights" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.lights.turn_off">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights.turn_off" title="Permalink to this definition">¶</a></dt>
-<dd><p>Turns off the device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.lights.warm">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">warm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights.warm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets lights to warm/yellow.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.lights.cool">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">cool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights.cool" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets lights to cool/white.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.lights.lumen">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">lumen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">255</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights.lumen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets lights to custom brightness.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>host</strong> – Takes target device IP address as an argument.</p></li>
-<li><p><strong>rgb</strong> – Red, Green andBlue values to alter the brightness.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.executors.lights.ThreadExecutor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">ThreadExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.lights.ThreadExecutor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">ThreadExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.lights.ThreadExecutor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates <code class="docutils literal notranslate"><span class="pre">ThreadExecutor</span></code> object to control the lights using pool of threads.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ThreadExecutor</span>
 </pre></div>
@@ -3414,7 +3331,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <p>Initializes the class and assign object members.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.executors.lights.ThreadExecutor.thread_worker">
-<span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.executors.lights.ThreadExecutor.thread_worker" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">IPv4Address</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.lights.ThreadExecutor.thread_worker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3450,6 +3367,53 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.executors.lights_squire">
 <span id="lights-squire"></span><h1>Lights Squire<a class="headerlink" href="#module-jarvis.executors.lights_squire" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.lights_squire.turn_off">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.turn_off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns off the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.lights_squire.warm">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">warm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.warm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to warm/yellow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.lights_squire.cool">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">cool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.cool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to cool/white.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host</strong> – Takes target device IP address as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.lights_squire.lumen">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">lumen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">255</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.lumen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets lights to custom brightness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> – Takes target device IP address as an argument.</p></li>
+<li><p><strong>rgb</strong> – Red, Green andBlue values to alter the brightness.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.lights_squire.preset">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.preset" title="Permalink to this definition">¶</a></dt>
@@ -9000,6 +8964,23 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.util.remove_none">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">remove_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.remove_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes None values from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_</strong> – Takes a list as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Clean list without None values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.utils.util.remove_duplicates">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">remove_duplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.remove_duplicates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove duplicate values from a list.</p>
@@ -10384,7 +10365,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#modals-settings">Modals - Settings</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
-<li><a class="reference internal" href="#module-jarvis.api.routers.helper">Routers - Helper</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.offline">Routers - Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
