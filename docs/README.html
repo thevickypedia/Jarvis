@@ -382,37 +382,8 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 <li><p><strong>AUTHOR_MODE</strong> - Enables reverse proxy tunnel (to expose API endpoint), robinhood portfolio scan (every hour) and stock monitoring (every 15 minutes). Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </details></section>
-<section id="background-tasks">
-<h2>Background Tasks<a class="headerlink" href="#background-tasks" title="Permalink to this heading">¶</a></h2>
-<p>There are two options to run background tasks on Jarvis.</p>
-<ul>
-<li><p>Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
-  <details>
-  <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
-<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span>
-<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21-6&quot;</span><span class="w">  </span><span class="c1"># Ignore the schedule between 9 PM and 6 AM</span>
-</pre></div>
-</div>
-  </details></li>
-<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
-  <details>
-  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span>
-<span class="p p-Indicator">]</span>
-</pre></div>
-</div>
-  </details></li>
-</ul>
-</section>
-<section id="contacts">
-<h2>Contacts<a class="headerlink" href="#contacts" title="Permalink to this heading">¶</a></h2>
+<section id="contacts-optional">
+<h2>Contacts [Optional]<a class="headerlink" href="#contacts-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can send on demand notifications using a <code class="docutils literal notranslate"><span class="pre">contacts.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory. Uses <a class="reference external" href="https://pypi.org/project/gmail-connector/">gmail-connector</a> for SMS and email notifications.</p>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><blockquote>
@@ -427,8 +398,8 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </details></section>
-<section id="smart-devices">
-<h2>Smart Devices<a class="headerlink" href="#smart-devices" title="Permalink to this heading">¶</a></h2>
+<section id="smart-devices-optional">
+<h2>Smart Devices [Optional]<a class="headerlink" href="#smart-devices-optional" title="Permalink to this heading">¶</a></h2>
 <p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames.
 Jarvis supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> for <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L">lights</a>, <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> and <code class="docutils literal notranslate"><span class="pre">Roku</span></code> for TVs.</p>
 <ul>
@@ -466,8 +437,6 @@ Jarvis supports <code class="docutils literal notranslate"><span class="pre">Mag
 <span class="nt">kitchen</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
 <span class="nt">living room</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">party mode</span><span class="p">:</span><span class="w">  </span><span class="c1"># Light hostnames that needs to be engaged for party mode, if not present individual lights can be enabled</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
 <span class="nt">living room tv</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span>
@@ -513,6 +482,35 @@ Date format should match exactly as described below.</p>
 </pre></div>
 </div>
 </details></section>
+<section id="background-tasks-optional">
+<h2>Background Tasks [Optional]<a class="headerlink" href="#background-tasks-optional" title="Permalink to this heading">¶</a></h2>
+<p>There are two options to run background tasks on Jarvis.</p>
+<ul>
+<li><p>Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+  <details>
+  <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21-6&quot;</span><span class="w">  </span><span class="c1"># Ignore the schedule between 9 PM and 6 AM</span>
+</pre></div>
+</div>
+  </details></li>
+<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
+  <details>
+  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span>
+<span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+  </details></li>
+</ul>
+</section>
 <section id="simulation-setup-optional">
 <h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
@@ -597,10 +595,10 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
 <li><a class="reference internal" href="#peripherals">Peripherals</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#background-tasks">Background Tasks</a></li>
-<li><a class="reference internal" href="#contacts">Contacts</a></li>
-<li><a class="reference internal" href="#smart-devices">Smart Devices</a></li>
+<li><a class="reference internal" href="#contacts-optional">Contacts [Optional]</a></li>
+<li><a class="reference internal" href="#smart-devices-optional">Smart Devices [Optional]</a></li>
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li><a class="reference internal" href="#background-tasks-optional">Background Tasks [Optional]</a></li>
 <li><a class="reference internal" href="#simulation-setup-optional">Simulation Setup [Optional]</a></li>
 </ul>
 </li>

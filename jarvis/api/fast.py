@@ -1,13 +1,10 @@
-import time
 from multiprocessing import current_process
-from threading import Thread
 from typing import Any, NoReturn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from jarvis import version
-from jarvis._preexec import keywords_handler  # noqa
 from jarvis.api import routers
 from jarvis.api.squire import discover, stockmonitor_squire
 from jarvis.api.squire.logger import logger
@@ -50,22 +47,9 @@ if current_process().name == "fast_api":  # Avoid looping when called by subproc
         app.include_router(router=route)
 
 
-def update_keywords(buffer: int = 10) -> NoReturn:
-    """Gets initiated in a thread to update keywords upon file modification.
-
-    Args:
-        buffer: Interval in seconds before each update.
-    """
-    logger.info("Initiated background task to update keywords upon file modification.")
-    while True:
-        keywords_handler.rewrite_keywords()
-        time.sleep(buffer)
-
-
 @app.on_event(event_type='startup')
 async def start_robinhood() -> Any:
     """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
     logger.info("Hosting at http://{host}:{port}".format(host=models.env.offline_host, port=models.env.offline_port))
-    Thread(target=update_keywords).start()
     if models.env.author_mode:
         stockmonitor_squire.nasdaq()

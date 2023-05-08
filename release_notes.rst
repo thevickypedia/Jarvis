@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.4.0 (05/07/2023)
+------------------
+- Add info to response on failed lights functions
+- Set keywords to be read only during startup
+- Remove API endpoint for conversation words
+- Remove redundancy in getting weather information
+
 7.3.9 (05/05/2023)
 ------------------
 - Remove restriction on offline tasks

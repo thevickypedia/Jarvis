@@ -24,4 +24,5 @@ else:
     if current_process().name == 'MainProcess' and \
             not os.environ.get('pre_commit'):  # Ignore unwanted triggers when docs are generated
         current_process().name = 'JARVIS'
+    from ._preexec import keywords_handler  # noqa: F401
     from .main import start  # noqa: F401

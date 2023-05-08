@@ -10,7 +10,6 @@ import requests
 from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
-from jarvis._preexec import keywords_handler  # noqa
 from jarvis.executors import (alarm, automation, background_task, conditions,
                               crontab, listener_controls, others, remind,
                               weather_monitor, word_match)
@@ -189,9 +188,6 @@ def background_tasks() -> NoReturn:
                 Process(target=weather_monitor.monitor, daemon=True).start()
                 w_alert['time'] = now.strftime('%H:%M')
 
-        # Rewrite keywords
-        keywords_handler.rewrite_keywords()
-
         # Re-check for tasks
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
@@ -300,5 +296,5 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
         shared.text_spoken = None
         return response
     else:
-        logger.error("Offline request failed: %s", shared.text_spoken)
+        logger.error("Offline request failed for '%s'", command)
         return f"I was unable to process the request: {command}"

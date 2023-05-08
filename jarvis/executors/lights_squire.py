@@ -13,6 +13,47 @@ db = database.Database(database=models.fileio.base_db)
 colors = list(preset_values.PRESET_VALUES.values())
 
 
+def turn_off(host: str) -> NoReturn:
+    """Turns off the device.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
+
+
+def warm(host: str) -> NoReturn:
+    """Sets lights to warm/yellow.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1,
+                              operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
+
+
+def cool(host: str) -> NoReturn:
+    """Sets lights to cool/white.
+
+    Args:
+        host: Takes target device IP address as an argument.
+    """
+    smart_lights.MagicHomeApi(device_ip=host, device_type=2,
+                              operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
+                                                                     cool_white=255)
+
+
+def lumen(host: str, rgb: int = 255) -> NoReturn:
+    """Sets lights to custom brightness.
+
+    Args:
+        host: Takes target device IP address as an argument.
+        rgb: Red, Green andBlue values to alter the brightness.
+    """
+    args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
+
+
 def preset(device_ip, color: int = None, speed: int = 100) -> NoReturn:
     """Changes light colors to preset values.
 

@@ -4,7 +4,9 @@ from http import HTTPStatus
 from fastapi import APIRouter
 from fastapi.responses import FileResponse, RedirectResponse
 
+from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
 from jarvis.api.squire import logger
+from jarvis.modules.conditions import keywords as keywords_mod
 from jarvis.modules.exceptions import APIResponse
 
 router = APIRouter()
@@ -47,3 +49,15 @@ async def get_favicon():
     if os.path.exists(filepath):
         return FileResponse(filename=os.path.basename(filepath), path=filepath, status_code=HTTPStatus.OK.real)
     logger.logger.warning("'favicon.ico' is missing or the path is messed up. Fix this to avoid errors on front-end")
+
+
+@router.get(path="/keywords", dependencies=OFFLINE_PROTECTOR)
+async def keywords():
+    """Converts the keywords and conversations into a dictionary of key-value pairs.
+
+    Returns:
+
+        Dict[str, List[str]]:
+        Key-value pairs of the keywords file.
+    """
+    return {k: v for k, v in keywords_mod.keywords.__dict__.items() if isinstance(v, list)}

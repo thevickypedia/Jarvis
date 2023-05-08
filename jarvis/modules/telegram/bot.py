@@ -20,7 +20,6 @@ from typing import NoReturn, Union
 import requests
 from pydantic import FilePath
 
-from jarvis._preexec import keywords_handler  # noqa
 from jarvis.executors import commander, offline, others, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
@@ -304,7 +303,6 @@ class TelegramBot:
                 raise ConnectionError(
                     response.json()
                 )
-            keywords_handler.rewrite_keywords()
             if not response.get('result'):
                 continue
             for result in response['result']:
