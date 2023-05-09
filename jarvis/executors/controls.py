@@ -48,7 +48,7 @@ def restart(ask: bool = True) -> NoReturn:
         converted = listener.listen()
     else:
         converted = 'yes'
-    if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
@@ -235,7 +235,7 @@ def shutdown(*args, proceed: bool = False) -> NoReturn:
         converted = listener.listen()
     else:
         converted = 'yes'
-    if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
             subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])

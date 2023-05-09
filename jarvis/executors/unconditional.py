@@ -97,7 +97,7 @@ def google_maps(query: str) -> bool:
         if converted := listener.listen():
             if 'exit' in converted or 'quit' in converted or 'Xzibit' in converted:
                 break
-            elif word_match.word_match(phrase=converted.lower(), match_list=keywords.keywords.ok):
+            elif word_match.word_match(phrase=converted.lower(), match_list=keywords.keywords['ok']):
                 maps_url = f'https://www.google.com/maps/dir/{start}/{end}/'
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {models.env.title}!")

@@ -39,7 +39,7 @@ def conditions(phrase: str) -> bool:
     # for key, value in keywords_base.keyword_mapping().items():
     #     keyword_dict[key] = existing_kw_dict[key]
     function_map = functions.function_mapping()
-    for category, identifiers in keywords.keywords.__dict__.items():
+    for category, identifiers in keywords.keywords.items():
         if word_match.word_match(phrase=phrase, match_list=identifiers):
 
             # custom rules for additional keyword matching
@@ -47,7 +47,7 @@ def conditions(phrase: str) -> bool:
                 if "send" not in phrase.lower():
                     continue
             if category in ("distance", "kill"):
-                if word_match.word_match(phrase=phrase, match_list=keywords.keywords.avoid):
+                if word_match.word_match(phrase=phrase, match_list=keywords.keywords['avoid']):
                     continue
             if category == "speed_test":
                 if not ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):

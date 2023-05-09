@@ -104,7 +104,7 @@ class Activator:
 
     def executor(self) -> NoReturn:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
-        logger.debug("Detected %s at %s", models.settings.bot, datetime.now())
+        logger.debug("Wake word detected at %s", datetime.now().strftime('%c'))
         if listener_controls.get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
@@ -118,27 +118,28 @@ class Activator:
                                    "Please check the logs for more information.")
             speaker.speak(run=True)
         self.audio_stream = self.open_stream()
+        util.write_screen(text=self.label)
 
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             wake_len = len(models.env.wake_words)
+            util.write_screen(text=self.label)
             while True:
-                util.write_screen(text=self.label)
-                pcm = struct.unpack_from("h" * self.detector.frame_length,
-                                         self.audio_stream.read(num_frames=self.detector.frame_length,
-                                                                exception_on_overflow=False))
-                result = self.detector.process(pcm=pcm)
+                result = self.detector.process(
+                    pcm=struct.unpack_from(
+                        "h" * self.detector.frame_length, self.audio_stream.read(
+                            num_frames=self.detector.frame_length, exception_on_overflow=False
+                        )
+                    )
+                )
                 if models.settings.legacy:
                     if wake_len == 1 and result:
-                        models.settings.bot = models.env.wake_words[0]
                         self.executor()
                     elif wake_len > 1 and result >= 0:
-                        models.settings.bot = models.env.wake_words[result]
                         self.executor()
                 else:
                     if result >= 0:
-                        models.settings.bot = models.env.wake_words[result]
                         self.executor()
                 if models.settings.limited:
                     continue

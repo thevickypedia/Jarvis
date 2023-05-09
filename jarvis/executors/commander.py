@@ -27,7 +27,7 @@ def split_phrase(phrase: str) -> 'conditions.conditions':
     exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
 
     # Keywords for which the ' after ' split should not happen.
-    ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+    ignore_after = keywords.keywords['meetings'] + keywords.keywords['avoid']
     if ' after ' in phrase and not word_match.word_match(phrase=phrase, match_list=ignore_after):
         if delay_info := timed_delay(phrase=phrase):
             speaker.speak(text=f"I will execute it after {support.time_converter(second=delay_info[1])} "
@@ -35,8 +35,8 @@ def split_phrase(phrase: str) -> 'conditions.conditions':
             return False
 
     # Keywords for which the ' and ' split should not happen.
-    ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
-        keywords.keywords.distance + keywords.keywords.avoid
+    ignore_and = keywords.keywords['send_notification'] + keywords.keywords['reminder'] + \
+        keywords.keywords['distance'] + keywords.keywords['avoid']
     if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=ignore_and):
         for each in phrase.split(' and '):
             exit_check = conditions.conditions(phrase=each.strip())
@@ -73,8 +73,8 @@ def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
         bool:
         Returns a boolean flag whether the time delay should be applied.
     """
-    if not word_match.word_match(phrase=phrase, match_list=keywords.keywords.set_alarm) and \
-            not word_match.word_match(phrase=phrase, match_list=keywords.keywords.reminder):
+    if not word_match.word_match(phrase=phrase, match_list=keywords.keywords['set_alarm']) and \
+            not word_match.word_match(phrase=phrase, match_list=keywords.keywords['reminder']):
         split_ = phrase.split('after')
         if task := split_[0].strip():
             delay = util.delay_calculator(phrase=split_[1].strip())

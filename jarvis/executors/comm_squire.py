@@ -140,7 +140,7 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
             return
     speaker.speak(text=f'{body} to {number}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
-        if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
             logger.info("{body} -> {number}".format(body=body, number=number))
             sms_response = communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
                                                  number=number, body=body)
@@ -191,7 +191,7 @@ def initiate_email(body: str, to: str) -> None:
 
     speaker.speak(text=f'{body} to {to}. Do you want me to proceed?', run=True)
     if converted := listener.listen():
-        if word_match.word_match(phrase=converted, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
             logger.info("'%s' -> '%s'", body, to)
             mail_response = communicator.send_email(body=body, recipient=to)
             if mail_response is True:

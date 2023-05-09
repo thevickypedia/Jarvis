@@ -70,8 +70,6 @@ class Settings(BaseModel):
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
     limited: bool = True if physical_cores < 4 else False
-    wake_words: Optional[List[str]]
-    bot: str = "jarvis"
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
     os: str = platform.system()
@@ -550,7 +548,4 @@ class Indicators(BaseModel):
     alarm: FilePath = os.path.join(indicators.__path__[0], 'alarm.mp3')
     coin: FilePath = os.path.join(indicators.__path__[0], 'coin.mp3')
     end: FilePath = os.path.join(indicators.__path__[0], 'end.mp3')
-    exhaust: FilePath = os.path.join(indicators.__path__[0], 'exhaust.mp3')
     start: FilePath = os.path.join(indicators.__path__[0], 'start.mp3')
-    tv_connect: FilePath = os.path.join(indicators.__path__[0], 'tv_connect.mp3')
-    tv_scan: FilePath = os.path.join(indicators.__path__[0], 'tv_scan.mp3')

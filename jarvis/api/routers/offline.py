@@ -102,13 +102,13 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if word_match.word_match(phrase=command, match_list=keywords.keywords.kill) and 'override' in command.lower():
+    if word_match.word_match(phrase=command, match_list=keywords.keywords['kill']) and 'override' in command.lower():
         logger.info("STOP override has been requested.")
         Thread(target=kill_power).start()
         return await process_ok_response(response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
                                          input_data=input_data)
 
-    if word_match.word_match(phrase=command, match_list=keywords.keywords.secrets) and \
+    if word_match.word_match(phrase=command, match_list=keywords.keywords['secrets']) and \
             word_match.word_match(phrase=command, match_list=('list', 'get')):
         response = others.secrets(phrase=command)
         if len(response.split()) == 1:
@@ -118,8 +118,8 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
     # Keywords for which the ' and ' split should not happen.
-    ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
-        keywords.keywords.distance + keywords.keywords.avoid
+    ignore_and = keywords.keywords['send_notification'] + keywords.keywords['reminder'] + \
+        keywords.keywords['distance'] + keywords.keywords['avoid']
     if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
         and_response = ""
         for each in command.split(' and '):
@@ -133,7 +133,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         return await process_ok_response(response=and_response, input_data=input_data)
 
     # Keywords for which the ' after ' split should not happen.
-    ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+    ignore_after = keywords.keywords['meetings'] + keywords.keywords['avoid']
     if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))

@@ -282,12 +282,12 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     """
     shared.called_by_offline = True
     # Specific for offline communication and not needed for live conversations
-    if word_match.word_match(phrase=command, match_list=keywords.keywords.ngrok):
+    if word_match.word_match(phrase=command, match_list=keywords.keywords['ngrok']):
         if public_url := get_tunnel():
             return public_url
         else:
             raise LookupError("Failed to retrieve the public URL")
-    if word_match.word_match(phrase=command, match_list=keywords.keywords.photo):
+    if word_match.word_match(phrase=command, match_list=keywords.keywords['photo']):
         return others.photo()
     # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response
     conditions.conditions(phrase=command)

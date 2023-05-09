@@ -75,7 +75,7 @@ def events_gatherer() -> str:
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
     # Undo unspecified changes done by ScriptEditor (should only be necessary when package is not pip installed)
-    os.system(f"git reset {models.fileio.event_script} >/dev/null 2>&1")
+    os.system(f"git checkout HEAD -- {models.fileio.event_script} >/dev/null 2>&1")
     # noinspection GrazieInspection
     if error := process.returncode:  # stores non zero error
         err_msg = err.decode("UTF-8")

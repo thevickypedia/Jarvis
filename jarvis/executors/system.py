@@ -122,7 +122,7 @@ def system_vitals(*args) -> None:
                                f"more than {warn} days. You must consider a reboot for better performance. Would you "
                                f"like me to restart it for you {models.env.title}?",
                           run=True)
-            if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords.ok):
+            if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords['ok']):
                 logger.info("Restarting %s", shared.hosted_device.get('device'))
                 controls.restart(ask=False)
 

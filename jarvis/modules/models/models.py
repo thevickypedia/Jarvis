@@ -252,8 +252,8 @@ def _global_validations() -> NoReturn:
     except EgressErrors:
         if not audio_driver:
             raise SegmentationError(
-                f"\n\n{settings.bot} needs either an audio driver OR speech-synthesis to run in Docker container\n"
-                f"normally {settings.bot} will try to launch the Docker container to run speech-synthesis.\n"
+                "\n\nEither an audio driver OR speech-synthesis running in Docker container is required\n"
+                "Normally Jarvis will try to launch the Docker container to run speech-synthesis.\n"
                 "However if audio driver is unavailable, the docker container should be launched manually or "
                 "the audio driver should be fixed.\n"
                 "Refer:\n"
@@ -269,6 +269,5 @@ if env.temperature_unit == TemperatureUnits.IMPERIAL:
     temperature_symbol = "F"
 elif env.temperature_unit == TemperatureUnits.METRIC:
     temperature_symbol = "C"
-# settings.bot is initiated with "jarvis" but later changed when custom wake words are used
 if current_process().name == "JARVIS":
     _main_process_validations()

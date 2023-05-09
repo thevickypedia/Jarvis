@@ -6,8 +6,7 @@ from typing import NoReturn
 import yaml
 
 from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
-from jarvis.modules.conditions import conversation, keywords, keywords_base
-from jarvis.modules.utils import util
+from jarvis.modules.conditions import conversation, keywords
 
 # Used by docs
 if not os.path.isdir('fileio'):
@@ -23,7 +22,7 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
         init: Takes a boolean flag to suppress logging when triggered for the first time.
     """
     get_time = lambda file: os.stat(file).st_mtime  # noqa: E731
-    keywords_src = OrderedDict(**keywords_base.keyword_mapping(), **conversation.conversation_mapping())
+    keywords_src = OrderedDict(**keywords.keyword_mapping(), **conversation.conversation_mapping())
     keywords_dst = os.path.join('fileio', 'keywords.yaml')
     if os.path.isfile(keywords_dst):
         modified = get_time(keywords_dst)
@@ -43,8 +42,9 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
                     f"\nSomething went wrong. {keywords_dst!r} appears to be empty."
                     f"\nRe-sourcing {keywords_dst!r} from base."
                 )
+        # compare as sorted, since this will allow changing the order of keywords in the yaml file
         elif sorted(list(data.keys())) == sorted(list(keywords_src.keys())) and data.values() and all(data.values()):
-            keywords.keywords = util.Dict2Class(data)
+            keywords.keywords = data
             return
         else:  # Mismatch in keys
             if not init:
@@ -57,7 +57,7 @@ def rewrite_keywords(init: bool = False) -> NoReturn:
     with open(keywords_dst, 'w') as dst_file:
         ordered_dump(stream=dst_file, data=keywords_src, indent=4)
     _updated['time'] = get_time(keywords_dst)
-    keywords.keywords = util.Dict2Class(keywords_src)
+    keywords.keywords = keywords_src
 
 
 rewrite_keywords(init=True)

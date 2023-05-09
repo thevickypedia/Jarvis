@@ -10,6 +10,7 @@ import logging
 import os
 import random
 import secrets
+import string
 import sys
 import time
 import traceback
@@ -352,7 +353,7 @@ class TelegramBot:
         logger.warning("Request timed out when %s requested %s", payload['from']['username'], payload.get('text'))
         logger.warning("Request time: %s", request_time)
         if "override" in payload.get('text', '').lower() and not \
-                word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
+                word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords['kill']):
             logger.info("%s requested a timeout override.", payload['from']['username'])
             return True
         else:
@@ -370,7 +371,7 @@ class TelegramBot:
             bool:
             Boolean flag to indicate whether to proceed.
         """
-        if not word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords.kill):
+        if not word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords['kill']):
             return True
         if "override" in payload.get('text', '').lower():
             logger.info("%s requested a STOP override.", payload['from']['username'])
@@ -516,7 +517,7 @@ class TelegramBot:
                                                         "Please include only the filename after the keyword 'file'.")
             return
         # this feature for telegram bot relies on Jarvis API to function
-        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords.secrets) and \
+        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['secrets']) and \
                 word_match.word_match(phrase=payload['text'], match_list=('list', 'get')):
             res = others.secrets(phrase=payload['text'])
             if len(res.split()) == 1:
@@ -539,23 +540,22 @@ class TelegramBot:
         command_lower = command.lower()
         if 'alarm' in command_lower or 'remind' in command_lower:
             command = command_lower
-        # todo: Check if this required
-        # else:
-        #     command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
+        else:
+            command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
         if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
 
         # Keywords for which the ' and ' split should not happen.
-        ignore_and = keywords.keywords.send_notification + keywords.keywords.reminder + \
-            keywords.keywords.distance + keywords.keywords.avoid
+        ignore_and = keywords.keywords['send_notification'] + keywords.keywords['reminder'] + \
+            keywords.keywords['distance'] + keywords.keywords['avoid']
         if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
             for each in command.split(' and '):
                 self.executor(command=each, payload=payload)
             return
 
         # Keywords for which the ' after ' split should not happen.
-        ignore_after = keywords.keywords.meetings + keywords.keywords.avoid
+        ignore_after = keywords.keywords['meetings'] + keywords.keywords['avoid']
         if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=ignore_after):
             if delay_info := commander.timed_delay(phrase=command):
                 logger.info("Request: %s", delay_info[0])

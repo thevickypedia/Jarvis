@@ -19,19 +19,6 @@ from datetime import datetime
 from typing import Any, Hashable, List, NoReturn, Union
 
 
-class Dict2Class:
-    """Turns a dictionary into an object."""
-
-    def __init__(self, dictionary: dict):
-        """Creates an object and inserts the key value pairs as members of the class.
-
-        Args:
-            dictionary: Takes the dictionary to be converted as an argument.
-        """
-        for key in dictionary:
-            setattr(self, key, dictionary[key])
-
-
 def get_timezone() -> str:
     """Get local timezone using datetime module.
 

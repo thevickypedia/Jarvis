@@ -259,7 +259,7 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == 'word':
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen()
-        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords.exit_):
+        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords['exit_']):
             return
         meaning(phrase=response)
     else:
@@ -276,7 +276,7 @@ def meaning(phrase: str) -> None:
                 return
             speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
             response = listener.listen()
-            if word_match.word_match(phrase=response, match_list=keywords.keywords.ok):
+            if word_match.word_match(phrase=response, match_list=keywords.keywords['ok']):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
@@ -370,7 +370,7 @@ def time_travel() -> None:
     todo_list.get_todo()
     communicator.read_gmail()
     speaker.speak(text='Would you like to hear the latest news?', run=True)
-    if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords.ok):
+    if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords['ok']):
         news()
 
 
