@@ -49,5 +49,5 @@ def wikipedia_(phrase: str) -> None:
         return
     speaker.speak(text=f"{formatted}. Do you want me to continue {models.env.title}?", run=True)
     if response := listener.listen():
-        if word_match.word_match(phrase=response, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=response, match_list=keywords.keywords['ok']):
             speaker.speak(text=". ".join(result.split(". ")[3:]))

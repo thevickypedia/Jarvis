@@ -135,7 +135,7 @@ def security_runner(offline: bool = True) -> NoReturn:
         converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
         if not get_state(log=False) or word_match.word_match(phrase=converted,
-                                                             match_list=keywords.keywords.guard_disable):
+                                                             match_list=keywords.keywords['guard_disable']):
             guard_disable()
             break
         elif converted:

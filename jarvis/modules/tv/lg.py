@@ -10,11 +10,11 @@ import time
 from collections.abc import Generator
 from typing import List, NoReturn
 
-from playsound import playsound
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, AudioOutputSource,
                                 MediaControl, SourceControl, SystemControl)
 
+from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import TVError
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -55,7 +55,8 @@ class LGWebOS:
             logger.error(error)
             self._reconnect = True
             if not shared.called_by_offline:
-                playsound(sound=models.indicators.tv_scan, block=False)
+                speaker.speak(f"The TV's IP has either changed or unreachable {models.env.title}! "
+                              "Scanning your IP range now.", run=True)
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
                 try:
@@ -74,7 +75,8 @@ class LGWebOS:
                 util.write_screen(text='Connected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
-                playsound(sound=models.indicators.tv_connect, block=False)
+                if not shared.called_by_offline:
+                    speaker.speak(text=f"Please accept the connection request on your TV {models.env.title}!", run=True)
                 self._reconnect = True
                 util.write_screen(text='Please accept the connection request on your TV.')
 

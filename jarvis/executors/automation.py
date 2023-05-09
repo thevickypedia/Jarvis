@@ -117,7 +117,7 @@ def auto_helper() -> Union[str, None]:
 
         if automation_info.get("status"):
             continue
-        exec_task = exec_task.translate(str.maketrans("", "", punctuation))  # Remove punctuations from the str
+        exec_task = exec_task.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
         automation_data[automation_time]["status"] = True
         rewrite_automator(write_data=automation_data)
         return exec_task

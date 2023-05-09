@@ -128,14 +128,14 @@ def locate(phrase: str) -> None:
     speaker.speak(text="Would you like to get the location details?", run=True)
     if not (phrase_location := listener.listen()):
         return
-    elif not word_match.word_match(phrase=phrase_location, match_list=keywords.keywords.ok):
+    elif not word_match.word_match(phrase=phrase_location, match_list=keywords.keywords['ok']):
         return
 
     locate_device(target_device=target_device)
     if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
         phrase_lost = listener.listen()
-        if word_match.word_match(phrase=phrase_lost, match_list=keywords.keywords.ok):
+        if word_match.word_match(phrase=phrase_lost, match_list=keywords.keywords['ok']):
             target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
         else:

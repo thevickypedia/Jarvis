@@ -60,4 +60,4 @@ async def keywords():
         Dict[str, List[str]]:
         Key-value pairs of the keywords file.
     """
-    return {k: v for k, v in keywords_mod.keywords.__dict__.items() if isinstance(v, list)}
+    return {k: v for k, v in keywords_mod.keywords.items() if isinstance(v, list)}

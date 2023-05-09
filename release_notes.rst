@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.4.2 (05/09/2023)
+------------------
+- Retain keywords as ``OrderedDict`` instead of ``Object``
+- Update all object level calls to dict calls for keywords
+- Increase response time for wake word detection
+- Remove unused indicator sounds
+
 7.4.1 (05/08/2023)
 ------------------
 - Optimize memory usage and remove globals

@@ -32,7 +32,7 @@ def read_gmail(*args) -> None:
                       run=True)
         if not (confirmation := listener.listen()):
             return
-        if not word_match.word_match(phrase=confirmation, match_list=keywords.keywords.ok):
+        if not word_match.word_match(phrase=confirmation, match_list=keywords.keywords['ok']):
             return
         for mail in reader.read_mail(messages=response.body, humanize_datetime=True):
             speaker.speak(text=f"You have an email from, {mail.sender}, with subject, "

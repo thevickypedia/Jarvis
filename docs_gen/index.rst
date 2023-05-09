@@ -634,12 +634,6 @@ Conditions
    :members:
    :exclude-members:
 
-====
-
-.. automodule:: jarvis.modules.conditions.keywords_base
-   :members:
-   :exclude-members:
-
 Crontab
 =======
 

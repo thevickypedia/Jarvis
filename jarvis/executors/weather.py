@@ -63,7 +63,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         # ignore days in week and the keywords for weather as they are guaranteed to not be places
         place = support.get_capitalized(phrase=phrase,
                                         ignore=support.days_in_week +
-                                        tuple(string.capwords(w) for w in keywords.keywords.weather))
+                                        tuple(string.capwords(w) for w in keywords.keywords['weather']))
         phrase = phrase.lower()
     if place:
         logger.info("Identified place: %s", place)

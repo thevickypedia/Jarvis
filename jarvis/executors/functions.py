@@ -4,7 +4,6 @@
 >>> Functions
 
 """
-# todo: remove converting keyword dict as an object (that's unnecessary as dicts have lesser overhead)
 
 from collections import OrderedDict
 from typing import Callable
