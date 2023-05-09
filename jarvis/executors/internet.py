@@ -13,7 +13,7 @@ from jarvis.executors import location
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 
 def ip_address() -> Union[str, None]:
@@ -170,7 +170,7 @@ def speed_test(*args) -> None:
     ping = round(st.results.ping)
     download = support.size_converter(byte_size=st.results.download)
     upload = support.size_converter(byte_size=st.results.upload)
-    util.write_screen(text=f"Ping: {ping}m/s\tDownload: {download}\tUpload: {upload}")
+    support.write_screen(text=f"Ping: {ping}m/s\tDownload: {download}\tUpload: {upload}")
     speaker.speak(text=f"Ping rate: {ping} milli seconds. "
                        f"Download speed: {download} per second. "
                        f"Upload speed: {upload} per second.")

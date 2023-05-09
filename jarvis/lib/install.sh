@@ -3,7 +3,7 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
-OSName=$(uname)
+OSName=$(python -c "import platform; print(platform.system())")
 ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
 
@@ -89,7 +89,7 @@ if [[ "$OSName" == "Darwin" ]]; then
 
     # Install as stand alone as face recognition depends on dlib
     python -m pip install face-recognition==1.3.0
-elif [[ "$OSName" == MSYS* ]]; then
+elif [[ "$OSName" == "Windows" ]]; then
     clear
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"

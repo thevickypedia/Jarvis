@@ -18,7 +18,7 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import TVError
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, util
+from jarvis.modules.utils import shared, support
 
 
 class LGWebOS:
@@ -72,13 +72,13 @@ class LGWebOS:
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:
-                util.write_screen(text='Connected to the TV.')
+                support.write_screen(text='Connected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
                 if not shared.called_by_offline:
                     speaker.speak(text=f"Please accept the connection request on your TV {models.env.title}!", run=True)
                 self._reconnect = True
-                util.write_screen(text='Please accept the connection request on your TV.')
+                support.write_screen(text='Please accept the connection request on your TV.')
 
         if self._reconnect:
             self._reconnect = False

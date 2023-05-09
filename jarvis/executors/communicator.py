@@ -10,7 +10,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 
 def read_gmail(*args) -> None:
@@ -20,7 +20,7 @@ def read_gmail(*args) -> None:
         support.no_env_vars()
         return
 
-    util.write_screen(text="Fetching unread emails..")
+    support.write_screen(text="Fetching unread emails..")
     reader = gmailconnector.ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
     response = reader.instantiate()
     if response.ok:

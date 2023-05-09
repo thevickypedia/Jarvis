@@ -12,7 +12,7 @@ from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet.face import FaceNet
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import support, util
+from jarvis.modules.utils import support
 
 TRAINING_DIR = os.path.realpath("train")
 FACE_DETECTION_TEMP_FILE = 'cv2_open.jpg'
@@ -20,7 +20,7 @@ FACE_DETECTION_TEMP_FILE = 'cv2_open.jpg'
 
 def detected_face() -> NoReturn:
     """Captures a picture, shows a preview and stores it for future recognition."""
-    util.write_screen(text='New face has been detected. Like to give it a name?')
+    support.write_screen(text='New face has been detected. Like to give it a name?')
     speaker.speak(text='I was able to detect a face, but was unable to recognize it.')
     Image.open(FACE_DETECTION_TEMP_FILE).show()
     speaker.speak(text=f"I've taken a photo of you. Preview on your screen {models.env.title}! "
@@ -51,7 +51,7 @@ def faces(phrase: str) -> None:
         if os.path.isdir(TRAINING_DIR) and \
                 set(os.path.dirname(p) for p in glob.glob(os.path.join(TRAINING_DIR, "*", ""), recursive=True)):
             speaker.speak(text='Initializing facial recognition. Please smile at the camera for me.', run=True)
-            util.write_screen(text='Looking for faces to recognize.')
+            support.write_screen(text='Looking for faces to recognize.')
             try:
                 result = FaceNet().face_recognition(location=TRAINING_DIR)
             except CameraError:

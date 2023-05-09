@@ -353,12 +353,3 @@ def get_free_port() -> int:
         sock.bind(('', 0))
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock.getsockname()[1]
-
-
-def write_screen(text: Any) -> NoReturn:
-    """Write text to a screen that can be cleared later.
-
-    Args:
-        text: Text to be written.
-    """
-    sys.stdout.write(f"\r{text}")

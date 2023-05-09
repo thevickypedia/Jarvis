@@ -112,7 +112,7 @@ def system_vitals(*args) -> None:
     if shared.called_by_offline:
         speaker.speak(text=output)
         return
-    util.write_screen(text=output)
+    support.write_screen(text=output)
     speaker.speak(text=f"Your {shared.hosted_device.get('device')} was last booted on {restart_time}. "
                        f"Current boot time is: {restart_duration}.")
     if second >= 259_200:  # 3 days

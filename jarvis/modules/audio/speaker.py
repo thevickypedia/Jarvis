@@ -19,7 +19,7 @@ from jarvis.executors import files
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 SS_HEADERS = {
     "Content-Type": "text/plain"
@@ -99,7 +99,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
             shared.offline_caller = caller
             return
         logger.info("Response: %s", text)
-        util.write_screen(text=text)
+        support.write_screen(text=text)
         if models.env.speech_synthesis_timeout and \
                 speech_synthesizer(text=text) and \
                 os.path.isfile(models.fileio.speech_synthesis_wav):

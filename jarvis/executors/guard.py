@@ -18,7 +18,7 @@ from jarvis.modules.logger.config import multiprocessing_logger
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
-from jarvis.modules.utils import shared, util
+from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 TRACE = {"status": False}
@@ -131,7 +131,7 @@ def security_runner(offline: bool = True) -> NoReturn:
     face_object = face.FaceNet()
     while True:
         # Listens for any recognizable speech and saves it to a notes file
-        util.write_screen(text="SECURITY MODE")
+        support.write_screen(text="SECURITY MODE")
         converted = listener.listen(sound=False)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
         if not get_state(log=False) or word_match.word_match(phrase=converted,

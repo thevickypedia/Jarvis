@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.4.3 (05/09/2023)
+------------------
+- Use py script to get OSName in install.sh
+- Avoid writing on screen when called by offline
+
 7.4.2 (05/09/2023)
 ------------------
 - Retain keywords as ``OrderedDict`` instead of ``Object``
