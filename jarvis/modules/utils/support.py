@@ -14,7 +14,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
 from multiprocessing import current_process
-from typing import Dict, Iterable, List, NoReturn, Tuple, Union
+from typing import Any, Dict, Iterable, List, NoReturn, Tuple, Union
 
 import dateutil.tz
 import inflect
@@ -29,6 +29,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.utils import shared
 
 days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 db = database.Database(database=models.fileio.base_db)
@@ -378,6 +379,17 @@ def unsupported_features() -> NoReturn:
     """Says a message about unsupported features."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
     speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!")
+
+
+def write_screen(text: Any) -> NoReturn:
+    """Write text on screen that can be cleared later.
+
+    Args:
+        text: Text to be written.
+    """
+    if shared.called_by_offline:
+        return
+    sys.stdout.write(f"\r{text}")
 
 
 def flush_screen() -> NoReturn:

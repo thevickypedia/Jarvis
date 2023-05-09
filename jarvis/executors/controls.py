@@ -21,7 +21,7 @@ from jarvis.modules.database import database
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -88,8 +88,8 @@ def exit_process() -> NoReturn:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
         logger.critical("ATTENTION::Received a RuntimeError while self terminating.\n%s", error)
-    util.write_screen(f"Memory consumed: {support.size_converter(0)}"
-                      f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
+    support.write_screen(f"Memory consumed: {support.size_converter(0)}"
+                         f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
 
 
 def sleep_control(*args) -> bool:

@@ -17,7 +17,7 @@ from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import custom_handler, logger
 from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 
 def restart_checker() -> NoReturn:
@@ -118,13 +118,13 @@ class Activator:
                                    "Please check the logs for more information.")
             speaker.speak(run=True)
         self.audio_stream = self.open_stream()
-        util.write_screen(text=self.label)
+        support.write_screen(text=self.label)
 
     def start(self) -> NoReturn:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             wake_len = len(models.env.wake_words)
-            util.write_screen(text=self.label)
+            support.write_screen(text=self.label)
             while True:
                 result = self.detector.process(
                     pcm=struct.unpack_from(
@@ -181,16 +181,16 @@ def start() -> NoReturn:
     logger.info("Current Process ID: %d", models.settings.pid)
     controls.starter()
     if internet.ip_address() and internet.public_ip_info():
-        util.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
+        support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
         ControlPeripheral(logger=logger).enable()
         if models.env.wifi_ssid and models.env.wifi_password and not \
                 ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
                                   logger=logger).wifi_connector():
-            util.write_screen(text="BUMMER::Unable to connect to the Internet")
+            support.write_screen(text="BUMMER::Unable to connect to the Internet")
             speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                "Please check your connection.", run=True)
-    util.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
+    support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     shared.hosted_device = system.hosted_device_info()
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,

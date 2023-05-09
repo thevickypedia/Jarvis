@@ -167,7 +167,7 @@ def google_home(device: str = None, file: str = None) -> None:
             except IOError as error:
                 import errno
                 if error.errno != errno.EPIPE:
-                    util.write_screen(error)
+                    support.write_screen(error)
 
     Args:
         device: Name of the Google home device on which the music has to be played.
@@ -331,7 +331,7 @@ def news(news_source: str = 'fox') -> None:
 
 def report(*args) -> NoReturn:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
-    util.write_screen(text="Starting today's report")
+    support.write_screen(text="Starting today's report")
     shared.called['report'] = True
     date_time.current_date()
     date_time.current_time()

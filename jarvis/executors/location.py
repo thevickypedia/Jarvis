@@ -18,7 +18,7 @@ from jarvis.executors import files, internet
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.utils import shared, support
 
 # stores necessary values for geolocation to receive the latitude, longitude and address
 options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -39,8 +39,8 @@ def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
             return float(results.client["lat"]), float(results.client["lon"])
     except ConfigRetrievalError as error:
         logger.error(error)
-        util.write_screen(text="Failed to get location based on IP. Hand modify it at "
-                               f"'{os.path.abspath(models.fileio.location)}'")
+        support.write_screen(text="Failed to get location based on IP. Hand modify it at "
+                                  f"'{os.path.abspath(models.fileio.location)}'")
         time.sleep(5)
     return 37.230881, -93.3710393  # Default to SGF latitude and longitude
 
