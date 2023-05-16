@@ -19,12 +19,14 @@ recognizer = Recognizer()
 microphone = Microphone(device_index=models.env.microphone_index)
 
 if models.env.recognizer_settings:
+    logger.debug("Overriding recognizer settings: %s", models.env.recognizer_settings.__dict__)
     recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold
     recognizer.pause_threshold = models.env.recognizer_settings.pause_threshold
     recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
     recognizer.dynamic_energy_threshold = models.env.recognizer_settings.dynamic_energy_threshold
     recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
-    models.env.phrase_limit = 10  # Override voice phrase limit when recognizer settings are available
+    models.env.phrase_limit = 7  # Override voice phrase limit when recognizer settings are available
+    models.env.timeout = 3
 
 
 def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:

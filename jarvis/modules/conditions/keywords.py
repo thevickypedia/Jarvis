@@ -35,7 +35,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         listener_control=['listener'],
         send_notification=['message', 'text', 'sms', 'mail', 'email', 'messages', 'mails', 'emails'],
         lights=['light', 'party mode', 'lights'],
-        television=['tv', 'television'],
+        television=['tv', 'television', 'tvs', 'televisions', "tv's", "television's"],
         volume=['volume', 'mute'],
         car=['car', 'vehicle'],
         garage=['garage'],

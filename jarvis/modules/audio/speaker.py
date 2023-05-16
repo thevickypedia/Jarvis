@@ -90,12 +90,13 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
     if not models.audio_driver:
         models.env.speech_synthesis_timeout = 10
     caller = sys._getframe(1).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
-    if caller != 'conditions':  # function where all the magic happens
+    if caller not in ('conditions', 'custom_conditions'):  # function where all the magic happens
         Thread(target=frequently_used, kwargs={"function_name": caller}).start()
     if text:
         text = text.replace('\n', '\t').strip()
         shared.text_spoken = text
         if shared.called_by_offline:
+            logger.debug("Speaker called by: '%s'", caller)
             shared.offline_caller = caller
             return
         logger.info("Response: %s", text)

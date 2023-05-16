@@ -59,6 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks-optional">Background Tasks [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#simulation-setup-optional">Simulation Setup [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#custom-keyword-mapping-optional">Custom Keyword Mapping [Optional]</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#guide">Guide</a></li>
@@ -2888,6 +2889,15 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.executors.custom_conditions">
+<span id="custom-conditions"></span><h1>Custom Conditions<a class="headerlink" href="#module-jarvis.executors.custom_conditions" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.custom_conditions.custom_conditions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.custom_conditions.</span></span><span class="sig-name descname"><span class="pre">custom_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OrderedDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.custom_conditions.custom_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute one or many functions based on custom conditions.</p>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.executors.date_time">
 <span id="datetime"></span><h1>DateTime<a class="headerlink" href="#module-jarvis.executors.date_time" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -3006,6 +3016,17 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> – Data dict that has to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_custom_conditions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_custom_conditions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_custom_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom conditions to map specific keywords to one or many functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -7088,6 +7109,16 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.keywords">
+<span class="sig-name descname"><span class="pre">keywords</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.keywords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.conditions">
+<span class="sig-name descname"><span class="pre">conditions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.conditions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.base_db">
 <span class="sig-name descname"><span class="pre">base_db</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.base_db" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -10361,6 +10392,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.commander">Commander</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.controls">Controls</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.crontab">Crontab</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.custom_conditions">Custom Conditions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.date_time">DateTime</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.display_functions">DisplayFunctions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.face">Face</a></li>

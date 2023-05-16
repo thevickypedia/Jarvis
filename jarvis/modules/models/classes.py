@@ -491,47 +491,51 @@ class FileIO(BaseModel):
     root: DirectoryPath = os.path.realpath('fileio')
 
     # Home automation
-    automation: FilePath = os.path.join('fileio', 'automation.yaml')
-    tmp_automation: FilePath = os.path.join('fileio', 'tmp_automation.yaml')
-    background_tasks: FilePath = os.path.join('fileio', 'background_tasks.yaml')
-    tmp_background_tasks: FilePath = os.path.join('fileio', 'tmp_background_tasks.yaml')
-    smart_devices: FilePath = os.path.join('fileio', 'smart_devices.yaml')
-    contacts: FilePath = os.path.join('fileio', 'contacts.yaml')
+    automation: FilePath = os.path.join(root, 'automation.yaml')
+    tmp_automation: FilePath = os.path.join(root, 'tmp_automation.yaml')
+    background_tasks: FilePath = os.path.join(root, 'background_tasks.yaml')
+    tmp_background_tasks: FilePath = os.path.join(root, 'tmp_background_tasks.yaml')
+    smart_devices: FilePath = os.path.join(root, 'smart_devices.yaml')
+    contacts: FilePath = os.path.join(root, 'contacts.yaml')
 
     # Simulation
-    simulation: FilePath = os.path.join('fileio', 'simulation.yaml')
+    simulation: FilePath = os.path.join(root, 'simulation.yaml')
+
+    # Custom keyword-function map
+    keywords: FilePath = os.path.join(root, 'keywords.yaml')
+    conditions: FilePath = os.path.join(root, 'conditions.yaml')
 
     # Databases
-    base_db: FilePath = os.path.join('fileio', 'database.db')
-    task_db: FilePath = os.path.join('fileio', 'tasks.db')
-    stock_db: FilePath = os.path.join('fileio', 'stock.db')
+    base_db: FilePath = os.path.join(root, 'database.db')
+    task_db: FilePath = os.path.join(root, 'tasks.db')
+    stock_db: FilePath = os.path.join(root, 'stock.db')
 
     # API used
-    stock_list_backup: FilePath = os.path.join('fileio', 'stock_list_backup.yaml')
-    robinhood: FilePath = os.path.join('fileio', 'robinhood.html')
+    stock_list_backup: FilePath = os.path.join(root, 'stock_list_backup.yaml')
+    robinhood: FilePath = os.path.join(root, 'robinhood.html')
 
     # Future useful
-    frequent: FilePath = os.path.join('fileio', 'frequent.yaml')
-    training_data: FilePath = os.path.join('fileio', 'training_data.yaml')
-    gpt_data: FilePath = os.path.join('fileio', 'gpt_history.yaml')
+    frequent: FilePath = os.path.join(root, 'frequent.yaml')
+    training_data: FilePath = os.path.join(root, 'training_data.yaml')
+    gpt_data: FilePath = os.path.join(root, 'gpt_history.yaml')
 
     # Jarvis internal
-    location: FilePath = os.path.join('fileio', 'location.yaml')
-    notes: FilePath = os.path.join('fileio', 'notes.txt')
-    processes: FilePath = os.path.join('fileio', 'processes.yaml')
+    location: FilePath = os.path.join(root, 'location.yaml')
+    notes: FilePath = os.path.join(root, 'notes.txt')
+    processes: FilePath = os.path.join(root, 'processes.yaml')
 
     # macOS specifics
     app_launcher: FilePath = os.path.join(scripts.__path__[0], 'applauncher.scpt')
     event_script: FilePath = os.path.join(scripts.__path__[0], f'{env.event_app}.scpt')
 
     # Speech Synthesis
-    speech_synthesis_wav: FilePath = os.path.join('fileio', 'speech_synthesis.wav')
+    speech_synthesis_wav: FilePath = os.path.join(root, 'speech_synthesis.wav')
     # Store log file name in a variable as it is used in multiple modules with file IO
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
-    speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join('fileio', 'speech_synthesis_%d-%m-%Y.cid'))
+    speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join(root, 'speech_synthesis_%d-%m-%Y.cid'))
 
     # Secure Send
-    secure_send: FilePath = os.path.join('fileio', 'secure_send.yaml')
+    secure_send: FilePath = os.path.join(root, 'secure_send.yaml')
 
 
 fileio = FileIO()

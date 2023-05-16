@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+7.4.4 (05/16/2023)
+------------------
+- Add a feature to access all TVs at once
+- Set retry mode for put listener status
+- Create a new feature for custom conditions (on hold)
+- Override timeout and phrase limit in recognizer settings
+
 7.4.3 (05/09/2023)
 ------------------
 - Use py script to get OSName in install.sh

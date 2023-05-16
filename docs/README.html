@@ -400,8 +400,10 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 </details></section>
 <section id="smart-devices-optional">
 <h2>Smart Devices [Optional]<a class="headerlink" href="#smart-devices-optional" title="Permalink to this heading">¶</a></h2>
-<p>A source file <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> is used to store smart devices’ hostnames.
-Jarvis supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> for <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L">lights</a>, <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> and <code class="docutils literal notranslate"><span class="pre">Roku</span></code> for TVs.</p>
+<p>Jarvis supports <code class="docutils literal notranslate"><span class="pre">MagicHome</span></code> for <a class="reference external" href="https://www.amazon.com/gp/product/B08C7GY43L">lights</a>, <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> and <code class="docutils literal notranslate"><span class="pre">Roku</span></code> for TVs.</p>
+<blockquote>
+<div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
 <ul>
 <li><p>TV hostnames should include the brand name [<code class="docutils literal notranslate"><span class="pre">LG</span></code>/<code class="docutils literal notranslate"><span class="pre">Roku</span></code>] to distinguish the modules accordingly.</p>
 <ul class="simple">
@@ -453,8 +455,10 @@ Jarvis supports <code class="docutils literal notranslate"><span class="pre">Mag
 <section id="automation-setup-optional">
 <h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
-at pre-defined times without any user interaction. Uses an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file as source which should be stored
-within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
+at pre-defined times without any user interaction.</p>
+<blockquote>
+<div><p>This feature requires an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a dictionary within a dictionary that looks like the below.</p>
 <p><strong>OPTIONAL:</strong> The key, <code class="docutils literal notranslate"><span class="pre">day</span></code> can be a <code class="docutils literal notranslate"><span class="pre">list</span></code> of days, or a <code class="docutils literal notranslate"><span class="pre">str</span></code> of a specific day or simply a <code class="docutils literal notranslate"><span class="pre">str</span></code> saying <code class="docutils literal notranslate"><span class="pre">weekday</span></code> or
@@ -484,12 +488,14 @@ Date format should match exactly as described below.</p>
 </details></section>
 <section id="background-tasks-optional">
 <h2>Background Tasks [Optional]<a class="headerlink" href="#background-tasks-optional" title="Permalink to this heading">¶</a></h2>
-<p>There are two options to run background tasks on Jarvis.</p>
+<p>Jarvis supports both internal and external background tasks to be scheduled.</p>
 <ul>
-<li><p>Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file stored in <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+<li><p>Jarvis can run internal tasks at certain intervals.</p>
+<blockquote>
+<div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
   <details>
-  <summary><strong><i>Setup Instructions</i></strong></summary><p>This is the sample content of <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
+  <summary><strong><i>Setup Instructions</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
 <span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
@@ -500,6 +506,8 @@ Date format should match exactly as described below.</p>
 </pre></div>
 </div>
   </details></li>
+</ul>
+<br><ul>
 <li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
   <details>
   <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
@@ -513,9 +521,10 @@ Date format should match exactly as described below.</p>
 </section>
 <section id="simulation-setup-optional">
 <h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
-<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
-as a simulation to test the required functions and send an email with the results. Uses a <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file as source which should be stored
-within the directory <code class="docutils literal notranslate"><span class="pre">fileio</span></code></p>
+<p>Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.</p>
+<blockquote>
+<div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a list of phrases within a dictionary that looks like the below.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">meeting_event</span><span class="p">:</span>
@@ -524,6 +533,17 @@ within the directory <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 </details></section>
+<section id="custom-keyword-mapping-optional">
+<h2>Custom Keyword Mapping [Optional]<a class="headerlink" href="#custom-keyword-mapping-optional" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis supports custom keyword mapping, to execute one or more tasks upon request.</p>
+<blockquote>
+<div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">conditions.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary><section id="feature-is-yet-to-be-implemented">
+<h3><em>Feature is yet to be implemented</em><a class="headerlink" href="#feature-is-yet-to-be-implemented" title="Permalink to this heading">¶</a></h3>
+</details></section>
+</section>
 </section>
 <section id="guide">
 <h1>Guide<a class="headerlink" href="#guide" title="Permalink to this heading">¶</a></h1>
@@ -600,6 +620,10 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
 <li><a class="reference internal" href="#background-tasks-optional">Background Tasks [Optional]</a></li>
 <li><a class="reference internal" href="#simulation-setup-optional">Simulation Setup [Optional]</a></li>
+<li><a class="reference internal" href="#custom-keyword-mapping-optional">Custom Keyword Mapping [Optional]</a><ul>
+<li><a class="reference internal" href="#feature-is-yet-to-be-implemented"><em>Feature is yet to be implemented</em></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#guide">Guide</a></li>
