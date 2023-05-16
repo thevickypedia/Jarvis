@@ -1,9 +1,11 @@
+import sqlite3
 from typing import NoReturn
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.retry import retry
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -51,6 +53,7 @@ def get_listener_state() -> bool:
         logger.debug("Listener is currently disabled")
 
 
+@retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
 def put_listener_state(state: bool) -> NoReturn:
     """Updates the state of the listener.
 

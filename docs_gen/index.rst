@@ -325,6 +325,13 @@ Crontab
    :members:
    :undoc-members:
 
+Custom Conditions
+=================
+
+.. automodule:: jarvis.executors.custom_conditions
+   :members:
+   :undoc-members:
+
 DateTime
 ========
 

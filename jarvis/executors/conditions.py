@@ -39,6 +39,11 @@ def conditions(phrase: str) -> bool:
     # for key, value in keywords_base.keyword_mapping().items():
     #     keyword_dict[key] = existing_kw_dict[key]
     function_map = functions.function_mapping()
+
+    # from jarvis.executors import custom_conditions
+    # if custom_conditions.custom_conditions(phrase=phrase, function_map=function_map):
+    #     return False
+
     for category, identifiers in keywords.keywords.items():
         if word_match.word_match(phrase=phrase, match_list=identifiers):
 

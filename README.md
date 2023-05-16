@@ -346,8 +346,8 @@ email:
 </details>
 
 ### Smart Devices [Optional]
-A source file `smart_devices.yaml` is used to store smart devices' hostnames.
 Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7GY43L), `LGWebOS` and `Roku` for TVs.
+> This feature requires a `smart_devices.yaml` file which should be stored within the `fileio` directory.
 
 - TV hostnames should include the brand name [`LG`/`Roku`] to distinguish the modules accordingly.
   - This will be set by default, if yours doesn't include the brand name change it in the TV settings.
@@ -395,8 +395,8 @@ bedroom tv:
 
 ### Automation Setup [Optional]
 Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
-at pre-defined times without any user interaction. Uses an `automation.yaml` file as source which should be stored 
-within the directory `fileio`
+at pre-defined times without any user interaction.
+> This feature requires an `automation.yaml` file which should be stored within the `fileio` directory.
 
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
@@ -430,13 +430,13 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 </details>
 
 ### Background Tasks [Optional]
-There are two options to run background tasks on Jarvis.
+Jarvis supports both internal and external background tasks to be scheduled.
 
-- Jarvis can run internal tasks (offline communicator compatible) at certain intervals using a `background_tasks.yaml` file stored in `fileio` directory.
+- Jarvis can run internal tasks at certain intervals.
+  > This feature requires a `background_tasks.yaml` file which should be stored within the `fileio` directory.
+
     <details>
     <summary><strong><i>Setup Instructions</i></strong></summary>
-
-  This is the sample content of `background_tasks.yaml`
 
     ```yaml
     - seconds: 1_800
@@ -449,6 +449,7 @@ There are two options to run background tasks on Jarvis.
       ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
     ```
     </details>
+<br>
 
 - **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
     <details>
@@ -463,9 +464,8 @@ There are two options to run background tasks on Jarvis.
     </details>
 
 ### Simulation Setup [Optional]
-Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
-as a simulation to test the required functions and send an email with the results. Uses a `simulation.yaml` file as source which should be stored
-within the directory `fileio`
+Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.
+> This feature requires a `simulation.yaml` file which should be stored within the `fileio` directory.
 
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
@@ -477,6 +477,17 @@ meeting_event:
 - get me the events from my calendar
 - what meetings do I have today
 ```
+
+</details>
+
+### Custom Keyword Mapping [Optional]
+Jarvis supports custom keyword mapping, to execute one or more tasks upon request.
+> This feature requires a `conditions.yaml` file which should be stored within the `fileio` directory.
+
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
+
+##### _Feature is yet to be implemented_
 
 </details>
 

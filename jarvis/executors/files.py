@@ -113,3 +113,17 @@ def put_secure_send(data: Dict[str, Dict[str, Any]]):
         file.flush()  # Write buffer to file immediately
     logger.info("Secure dict for [%s] will be cleared after 5 minutes", [*[*data.values()][0].keys()][0])
     Timer(function=delete_secure_send, args=data.keys(), interval=300).start()
+
+
+def get_custom_conditions() -> Dict[str, Dict[str, str]]:
+    """Custom conditions to map specific keywords to one or many functions.
+
+    Returns:
+        A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
+    """
+    if models.fileio.conditions:
+        with open(models.fileio.conditions) as file:
+            try:
+                return yaml.load(stream=file, Loader=yaml.SafeLoader)
+            except yaml.YAMLError as error:
+                logger.error(error)
