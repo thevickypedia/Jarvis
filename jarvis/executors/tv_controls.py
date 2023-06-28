@@ -26,7 +26,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
     if not shared.tv[nickname]:
         try:
             if identifier == 'LG':
-                shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key)
+                shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname)
             elif identifier == 'ROKU':
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
                 if not shared.tv[nickname].current_app():

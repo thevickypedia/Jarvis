@@ -2,8 +2,9 @@ import warnings
 from multiprocessing import current_process
 from threading import Thread
 
-from jarvis.executors import (functions, listener_controls, others,
-                              static_responses, unconditional, word_match)
+from jarvis.executors import (custom_conditions, functions, listener_controls,
+                              others, static_responses, unconditional,
+                              word_match)
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.transformer import gpt
@@ -27,22 +28,19 @@ def conditions(phrase: str) -> bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
     # Allow conditions during offline communication
-    if not listener_controls.get_listener_state() and not shared.called_by_offline:
+    if not shared.called_by_offline and \
+            not listener_controls.get_listener_state() and \
+            not all(("activate" in phrase or "enable" in phrase,  # WATCH OUT: "activate" and "enable" are hard coded
+                     word_match.word_match(phrase=phrase, match_list=keywords.keywords['listener_control']))):
         logger.info("Ignoring '%s' since listener is deactivated.", phrase)
         return False
     if "*" in phrase:
         others.abusive(phrase)
         return False
 
-    # # Re-sort the keyword dict object per the order in base keywords - Required only if OrderedDict is removed in base
-    # keyword_dict = {}
-    # for key, value in keywords_base.keyword_mapping().items():
-    #     keyword_dict[key] = existing_kw_dict[key]
     function_map = functions.function_mapping()
-
-    # from jarvis.executors import custom_conditions
-    # if custom_conditions.custom_conditions(phrase=phrase, function_map=function_map):
-    #     return False
+    if custom_conditions.custom_conditions(phrase=phrase, function_map=function_map):
+        return False
 
     for category, identifiers in keywords.keywords.items():
         if word_match.word_match(phrase=phrase, match_list=identifiers):
@@ -59,7 +57,7 @@ def conditions(phrase: str) -> bool:
                     continue
 
             # Stand alone - Internally used [skip for both main and offline processes]
-            if category in ("avoid", "ok", "exit_", "avoid", "ngrok", "secrets"):
+            if category in ("avoid", "ok", "exit_", "ngrok", "secrets"):
                 continue
 
             # Requires manual intervention [skip for offline communicator]

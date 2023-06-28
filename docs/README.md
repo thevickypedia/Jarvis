@@ -150,18 +150,18 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 <details>
 <summary><strong>More on Environment variables</strong></summary>
 
-- **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. Mandatory for `Linux`
+- **ROOT_PASSWORD** - System password to get the system vitals and run other `sudo` commands. (_mandatory for `Linux`_)
 - **NAME** - Name which Jarvis should address the user by. Defaults to `Vignesh`
 - **TITLE** - Title which Jarvis should address the user by. Defaults to `sir`
-- **DISTANCE_UNIT** - Unit in which speed/distance should be measured. Defaults to `miles`
-- **TEMPERATURE_UNIT** - Unit in which temperature should be measured. Defaults to `fahrenheit`
-- **PLOT_MIC** - Boolean value whether to show microphone usage in realtime. Defaults to `True`
-- **LOG_RETENTION** - Number of days to store the logs. Defaults to `10`
-- **WAKE_WORDS** - List of wake words to initiate Jarvis' listener. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
+- **LIMITED** - Boolean flag to run only the main version of `Jarvis` skipping background processes. Defaults to `False` (_enforced based on the number of CPU cores_)
+- **PLOT_MIC** - Boolean value to show microphone usage in realtime. Defaults to `True`
+
+### Audio
+- **WAKE_WORDS** - List of wake words to initiate Jarvis. Defaults to `['jarvis']` (Defaults to `['alexa']` in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.
 
 - **VOICE_NAME** - Name of the voice supported by the OperatingSystem. Defaults to the author's favorite.
-- **VOICE_RATE** - Speed/rate at which the text should be spoken. Defaults to the value from `pyttsx3` module. Typically `200`
+- **SPEECH_RATE** - Speed/rate at which the text should be spoken. Defaults to the value from `pyttsx3` module. Typically `200`
 
     <details>
     <summary><strong><i>To add more voices</i></strong></summary>
@@ -175,11 +175,9 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
     </details>
 
 - **SENSITIVITY** - Hot word detection sensitivity. Allowed range: [0-1] Defaults to `0.5`
-- **TIMEOUT** - Timeout in seconds until which the listener should wait for speech. Defaults to `3`
-- **PHRASE_LIMIT** - Timeout in seconds until which the listener will remain active. Defaults to `None`
-- **LIMITED** - Boolean flag to run only the main version of `Jarvis` skipping background processes. Defaults to `False` Enforced based on the number of CPU cores.
-- **DEBUG** - Boolean flag to enable debug level for logging. Defaults to `False`
-- **RECOGNIZER_SETTINGS** - A JSON object that has with customized speech recognition settings.
+- **LISTENER_TIMEOUT** - Timeout in seconds until which the listener should wait for speech. Defaults to `3`
+- **LISTENER_PHRASE_LIMIT** - Timeout in seconds until which the listener will remain active. Defaults to `None`
+- **RECOGNIZER_SETTINGS** - A JSON object with customized speech recognition settings.
 
     <details>
     <summary><strong><i>Custom settings for speech recognition</i></strong></summary>
@@ -187,17 +185,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
     These are customized according to the author's voice pitch.
     Please use [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/microphone/recognizer.py) to figure out the suitable values on a trial and error basis.
 
-    > These settings are added (optionally), to avoid the hard coded `PHRASE_LIMIT`
-    > <br>
-    > Cons in using hard coded `PHRASE_LIMIT`:
-    >   - Disables the listener after the set limit even the speaker is actively talking.
-    >   - Listener will be active until the set limit even after the speaker has stopped talking.
-
     Sample settings (formatted as JSON object)
     - `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
 
     **Description**
-    - `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.
+    - `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the voice should be.
     - `dynamic_energy_threshold`: Change considerable audio energy threshold dynamically.
     - `pause_threshold`: Seconds of non-speaking audio before a phrase is considered complete.
     - `phrase_threshold`: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.
@@ -211,6 +203,14 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **CAMERA_INDEX** - Camera index that has to be used. Run [camera.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/camera/camera.py) to get the index value of each camera.
 - **SPEAKER_INDEX** - Speaker index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py) to get the index value of each speaker.
 - **MICROPHONE_INDEX** - Microphone index that has to be used. Run [peripherals.py](https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py) to get the index value of each microphone.
+
+### Logging
+- **DEBUG** - Boolean flag to enable debug level for logging. Defaults to `False`
+- **LOG_RETENTION** - Number of days to store the logs. Defaults to `10`
+
+### Units
+- **DISTANCE_UNIT** - Unit in which speed/distance should be measured. Defaults to `miles`
+- **TEMPERATURE_UNIT** - Unit in which temperature should be measured. Defaults to `fahrenheit`
 
 ### Features
 - **GIT_USER** - GitHub Username
@@ -249,10 +249,21 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SYNC_MEETINGS** - Interval in seconds to generate ``meetings`` information using an `ics` URL.
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
-**Scheduled Weather Alert**
+**Scheduled**
 - **WEATHER_ALERT** - Time (in 24h `HH:MM` format) when the weather alert should be fired - Example: `09:00`
-> Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
-> This feature can also be enabled from `automation.yaml` by using the keyword `weather` in phrase for the `task`
+  > Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
+  > This feature can also be enabled from `automation.yaml` by using the keyword `weather` in phrase for the `task`
+- **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
+  <details>
+  <summary><strong><i>Sample value</i></strong></summary>
+
+  ```yaml
+  [
+    "0 0 * * 1-5/2 find /var/log -delete",
+    "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
+  ]
+  ```
+  </details>
 
 **[Wi-Fi Controls](https://github.com/thevickypedia/pywifi-controls)**
 - **WIFI_SSID** - SSID of the wireless connection.
@@ -393,8 +404,8 @@ bedroom tv:
 ```
 </details>
 
-### Automation Setup [Optional]
-Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py) tasks 
+### Automation [Optional]
+Jarvis can execute [offline compatible](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/conditions.py) tasks 
 at pre-defined times without any user interaction.
 > This feature requires an `automation.yaml` file which should be stored within the `fileio` directory.
 
@@ -433,37 +444,24 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 Jarvis supports both internal and external background tasks to be scheduled.
 
 - Jarvis can run internal tasks at certain intervals.
-  > This feature requires a `background_tasks.yaml` file which should be stored within the `fileio` directory.
+> This feature requires a `background_tasks.yaml` file which should be stored within the `fileio` directory.
 
-    <details>
-    <summary><strong><i>Setup Instructions</i></strong></summary>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
 
-    ```yaml
-    - seconds: 1_800
-      task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
-      ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
-        - 5
-        - 22
-    - seconds: 10_800
-      task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
-      ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
-    ```
-    </details>
-<br>
+```yaml
+- seconds: 1_800
+  task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
+  ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
+    - 5
+    - 22
+- seconds: 10_800
+  task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
+  ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
+```
+</details>
 
-- **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
-    <details>
-    <summary><strong><i>Sample value</i></strong></summary>
-
-    ```yaml
-    [
-      "0 0 * * 1-5/2 find /var/log -delete",
-      "0 5 * * 1 tar -zcf /var/backups/home.tgz /home/"
-    ]
-    ```
-    </details>
-
-### Simulation Setup [Optional]
+### Simulation [Optional]
 Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.
 > This feature requires a `simulation.yaml` file which should be stored within the `fileio` directory.
 
@@ -477,17 +475,36 @@ meeting_event:
 - get me the events from my calendar
 - what meetings do I have today
 ```
-
 </details>
 
-### Custom Keyword Mapping [Optional]
-Jarvis supports custom keyword mapping, to execute one or more tasks upon request.
+### Custom Conditions [Optional]
+Jarvis can execute function(s) directly based on a [custom condition](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/custom_conditions.py) map,
+via both voice and offline communicators.
+
+- The condition mapping may contain one or more functions to be executed for a single keyword/phrase.
+- These functions are executed as ordered in the mapping file and responses will be delivered as each task is done.
+- For offline communicators, in case of multi-function mapping, the responses are gathered and then delivered at once.
+
 > This feature requires a `conditions.yaml` file which should be stored within the `fileio` directory.
 
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-##### _Feature is yet to be implemented_
+The YAML file should be a dictionary within a dictionary that looks like the below.
+
+```yaml
+lumos:  # custom keyword
+  lights: turn on all lights  # function_name: phrase passed as argument
+knox:
+  lights: turn off all lights
+  television: turn off bedroom tv
+fire up the chopper:  # custom phrase
+  garage: open garage
+  car: lock start car
+```
+
+:warning: This is a direct mapping to the [functions](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py), 
+so the input phrases are not validated by Jarvis. This may cause `RuntimeError`s if invalid phrases are entered in the mapping file.
 
 </details>
 

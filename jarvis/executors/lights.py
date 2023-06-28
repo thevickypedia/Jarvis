@@ -1,4 +1,3 @@
-import os
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -7,9 +6,7 @@ from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import Callable, Dict, List, NoReturn, Union
 
-import yaml
-
-from jarvis.executors import internet
+from jarvis.executors import files, internet
 from jarvis.executors import lights_squire as squire
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -91,24 +88,16 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     if not internet.vpn_checker():
         return
 
-    if not os.path.isfile(models.fileio.smart_devices):
-        logger.warning("%s not found.", models.fileio.smart_devices)
-        support.no_env_vars()
+    smart_devices = files.get_smart_devices()
+    if smart_devices is False:
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information.")
         return
-
-    try:
-        with open(models.fileio.smart_devices) as file:
-            lights_mapping = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-            lights_mapping = {key: value for key, value in lights_mapping.items()
-                              if 'tv' not in key.lower() and isinstance(value, list)}
-    except yaml.YAMLError as error:
-        logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information. "
-                           "Please check the logs.")
-        return
-
-    if not any(lights_mapping):
-        logger.warning("'%s' is empty for lights.", models.fileio.smart_devices)
+    if smart_devices:
+        if not (lights_mapping := {key: value for key, value in smart_devices.items()
+                                   if 'tv' not in key.lower() and isinstance(value, list)}):
+            logger.warning("%s is empty for lights.", models.fileio.smart_devices)
+            return
+    else:
         support.no_env_vars()
         return
 

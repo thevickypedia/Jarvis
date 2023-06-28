@@ -25,8 +25,6 @@ if models.env.recognizer_settings:
     recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
     recognizer.dynamic_energy_threshold = models.env.recognizer_settings.dynamic_energy_threshold
     recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
-    models.env.phrase_limit = 7  # Override voice phrase limit when recognizer settings are available
-    models.env.timeout = 3
 
 
 def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
@@ -44,8 +42,8 @@ def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
             support.write_screen(text="Listener activated...") if stdout else None
-            listened = recognizer.listen(source=source, timeout=models.env.timeout,
-                                         phrase_time_limit=models.env.phrase_limit)
+            listened = recognizer.listen(source=source, timeout=models.env.listener_timeout,
+                                         phrase_time_limit=models.env.listener_phrase_limit)
             playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()
             recognized = recognizer.recognize_google(audio_data=listened)

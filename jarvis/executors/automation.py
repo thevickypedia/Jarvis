@@ -1,12 +1,12 @@
 import os
+import string
 import warnings
-from datetime import datetime
-from string import punctuation
+from datetime import datetime, timedelta
 from typing import NoReturn, Union
 
-import yaml
 from deepdiff import DeepDiff
 
+from jarvis.executors import files
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -43,15 +43,25 @@ def rewrite_automator(write_data: dict) -> NoReturn:
         write_data: Takes the new dictionary as an argument.
     """
     logger.info("Data has been modified. Rewriting automation data into YAML file.")
-    with open(models.fileio.automation) as file:
-        try:
-            read_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            logger.error(error)
-            read_data = {}
+    read_data = files.get_automation()
     logger.debug(DeepDiff(read_data, write_data, ignore_order=True))
-    with open(models.fileio.automation, 'w') as file:
-        yaml.dump(data=write_data, stream=file, indent=2, sort_keys=False)
+    files.put_automation(data=write_data)
+
+
+def validate_weather_alert() -> NoReturn:
+    """Adds the env var for weather alert (if present) to automation feed file."""
+    if models.env.weather_alert:
+        automation_data = files.get_automation()
+        if task_overlap := automation_data.get(models.env.weather_alert):
+            if "weather" in task_overlap.get("task"):
+                logger.info("Redundancy found in env var and automation. Skipping..")
+            else:
+                logger.warning("%s was found at '%s', appending a minute to weather alert",
+                               task_overlap, models.env.weather_alert)
+                time_overlap = datetime.strptime(models.env.weather_alert, '%I:%M %p')
+                models.env.weather_alert = (time_overlap + timedelta(minutes=1)).strftime('%I:%M %p')
+                automation_data[models.env.weather_alert] = {"task": "weather alert"}
+                files.put_automation(data=automation_data)
 
 
 def auto_helper() -> Union[str, None]:
@@ -61,17 +71,16 @@ def auto_helper() -> Union[str, None]:
         str:
         Task to be executed.
     """
-    try:
-        with open(models.fileio.automation) as read_file:
-            automation_data = yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
-    except yaml.YAMLError as error:
-        logger.error(error)
+    automation_data = files.get_automation()
+    if automation_data is None:
         warnings.warn(
             "AUTOMATION FILE :: Invalid file format."
         )
         logger.error("Invalid file format. Logging automation data and renaming the file to avoid repeated errors in a "
                      "loop.\n%s\n\n%s\n\n%s" %
-                     (''.join(['*' for _ in range(120)]), read_file.read(), ''.join(['*' for _ in range(120)])))
+                     (''.join(['*' for _ in range(120)]),
+                      open(models.fileio.automation).read(),
+                      ''.join(['*' for _ in range(120)])))
         os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
         return
 
@@ -117,7 +126,7 @@ def auto_helper() -> Union[str, None]:
 
         if automation_info.get("status"):
             continue
-        exec_task = exec_task.translate(str.maketrans('', '', punctuation))  # Remove punctuations from the str
+        exec_task = exec_task.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from the str
         automation_data[automation_time]["status"] = True
         rewrite_automator(write_data=automation_data)
         return exec_task
