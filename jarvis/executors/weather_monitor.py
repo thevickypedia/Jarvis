@@ -15,7 +15,7 @@ def monitor() -> None:
     high_threshold = 100
     condition, high, low, temp_f, alert = weather.weather(monitor=True)
     if not any((high >= high_threshold, low <= low_threshold, alert)):
-        logger.info(dict(condition=condition, high=high, low=low, temperature=temp_f, alert=alert))
+        logger.debug(dict(condition=condition, high=high, low=low, temperature=temp_f, alert=alert))
         logger.info("No alerts to report")
         return
     title = "Weather Alert"

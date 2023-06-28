@@ -301,7 +301,7 @@ class EnvConfig(BaseSettings):
     # Built-in speaker config
     voice_name: str = Field(default=None, env='VOICE_NAME')
     _rate = audio_driver.getProperty("rate") if audio_driver else dynamic_rate()
-    voice_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate, env='VOICE_RATE')
+    speech_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate, env='SPEECH_RATE')
 
     # Peripheral config
     camera_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='CAMERA_INDEX')
@@ -388,8 +388,8 @@ class EnvConfig(BaseSettings):
 
     # Listener config
     sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
-    timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='TIMEOUT')
-    phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None, env='PHRASE_LIMIT')
+    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='LISTENER_TIMEOUT')
+    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None, env='LISTENER_PHRASE_LIMIT')
     recognizer_settings: RecognizerSettings = Field(default=None, env='RECOGNIZER_SETTINGS')
 
     # Telegram config
@@ -471,10 +471,11 @@ class EnvConfig(BaseSettings):
         if not value:
             return
         try:
-            if val := datetime.strptime(value, '%H:%M'):
-                return val
+            # Convert datetime to string as the '07' for '%I' will pass validation but fail comparison
+            if val := datetime.strptime(value, '%I:%M %p'):
+                return val.strftime('%I:%M %p')
         except ValueError:
-            raise InvalidEnvVars("format should be 'HH:MM'")
+            raise InvalidEnvVars("format should be '%I:%M %p'")
 
 
 env = EnvConfig()

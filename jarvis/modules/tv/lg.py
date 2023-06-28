@@ -14,6 +14,7 @@ from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, AudioOutputSource,
                                 MediaControl, SourceControl, SystemControl)
 
+from jarvis.executors import files
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import TVError
 from jarvis.modules.logger.custom_logger import logger
@@ -31,7 +32,7 @@ class LGWebOS:
     _init_status = False
     _reconnect = False
 
-    def __init__(self, ip_address: str, client_key: str):
+    def __init__(self, ip_address: str, client_key: str, nickname: str):
         """Instantiates the ``WebOSClient`` and connects to the TV.
 
         Using TV's ip makes the initial response much quicker, but it can also scan the network for the TV's ip.
@@ -39,6 +40,7 @@ class LGWebOS:
         Args:
             ip_address: IP address of the TV.
             client_key: Client Key to authenticate connection.
+            nickname: Identifier name for the TV as stored in the yaml file.
 
         Raises:
             TVError:
@@ -75,16 +77,23 @@ class LGWebOS:
                 support.write_screen(text='Connected to the TV.')
                 break
             elif status == WebOSClient.PROMPTED:
-                if not shared.called_by_offline:
+                if shared.called_by_offline:
+                    logger.info("Connection request sent to '%s'", nickname)
+                else:
                     speaker.speak(text=f"Please accept the connection request on your TV {models.env.title}!", run=True)
                 self._reconnect = True
                 support.write_screen(text='Please accept the connection request on your TV.')
 
         if self._reconnect:
             self._reconnect = False
-            logger.critical("ATTENTION::Client key has been generated. Store it in '%s' to re-use." %
-                            models.fileio.smart_devices)
-            logger.critical(str(store))
+            if (smart_devices := files.get_smart_devices()) and store.get('client_key'):
+                smart_devices[nickname]['client_key'] = store['client_key']
+                files.put_smart_devices(data=smart_devices)
+                logger.info("Client key '%s' has been stored in '%s'", store['client_key'], models.fileio.smart_devices)
+            else:
+                logger.critical("ATTENTION::Client key has been generated. Store it in '%s' to re-use." %
+                                models.fileio.smart_devices)
+                logger.critical(str(store))
 
         self.system = SystemControl(self.client)
         self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None
@@ -230,6 +239,10 @@ class LGWebOS:
 
     def shutdown(self) -> NoReturn:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""
-        self.system.notify('Jarvis::SHUTTING DOWN now')
+        try:
+            self.system.notify('Jarvis::SHUTTING DOWN now')
+        except AttributeError as error:  # Happens when TV is already powered off
+            logger.error(error)
+            return
         time.sleep(3)
         self.system.power_off()

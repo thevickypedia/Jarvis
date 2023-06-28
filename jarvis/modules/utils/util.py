@@ -16,7 +16,7 @@ import string
 import sys
 import uuid
 from datetime import datetime
-from typing import Any, Hashable, List, NoReturn, Union
+from typing import Any, Dict, Hashable, List, NoReturn, Union
 
 
 def get_timezone() -> str:
@@ -56,19 +56,22 @@ def part_of_day() -> str:
     return "Night"
 
 
-def get_closest_match(text: str, match_list: list) -> str:
+def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Union[Dict[str, float], str]:
     """Get the closest matching word from a list of words.
 
     Args:
         text: Text to look for in the matching list.
         match_list: List to be compared against.
+        get_ratio: Boolean flag to return the closest match along with the ratio, as a dict.
 
     Returns:
-        str:
-        Returns the text that matches closest in the list.
+        Union[Dict[str, float], str]:
+        Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.
     """
-    closest_match = [{"key": key, "val": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
-    return sorted(closest_match, key=lambda d: d["val"], reverse=True)[0].get("key")
+    closest_match = [{"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
+    if get_ratio:
+        return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0]
+    return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0].get("text")
 
 
 def hashed(key: uuid.UUID) -> Hashable:

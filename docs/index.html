@@ -52,14 +52,17 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#test-peripherals">Test peripherals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#env-variables">ENV Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#audio">Audio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#peripherals">Peripherals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#units">Units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#features">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#contacts-optional">Contacts [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices-optional">Smart Devices [Optional]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#automation-optional">Automation [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks-optional">Background Tasks [Optional]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#simulation-setup-optional">Simulation Setup [Optional]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#custom-keyword-mapping-optional">Custom Keyword Mapping [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#simulation-optional">Simulation [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#custom-conditions-optional">Custom Conditions [Optional]</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#guide">Guide</a></li>
@@ -660,13 +663,8 @@ last_value: the last value assigned or None</p>
 <span id="keywords-classifier"></span><h1>Keywords Classifier<a class="headerlink" href="#module-jarvis._preexec.keywords_handler" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis._preexec.keywords_handler.rewrite_keywords">
-<span class="sig-prename descclassname"><span class="pre">jarvis._preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">rewrite_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis._preexec.keywords_handler.rewrite_keywords" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis._preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">rewrite_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis._preexec.keywords_handler.rewrite_keywords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads keywords.yaml file if available, else loads the base keywords module as an object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>init</strong> – Takes a boolean flag to suppress logging when triggered for the first time.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -2099,6 +2097,12 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.automation.validate_weather_alert">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.automation.</span></span><span class="sig-name descname"><span class="pre">validate_weather_alert</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.automation.validate_weather_alert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the env var for weather alert (if present) to automation feed file.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.automation.auto_helper">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.automation.</span></span><span class="sig-name descname"><span class="pre">auto_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.automation.auto_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs in a thread to help the automator function in the main module.</p>
@@ -3031,6 +3035,56 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_automation">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_automation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_automation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load automation data from feed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the automation data in the feed file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Dict[str, Union[str, bool]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_automation">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_automation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_automation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps automation data into feed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Data that has to be dumped into the automation feed file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_smart_devices">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_smart_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_smart_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load smart devices’ data from feed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the smart devices’ data in the feed file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[dict, bool]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_smart_devices">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_smart_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_smart_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps smart devices’ data into feed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Data that has to be dumped into the smart devices’ feed file.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.functions">
 <span id="functions"></span><h1>Functions<a class="headerlink" href="#module-jarvis.executors.functions" title="Permalink to this heading">¶</a></h1>
@@ -3680,6 +3734,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.offline.background_tasks">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">background_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.offline.background_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the runner function for background tasks.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.offline.background_task_runner">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">background_task_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.offline.background_task_runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync.</p>
 </dd></dl>
 
@@ -4799,6 +4859,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesizer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the runner function for speech-synthesis.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesis_runner">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesis_runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates speech synthesizer using docker.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -6662,8 +6728,8 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.voice_rate">
-<span class="sig-name descname"><span class="pre">voice_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.voice_rate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.speech_rate">
+<span class="sig-name descname"><span class="pre">speech_rate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_rate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6927,13 +6993,13 @@ last_value: the last value assigned or None</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_timeout">
+<span class="sig-name descname"><span class="pre">listener_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.phrase_limit">
-<span class="sig-name descname"><span class="pre">phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.phrase_limit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_phrase_limit">
+<span class="sig-name descname"><span class="pre">listener_phrase_limit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveInt</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_phrase_limit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -8750,20 +8816,21 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.utils.util.get_closest_match">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">get_closest_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.get_closest_match" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">get_closest_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.get_closest_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the closest matching word from a list of words.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Text to look for in the matching list.</p></li>
 <li><p><strong>match_list</strong> – List to be compared against.</p></li>
+<li><p><strong>get_ratio</strong> – Boolean flag to return the closest match along with the ratio, as a dict.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the text that matches closest in the list.</p>
+<dd class="field-even"><p>Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p>Union[Dict[str, float], str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9829,7 +9896,7 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.lg.</span></span><span class="sig-name descname"><span class="pre">LGWebOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.lg.</span></span><span class="sig-name descname"><span class="pre">LGWebOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LGWebOS</span>
 </pre></div>
@@ -9841,6 +9908,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ip_address</strong> – IP address of the TV.</p></li>
 <li><p><strong>client_key</strong> – Client Key to authenticate connection.</p></li>
+<li><p><strong>nickname</strong> – Identifier name for the TV as stored in the yaml file.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>

@@ -127,3 +127,61 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
                 return yaml.load(stream=file, Loader=yaml.SafeLoader)
             except yaml.YAMLError as error:
                 logger.error(error)
+
+
+def get_automation() -> Dict[str, Dict[str, Union[str, bool]]]:
+    """Load automation data from feed file.
+
+    Returns:
+        Dict[str, Dict[str, Union[str, bool]]]:
+        Returns the automation data in the feed file.
+    """
+    if os.path.isfile(models.fileio.automation):
+        try:
+            with open(models.fileio.automation) as read_file:
+                return yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
+        except yaml.YAMLError as error:
+            logger.error(error)
+
+
+def put_automation(data: Dict[str, Dict[str, Union[str, bool]]]) -> NoReturn:
+    """Dumps automation data into feed file.
+
+    Args:
+        data: Data that has to be dumped into the automation feed file.
+    """
+    with open(models.fileio.automation, 'w') as file:
+        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
+        file.flush()  # Write buffer to file immediately
+
+
+def get_smart_devices() -> Union[dict, bool]:
+    """Load smart devices' data from feed file.
+
+    Returns:
+        Union[dict, bool]:
+        Returns the smart devices' data in the feed file.
+    """
+    if os.path.isfile(models.fileio.smart_devices):
+        try:
+            with open(models.fileio.smart_devices) as file:
+                if smart_devices := yaml.load(stream=file, Loader=yaml.FullLoader):
+                    return smart_devices
+                else:
+                    logger.warning("'%s' is empty.", models.fileio.smart_devices)
+        except yaml.YAMLError as error:
+            logger.error(error)
+            return False
+    else:
+        logger.warning("%s not found.", models.fileio.smart_devices)
+
+
+def put_smart_devices(data: dict) -> NoReturn:
+    """Dumps smart devices' data into feed file.
+
+    Args:
+        data: Data that has to be dumped into the smart devices' feed file.
+    """
+    with open(models.fileio.smart_devices, 'w') as file:
+        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
+        file.flush()  # Write buffer to file immediately

@@ -13,7 +13,7 @@ from typing import NoReturn
 import docker
 import requests
 
-from jarvis.executors import port_handler
+from jarvis.executors import controls, port_handler
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import config
 from jarvis.modules.logger.custom_logger import logger
@@ -57,6 +57,15 @@ def check_existing() -> bool:
 
 
 def speech_synthesizer() -> NoReturn:
+    """Initiate the runner function for speech-synthesis."""
+    try:
+        speech_synthesis_runner()
+    except Exception as error:
+        logger.critical("ATTENTION: %s", error.__str__())
+        controls.restart_control(quiet=True)
+
+
+def speech_synthesis_runner() -> NoReturn:
     """Initiates speech synthesizer using docker.
 
     See Also:

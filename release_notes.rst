@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+7.4.5 (06/27/2023)
+------------------
+- Enable custom keywords to functions mapping
+- Remove redundancy in weather alert trigger
+- Set weather alert trigger via background tasks
+- Keep weather alert time format consistent
+- Add an option to manually enable the listener
+- Add automation and smart devices to files.py
+- Cleanup keywords_handler.py
+- Rename timeout and phrase_limit to more sensible ones
+- Auto store LG tv's client key in smart_devices.yaml
+
 7.4.4 (05/16/2023)
 ------------------
 - Add a feature to access all TVs at once

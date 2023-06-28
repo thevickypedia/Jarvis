@@ -11,8 +11,8 @@ from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from jarvis.executors import (alarm, automation, background_task, conditions,
-                              crontab, listener_controls, others, remind,
-                              weather_monitor, word_match)
+                              controls, crontab, listener_controls, others,
+                              remind, weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -27,8 +27,19 @@ db = database.Database(database=models.fileio.base_db)
 
 
 def background_tasks() -> NoReturn:
+    """Initiate the runner function for background tasks."""
+    try:
+        background_task_runner()
+    except Exception as error:
+        logger.critical("ATTENTION: %s", error.__str__())
+        controls.restart_control(quiet=True)
+
+
+def background_task_runner() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
+    # Since env vars are loaded only during startup, validate weather alert only then
+    automation.validate_weather_alert()
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     meeting_muter = []
     if models.settings.os == models.supported_platforms.macOS:
@@ -37,7 +48,6 @@ def background_tasks() -> NoReturn:
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True
     smart_listener = Queue()
-    w_alert = {'time': ''}
     while True:
         now = datetime.now()
         # Trigger background tasks
@@ -62,9 +72,9 @@ def background_tasks() -> NoReturn:
             for job in models.env.crontab:
                 if job.check_trigger() or dry_run:
                     if dry_run:
-                        logger.info("Executing cron job: %s during startup", job.comment)
+                        logger.info("Executing cron job: '%s' during startup", job.comment)
                     else:
-                        logger.debug("Executing cron job: %s", job.comment)
+                        logger.debug("Executing cron job: '%s'", job.comment)
                     cron_process = Process(target=crontab.crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -75,12 +85,11 @@ def background_tasks() -> NoReturn:
         # Trigger automation
         if os.path.isfile(models.fileio.automation):
             if exec_task := automation.auto_helper():
-                # Check and trigger monitor only if it wasn't run previously, avoid duplicate check within a minute
-                if "weather" in exec_task.lower() and w_alert['time'] != now.strftime('%H:%M'):
+                # Check and trigger weather alert monitoring system
+                if "weather" in exec_task.lower():
                     # run as daemon and not store in children table as this won't take long
-                    logger.info("Initiating weather alert monitor")
+                    logger.debug("Initiating weather alert monitor")
                     Process(target=weather_monitor.monitor, daemon=True).start()
-                    w_alert['time'] = now.strftime('%H:%M')
                 else:
                     logger.debug("Executing %s", exec_task)
                     try:
@@ -178,15 +187,6 @@ def background_tasks() -> NoReturn:
                     logger.info("Executing reminder: %s", each_reminder)
                     Thread(target=remind.executor, kwargs={'message': remind_msg, 'contact': name}).start()
                     os.remove(os.path.join("reminder", reminder_file))
-
-        # Trigger weather alert system
-        # If a weather alert time is given and the current time matches with the given time proceed
-        if models.env.weather_alert and now.strftime('%H:%M') == models.env.weather_alert.strftime('%H:%M'):
-            # Check and trigger monitor only if it wasn't run previously, avoid duplicate check within a minute
-            if w_alert['time'] != now.strftime('%H:%M'):
-                logger.info("Initiating weather alert monitor")
-                Process(target=weather_monitor.monitor, daemon=True).start()
-                w_alert['time'] = now.strftime('%H:%M')
 
         # Re-check for tasks
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

@@ -3,9 +3,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 
-import yaml
-
-from jarvis.executors import internet, tv_controls, word_match
+from jarvis.executors import files, internet, tv_controls, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
@@ -55,23 +53,15 @@ def television(phrase: str) -> None:
     if not internet.vpn_checker():
         return
 
-    if not os.path.isfile(models.fileio.smart_devices):
-        logger.warning("%s not found.", models.fileio.smart_devices)
-        support.no_env_vars()
+    smart_devices = files.get_smart_devices()
+    if smart_devices is False:
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information.")
         return
-
-    try:
-        with open(models.fileio.smart_devices) as file:
-            smart_devices = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-            if smart_devices:
-                smart_devices = {key: value for key, value in smart_devices.items() if 'tv' in key.lower()}
-    except yaml.YAMLError as error:
-        logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to read your TV's source information.")
-        return
-
-    if not any(smart_devices):
-        logger.warning("%s is empty for TV.", models.fileio.smart_devices)
+    if smart_devices:
+        if not (smart_devices := {key: value for key, value in smart_devices.items() if 'tv' in key.lower()}):
+            logger.warning("%s is empty for TV.", models.fileio.smart_devices)
+            return
+    else:
         support.no_env_vars()
         return
 
@@ -122,6 +112,7 @@ def television(phrase: str) -> None:
 
         if 'turn off' in phrase.lower() or 'shutdown' in phrase.lower() or 'shut down' in phrase.lower():
             if not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
+                # WARNING: TV that was turned off recently might still respond to ping
                 speaker.speak(text=f"I wasn't able to connect to your {target_tv} {models.env.title}! "
                                    "I guess your TV is powered off already.")
                 continue

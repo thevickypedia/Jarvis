@@ -43,6 +43,6 @@ def telegram_api() -> NoReturn:
             logger.info("Restarting in %d seconds.", FAILED_CONNECTIONS['count'] * 10)
             time.sleep(FAILED_CONNECTIONS['count'] * 10)
             telegram_api()
-    except RecursionError as error:
-        logger.error(error)
+    except Exception as error:
+        logger.critical("ATTENTION: %s", error.__str__())
         controls.restart_control(quiet=True)

@@ -183,18 +183,20 @@
 <h1>ENV Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading">¶</a></h1>
 <p>Environment variables are loaded from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and validated using <code class="docutils literal notranslate"><span class="pre">pydantic</span></code></p>
 <details>
-<summary><strong>More on Environment variables</strong></summary><ul>
-<li><p><strong>ROOT_PASSWORD</strong> - System password to get the system vitals and run other <code class="docutils literal notranslate"><span class="pre">sudo</span></code> commands. Mandatory for <code class="docutils literal notranslate"><span class="pre">Linux</span></code></p></li>
+<summary><strong>More on Environment variables</strong></summary><ul class="simple">
+<li><p><strong>ROOT_PASSWORD</strong> - System password to get the system vitals and run other <code class="docutils literal notranslate"><span class="pre">sudo</span></code> commands. (<em>mandatory for <code class="docutils literal notranslate"><span class="pre">Linux</span></code></em>)</p></li>
 <li><p><strong>NAME</strong> - Name which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">Vignesh</span></code></p></li>
 <li><p><strong>TITLE</strong> - Title which Jarvis should address the user by. Defaults to <code class="docutils literal notranslate"><span class="pre">sir</span></code></p></li>
-<li><p><strong>DISTANCE_UNIT</strong> - Unit in which speed/distance should be measured. Defaults to <code class="docutils literal notranslate"><span class="pre">miles</span></code></p></li>
-<li><p><strong>TEMPERATURE_UNIT</strong> - Unit in which temperature should be measured. Defaults to <code class="docutils literal notranslate"><span class="pre">fahrenheit</span></code></p></li>
-<li><p><strong>PLOT_MIC</strong> - Boolean value whether to show microphone usage in realtime. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>LOG_RETENTION</strong> - Number of days to store the logs. Defaults to <code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
-<li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis’ listener. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)<br>
+<li><p><strong>LIMITED</strong> - Boolean flag to run only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping background processes. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> (<em>enforced based on the number of CPU cores</em>)</p></li>
+<li><p><strong>PLOT_MIC</strong> - Boolean value to show microphone usage in realtime. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+<section id="audio">
+<h2>Audio<a class="headerlink" href="#audio" title="Permalink to this heading">¶</a></h2>
+<ul>
+<li><p><strong>WAKE_WORDS</strong> - List of wake words to initiate Jarvis. Defaults to <code class="docutils literal notranslate"><span class="pre">['jarvis']</span></code> (Defaults to <code class="docutils literal notranslate"><span class="pre">['alexa']</span></code> in legacy macOS)<br>
 :warning: Jarvis has limitations on the wake words as it relies on ML libraries for wake word detection.</p></li>
 <li><p><strong>VOICE_NAME</strong> - Name of the voice supported by the OperatingSystem. Defaults to the author’s favorite.</p></li>
-<li><p><strong>VOICE_RATE</strong> - Speed/rate at which the text should be spoken. Defaults to the value from <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code> module. Typically <code class="docutils literal notranslate"><span class="pre">200</span></code></p>
+<li><p><strong>SPEECH_RATE</strong> - Speed/rate at which the text should be spoken. Defaults to the value from <code class="docutils literal notranslate"><span class="pre">pyttsx3</span></code> module. Typically <code class="docutils literal notranslate"><span class="pre">200</span></code></p>
   <details>
   <summary><strong><i>To add more voices</i></strong></summary><p><strong>macOS</strong>:</p>
 <blockquote>
@@ -210,30 +212,19 @@
 </div></blockquote>
   </details></li>
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Allowed range: [0-1] Defaults to <code class="docutils literal notranslate"><span class="pre">0.5</span></code></p></li>
-<li><p><strong>TIMEOUT</strong> - Timeout in seconds until which the listener should wait for speech. Defaults to <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
-<li><p><strong>PHRASE_LIMIT</strong> - Timeout in seconds until which the listener will remain active. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>LIMITED</strong> - Boolean flag to run only the main version of <code class="docutils literal notranslate"><span class="pre">Jarvis</span></code> skipping background processes. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> Enforced based on the number of CPU cores.</p></li>
-<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level for logging. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object that has with customized speech recognition settings.</p>
+<li><p><strong>LISTENER_TIMEOUT</strong> - Timeout in seconds until which the listener should wait for speech. Defaults to <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+<li><p><strong>LISTENER_PHRASE_LIMIT</strong> - Timeout in seconds until which the listener will remain active. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object with customized speech recognition settings.</p>
   <details>
   <summary><strong><i>Custom settings for speech recognition</i></strong></summary><p>These are customized according to the author’s voice pitch.
 Please use <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/microphone/recognizer.py">recognizer.py</a> to figure out the suitable values on a trial and error basis.</p>
-<blockquote>
-<div><p>These settings are added (optionally), to avoid the hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>
-<br>
-Cons in using hard coded <code class="docutils literal notranslate"><span class="pre">PHRASE_LIMIT</span></code>:</p>
-<ul class="simple">
-<li><p>Disables the listener after the set limit even the speaker is actively talking.</p></li>
-<li><p>Listener will be active until the set limit even after the speaker has stopped talking.</p></li>
-</ul>
-</div></blockquote>
 <p>Sample settings (formatted as JSON object)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">RECOGNIZER_SETTINGS</span></code>: <code class="docutils literal notranslate"><span class="pre">'{&quot;energy_threshold&quot;:</span> <span class="pre">1100,</span> <span class="pre">&quot;dynamic_energy_threshold&quot;:</span> <span class="pre">false,</span> <span class="pre">&quot;pause_threshold&quot;:</span> <span class="pre">2,</span> <span class="pre">&quot;phrase_threshold&quot;:</span> <span class="pre">0.1,</span> <span class="pre">&quot;non_speaking_duration&quot;:</span> <span class="pre">2}'</span></code></p></li>
 </ul>
 <p><strong>Description</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">energy_threshold</span></code>: Minimum audio energy to consider for recording. Greater the value, louder the speech should be.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">energy_threshold</span></code>: Minimum audio energy to consider for recording. Greater the value, louder the voice should be.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dynamic_energy_threshold</span></code>: Change considerable audio energy threshold dynamically.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pause_threshold</span></code>: Seconds of non-speaking audio before a phrase is considered complete.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">phrase_threshold</span></code>: Minimum seconds of speaking audio before it can be considered a phrase - values below this are ignored. This helps to filter out clicks and pops.</p></li>
@@ -241,6 +232,7 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 </ul>
   </details></li>
 </ul>
+</section>
 <hr class="docutils" />
 <section id="peripherals">
 <h2>Peripherals<a class="headerlink" href="#peripherals" title="Permalink to this heading">¶</a></h2>
@@ -248,6 +240,20 @@ Cons in using hard coded <code class="docutils literal notranslate"><span class=
 <li><p><strong>CAMERA_INDEX</strong> - Camera index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/camera/camera.py">camera.py</a> to get the index value of each camera.</p></li>
 <li><p><strong>SPEAKER_INDEX</strong> - Speaker index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py">peripherals.py</a> to get the index value of each speaker.</p></li>
 <li><p><strong>MICROPHONE_INDEX</strong> - Microphone index that has to be used. Run <a class="reference external" href="https://github.com/thevickypedia/Jarvis/tree/master/jarvis/modules/peripherals.py">peripherals.py</a> to get the index value of each microphone.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>DEBUG</strong> - Boolean flag to enable debug level for logging. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>LOG_RETENTION</strong> - Number of days to store the logs. Defaults to <code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
+</ul>
+</section>
+<section id="units">
+<h2>Units<a class="headerlink" href="#units" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>DISTANCE_UNIT</strong> - Unit in which speed/distance should be measured. Defaults to <code class="docutils literal notranslate"><span class="pre">miles</span></code></p></li>
+<li><p><strong>TEMPERATURE_UNIT</strong> - Unit in which temperature should be measured. Defaults to <code class="docutils literal notranslate"><span class="pre">fahrenheit</span></code></p></li>
 </ul>
 </section>
 <section id="features">
@@ -295,14 +301,24 @@ historically identical request.</p>
 <li><p><strong>SYNC_MEETINGS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">meetings</span></code> information using an <code class="docutils literal notranslate"><span class="pre">ics</span></code> URL.</p></li>
 <li><p><strong>SYNC_EVENTS</strong> - Interval in seconds to generate <code class="docutils literal notranslate"><span class="pre">events</span></code> information using <code class="docutils literal notranslate"><span class="pre">calendar</span></code> or <code class="docutils literal notranslate"><span class="pre">outlook</span></code> application.</p></li>
 </ul>
-<p><strong>Scheduled Weather Alert</strong></p>
-<ul class="simple">
-<li><p><strong>WEATHER_ALERT</strong> - Time (in 24h <code class="docutils literal notranslate"><span class="pre">HH:MM</span></code> format) when the weather alert should be fired - Example: <code class="docutils literal notranslate"><span class="pre">09:00</span></code></p></li>
-</ul>
+<p><strong>Scheduled</strong></p>
+<ul>
+<li><p><strong>WEATHER_ALERT</strong> - Time (in 24h <code class="docutils literal notranslate"><span class="pre">HH:MM</span></code> format) when the weather alert should be fired - Example: <code class="docutils literal notranslate"><span class="pre">09:00</span></code></p>
 <blockquote>
 <div><p>Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
 This feature can also be enabled from <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> by using the keyword <code class="docutils literal notranslate"><span class="pre">weather</span></code> in phrase for the <code class="docutils literal notranslate"><span class="pre">task</span></code></p>
 </div></blockquote>
+</li>
+<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
+<details>
+<summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span>
+<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span>
+<span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</details></li>
+</ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/pywifi-controls">Wi-Fi Controls</a></strong></p>
 <ul class="simple">
 <li><p><strong>WIFI_SSID</strong> - SSID of the wireless connection.</p></li>
@@ -452,9 +468,9 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 </pre></div>
 </div>
 </details></section>
-<section id="automation-setup-optional">
-<h2>Automation Setup [Optional]<a class="headerlink" href="#automation-setup-optional" title="Permalink to this heading">¶</a></h2>
-<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/offline/compatibles.py">offline compatible</a> tasks
+<section id="automation-optional">
+<h2>Automation [Optional]<a class="headerlink" href="#automation-optional" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis can execute <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/conditions.py">offline compatible</a> tasks
 at pre-defined times without any user interaction.</p>
 <blockquote>
 <div><p>This feature requires an <code class="docutils literal notranslate"><span class="pre">automation.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
@@ -489,13 +505,14 @@ Date format should match exactly as described below.</p>
 <section id="background-tasks-optional">
 <h2>Background Tasks [Optional]<a class="headerlink" href="#background-tasks-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis supports both internal and external background tasks to be scheduled.</p>
-<ul>
-<li><p>Jarvis can run internal tasks at certain intervals.</p>
+<ul class="simple">
+<li><p>Jarvis can run internal tasks at certain intervals.</p></li>
+</ul>
 <blockquote>
 <div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">background_tasks.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
 </div></blockquote>
-  <details>
-  <summary><strong><i>Setup Instructions</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
 <span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
@@ -505,22 +522,9 @@ Date format should match exactly as described below.</p>
 <span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21-6&quot;</span><span class="w">  </span><span class="c1"># Ignore the schedule between 9 PM and 6 AM</span>
 </pre></div>
 </div>
-  </details></li>
-</ul>
-<br><ul>
-<li><p><strong>CRONTAB</strong> - Runs external tasks using cron expressions. Needs to be stored as env var.</p>
-  <details>
-  <summary><strong><i>Sample value</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">[</span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1-5/2</span><span class="nv"> </span><span class="s">find</span><span class="nv"> </span><span class="s">/var/log</span><span class="nv"> </span><span class="s">-delete&quot;</span><span class="p p-Indicator">,</span>
-<span class="w">  </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">5</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">1</span><span class="nv"> </span><span class="s">tar</span><span class="nv"> </span><span class="s">-zcf</span><span class="nv"> </span><span class="s">/var/backups/home.tgz</span><span class="nv"> </span><span class="s">/home/&quot;</span>
-<span class="p p-Indicator">]</span>
-</pre></div>
-</div>
-  </details></li>
-</ul>
-</section>
-<section id="simulation-setup-optional">
-<h2>Simulation Setup [Optional]<a class="headerlink" href="#simulation-setup-optional" title="Permalink to this heading">¶</a></h2>
+</details></section>
+<section id="simulation-optional">
+<h2>Simulation [Optional]<a class="headerlink" href="#simulation-optional" title="Permalink to this heading">¶</a></h2>
 <p>Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.</p>
 <blockquote>
 <div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">simulation.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
@@ -533,17 +537,33 @@ Date format should match exactly as described below.</p>
 </pre></div>
 </div>
 </details></section>
-<section id="custom-keyword-mapping-optional">
-<h2>Custom Keyword Mapping [Optional]<a class="headerlink" href="#custom-keyword-mapping-optional" title="Permalink to this heading">¶</a></h2>
-<p>Jarvis supports custom keyword mapping, to execute one or more tasks upon request.</p>
+<section id="custom-conditions-optional">
+<h2>Custom Conditions [Optional]<a class="headerlink" href="#custom-conditions-optional" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis can execute function(s) directly based on a <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/custom_conditions.py">custom condition</a> map,
+via both voice and offline communicators.</p>
+<ul class="simple">
+<li><p>The condition mapping may contain one or more functions to be executed for a single keyword/phrase.</p></li>
+<li><p>These functions are executed as ordered in the mapping file and responses will be delivered as each task is done.</p></li>
+<li><p>For offline communicators, in case of multi-function mapping, the responses are gathered and then delivered at once.</p></li>
+</ul>
 <blockquote>
 <div><p>This feature requires a <code class="docutils literal notranslate"><span class="pre">conditions.yaml</span></code> file which should be stored within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
 </div></blockquote>
 <details>
-<summary><strong><i>Setup Instructions</i></strong></summary><section id="feature-is-yet-to-be-implemented">
-<h3><em>Feature is yet to be implemented</em><a class="headerlink" href="#feature-is-yet-to-be-implemented" title="Permalink to this heading">¶</a></h3>
+<summary><strong><i>Setup Instructions</i></strong></summary><p>The YAML file should be a dictionary within a dictionary that looks like the below.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">lumos</span><span class="p">:</span><span class="w">  </span><span class="c1"># custom keyword</span>
+<span class="w">  </span><span class="nt">lights</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn on all lights</span><span class="w">  </span><span class="c1"># function_name: phrase passed as argument</span>
+<span class="nt">knox</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">lights</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off all lights</span>
+<span class="w">  </span><span class="nt">television</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off bedroom tv</span>
+<span class="nt">fire up the chopper</span><span class="p">:</span><span class="w">  </span><span class="c1"># custom phrase</span>
+<span class="w">  </span><span class="nt">garage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">open garage</span>
+<span class="w">  </span><span class="nt">car</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lock start car</span>
+</pre></div>
+</div>
+<p>:warning: This is a direct mapping to the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py">functions</a>,
+so the input phrases are not validated by Jarvis. This may cause <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>s if invalid phrases are entered in the mapping file.</p>
 </details></section>
-</section>
 </section>
 <section id="guide">
 <h1>Guide<a class="headerlink" href="#guide" title="Permalink to this heading">¶</a></h1>
@@ -613,17 +633,17 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#test-peripherals">Test peripherals</a></li>
 <li><a class="reference internal" href="#env-variables">ENV Variables</a><ul>
+<li><a class="reference internal" href="#audio">Audio</a></li>
 <li><a class="reference internal" href="#peripherals">Peripherals</a></li>
+<li><a class="reference internal" href="#logging">Logging</a></li>
+<li><a class="reference internal" href="#units">Units</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#contacts-optional">Contacts [Optional]</a></li>
 <li><a class="reference internal" href="#smart-devices-optional">Smart Devices [Optional]</a></li>
-<li><a class="reference internal" href="#automation-setup-optional">Automation Setup [Optional]</a></li>
+<li><a class="reference internal" href="#automation-optional">Automation [Optional]</a></li>
 <li><a class="reference internal" href="#background-tasks-optional">Background Tasks [Optional]</a></li>
-<li><a class="reference internal" href="#simulation-setup-optional">Simulation Setup [Optional]</a></li>
-<li><a class="reference internal" href="#custom-keyword-mapping-optional">Custom Keyword Mapping [Optional]</a><ul>
-<li><a class="reference internal" href="#feature-is-yet-to-be-implemented"><em>Feature is yet to be implemented</em></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#simulation-optional">Simulation [Optional]</a></li>
+<li><a class="reference internal" href="#custom-conditions-optional">Custom Conditions [Optional]</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#guide">Guide</a></li>

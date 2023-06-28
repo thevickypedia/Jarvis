@@ -26,7 +26,7 @@ def voice_default() -> Engine:
                 if current_process().name == 'JARVIS':
                     logger.debug(voice.__dict__)
                 models.audio_driver.setProperty("voice", voice.id)
-                models.audio_driver.setProperty("rate", models.env.voice_rate)
+                models.audio_driver.setProperty("rate", models.env.speech_rate)
                 break
     return models.audio_driver
 
