@@ -32,7 +32,7 @@ def create_connection() -> NoReturn:
         logger.info("Using refresh token to create a connection with JLR API")
     else:
         connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass,
-                                       auth_expiry=time.time() + 86_400)
+                                       auth_expiry=time.time() + 86_400)  # local epoch time
         logger.info("Using password to create a connection with JLR API")
     try:
         connection.connect()
@@ -407,8 +407,14 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
     """
     control = None
     try:
-        # no need to check for expiration as connection will be reset in connector module
-        if not CONNECTION.connection:
+        # check for expiration as connection reset in connector module appears to be flaky
+        if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400 and CONNECTION.connection:
+            logger.info("Reusing refresh token, valid until: %s",
+                        util.epoch_to_datetime(seconds=AUTHORIZATION.expiration, format_="%B %d, %Y - %I:%M %p"))
+        else:
+            if AUTHORIZATION.expiration and time.time() - AUTHORIZATION.expiration >= 86_400:
+                logger.info("Creating a new connection since refresh token expired at: %s",
+                            util.epoch_to_datetime(seconds=AUTHORIZATION.expiration, format_="%B %d, %Y - %I:%M %p"))
             create_connection()
         control = controller.Control(connection=CONNECTION.connection, vin=CONNECTION.vin)
         attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)

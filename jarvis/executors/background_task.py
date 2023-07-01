@@ -109,6 +109,10 @@ def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 logger.error(error)
                 remove_corrupted(t)
                 continue
+            if "restart" in task.task.lower():
+                logger.warning("Unsupervised restarts are not allowed via background tasks. Use automation instead.")
+                warnings.warn("Unsupervised restarts are not allowed via background tasks. Use automation instead.")
+                continue
             if log:
                 logger.info("'%s' will be executed every %s",
                             task.task, support.time_converter(second=task.seconds))

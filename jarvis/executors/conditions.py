@@ -63,8 +63,14 @@ def conditions(phrase: str) -> bool:
             # Requires manual intervention [skip for offline communicator]
             if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes',
                                                          'music', 'voice_changer', 'restart_control', 'shutdown'):
-                static_responses.not_allowed_offline()
-                return False
+                # WATCH OUT: for changes in function name
+                if current_process().name == "background_tasks" and category == "restart_control":
+                    # Eg: Allowing 'restart' through the category 'restart_control' for the process 'background_tasks'
+                    logger.info("Allowing '%s' through the category '%s', for the process: '%s'",
+                                phrase, category, current_process().name)
+                else:
+                    static_responses.not_allowed_offline()
+                    return False
 
             if function_map.get(category):  # keyword category matches function name
                 function_map[category](phrase)  # call function with phrase as arg by default

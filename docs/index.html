@@ -2748,6 +2748,17 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.controls.db_restart_entry">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">db_restart_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.db_restart_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes an entry to the DB to restart the caller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>caller</strong> – Name of the process that has to be restarted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.controls.restart_control">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">restart_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.restart_control" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls the restart functions based on the user request.</p>
@@ -8789,6 +8800,27 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.util.epoch_to_datetime">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">epoch_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">timezone</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.epoch_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert epoch time to datetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> – Epoch timestamp.</p></li>
+<li><p><strong>format_</strong> – Custom datetime string format.</p></li>
+<li><p><strong>zone</strong> – Timezone of epoch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns either a datetime object or a string formatted datetime.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[datetime, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.utils.util.miles_to_kms">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.util.</span></span><span class="sig-name descname"><span class="pre">miles_to_kms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">miles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#jarvis.modules.utils.util.miles_to_kms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes miles as an argument and returns it in kilometers.</p>
@@ -8847,7 +8879,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Hashed value of the UUID received.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p>Hashable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8861,7 +8893,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><p>Returns hashed UUID as a string.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
+<dd class="field-even"><p>Hashable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8949,7 +8981,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Extracted time from the string.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>List[str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8966,7 +8998,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Seconds of delay.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p>Union[int, float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -8986,7 +9018,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Float values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>Union[int, float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9054,7 +9086,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Clean list without None values.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>List[Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9071,7 +9103,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Returns a cleaned up list.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>List[Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9099,6 +9131,7 @@ last_value: the last value assigned or None</p>
 <li><p>The port number chosen can be found using <code class="docutils literal notranslate"><span class="pre">sock.getsockname()[1]</span></code></p></li>
 <li><p>Passing it on to the slaves so that they can connect back.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sock</span></code> is the socket that was created, returned by socket.socket.</p></li>
+<li><p>The OS will then pick an available port.</p></li>
 </ul>
 </div>
 <p class="rubric">Notes</p>
@@ -9106,7 +9139,6 @@ last_value: the last value assigned or None</p>
 <li><p>Well-Known ports: 0 to 1023</p></li>
 <li><p>Registered ports: 1024 to 49151</p></li>
 <li><p>Dynamically available: 49152 to 65535</p></li>
-<li><p>The OS will then pick an available port.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
