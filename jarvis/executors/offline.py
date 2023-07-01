@@ -57,10 +57,10 @@ def background_task_runner() -> NoReturn:
                 if now.hour in task.ignore_hours:
                     logger.debug("'%s' skipped honoring ignore hours", task)
                 else:
-                    logger.debug("Executing %s", task.task)
+                    logger.debug("Executing: '%s'", task.task)
                     try:
-                        response = offline_communicator(task.task) or "No response for background task"
-                        logger.debug("Response %s", response)
+                        response = offline_communicator(command=task.task) or "No response for background task"
+                        logger.debug("Response: '%s'", response)
                     except Exception as error:
                         logger.error(error)
                         logger.warning("Removing %s from background tasks.", task)
@@ -91,10 +91,10 @@ def background_task_runner() -> NoReturn:
                     logger.debug("Initiating weather alert monitor")
                     Process(target=weather_monitor.monitor, daemon=True).start()
                 else:
-                    logger.debug("Executing %s", exec_task)
+                    logger.debug("Executing: '%s'", exec_task)
                     try:
                         response = offline_communicator(command=exec_task) or "No response for automated task"
-                        logger.info("Response %s", response)
+                        logger.debug("Response: '%s'", response)
                     except Exception as error:
                         logger.error(error)
                         logger.error(traceback.format_exc())
@@ -188,10 +188,10 @@ def background_task_runner() -> NoReturn:
                     Thread(target=remind.executor, kwargs={'message': remind_msg, 'contact': name}).start()
                     os.remove(os.path.join("reminder", reminder_file))
 
-        # Re-check for tasks
+        # Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
-            logger.warning("New task list found! Re-starting background tasks.")
+            logger.warning("Tasks list has been updated.")
             logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
             tasks = new_tasks
             task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task

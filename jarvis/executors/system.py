@@ -33,8 +33,7 @@ def system_info(*args) -> NoReturn:
             system = f"{mapping['distributor_id']} {mapping['release']}"
     if not system:
         if not shared.hosted_device.get('os_version'):
-            logger.warning("hosted_device information was not loaded during startup. Reloading now.")
-            shared.hosted_device = hosted_device_info()
+            hosted_device_info()
         system = f"{shared.hosted_device.get('os_name', models.settings.os)} " \
                  f"{shared.hosted_device.get('os_version', '')}"
     speaker.speak(text=f"You're running {system}, with {models.settings.physical_cores} "
@@ -62,8 +61,7 @@ def system_vitals(*args) -> None:
 
         # Tested on 10.13, 10.14, 11.6 and 12.3 versions
         if not shared.hosted_device.get('os_version'):
-            logger.warning("hosted_device information was not loaded during startup. Reloading now.")
-            shared.hosted_device = hosted_device_info()
+            hosted_device_info()
         if packaging.version.parse(shared.hosted_device.get('os_version')) > packaging.version.parse('10.14'):
             critical_info = [each.strip() for each in (os.popen(
                 f'echo {models.env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1'
@@ -163,4 +161,6 @@ def hosted_device_info() -> Dict[str, str]:
         device = subprocess.check_output("cat /sys/devices/virtual/dmi/id/product_name",
                                          shell=True).decode('utf-8').strip()
     platform_info = platform.platform(terse=True).split('-')
-    return {'device': device, 'os_name': platform_info[0], 'os_version': platform_info[1]}
+    device_data = {'device': device, 'os_name': platform_info[0], 'os_version': platform_info[1]}
+    shared.hosted_device = device_data
+    return device_data

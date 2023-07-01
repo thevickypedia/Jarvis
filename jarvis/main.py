@@ -11,7 +11,7 @@ from playsound import playsound
 from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis.executors import (commander, controls, internet, listener_controls,
-                              location, processor, system)
+                              location, processor)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger.custom_logger import custom_handler, logger
@@ -191,7 +191,6 @@ def start() -> NoReturn:
             speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                "Please check your connection.", run=True)
     support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
-    shared.hosted_device = system.hosted_device_info()
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence

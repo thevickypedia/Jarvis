@@ -91,16 +91,16 @@ if settings.os.startswith('Windows'):
 class VehicleAuthorization(BaseModel):
     """Wrapper to store vehicle authorization."""
 
-    device_id: Optional[str]
-    expiration: Optional[float]
-    refresh_token: Optional[Union[str, UUID]]
+    device_id: Optional[str] = None
+    expiration: Optional[float] = None
+    refresh_token: Optional[Union[str, UUID]] = None
 
 
 class VehicleConnection(BaseModel):
     """Module to create vehicle connection."""
 
-    vin: Optional[str]
-    connection: Optional[Callable]
+    vin: Optional[str] = None
+    connection: Optional[Callable] = None
 
 
 def import_module() -> NoReturn:

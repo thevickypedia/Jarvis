@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+7.4.6 (07/01/2023)
+------------------
+- Fix flaky connection reset in car module
+- Allow restart via ``automation.yaml``
+- Log vehicle auth expiration
+- Fix missing hosted device information in logs
+- Add inline comments
+- Instantiate vehicle objects
+
 7.4.5 (06/27/2023)
 ------------------
 - Enable custom keywords to functions mapping

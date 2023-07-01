@@ -15,7 +15,7 @@ import socket
 import string
 import sys
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Hashable, List, NoReturn, Union
 
 
@@ -27,6 +27,27 @@ def get_timezone() -> str:
         Returns local timezone abbreviation.
     """
     return datetime.utcnow().astimezone().tzname()
+
+
+def epoch_to_datetime(seconds: Union[int, float], format_: str = None, zone: timezone = None) -> Union[datetime, str]:
+    """Convert epoch time to datetime.
+
+    Args:
+        seconds: Epoch timestamp.
+        format_: Custom datetime string format.
+        zone: Timezone of epoch.
+
+    Returns:
+        Union[datetime, str]:
+        Returns either a datetime object or a string formatted datetime.
+    """
+    if zone:
+        datetime_obj = datetime.fromtimestamp(seconds, zone)
+    else:
+        datetime_obj = datetime.fromtimestamp(seconds)
+    if format_:
+        datetime_obj.strftime(format_)
+    return datetime_obj
 
 
 def miles_to_kms(miles: Union[int, float]) -> float:
@@ -81,7 +102,7 @@ def hashed(key: uuid.UUID) -> Hashable:
         key: Takes the UUID generated as an argument.
 
     Returns:
-        str:
+        Hashable:
         Hashed value of the UUID received.
     """
     return hashlib.sha1(key.bytes + bytes(key.hex, "utf-8")).digest().hex()
@@ -91,7 +112,7 @@ def token() -> Hashable:
     """Generates a token using hashed uuid4.
 
     Returns:
-        str:
+        Hashable:
         Returns hashed UUID as a string.
     """
     return hashed(key=uuid.uuid4())
@@ -202,7 +223,7 @@ def extract_time(input_: str) -> List[str]:
         input_: Int if found, else returns the received float value.
 
     Returns:
-        list:
+        List[str]:
         Extracted time from the string.
     """
     input_ = input_.lower()
@@ -219,7 +240,7 @@ def delay_calculator(phrase: str) -> Union[int, float]:
         phrase: Takes the phrase spoken as an argument.
 
     Returns:
-        int:
+        Union[int, float]:
         Seconds of delay.
     """
     if not (count := extract_nos(input_=phrase)):
@@ -241,7 +262,7 @@ def extract_nos(input_: str, method: type = float) -> Union[int, float]:
         method: Takes a type to return a float or int value.
 
     Returns:
-        float:
+        Union[int, float]:
         Float values.
     """
     if value := re.findall(r"\d+", input_):
@@ -302,7 +323,7 @@ def remove_none(input_: List[Any]) -> List[Any]:
         input_: Takes a list as an argument.
 
     Returns:
-        list:
+        List[Any]:
         Clean list without None values.
     """
     return list(filter(None, input_))
@@ -315,7 +336,7 @@ def remove_duplicates(input_: List[Any]) -> List[Any]:
         input_: Takes a list as an argument.
 
     Returns:
-        list:
+        List[Any]:
         Returns a cleaned up list.
     """
     # return list(set(input_))
@@ -341,12 +362,12 @@ def get_free_port() -> int:
         - The port number chosen can be found using ``sock.getsockname()[1]``
         - Passing it on to the slaves so that they can connect back.
         - ``sock`` is the socket that was created, returned by socket.socket.
+        - The OS will then pick an available port.
 
     Notes:
         - Well-Known ports: 0 to 1023
         - Registered ports: 1024 to 49151
         - Dynamically available: 49152 to 65535
-        - The OS will then pick an available port.
 
     Returns:
         int:

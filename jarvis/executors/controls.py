@@ -14,7 +14,7 @@ import psutil
 import pybrightness
 import pywslocker
 
-from jarvis.executors import listener_controls, volume, word_match
+from jarvis.executors import listener_controls, system, volume, word_match
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
@@ -119,6 +119,18 @@ def kill(*args) -> NoReturn:
     raise StopSignal
 
 
+def db_restart_entry(caller: str) -> NoReturn:
+    """Writes an entry to the DB to restart the caller.
+
+    Args:
+        caller: Name of the process that has to be restarted.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+        cursor.connection.commit()
+
+
 def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
     """Controls the restart functions based on the user request.
 
@@ -126,24 +138,24 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         phrase: Takes the phrase spoken as an argument.
         quiet: Take a boolean flag to restart without warning.
     """
+    if quiet:  # restarted by child processes due internal errors
+        caller = sys._getframe(1).f_code.co_name  # noqa
+        logger.info("Restarting '%s'", caller)
+        db_restart_entry(caller=caller)
+        return
+    if shared.called_by_offline:  # restarted ONLY via automation.yaml
+        logger.info("Restarting all background processes!")
+        db_restart_entry(caller="OFFLINE")
+        speaker.speak(text="Restarting all background processes!")  # this is only to log the response
+        return
     if phrase:
+        if not shared.hosted_device.get('device'):
+            system.hosted_device_info()
         logger.info("Restart for %s has been requested.", shared.hosted_device.get('device'))
         restart()
     else:
-        caller = sys._getframe(1).f_code.co_name  # noqa
-        logger.info("Called by '%s'", caller)
-        if quiet:  # restarted by child processes due internal errors
-            logger.info("Restarting '%s'", caller)
-        elif shared.called_by_offline:  # restarted via automator to restart all background processes
-            logger.info("Restarting all background processes!")
-            caller = "OFFLINE"
-        else:
-            speaker.speak(text="I didn't quite get that. Did you mean restart your computer?")
-            return
-        with db.connection:
-            cursor = db.connection.cursor()
-            cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, caller))
-            cursor.connection.commit()
+        speaker.speak(text="I didn't quite get that. Did you mean restart your computer?")
+        return
 
 
 def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
