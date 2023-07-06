@@ -7,7 +7,6 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from multiprocessing import current_process
 from threading import Thread
 from typing import Dict, List, NoReturn, Tuple, Union
 
@@ -37,7 +36,7 @@ from jarvis.modules.utils import shared, support, util
 db = database.Database(database=models.fileio.base_db)
 # set to be accessible only via offline communicators
 # WATCH OUT: for changes in function name
-if current_process().name in ("fast_api", "telegram_api"):
+if models.settings.pname in ("fast_api", "telegram_api"):
     SECRET_STORAGE = {'aws': [], 'local': []}
     SESSION = boto3.Session()
     SECRET_CLIENT = SESSION.client(service_name="secretsmanager")

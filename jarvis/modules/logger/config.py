@@ -8,13 +8,13 @@
 import os
 from datetime import datetime
 from logging import Formatter
-from multiprocessing import current_process
 
 from pydantic import BaseModel
 
 from jarvis.modules.builtin_overrides import AddProcessName
 from jarvis.modules.logger.custom_logger import (DEFAULT_LOG_FORM,
                                                  custom_handler, logger)
+from jarvis.modules.models import models
 
 
 def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
@@ -40,7 +40,7 @@ def multiprocessing_logger(filename: str, log_format: Formatter = None) -> str:
     # Remove existing filters from the new log handler
     for _filter in logger.filters:
         logger.removeFilter(_filter)
-    logger.addFilter(filter=AddProcessName(process_name=current_process().name))
+    logger.addFilter(filter=AddProcessName(process_name=models.settings.pname))
     return log_handler.baseFilename
 
 

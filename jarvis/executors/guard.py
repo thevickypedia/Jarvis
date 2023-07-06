@@ -2,7 +2,7 @@ import os
 import shutil
 import time
 from datetime import datetime
-from multiprocessing import Process, current_process
+from multiprocessing import Process
 from threading import Thread, Timer
 from typing import NoReturn, Tuple, Union
 
@@ -180,7 +180,7 @@ def guard_enable(*args) -> NoReturn:
                        f"posted. Have a nice {util.part_of_day()}, and enjoy yourself {models.env.title}!")
     if shared.called_by_offline:
         if models.settings.os == models.supported_platforms.linux:
-            pname = (current_process().name or "offline communicator").replace('_', ' ')
+            pname = (models.settings.pname or "offline communicator").replace('_', ' ')
             speaker.speak(text=f"Security mode cannot be enabled via {pname}, as the host "
                                "machine is running on Linux OS")
             return

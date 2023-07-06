@@ -1,5 +1,4 @@
 import warnings
-from multiprocessing import current_process
 from threading import Thread
 
 from jarvis.executors import (custom_conditions, functions, listener_controls,
@@ -7,6 +6,7 @@ from jarvis.executors import (custom_conditions, functions, listener_controls,
                               word_match)
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.models import models
 from jarvis.modules.transformer import gpt
 from jarvis.modules.utils import shared, support
 
@@ -64,10 +64,10 @@ def conditions(phrase: str) -> bool:
             if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes',
                                                          'music', 'voice_changer', 'restart_control', 'shutdown'):
                 # WATCH OUT: for changes in function name
-                if current_process().name == "background_tasks" and category == "restart_control":
+                if models.settings.pname == "background_tasks" and category == "restart_control":
                     # Eg: Allowing 'restart' through the category 'restart_control' for the process 'background_tasks'
                     logger.info("Allowing '%s' through the category '%s', for the process: '%s'",
-                                phrase, category, current_process().name)
+                                phrase, category, models.settings.pname)
                 else:
                     static_responses.not_allowed_offline()
                     return False
@@ -80,9 +80,9 @@ def conditions(phrase: str) -> bool:
                 # edge case scenario if a category has matched but the function name is incorrect or not imported
                 warnings.warn("Condition matched for '%s' but there is not function to call." % category)
             return False
-    pname = current_process().name
-    if pname not in ('JARVIS', 'telegram_api', 'fast_api'):  # GPT instance available only for communicable processes
-        logger.warning("%s reached unrecognized category", pname)
+    # GPT instance available only for communicable processes
+    if models.settings.pname not in ('JARVIS', 'telegram_api', 'fast_api'):
+        logger.warning("%s reached unrecognized category", models.settings.pname)
         return False
     logger.info("Received unrecognized lookup parameter: %s", phrase)
     Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()

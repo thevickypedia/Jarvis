@@ -7,7 +7,6 @@
 
 import os
 import warnings
-from multiprocessing import current_process
 from typing import NoReturn, Union
 
 import cv2
@@ -124,7 +123,7 @@ def _main_process_validations() -> NoReturn:
 
 def _global_validations() -> NoReturn:
     """Validations that should happen for all processes including parent and child."""
-    main = True if current_process().name == "JARVIS" else False
+    main = True if settings.pname == "JARVIS" else False
     # Validate root password present for linux systems
     if settings.os == supported_platforms.linux:
         if not env.root_password:
@@ -269,5 +268,5 @@ if env.temperature_unit == TemperatureUnits.IMPERIAL:
     temperature_symbol = "F"
 elif env.temperature_unit == TemperatureUnits.METRIC:
     temperature_symbol = "C"
-if current_process().name == "JARVIS":
+if settings.pname == "JARVIS":
     _main_process_validations()

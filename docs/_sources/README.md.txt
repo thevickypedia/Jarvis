@@ -500,11 +500,11 @@ knox:
   television: turn off bedroom tv
 fire up the chopper:  # custom phrase
   garage: open garage
-  car: lock start car
+  car: start car
 ```
 
 :warning: This is a direct mapping to the [functions](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py), 
-so the input phrases are not validated by Jarvis. This may cause `RuntimeError`s if invalid phrases are entered in the mapping file.
+so the input phrases are not validated by Jarvis. This will raise a `UserWarning` if invalid function name or phrase is entered in the mapping file.
 
 </details>
 

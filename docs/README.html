@@ -558,11 +558,11 @@ via both voice and offline communicators.</p>
 <span class="w">  </span><span class="nt">television</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off bedroom tv</span>
 <span class="nt">fire up the chopper</span><span class="p">:</span><span class="w">  </span><span class="c1"># custom phrase</span>
 <span class="w">  </span><span class="nt">garage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">open garage</span>
-<span class="w">  </span><span class="nt">car</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lock start car</span>
+<span class="w">  </span><span class="nt">car</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">start car</span>
 </pre></div>
 </div>
 <p>:warning: This is a direct mapping to the <a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py">functions</a>,
-so the input phrases are not validated by Jarvis. This may cause <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>s if invalid phrases are entered in the mapping file.</p>
+so the input phrases are not validated by Jarvis. This will raise a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> if invalid function name or phrase is entered in the mapping file.</p>
 </details></section>
 </section>
 <section id="guide">

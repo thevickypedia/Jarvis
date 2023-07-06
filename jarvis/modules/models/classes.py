@@ -66,6 +66,7 @@ class Settings(BaseModel):
     else:
         interactive = False
     pid: PositiveInt = os.getpid()
+    pname: str = current_process().name
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
@@ -128,7 +129,7 @@ def test_and_load_audio_driver() -> pyttsx3.Engine:
         subprocess.run([shutil.which(cmd="python"), "-c", "import pyttsx3; pyttsx3.init()"], check=True)
     except subprocess.CalledProcessError as error:
         if error.returncode == -11:  # Segmentation fault error code
-            if current_process().name == "JARVIS":
+            if settings.pname == "JARVIS":
                 print(f"\033[91mERROR:{'':<6}Segmentation fault when loading audio driver "
                       "(interrupted by signal 11: SIGSEGV)\033[0m")
                 print(f"\033[93mWARNING:{'':<4}Trying alternate solution...\033[0m")
@@ -136,7 +137,7 @@ def test_and_load_audio_driver() -> pyttsx3.Engine:
             thread.start()
             thread.join(timeout=10)
             if module.get('pyttsx3'):
-                if current_process().name == "JARVIS":
+                if settings.pname == "JARVIS":
                     print(f"\033[92mINFO:{'':<7}Instantiated audio driver successfully\033[0m")
                 return module['pyttsx3']
             else:
@@ -406,7 +407,7 @@ class EnvConfig(BaseSettings):
 
     # Background tasks
     crontab: List[CronExpression] = Field(default=[], env='CRONTAB')
-    weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')  # get as str and store as datetime
+    weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')
 
     # WiFi config
     wifi_ssid: str = Field(default=None, env='WIFI_SSID')

@@ -1,7 +1,6 @@
 import collections
 import difflib
 import os
-from multiprocessing import current_process
 from threading import Thread
 from typing import NoReturn, Union
 
@@ -174,10 +173,10 @@ class ChatGPT:
             speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")
 
 
-if current_process().name in ('JARVIS', 'telegram_api', 'fast_api'):
+if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
     if models.env.openai_reuse_threshold:
         logger.info("Initiating GPT instance for '%s' with a reuse threshold of '%.2f'",
-                    current_process().name, models.env.openai_reuse_threshold)
+                    models.settings.pname, models.env.openai_reuse_threshold)
     else:
-        logger.info("Initiating GPT instance for '%s'", current_process().name)
+        logger.info("Initiating GPT instance for '%s'", models.settings.pname)
     instance = ChatGPT()
