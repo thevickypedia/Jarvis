@@ -4,7 +4,6 @@
 >>> Listener
 
 """
-from multiprocessing import current_process
 from typing import Union
 
 from playsound import playsound
@@ -19,7 +18,7 @@ from jarvis.modules.utils import support
 recognizer = Recognizer()
 microphone = Microphone(device_index=models.env.microphone_index)
 
-if models.env.recognizer_settings and current_process().name == "JARVIS":
+if models.env.recognizer_settings and models.settings.pname == "JARVIS":
     logger.debug("Overriding recognizer settings: %s", models.env.recognizer_settings.__dict__)
     recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold
     recognizer.pause_threshold = models.env.recognizer_settings.pause_threshold

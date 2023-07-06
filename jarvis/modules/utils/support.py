@@ -13,7 +13,6 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
-from multiprocessing import current_process
 from typing import Any, Dict, Iterable, List, NoReturn, Tuple, Union
 
 import dateutil.tz
@@ -56,7 +55,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
         localhost: Takes a boolean value to behave differently in case of localhost.
     """
     # WATCH OUT: for changes in function name
-    log = False if current_process().name == "background_tasks" else True
+    log = False if models.settings.pname == "background_tasks" else True
     try:
         _hostname, _alias_list, _ipaddr_list = socket.gethostbyname_ex(hostname)
     except socket.error as error:

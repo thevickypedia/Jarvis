@@ -6,7 +6,6 @@
 """
 
 import random
-from multiprocessing import current_process
 
 from pyttsx3.engine import Engine
 
@@ -23,7 +22,7 @@ def voice_default() -> Engine:
     if models.settings.invoker != "sphinx-build":
         for voice in models.voices:
             if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
-                if current_process().name == 'JARVIS':
+                if models.settings.pname == 'JARVIS':
                     logger.debug(voice.__dict__)
                 models.audio_driver.setProperty("voice", voice.id)
                 models.audio_driver.setProperty("rate", models.env.speech_rate)

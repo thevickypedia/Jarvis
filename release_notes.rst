@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.4.7 (07/06/2023)
+------------------
+- Store process name(s) in ``Settings`` object to reuse
+
 7.4.6 (07/01/2023)
 ------------------
 - Fix flaky connection reset in car module

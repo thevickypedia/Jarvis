@@ -1,4 +1,3 @@
-from multiprocessing import current_process
 from typing import Any, NoReturn
 
 from fastapi import FastAPI
@@ -41,7 +40,7 @@ def enable_cors() -> NoReturn:
 
 # Include all the routers
 # WATCH OUT: for changes in function name
-if current_process().name == "fast_api":  # Avoid looping when called by subprocesses
+if models.settings.pname == "fast_api":  # Avoid looping when called by subprocesses
     enable_cors()
     for route in discover.routes(routers=routers.__path__[0]):
         app.include_router(router=route)

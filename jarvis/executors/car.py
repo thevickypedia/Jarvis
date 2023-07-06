@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-from multiprocessing import current_process
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
@@ -53,9 +52,9 @@ def create_connection() -> NoReturn:
 
 # Initiate connection only for main and offline communicators
 # WATCH OUT: for changes in function name
-if current_process().name in ('JARVIS', 'telegram_api', 'fast_api'):
+if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
     if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
-        logger.info("Creating a new vehicle authorization connection for '%s'", current_process().name)
+        logger.info("Creating a new vehicle authorization connection for '%s'", models.settings.pname)
         Thread(target=create_connection).start()
 
 
