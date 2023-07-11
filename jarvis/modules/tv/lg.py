@@ -32,7 +32,7 @@ class LGWebOS:
     _init_status = False
     _reconnect = False
 
-    def __init__(self, ip_address: str, client_key: str, nickname: str):
+    def __init__(self, ip_address: str, client_key: str, nickname: str, key: str):
         """Instantiates the ``WebOSClient`` and connects to the TV.
 
         Using TV's ip makes the initial response much quicker, but it can also scan the network for the TV's ip.
@@ -87,7 +87,7 @@ class LGWebOS:
         if self._reconnect:
             self._reconnect = False
             if (smart_devices := files.get_smart_devices()) and store.get('client_key'):
-                smart_devices[nickname]['client_key'] = store['client_key']
+                smart_devices[key][nickname]['client_key'] = store['client_key']
                 files.put_smart_devices(data=smart_devices)
                 logger.info("Client key '%s' has been stored in '%s'", store['client_key'], models.fileio.smart_devices)
             else:
@@ -221,7 +221,12 @@ class LGWebOS:
         return [x for x in self.app.list_apps() if app_id == x["id"]][0]['title']
 
     def audio_output(self) -> AudioOutputSource:
-        """Returns the currently used audio output source as AudioOutputSource instance."""
+        """Returns the currently used audio output source as AudioOutputSource instance.
+
+        Returns:
+            AudioOutputSource:
+            Returns the audio output source as an object.
+        """
         return self.media.get_audio_output()
 
     def audio_output_source(self) -> List[AudioOutputSource]:

@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+7.4.8 (07/11/2023)
+------------------
+- Allow ``secure-send`` to work via UI
+- Better way to distinguish smart devices
+- Reduce redundancy and re-use variables
+- Add more keywords for secure send
+- Update CORS allowance for headers
+- Update README.md and type hints
+- Bump version
+
 7.4.7 (07/06/2023)
 ------------------
 - Store process name(s) in ``Settings`` object to reuse

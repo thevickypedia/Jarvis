@@ -440,31 +440,33 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 </ul>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><ul class="simple">
-<li><p>TV identifiers should have the word <code class="docutils literal notranslate"><span class="pre">tv</span></code> to distinguish between lights and tv.</p></li>
+<li><p>The source file should have an initial key to distinguish between <code class="docutils literal notranslate"><span class="pre">Lights</span></code> and <code class="docutils literal notranslate"><span class="pre">TV</span></code></p></li>
 <li><p>The name used in the keys (for both lights and tv) will be the identifier when an action is requested.</p></li>
 <li><p>Lights should be a dictionary of identifier and a list of hostnames.</p></li>
 <li><p>TVs should be a nested dictionary of multiple parameters.</p></li>
 <li><p>The source file (<code class="docutils literal notranslate"><span class="pre">smart_devices.yaml</span></code>) should be as following:</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bedroom</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">hallway</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">hallway basement</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">kitchen</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">living room</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
-<span class="nt">living room tv</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span>
-<span class="w">  </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w">  </span><span class="c1"># Generated automatically if unavailable</span>
-<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span>
-<span class="nt">bedroom tv</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;HOSTNAME&#39;</span>
-<span class="w">  </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Lights</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bedroom</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="w">  </span><span class="nt">hallway</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="w">  </span><span class="nt">hallway basement</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="w">  </span><span class="nt">kitchen</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="w">  </span><span class="nt">living room</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;HOSTNAMES&#39;</span>
+<span class="nt">TV</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">living room tv</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LGWebOSTV&#39;</span>
+<span class="w">    </span><span class="nt">client_key</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CLIENT_KEY&#39;</span><span class="w">  </span><span class="c1"># Generated automatically if unavailable</span>
+<span class="w">    </span><span class="nt">mac_address</span><span class="p">:</span><span class="w">  </span><span class="c1"># Mac addresses can either be a string or a list</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRED_MAC_ADDRESS&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;WIRELESS_MAC_ADDRESS&#39;</span>
+<span class="w">  </span><span class="nt">bedroom tv</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;RokuTV&#39;</span>
+<span class="w">    </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span>
 </pre></div>
 </div>
 </details></section>

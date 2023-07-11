@@ -20,7 +20,8 @@ def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> Tuple[by
         dimension: Dimension (Height x Width x Channel) of the frame.
 
     Returns:
-        numpy.ndarray:
+        Tuple[bytes, str]:
+        Returns a tuple of the numpy array and the filename.
 
     See Also:
         - Creates a black image.

@@ -1737,8 +1737,11 @@ last_value: the last value assigned or None</p>
 <li><p><strong>dimension</strong> – Dimension (Height x Width x Channel) of the frame.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>numpy.ndarray</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a tuple of the numpy array and the filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bytes, str]</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1979,7 +1982,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><p>Returns a tuple of portfolio header, profit, loss, and current profit/loss compared from purchased.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
+<dd class="field-even"><p>Tuple[str, str, str, str, str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1999,7 +2002,7 @@ last_value: the last value assigned or None</p>
 <dd class="field-even"><p>Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<dd class="field-odd"><p>Tuple[str, str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3428,6 +3431,23 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.executors.lights">
 <span id="lights"></span><h1>Lights<a class="headerlink" href="#module-jarvis.executors.lights" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.lights.get_lights">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">get_lights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.lights.get_lights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract lights’ mapping from the data in smart devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Raw data from smart devices.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return lights’ information and the key name under which it was stored. The key will be used to update the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[Dict[str, Union[List[str], List[List[str]]]], str]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.executors.lights.ThreadExecutor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights.</span></span><span class="sig-name descname"><span class="pre">ThreadExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.lights.ThreadExecutor" title="Permalink to this definition">¶</a></dt>
@@ -4476,6 +4496,23 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.tv">
 <span id="tv"></span><h1>TV<a class="headerlink" href="#module-jarvis.executors.tv" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.tv.get_tv">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.tv.</span></span><span class="sig-name descname"><span class="pre">get_tv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.tv.get_tv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract TV mapping from the data in smart devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Raw data from smart devices.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return TV information and the key name under which it was stored. The key will be used to update the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.tv.tv_status">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.tv.</span></span><span class="sig-name descname"><span class="pre">tv_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tv_ip_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.tv.tv_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping.</p>
@@ -4509,7 +4546,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <hr class="docutils" />
 <span class="target" id="module-jarvis.executors.tv_controls"></span><dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.tv_controls.tv_controller">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.tv_controls.</span></span><span class="sig-name descname"><span class="pre">tv_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tv_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.tv_controls.tv_controller" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.tv_controls.</span></span><span class="sig-name descname"><span class="pre">tv_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tv_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.tv_controls.tv_controller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controller for Roku or LG tv actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4518,6 +4555,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p><strong>tv_ip</strong> – IP address of the television.</p></li>
 <li><p><strong>identifier</strong> – String to control roku or LG WebOS.</p></li>
 <li><p><strong>nickname</strong> – Name as in the source yaml file.</p></li>
+<li><p><strong>key</strong> – Key under which the TV information was stored in source file.</p></li>
 <li><p><strong>client_key</strong> – Client key to connect to the LG WebOS tv.</p></li>
 </ul>
 </dd>
@@ -4950,6 +4988,14 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.modules.audio.voices.voice_default">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.voices.</span></span><span class="sig-name descname"><span class="pre">voice_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Engine</span></span></span><a class="headerlink" href="#jarvis.modules.audio.voices.voice_default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets voice module to default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the audio driver as an object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Engine</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -5431,7 +5477,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd class="field-even"><p>List of all trips information.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>List[Dict]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9933,7 +9979,7 @@ last_value: the last value assigned or None</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.lg.</span></span><span class="sig-name descname"><span class="pre">LGWebOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.tv.lg.</span></span><span class="sig-name descname"><span class="pre">LGWebOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nickname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for <code class="docutils literal notranslate"><span class="pre">LGWebOS</span></code> TVs.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LGWebOS</span>
 </pre></div>
@@ -10113,6 +10159,14 @@ last_value: the last value assigned or None</p>
 <dt class="sig sig-object py" id="jarvis.modules.tv.lg.LGWebOS.audio_output">
 <span class="sig-name descname"><span class="pre">audio_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AudioOutputSource</span></span></span><a class="headerlink" href="#jarvis.modules.tv.lg.LGWebOS.audio_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the currently used audio output source as AudioOutputSource instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the audio output source as an object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>AudioOutputSource</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

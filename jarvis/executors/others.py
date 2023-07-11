@@ -494,14 +494,16 @@ def secrets(phrase: str) -> str:
     """
     text = phrase.lower().split()
 
-    if 'create' in text:
+    if 'create' in text or 'share' in text:
         before, part, after = phrase.partition("for")
         if custom_secret := after.strip():
             key = util.keygen_uuid()
             files.put_secure_send(data={key: {'secret': custom_secret}})
+            return key
         else:
             return "Please specify the secret to create after the keyword 'for'\n" \
                    "example: create and share secret for drogon589#"
+
     if 'list' in text:  # calling list will always create a new list in the dict regardless of what exists
         if 'aws' in text:
             SECRET_STORAGE['aws'] = []  # reset everytime list param is called
@@ -521,7 +523,7 @@ def secrets(phrase: str) -> str:
             return ', '.join(SECRET_STORAGE['local'])
         return "Please specify which secrets you want to list: 'aws' or 'local''"
 
-    if 'get' in text:  # calling get will always return the latest information in the existing dict
+    if 'get' in text or 'send' in text:  # calling get will always return the latest information in the existing dict
         if 'aws' in text:
             if SECRET_STORAGE['aws']:
                 if aws_key := [key for key in phrase.split() if key in SECRET_STORAGE['aws']]:
