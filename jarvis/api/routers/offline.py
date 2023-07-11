@@ -109,7 +109,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                                          input_data=input_data)
 
     if word_match.word_match(phrase=command, match_list=keywords.keywords['secrets']) and \
-            word_match.word_match(phrase=command, match_list=('list', 'get')):
+            word_match.word_match(phrase=command, match_list=('list', 'get', 'send', 'create', 'share')):
         response = others.secrets(phrase=command)
         if len(response.split()) == 1:
             response = "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n" \
@@ -117,10 +117,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
                        f"expire in 5 minutes.\n\n{response}"
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
-    # Keywords for which the ' and ' split should not happen.
-    ignore_and = keywords.keywords['send_notification'] + keywords.keywords['reminder'] + \
-        keywords.keywords['distance'] + keywords.keywords['avoid']
-    if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
+    if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
         and_response = ""
         for each in command.split(' and '):
             try:
@@ -132,9 +129,7 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         logger.info("Response: %s", and_response.strip())
         return await process_ok_response(response=and_response, input_data=input_data)
 
-    # Keywords for which the ' after ' split should not happen.
-    ignore_after = keywords.keywords['meetings'] + keywords.keywords['avoid']
-    if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=ignore_after):
+    if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))
             return await process_ok_response(response='I will execute it after '

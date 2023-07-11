@@ -108,3 +108,13 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         ngrok=['ngrok', 'public url'],
         secrets=['secret', 'secrets', 'param', 'params', 'parameter', 'parameters']
     )
+
+
+if keywords:
+    # Keywords for which the ' after ' split should not happen.
+    ignore_after = keywords['meetings'] + keywords['avoid']
+    # Keywords for which the ' and ' split should not happen.
+    ignore_and = keywords['send_notification'] + keywords['reminder'] + \
+        keywords['distance'] + keywords['avoid']
+else:
+    ignore_after, ignore_and = [], []

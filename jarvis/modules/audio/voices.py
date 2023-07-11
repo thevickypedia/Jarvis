@@ -18,7 +18,12 @@ from jarvis.modules.utils import support
 
 
 def voice_default() -> Engine:
-    """Sets voice module to default."""
+    """Sets voice module to default.
+
+    Returns:
+        Engine:
+        Returns the audio driver as an object.
+    """
     if models.settings.invoker != "sphinx-build":
         for voice in models.voices:
             if voice.name == models.env.voice_name or models.env.voice_name in voice.name:

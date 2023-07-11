@@ -124,7 +124,7 @@ class Control:
             count: Defaults to the last 1,000 trips.
 
         Returns:
-            list:
+            List[Dict]:
             List of all trips information.
         """
         return self.post_data(command=f'trips?count={count}',

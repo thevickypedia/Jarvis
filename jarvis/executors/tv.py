@@ -2,6 +2,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
+from typing import Dict, List, Tuple, Union
 
 from jarvis.executors import files, internet, tv_controls, word_match
 from jarvis.modules.audio import speaker
@@ -9,6 +10,21 @@ from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 from jarvis.modules.wakeonlan import wakeonlan
+
+
+def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str]:
+    """Extract TV mapping from the data in smart devices.
+
+    Args:
+        data: Raw data from smart devices.
+
+    Returns:
+        Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str]:
+        Return TV information and the key name under which it was stored. The key will be used to update the file.
+    """
+    for key, value in data.items():
+        if key.lower() in ("tv", "tvs", "television", "televisions"):
+            return data[key], key
 
 
 def tv_status(tv_ip_list: list, attempt: int = 0) -> str:
@@ -57,15 +73,15 @@ def television(phrase: str) -> None:
     if smart_devices is False:
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information.")
         return
-    if smart_devices:
-        if not (smart_devices := {key: value for key, value in smart_devices.items() if 'tv' in key.lower()}):
-            logger.warning("%s is empty for TV.", models.fileio.smart_devices)
-            return
+    if smart_devices and (tv_mapping := get_tv(data=smart_devices)):
+        tv_map, key = tv_mapping
+        logger.debug("%s stored with key: '%s'", tv_map, key)
     else:
+        logger.warning("%s is empty for tv.", models.fileio.smart_devices)
         support.no_env_vars()
         return
 
-    tvs = list(smart_devices.keys())
+    tvs = list(tv_map.keys())
     if "all" in phrase:
         tv_iterate = tvs
     elif selected := word_match.word_match(phrase=phrase, match_list=tvs):
@@ -78,9 +94,9 @@ def television(phrase: str) -> None:
     logger.info("Chosen TVs: %s", tv_iterate)
     for target_tv in tv_iterate:
         logger.info("Iterating over: %s", target_tv)
-        tv_name = smart_devices[target_tv].get('hostname')
-        tv_mac = smart_devices[target_tv].get('mac_address')
-        tv_client_key = smart_devices[target_tv].get('client_key')
+        tv_name = tv_map[target_tv].get('hostname')
+        tv_mac = tv_map[target_tv].get('mac_address')
+        tv_client_key = tv_map[target_tv].get('client_key')
 
         if not all((tv_name, tv_mac)):
             speaker.speak(text=f"I'm sorry {models.env.title}! "
@@ -143,6 +159,6 @@ def television(phrase: str) -> None:
         logger.debug("TV database: %s", shared.tv)
         if 'lg' in tv_name.lower():
             tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG',
-                                      client_key=tv_client_key, nickname=target_tv)
+                                      client_key=tv_client_key, nickname=target_tv, key=key)
         else:
             tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='ROKU', nickname=target_tv)

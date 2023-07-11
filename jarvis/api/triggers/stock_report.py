@@ -40,7 +40,7 @@ class Investment:
         """Gathers all the information and wraps into parts of strings to create an HTML file.
 
         Returns:
-            tuple:
+            Tuple[str, str, str, str, str]:
             Returns a tuple of portfolio header, profit, loss, and current profit/loss compared from purchased.
         """
         shares_total, loss_dict, profit_dict = [], {}, {}
@@ -133,7 +133,7 @@ class Investment:
             strict: Flag to ignore the watchlist items if the stocks were purchased already.
 
         Returns:
-            tuple:
+            Tuple[str, str]:
             Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
         """
         r1, r2 = '', ''

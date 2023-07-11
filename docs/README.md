@@ -375,32 +375,34 @@ Jarvis supports `MagicHome` for [lights](https://www.amazon.com/gp/product/B08C7
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-- TV identifiers should have the word `tv` to distinguish between lights and tv.
+- The source file should have an initial key to distinguish between `Lights` and `TV`
 - The name used in the keys (for both lights and tv) will be the identifier when an action is requested.
 - Lights should be a dictionary of identifier and a list of hostnames.
 - TVs should be a nested dictionary of multiple parameters.
 - The source file (`smart_devices.yaml`) should be as following:
 
 ```yaml
-bedroom:
-  - 'HOSTNAMES'
-hallway:
-  - 'HOSTNAMES'
-hallway basement:
-  - 'HOSTNAMES'
-kitchen:
-  - 'HOSTNAMES'
-living room:
-  - 'HOSTNAMES'
-living room tv:
-  hostname: 'HOSTNAME'
-  client_key: 'CLIENT_KEY'  # Generated automatically if unavailable
-  mac_address:  # Mac addresses can either be a string or a list
-  - 'WIRED_MAC_ADDRESS'
-  - 'WIRELESS_MAC_ADDRESS'
-bedroom tv:
-  hostname: 'HOSTNAME'
-  mac_address: 'MAC_ADDRESS'
+Lights:
+  bedroom:
+    - 'HOSTNAMES'
+  hallway:
+    - 'HOSTNAMES'
+  hallway basement:
+    - 'HOSTNAMES'
+  kitchen:
+    - 'HOSTNAMES'
+  living room:
+    - 'HOSTNAMES'
+TV:
+  living room tv:
+    hostname: 'LGWebOSTV'
+    client_key: 'CLIENT_KEY'  # Generated automatically if unavailable
+    mac_address:  # Mac addresses can either be a string or a list
+    - 'WIRED_MAC_ADDRESS'
+    - 'WIRELESS_MAC_ADDRESS'
+  bedroom tv:
+    hostname: 'RokuTV'
+    mac_address: 'MAC_ADDRESS'
 ```
 </details>
 

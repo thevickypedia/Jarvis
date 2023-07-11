@@ -33,8 +33,10 @@ def enable_cors() -> NoReturn:
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["GET", "POST"],
-        allow_headers=["authorization", "access_token", "apikey", "email-otp",
-                       "host", "user-agent"],
+        allow_headers=["host", "user-agent",  # Default headers
+                       "authorization", "apikey",  # Offline auth and stock monitor apikey headers
+                       "email-otp", "email_otp",  # One time passcode sent via email
+                       "access-token", "access_token"],  # Access token sent via email
     )
 
 

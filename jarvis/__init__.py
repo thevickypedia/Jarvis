@@ -1,7 +1,7 @@
 import os
 from multiprocessing import current_process
 
-version = "3.1"
+version = "3.1.1"
 
 install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 

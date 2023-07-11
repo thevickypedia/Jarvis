@@ -518,7 +518,7 @@ class TelegramBot:
             return
         # this feature for telegram bot relies on Jarvis API to function
         if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['secrets']) and \
-                word_match.word_match(phrase=payload['text'], match_list=('list', 'get')):
+                word_match.word_match(phrase=payload['text'], match_list=('list', 'get', 'send', 'create', 'share')):
             res = others.secrets(phrase=payload['text'])
             if len(res.split()) == 1:
                 res = "The secret requested can be accessed from '_secure-send_' endpoint using the token below.\n\n" \
@@ -546,17 +546,12 @@ class TelegramBot:
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
 
-        # Keywords for which the ' and ' split should not happen.
-        ignore_and = keywords.keywords['send_notification'] + keywords.keywords['reminder'] + \
-            keywords.keywords['distance'] + keywords.keywords['avoid']
-        if ' and ' in command and not word_match.word_match(phrase=command, match_list=ignore_and):
+        if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
             for each in command.split(' and '):
                 self.executor(command=each, payload=payload)
             return
 
-        # Keywords for which the ' after ' split should not happen.
-        ignore_after = keywords.keywords['meetings'] + keywords.keywords['avoid']
-        if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=ignore_after):
+        if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
             if delay_info := commander.timed_delay(phrase=command):
                 logger.info("Request: %s", delay_info[0])
                 self.process_response(payload=payload,

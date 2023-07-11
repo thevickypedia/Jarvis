@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from ipaddress import IPv4Address
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Callable, Dict, List, NoReturn, Union
+from typing import Callable, Dict, List, NoReturn, Tuple, Union
 
 from jarvis.executors import files, internet
 from jarvis.executors import lights_squire as squire
@@ -15,6 +15,21 @@ from jarvis.modules.lights import preset_values
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
+
+
+def get_lights(data: dict) -> Tuple[Dict[str, Union[List[str], List[List[str]]]], str]:
+    """Extract lights' mapping from the data in smart devices.
+
+    Args:
+        data: Raw data from smart devices.
+
+    Returns:
+        Tuple[Dict[str, Union[List[str], List[List[str]]]], str]:
+        Return lights' information and the key name under which it was stored. The key will be used to update the file.
+    """
+    for key, value in data.items():
+        if key.lower() in ("light", "lights"):
+            return data[key], key
 
 
 class ThreadExecutor:
@@ -92,12 +107,11 @@ def lights(phrase: str) -> Union[None, NoReturn]:
     if smart_devices is False:
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to read the source information.")
         return
-    if smart_devices:
-        if not (lights_mapping := {key: value for key, value in smart_devices.items()
-                                   if 'tv' not in key.lower() and isinstance(value, list)}):
-            logger.warning("%s is empty for lights.", models.fileio.smart_devices)
-            return
+    if smart_devices and (lights_mapping := get_lights(data=smart_devices)):
+        lights_map, key = lights_mapping
+        logger.debug("%s stored with key: '%s'", lights_map, key)
     else:
+        logger.warning("%s is empty for lights.", models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -105,13 +119,13 @@ def lights(phrase: str) -> Union[None, NoReturn]:
 
     if 'all' in phrase.split():
         light_location = ""
-        host_names = util.remove_duplicates(
-            input_=util.matrix_to_flat_list(input_=[v for k, v in lights_mapping.items()])
+        host_names: List[str] = util.remove_duplicates(
+            input_=util.matrix_to_flat_list(input_=[v for k, v in lights_map.items()])
         )
     else:
-        light_location = util.get_closest_match(text=phrase, match_list=list(lights_mapping.keys()))
+        light_location = util.get_closest_match(text=phrase, match_list=list(lights_map.keys()))
         logger.info("Lights location: %s", light_location)
-        host_names = lights_mapping[light_location]
+        host_names: List[str] = lights_map[light_location]
     host_names = util.remove_none(input_=host_names)
     if light_location and not host_names:
         logger.warning("No hostname values found for %s in %s", light_location, models.fileio.smart_devices)
@@ -124,10 +138,10 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         return
 
     # extract IP addresses for hostnames that are required
-    for _light_location, _light_hostname in lights_mapping.items():
-        lights_mapping[_light_location] = [support.hostname_to_ip(hostname=hostname)
-                                           for hostname in _light_hostname if hostname in host_names]
-    host_ip = util.matrix_to_flat_list(input_=util.remove_none(input_=list(lights_mapping.values())))
+    for _light_location, _light_hostname in lights_map.items():
+        lights_map[_light_location] = [support.hostname_to_ip(hostname=hostname)
+                                       for hostname in _light_hostname if hostname in host_names]
+    host_ip = util.matrix_to_flat_list(input_=util.remove_none(input_=list(lights_map.values())))
     host_ip = util.matrix_to_flat_list(input_=util.remove_none(input_=host_ip))  # in case of multiple matrix
     if not host_ip:
         plural = 'lights' if len(host_names) > 1 else 'light'
@@ -137,7 +151,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
                            "powered off.")
         return
 
-    executor = ThreadExecutor(host_ip=host_ip, mapping=lights_mapping)
+    executor = ThreadExecutor(host_ip=host_ip, mapping=lights_map)
 
     plural = 'lights' if len(host_ip) > 1 else 'light'
     if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:

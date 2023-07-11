@@ -11,7 +11,8 @@ from jarvis.modules.tv import lg, roku
 from jarvis.modules.utils import shared, support, util
 
 
-def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, client_key: str = None) -> None:
+def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
+                  client_key: str = None, key: str = None) -> None:
     """Controller for Roku or LG tv actions.
 
     Args:
@@ -19,6 +20,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
         tv_ip: IP address of the television.
         identifier: String to control roku or LG WebOS.
         nickname: Name as in the source yaml file.
+        key: Key under which the TV information was stored in source file.
         client_key: Client key to connect to the LG WebOS tv.
     """
     phrase_lower = phrase.replace('TV', '').lower()
@@ -26,7 +28,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str, clien
     if not shared.tv[nickname]:
         try:
             if identifier == 'LG':
-                shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname)
+                shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname, key=key)
             elif identifier == 'ROKU':
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
                 if not shared.tv[nickname].current_app():
