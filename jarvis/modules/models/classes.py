@@ -311,7 +311,7 @@ class EnvConfig(BaseSettings):
 
     # Log config
     debug: bool = Field(default=False, env='DEBUG')
-    log_retention: Union[int, PositiveInt] = Field(default=10, gt=0, env='LOG_RETENTION')
+    log_retention: Union[int, PositiveInt] = Field(default=10, lt=90, gt=0, env='LOG_RETENTION')
 
     # User add-ons
     birthday: str = Field(default=None, env='BIRTHDAY')
@@ -347,8 +347,9 @@ class EnvConfig(BaseSettings):
     # Calendar events and meetings config
     event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
     ics_url: HttpUrl = Field(default=None, env='ICS_URL')
-    sync_meetings: PositiveInt = Field(default=3_600, env='SYNC_MEETINGS')
-    sync_events: PositiveInt = Field(default=3_600, env='SYNC_EVENTS')
+    # Set background sync limits to range: 15 minutes to 12 hours
+    sync_meetings: int = Field(default=None, ge=900, le=43_200, env='SYNC_MEETINGS')
+    sync_events: int = Field(default=None, ge=900, le=43_200, env='SYNC_EVENTS')
 
     # Stock monitor apikey
     stock_monitor_api: Dict[EmailStr, str] = Field(default={}, env="STOCK_MONITOR_API")

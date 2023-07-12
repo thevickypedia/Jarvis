@@ -35,7 +35,7 @@ def detected_face() -> NoReturn:
         # creates a named directory if it is not found already
         if not os.path.exists(os.path.join(TRAINING_DIR, phrase)):
             os.makedirs(os.path.join(TRAINING_DIR, phrase))
-        img_name = f"{phrase}_{datetime.now().strftime('%I_%M_%p')}.jpg"  # adds time to image name to avoid overwrite
+        img_name = f"{phrase}_{datetime.now().strftime('%B_%d_%Y_%I-%M_%p')}.jpg"  # adds datetime to image name
         os.rename(FACE_DETECTION_TEMP_FILE, img_name)  # renames the files
         shutil.move(src=img_name, dst=os.path.join(TRAINING_DIR, phrase))  # move under TRAINING_DIR -> named directory
         speaker.speak(text=f"Image has been added to known database. I will be able to recognize {phrase} in future.")

@@ -102,7 +102,7 @@ def background_task_runner() -> NoReturn:
         # Sync events from the event app specified (calendar/outlook)
         # Run either for macOS or during the initial run so the response gets stored in the DB
         if dry_run or models.settings.os == models.supported_platforms.macOS:
-            if start_events + models.env.sync_events <= time.time():
+            if (models.env.sync_events and start_events + models.env.sync_events <= time.time()) or dry_run:
                 start_events = time.time()
                 event_process = Process(target=events.events_writer)
                 logger.info("Getting events from %s.", models.env.event_app) if dry_run else None
@@ -116,14 +116,14 @@ def background_task_runner() -> NoReturn:
         # Sync meetings from the ICS url provided
         # Run either when an ICS url is present or during the initial run so the response gets stored in the DB
         if dry_run or models.env.ics_url:
-            if start_meetings + models.env.sync_meetings <= time.time() or dry_run:
-                if dry_run and models.env.ics_url:
-                    try:
-                        if requests.get(url=models.env.ics_url).status_code == 503:
-                            models.env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
-                    except EgressErrors as error:
-                        logger.error(error)
-                        models.env.sync_meetings = 99_999_999  # NEVER RUNs, as env vars are loaded only during start up
+            if dry_run and models.env.ics_url:
+                try:
+                    if requests.get(url=models.env.ics_url).status_code == 503:
+                        models.env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
+                except EgressErrors as error:
+                    logger.error(error)
+                    models.env.sync_meetings = None  # NEVER RUNs, as env vars are loaded only during start up
+            if (models.env.sync_meetings and start_meetings + models.env.sync_meetings <= time.time()) or dry_run:
                 start_meetings = time.time()
                 meeting_process = Process(target=ics_meetings.meetings_writer, args=(smart_listener,))
                 logger.info("Getting meetings from ICS.") if dry_run else None
