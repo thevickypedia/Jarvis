@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.4.9 (07/12/2023)
+------------------
+- Fix flaky response for failed lights
+
 7.4.8 (07/11/2023)
 ------------------
 - Allow ``secure-send`` to work via UI

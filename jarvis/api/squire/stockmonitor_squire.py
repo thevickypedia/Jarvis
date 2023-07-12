@@ -62,7 +62,7 @@ def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], w
     for future in as_completed(futures):
         if future.exception():
             thread_except += 1
-            logger.error("Thread processing for %s received an exception: %s", iterator, future.exception())
+            logger.error("Thread processing for %s received an exception: %s", futures[future], future.exception())
     if thread_except > (len(iterable) * 10 / 100):  # Use backup file if more than 10% of the requests fail
         with open(models.fileio.stock_list_backup) as file:
             stock_monitor.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)

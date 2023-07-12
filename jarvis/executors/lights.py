@@ -60,7 +60,7 @@ class ThreadExecutor:
         thread_except = []
         for future in as_completed(futures):
             if future.exception():
-                thread_except.append(iterator)
+                thread_except.append(futures[future])
                 logger.error("Thread processing for '%s' received an exception: %s", iterator, future.exception())
         return thread_except
 
@@ -73,25 +73,22 @@ class ThreadExecutor:
         status = ThreadPool(processes=1).apply_async(func=self.thread_worker, args=[function_to_call])
         speaker.speak(run=True)  # Speak the initial response when the work is happening behind the scenes
         if failed := status.get(timeout=5):
-            failed_msg = ""
+            any_in = lambda a, b: bool(set(a).intersection(b))  # noqa: E731
+            failed_msg = []
             for k, v in self.mapping.items():
-                if failed_category := [f for f in failed if f in util.matrix_to_flat_list(v)]:
-                    len_failed_c = support.number_to_words(input_=len(failed_category), capitalize=True)
-                    if len(failed_category) > 1:
-                        if failed_msg:
-                            failed_msg += f"and {len_failed_c} lights from {k} aren't available right now!"
-                        else:
-                            failed_msg += f"{len_failed_c} lights from {k}, "
+                ips = util.matrix_to_flat_list(v)
+                if any_in(a=failed, b=ips):
+                    if failed_msg:
+                        failed_msg.append(f'{support.pluralize(count=len(ips), word="light", to_words=True)} from {k}')
                     else:
-                        failed_msg += f"{len_failed_c} light from {k} isn't available right now!"
-                else:
-                    len_failed = support.number_to_words(input_=len(failed), capitalize=True)
-                    if len(failed) == 1:
-                        f"{len_failed} light isn't available right now!"
-                    else:
-                        f"{len_failed} lights aren't available right now!"
-            logger.error(failed_msg)
-            speaker.speak(text=f"I'm sorry sir! {failed_msg}")
+                        failed_msg.append(
+                            f'{support.pluralize(count=len(ips), word="light", to_words=True, cap_word=True)} from {k}')
+            if len(failed) == 1:  # Failed only on a single lamp
+                response = "".join(failed_msg) + " isn't available right now!"
+            else:
+                response = util.comma_separator(list_=failed_msg) + " aren't available right now!"
+            logger.error(response)
+            speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
 
 
 def lights(phrase: str) -> Union[None, NoReturn]:
