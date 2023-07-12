@@ -53,8 +53,8 @@ class APIConfig(BaseModel):
 
     DEFAULT_LOG_LEVEL = "INFO"
 
-    ACCESS_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'access_%d-%m-%Y.log'))
-    DEFAULT_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'api', 'default_%d-%m-%Y.log'))
+    ACCESS_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'fast_api_access_%d-%m-%Y.log'))
+    DEFAULT_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'fast_api_%d-%m-%Y.log'))
 
     DEFAULT_LOG_FORMAT = DEFAULT_LOG_FORM
     ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'

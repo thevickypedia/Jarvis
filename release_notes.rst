@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.5.0 (07/12/2023)
+------------------
+- Limit value for background syncs and log retention
+- Set log file names to match the process names
+
 7.4.9 (07/12/2023)
 ------------------
 - Fix flaky response for failed lights
