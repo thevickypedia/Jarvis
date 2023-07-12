@@ -418,17 +418,21 @@ def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
     return result[0].upper() + result[1:] if capitalize else result
 
 
-def pluralize(count: int, word: str) -> str:
+def pluralize(count: int, word: str, to_words: bool = False, cap_word: bool = False) -> str:
     """Helper for ``time_converter`` function.
 
     Args:
         count: Number based on which plural form should be determined.
         word: Word for which the plural form should be converted.
+        to_words: Boolean flag to convert numeric to words in the response string.
+        cap_word: If to_words is passed as True, then analyzes whether the first letter should be capitalized.
 
     Returns:
         str:
         String formatted time in singular or plural.
     """
+    if to_words:
+        return f"{number_to_words(input_=count, capitalize=cap_word)} {inflect.engine().plural(text=word, count=count)}"
     return f"{count} {inflect.engine().plural(text=word, count=count)}"
 
 
