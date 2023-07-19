@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.5.1 (07/19/2023)
+------------------
+- Multiple tasks to run simultaneously in automation
+- Add low and high threshold for weather alerts
+- Update README.md and bump sub-version
+
 7.5.0 (07/12/2023)
 ------------------
 - Limit value for background syncs and log retention

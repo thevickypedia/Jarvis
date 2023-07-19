@@ -11,10 +11,8 @@ def monitor() -> None:
     """Weather monitoring system to trigger notifications for high, low weather and severe weather alert."""
     logger = custom_logger.logger
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    low_threshold = 36
-    high_threshold = 100
     condition, high, low, temp_f, alert = weather.weather(monitor=True)
-    if not any((high >= high_threshold, low <= low_threshold, alert)):
+    if not any((high >= models.env.weather_alert_max, low <= models.env.weather_alert_min, alert)):
         logger.debug(dict(condition=condition, high=high, low=low, temperature=temp_f, alert=alert))
         logger.info("No alerts to report")
         return
@@ -29,7 +27,7 @@ def monitor() -> None:
                       gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     phone_args = dict(user=models.env.open_gmail_user, password=models.env.open_gmail_pass,
                       body=body, number=models.env.phone_number, subject=subject)
-    if high >= high_threshold:
+    if high >= models.env.weather_alert_max:  # high will definitely be greater than or equal to current
         if alert:
             email_args['body'] = f"High weather alert!\n{alert}\n\n" + email_args['body']
             phone_args['body'] = f"High weather alert!\n{alert}\n\n" + phone_args['body']
@@ -41,7 +39,7 @@ def monitor() -> None:
         communicator.send_email(**email_args)
         communicator.send_sms(**phone_args)
         return
-    if low <= low_threshold:
+    if low <= models.env.weather_alert_min:  # low will definitely be lesser than or equal to current
         if alert:
             email_args['body'] = f"Low weather alert!\n{alert}\n\n" + email_args['body']
             phone_args['body'] = f"Low weather alert!\n{alert}\n\n" + phone_args['body']

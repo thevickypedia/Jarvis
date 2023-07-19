@@ -250,8 +250,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SYNC_EVENTS** - Interval in seconds to generate ``events`` information using `calendar` or `outlook` application.
 
 **Scheduled**
-- **WEATHER_ALERT** - Time (in 24h `HH:MM` format) when the weather alert should be fired - Example: `09:00`
-  > Alerts in SMS and Email if temperature is higher than 100 or lower than 36 or severe weather warnings.<br>
+- **WEATHER_ALERT** - Time (in 12h `%I:%M %p` format) when the weather alert should be fired - Example: `09:00 AM`
+  - **WEATHER_ALERT_MIN** - Degrees below which alert has to be fired.
+  - **WEATHER_ALERT_MAX** - Degrees above which alert has to be fired.
+  > Alerts in SMS and Email if temperature is higher than `WEATHER_ALERT_MAX` or lower than `WEATHER_ALERT_MIN` or severe weather warnings.<br>
   > This feature can also be enabled from `automation.yaml` by using the keyword `weather` in phrase for the `task`
 - **CRONTAB** - Runs external tasks using cron expressions. Needs to be stored as env var.
   <details>
@@ -424,21 +426,23 @@ The YAML file should be a dictionary within a dictionary that looks like the bel
 
 ```yaml
 06:00 AM:
-  day: weekday  # Runs only between Monday and Friday
-  task: set my bedroom lights to 50%
+  - task: set my bedroom lights to 50%
+    day: weekday  # Runs only between Monday and Friday
 06:30 AM:
-  day:  # Runs only on Monday, Wednesday and Friday
-  - Monday
-  - wednesday
-  - FRIDAY
-  task: set my bedroom lights to 100%
+  - task: set my bedroom lights to 100%
+    day:  # Runs only on Monday, Wednesday and Friday
+    - Monday
+    - wednesday
+    - FRIDAY
 08:00 AM:  # Runs only on Saturday and Sunday
-  day: weekend
-  task: set my bedroom lights to 100%
-09:00 PM:  # Runs daily
+  - task: set my bedroom lights to 100%
+    day: weekend
+09:00 PM:  # Runs daily (can take both list of dict and dict as argument)
   task: set my bedroom lights to 5%
 12:00 AM:  # Even performs tasks that are not supported via voice commands
-  task: restart all background processes
+  - task: restart all background processes
+  - task: turn off all lights
+    day: weekday
 ```
 </details>
 

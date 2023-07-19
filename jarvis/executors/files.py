@@ -3,7 +3,7 @@
 import collections
 import os
 from threading import Timer
-from typing import Any, DefaultDict, Dict, NoReturn, Union
+from typing import Any, DefaultDict, Dict, List, NoReturn, Union
 
 import yaml
 
@@ -129,11 +129,11 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
                 logger.error(error)
 
 
-def get_automation() -> Dict[str, Dict[str, Union[str, bool]]]:
+def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:
     """Load automation data from feed file.
 
     Returns:
-        Dict[str, Dict[str, Union[str, bool]]]:
+        Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:
         Returns the automation data in the feed file.
     """
     if os.path.isfile(models.fileio.automation):
@@ -144,7 +144,7 @@ def get_automation() -> Dict[str, Dict[str, Union[str, bool]]]:
             logger.error(error)
 
 
-def put_automation(data: Dict[str, Dict[str, Union[str, bool]]]) -> NoReturn:
+def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]) -> NoReturn:
     """Dumps automation data into feed file.
 
     Args:
