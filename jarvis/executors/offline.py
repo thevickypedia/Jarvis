@@ -192,7 +192,7 @@ def background_task_runner() -> NoReturn:
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
             logger.warning("Tasks list has been updated.")
-            logger.debug(DeepDiff(tasks, new_tasks, ignore_order=True))
+            logger.info(DeepDiff(tasks, new_tasks, ignore_order=True))
             tasks = new_tasks
             task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task
 

@@ -409,6 +409,8 @@ class EnvConfig(BaseSettings):
     # Background tasks
     crontab: List[CronExpression] = Field(default=[], env='CRONTAB')
     weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')
+    weather_alert_min: Union[int, PositiveInt] = Field(default=36, env='WEATHER_ALERT_MIN')
+    weather_alert_max: Union[int, PositiveInt] = Field(default=104, env='WEATHER_ALERT_MAX')
 
     # WiFi config
     wifi_ssid: str = Field(default=None, env='WIFI_SSID')
