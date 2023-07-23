@@ -20,9 +20,7 @@ import pytz
 
 from jarvis.modules.models import models
 
-if not os.path.isdir(os.path.join('logs', 'api')):
-    os.makedirs(os.path.join('logs', 'api'))  # Recursively creates both logs and api directories if unavailable
-elif not os.path.isdir('logs'):
+if not os.path.isdir('logs'):
     os.mkdir('logs')  # Creates only logs dir if limited mode is enabled
 
 DEFAULT_LOG_FORM = '%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s'

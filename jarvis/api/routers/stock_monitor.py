@@ -193,11 +193,6 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
                           detail="Allowed correction values are only up to 20%\n\nFor anything greater, "
                                  "it is better to increase/decrease the Max/Min values.")
 
-    if stock_monitor.stock_list and decoded['Ticker'] not in stock_monitor.stock_list:
-        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,
-                          detail=f"{decoded['Ticker']!r} is not a part of NASDAQ stock list [OR] Jarvis currently "
-                                 f"doesn't support tracking prices for {decoded['Ticker']!r}")
-
     # Forms a tuple of the new entry provided by the user
     new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),
                  int(decoded['Correction']),)
@@ -225,7 +220,7 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
     except ValueError as error:
         logger.error(error)
         raise APIResponse(status_code=HTTPStatus.BAD_GATEWAY.real,
-                          detail=f"Failed to perform a price check on {decoded['Ticker']}\n\n{error}")
+                          detail=f"Failed to perform a price check on {decoded['Ticker']}\n\n{error.__str__()}")
     if decoded['Max'] and current_price >= decoded['Max']:  # Ignore 0 which doesn't trigger a notification
         raise APIResponse(status_code=HTTPStatus.CONFLICT.real,
                           detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"

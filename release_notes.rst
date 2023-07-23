@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.5.2 (07/20/2023)
+------------------
+- Implement a new feature to analyze stocks
+- Remove unwanted ticker gathering methods
+- Release version 3.2
+
 7.5.1 (07/19/2023)
 ------------------
 - Multiple tasks to run simultaneously in automation

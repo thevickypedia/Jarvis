@@ -680,9 +680,9 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.fast.start_robinhood">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">start_robinhood</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.api.fast.start_robinhood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates robinhood gatherer in a process and adds a cron schedule if not present already.</p>
+<dt class="sig sig-object py" id="jarvis.api.fast.startup_func">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.fast.</span></span><span class="sig-name descname"><span class="pre">startup_func</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.fast.startup_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple startup function to add anything that has to be triggered when Jarvis API starts up.</p>
 </dd></dl>
 
 </section>
@@ -982,11 +982,6 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor.values">
 <span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor.values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor.stock_list">
-<span class="sig-name descname"><span class="pre">stock_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor.stock_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1390,6 +1385,60 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.api.routers.stock_analysis">
+<span id="routers-stockanalysis"></span><h1>Routers - StockAnalysis<a class="headerlink" href="#module-jarvis.api.routers.stock_analysis" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stock_analysis.get_signals">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_analysis.</span></span><span class="sig-name descname"><span class="pre">get_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_analysis.get_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get buy, sell and hold signals for a particular stock or all tickers supported by webull.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – Stock ticker.</p></li>
+<li><p><strong>bar_count</strong> – Number of bars from webull.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stock_analysis.thread_worker">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_analysis.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.routers.stock_analysis.thread_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stock_analysis.get_signals_per_ticker">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_analysis.</span></span><span class="sig-name descname"><span class="pre">get_signals_per_ticker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_tickers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_analysis.get_signals_per_ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get buy, sell and hold signals for a particular stock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbol</strong> – Stock ticker.</p></li>
+<li><p><strong>bar_count</strong> – Number of bars from webull.</p></li>
+<li><p><strong>all_tickers</strong> – Boolean flag to get signals for all tickers.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>A larger <cite>bar_count</cite> gives longer historical data for trend analysis.</p></li>
+<li><p>A smaller count focuses on recent data for short-term signals.</p></li>
+<li><p>Experiment and backtest to find the best fit for your approach.</p></li>
+<li><p>Endpoint can be accessed via <a class="reference external" href="https://vigneshrao.com/stock-analysis">https://vigneshrao.com/stock-analysis</a></p></li>
+</ul>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://github.com/thevickypedia/trading-algorithm">https://github.com/thevickypedia/trading-algorithm</a></p>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.api.routers.surveillance">
 <span id="routers-surveillance"></span><h1>Routers - Surveillance<a class="headerlink" href="#module-jarvis.api.routers.surveillance" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -1650,38 +1699,6 @@ last_value: the last value assigned or None</p>
 <section id="module-jarvis.api.squire.stockmonitor_squire">
 <span id="squire-stockmonitor"></span><h1>Squire - StockMonitor<a class="headerlink" href="#module-jarvis.api.squire.stockmonitor_squire" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.squire.stockmonitor_squire.ticker_gatherer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockmonitor_squire.</span></span><span class="sig-name descname"><span class="pre">ticker_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">character</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockmonitor_squire.ticker_gatherer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gathers the stock ticker in NASDAQ. Runs on <code class="docutils literal notranslate"><span class="pre">multi-threading</span></code> which drops run time by ~7 times.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>character</strong> – ASCII character (alphabet) with which the stock ticker name starts.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.squire.stockmonitor_squire.thread_worker">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockmonitor_squire.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockmonitor_squire.thread_worker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p></li>
-<li><p><strong>iterable</strong> – List or iterable to be used as args.</p></li>
-<li><p><strong>workers</strong> – Maximum number of workers to be spun up.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.squire.stockmonitor_squire.nasdaq">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockmonitor_squire.</span></span><span class="sig-name descname"><span class="pre">nasdaq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockmonitor_squire.nasdaq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all stock tickers available. Creates/Updates backup file to be used.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.stockmonitor_squire.cleanup_stock_userdata">
 <span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockmonitor_squire.</span></span><span class="sig-name descname"><span class="pre">cleanup_stock_userdata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockmonitor_squire.cleanup_stock_userdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete duplicates tuples within the database.</p>
@@ -1721,6 +1738,41 @@ last_value: the last value assigned or None</p>
 <dd class="field-odd"><p><strong>data</strong> – Tuple of user information to be deleted.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.api.squire.stockanalysis_squire">
+<span id="squire-stockanalysis"></span><h1>Squire - StockAnalysis<a class="headerlink" href="#module-jarvis.api.squire.stockanalysis_squire" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.squire.stockanalysis_squire.ticker_gatherer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockanalysis_squire.</span></span><span class="sig-name descname"><span class="pre">ticker_gatherer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">character</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockanalysis_squire.ticker_gatherer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gathers the stock ticker in NASDAQ. Runs on <code class="docutils literal notranslate"><span class="pre">multi-threading</span></code> which drops run time by ~7 times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>character</strong> – ASCII character (alphabet) with which the stock ticker name starts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.squire.stockanalysis_squire.thread_worker">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockanalysis_squire.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_to_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockanalysis_squire.thread_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code> with in a dedicated thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function_to_call</strong> – Takes the function/method that has to be called as an argument.</p></li>
+<li><p><strong>iterable</strong> – List or iterable to be used as args.</p></li>
+<li><p><strong>workers</strong> – Maximum number of workers to spin up.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.squire.stockanalysis_squire.nasdaq">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.stockanalysis_squire.</span></span><span class="sig-name descname"><span class="pre">nasdaq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.api.squire.stockanalysis_squire.nasdaq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all stock tickers available. Creates/Updates backup file to be used.</p>
 </dd></dl>
 
 </section>
@@ -4386,6 +4438,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.static_responses.not_allowed_offline">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.static_responses.</span></span><span class="sig-name descname"><span class="pre">not_allowed_offline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.static_responses.not_allowed_offline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Response for tasks not supported via offline communicator.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.static_responses.un_processable">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.static_responses.</span></span><span class="sig-name descname"><span class="pre">un_processable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.static_responses.un_processable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speaker response for un-processable requests.</p>
 </dd></dl>
 
 </section>
@@ -10542,11 +10600,13 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.speech_synthesis">Routers - SpeechSynthesis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_monitor">Routers - StockMonitor</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.routers.stock_analysis">Routers - StockAnalysis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.surveillance">Routers - Surveillance</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.discover">Squire - Discover Routers</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.logger">Squire - Logger</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.scheduler">Squire - Scheduler</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.stockmonitor_squire">Squire - StockMonitor</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.squire.stockanalysis_squire">Squire - StockAnalysis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.surveillance_squire">Squire - Surveillance</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.squire.timeout_otp">Squire - Timeout OTP</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.triggers.stock_monitor">Triggers - StockMonitor</a></li>

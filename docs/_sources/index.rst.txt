@@ -182,6 +182,13 @@ Routers - StockMonitor
    :members:
    :undoc-members:
 
+Routers - StockAnalysis
+=======================
+
+.. automodule:: jarvis.api.routers.stock_analysis
+   :members:
+   :undoc-members:
+
 Routers - Surveillance
 ======================
 
@@ -210,11 +217,17 @@ Squire - Scheduler
    :members:
    :exclude-members: hours
 
-
 Squire - StockMonitor
 =====================
 
 .. automodule:: jarvis.api.squire.stockmonitor_squire
+   :members:
+   :undoc-members:
+
+Squire - StockAnalysis
+======================
+
+.. automodule:: jarvis.api.squire.stockanalysis_squire
    :members:
    :undoc-members:
 

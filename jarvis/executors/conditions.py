@@ -87,4 +87,7 @@ def conditions(phrase: str) -> bool:
     logger.info("Received unrecognized lookup parameter: %s", phrase)
     Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
     if not unconditional.google_maps(query=phrase):
-        gpt.instance.query(phrase=phrase)
+        if gpt.instance:
+            gpt.instance.query(phrase=phrase)
+        else:
+            static_responses.un_processable()

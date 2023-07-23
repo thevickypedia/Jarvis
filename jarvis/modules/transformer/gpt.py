@@ -127,7 +127,7 @@ class ChatGPT:
         })
         try:
             chat: OpenAIObject = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo", messages=self.MESSAGES
+                model="gpt-3.5-turbo", messages=self.MESSAGES, timeout=10
             )
             self.MESSAGES.append({"role": "system", "content": chat.choices[0].message.content})
             self.authenticated = True
@@ -179,4 +179,10 @@ if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
                     models.settings.pname, models.env.openai_reuse_threshold)
     else:
         logger.info("Initiating GPT instance for '%s'", models.settings.pname)
-    instance = ChatGPT()
+    try:
+        instance = ChatGPT()
+    except TimeoutError as error_:
+        logger.error(error_)
+        instance = None
+else:
+    instance = None

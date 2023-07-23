@@ -62,10 +62,23 @@ class StockMonitor(BaseModel):
 
     user_info: Tuple[str, str, str, str, str] = ("ticker", "email", "max", "min", "correction")
     values: str = '(' + ','.join('?' for _ in user_info) + ')'
-    stock_list: List[str] = []
 
 
 stock_monitor = StockMonitor()
+
+
+class Trader(BaseModel):
+    """Initiates ``Trader`` object to handle members across modules.
+
+    >>> Trader
+
+    """
+
+    stock_list: Dict[str, str] = {}
+    result: Dict[str, List[str]] = {"BUY": [], "SELL": [], "HOLD": []}
+
+
+trader = Trader()
 
 
 class ConnectionManager:
