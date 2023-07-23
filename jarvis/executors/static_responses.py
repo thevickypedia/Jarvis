@@ -5,6 +5,7 @@ from typing import NoReturn
 from dateutil.relativedelta import relativedelta
 
 from jarvis.modules.audio import speaker
+from jarvis.modules.models import models
 
 
 def form(*args) -> NoReturn:
@@ -78,3 +79,8 @@ def about_me(*args) -> NoReturn:
 def not_allowed_offline() -> NoReturn:
     """Response for tasks not supported via offline communicator."""
     speaker.speak(text="That's not supported via offline communicator.")
+
+
+def un_processable() -> NoReturn:
+    """Speaker response for un-processable requests."""
+    speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")

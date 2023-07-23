@@ -853,10 +853,10 @@
 </li>
       <li><a href="index.html#jarvis.executors.location.get_location_from_coordinates">get_location_from_coordinates() (in module jarvis.executors.location)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#jarvis.modules.car.controller.Control.get_position">get_position() (jarvis.modules.car.controller.Control method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#jarvis.api.triggers.stock_monitor.StockMonitor.get_prices">get_prices() (jarvis.api.triggers.stock_monitor.StockMonitor method)</a>
 </li>
       <li><a href="index.html#jarvis.modules.car.controller.Control.get_rcc_target_value">get_rcc_target_value() (jarvis.modules.car.controller.Control method)</a>
@@ -866,6 +866,10 @@
       <li><a href="index.html#jarvis.modules.car.controller.Control.get_service_status">get_service_status() (jarvis.modules.car.controller.Control method)</a>
 </li>
       <li><a href="index.html#jarvis.modules.car.controller.Control.get_services">get_services() (jarvis.modules.car.controller.Control method)</a>
+</li>
+      <li><a href="index.html#jarvis.api.routers.stock_analysis.get_signals">get_signals() (in module jarvis.api.routers.stock_analysis)</a>
+</li>
+      <li><a href="index.html#jarvis.api.routers.stock_analysis.get_signals_per_ticker">get_signals_per_ticker() (in module jarvis.api.routers.stock_analysis)</a>
 </li>
       <li><a href="index.html#jarvis.executors.simulator.get_simulation_data">get_simulation_data() (in module jarvis.executors.simulator)</a>
 </li>
@@ -1128,6 +1132,13 @@
 </li>
       </ul></li>
       <li>
+    jarvis.api.routers.stock_analysis
+
+      <ul>
+        <li><a href="index.html#module-jarvis.api.routers.stock_analysis">module</a>
+</li>
+      </ul></li>
+      <li>
     jarvis.api.routers.stock_monitor
 
       <ul>
@@ -1167,6 +1178,13 @@
 
       <ul>
         <li><a href="index.html#module-jarvis.api.squire.scheduler">module</a>
+</li>
+      </ul></li>
+      <li>
+    jarvis.api.squire.stockanalysis_squire
+
+      <ul>
+        <li><a href="index.html#module-jarvis.api.squire.stockanalysis_squire">module</a>
 </li>
       </ul></li>
       <li>
@@ -1442,6 +1460,8 @@
         <li><a href="index.html#module-jarvis.executors.static_responses">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     jarvis.executors.system
 
@@ -1449,8 +1469,6 @@
         <li><a href="index.html#module-jarvis.executors.system">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     jarvis.executors.telegram
 
@@ -2032,6 +2050,8 @@
 </li>
         <li><a href="index.html#module-jarvis.api.routers.speech_synthesis">jarvis.api.routers.speech_synthesis</a>
 </li>
+        <li><a href="index.html#module-jarvis.api.routers.stock_analysis">jarvis.api.routers.stock_analysis</a>
+</li>
         <li><a href="index.html#module-jarvis.api.routers.stock_monitor">jarvis.api.routers.stock_monitor</a>
 </li>
         <li><a href="index.html#module-jarvis.api.routers.surveillance">jarvis.api.routers.surveillance</a>
@@ -2043,6 +2063,8 @@
         <li><a href="index.html#module-jarvis.api.squire.logger">jarvis.api.squire.logger</a>
 </li>
         <li><a href="index.html#module-jarvis.api.squire.scheduler">jarvis.api.squire.scheduler</a>
+</li>
+        <li><a href="index.html#module-jarvis.api.squire.stockanalysis_squire">jarvis.api.squire.stockanalysis_squire</a>
 </li>
         <li><a href="index.html#module-jarvis.api.squire.stockmonitor_squire">jarvis.api.squire.stockmonitor_squire</a>
 </li>
@@ -2271,7 +2293,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#jarvis.modules.models.classes.EnvConfig.name">name (jarvis.modules.models.classes.EnvConfig attribute)</a>
 </li>
-      <li><a href="index.html#jarvis.api.squire.stockmonitor_squire.nasdaq">nasdaq() (in module jarvis.api.squire.stockmonitor_squire)</a>
+      <li><a href="index.html#jarvis.api.squire.stockanalysis_squire.nasdaq">nasdaq() (in module jarvis.api.squire.stockanalysis_squire)</a>
 </li>
       <li><a href="index.html#jarvis.api.modals.models.OfflineCommunicatorModal.native_audio">native_audio (jarvis.api.modals.models.OfflineCommunicatorModal attribute)</a>
 </li>
@@ -2749,10 +2771,10 @@
 </li>
       <li><a href="index.html#jarvis.modules.models.classes.EnvConfig.speaker_index">speaker_index (jarvis.modules.models.classes.EnvConfig attribute)</a>
 </li>
-      <li><a href="index.html#jarvis.executors.volume.speaker_volume">speaker_volume() (in module jarvis.executors.volume)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#jarvis.executors.volume.speaker_volume">speaker_volume() (in module jarvis.executors.volume)</a>
+</li>
       <li><a href="index.html#jarvis.modules.models.classes.EnvConfig.speech_rate">speech_rate (jarvis.modules.models.classes.EnvConfig attribute)</a>
 </li>
       <li><a href="index.html#jarvis.api.routers.speech_synthesis.speech_synthesis">speech_synthesis() (in module jarvis.api.routers.speech_synthesis)</a>
@@ -2807,17 +2829,15 @@
       </ul></li>
       <li><a href="index.html#jarvis.executors.processor.start_processes">start_processes() (in module jarvis.executors.processor)</a>
 </li>
-      <li><a href="index.html#jarvis.api.fast.start_robinhood">start_robinhood() (in module jarvis.api.fast)</a>
-</li>
       <li><a href="index.html#jarvis.executors.controls.starter">starter() (in module jarvis.executors.controls)</a>
 </li>
       <li><a href="index.html#jarvis.modules.tv.roku.RokuECP.startup">startup() (jarvis.modules.tv.roku.RokuECP method)</a>
 </li>
+      <li><a href="index.html#jarvis.api.fast.startup_func">startup_func() (in module jarvis.api.fast)</a>
+</li>
       <li><a href="index.html#jarvis.modules.myq.myq.Operation.STATE">STATE (jarvis.modules.myq.myq.Operation attribute)</a>
 </li>
       <li><a href="index.html#jarvis.modules.models.classes.FileIO.stock_db">stock_db (jarvis.modules.models.classes.FileIO attribute)</a>
-</li>
-      <li><a href="index.html#jarvis.api.modals.settings.StockMonitor.stock_list">stock_list (jarvis.api.modals.settings.StockMonitor attribute)</a>
 </li>
       <li><a href="index.html#jarvis.modules.models.classes.FileIO.stock_list_backup">stock_list_backup (jarvis.modules.models.classes.FileIO attribute)</a>
 </li>
@@ -2905,9 +2925,11 @@
 </li>
       <li><a href="index.html#jarvis.modules.audio.tts_stt.text_to_audio">text_to_audio() (in module jarvis.modules.audio.tts_stt)</a>
 </li>
-      <li><a href="index.html#jarvis.api.squire.stockmonitor_squire.thread_worker">thread_worker() (in module jarvis.api.squire.stockmonitor_squire)</a>
+      <li><a href="index.html#jarvis.api.routers.stock_analysis.thread_worker">thread_worker() (in module jarvis.api.routers.stock_analysis)</a>
 
       <ul>
+        <li><a href="index.html#jarvis.api.squire.stockanalysis_squire.thread_worker">(in module jarvis.api.squire.stockanalysis_squire)</a>
+</li>
         <li><a href="index.html#jarvis.executors.lights.ThreadExecutor.thread_worker">(jarvis.executors.lights.ThreadExecutor method)</a>
 </li>
       </ul></li>
@@ -2915,16 +2937,16 @@
 </li>
       <li><a href="index.html#jarvis.executors.guard.threat_notify">threat_notify() (in module jarvis.executors.guard)</a>
 </li>
-      <li><a href="index.html#jarvis.api.squire.stockmonitor_squire.ticker_gatherer">ticker_gatherer() (in module jarvis.api.squire.stockmonitor_squire)</a>
+      <li><a href="index.html#jarvis.api.squire.stockanalysis_squire.ticker_gatherer">ticker_gatherer() (in module jarvis.api.squire.stockanalysis_squire)</a>
 </li>
       <li><a href="index.html#jarvis.modules.utils.support.time_converter">time_converter() (in module jarvis.modules.utils.support)</a>
 </li>
       <li><a href="index.html#jarvis.executors.others.time_travel">time_travel() (in module jarvis.executors.others)</a>
 </li>
-      <li><a href="index.html#jarvis.executors.commander.timed_delay">timed_delay() (in module jarvis.executors.commander)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#jarvis.executors.commander.timed_delay">timed_delay() (in module jarvis.executors.commander)</a>
+</li>
       <li><a href="index.html#jarvis.api.modals.models.SpeechSynthesisModal.timeout">timeout (jarvis.api.modals.models.SpeechSynthesisModal attribute)</a>
 </li>
       <li><a href="index.html#jarvis.modules.timeout.timeout.timeout">timeout() (in module jarvis.modules.timeout.timeout)</a>
@@ -2977,6 +2999,8 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#jarvis.executors.static_responses.un_processable">un_processable() (in module jarvis.executors.static_responses)</a>
+</li>
       <li><a href="index.html#jarvis.executors.car.Operations.unlock">unlock() (jarvis.executors.car.Operations method)</a>
 
       <ul>
@@ -2989,10 +3013,10 @@
 </li>
       <li><a href="index.html#jarvis.modules.exceptions.UnsupportedOS">UnsupportedOS</a>
 </li>
-      <li><a href="index.html#jarvis.modules.lights.smart_lights.MagicHomeApi.update_device">update_device() (jarvis.modules.lights.smart_lights.MagicHomeApi method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#jarvis.modules.lights.smart_lights.MagicHomeApi.update_device">update_device() (jarvis.modules.lights.smart_lights.MagicHomeApi method)</a>
+</li>
       <li><a href="index.html#jarvis.modules.microphone.graph_mic.update_plot">update_plot() (in module jarvis.modules.microphone.graph_mic)</a>
 </li>
       <li><a href="index.html#jarvis.executors.lights_squire.update_status">update_status() (in module jarvis.executors.lights_squire)</a>

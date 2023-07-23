@@ -1,11 +1,12 @@
-from typing import Any, NoReturn
+from threading import Thread
+from typing import NoReturn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from jarvis import version
 from jarvis.api import routers
-from jarvis.api.squire import discover, stockmonitor_squire
+from jarvis.api.squire import discover, stockanalysis_squire
 from jarvis.api.squire.logger import logger
 from jarvis.modules.models import models
 
@@ -49,8 +50,8 @@ if models.settings.pname == "fast_api":  # Avoid looping when called by subproce
 
 
 @app.on_event(event_type='startup')
-async def start_robinhood() -> Any:
-    """Initiates robinhood gatherer in a process and adds a cron schedule if not present already."""
-    logger.info("Hosting at http://{host}:{port}".format(host=models.env.offline_host, port=models.env.offline_port))
+async def startup_func() -> NoReturn:
+    """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
+    logger.info("Hosting at http://{%s}:{%s}", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:
-        stockmonitor_squire.nasdaq()
+        Thread(target=stockanalysis_squire.nasdaq).start()

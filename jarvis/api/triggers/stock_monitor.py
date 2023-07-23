@@ -73,7 +73,6 @@ class StockMonitor:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
         self.data = stockmonitor_squire.get_stock_userdata()
-        self.webull = webull()
         self.logger = logger
         self.ticker_grouped = defaultdict(list)
         self.email_grouped = defaultdict(list)
@@ -105,7 +104,7 @@ class StockMonitor:
         for ticker in self.ticker_grouped.keys():
             prices[ticker] = {}
             try:
-                price_check = self.webull.get_quote(ticker)
+                price_check = webull().get_quote(ticker)
                 if current_price := round(float(price_check.get('close') or price_check.get('open')), 2):
                     prices[ticker]['price'] = float(current_price)
                 else:
