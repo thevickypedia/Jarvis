@@ -324,12 +324,12 @@ class TelegramBot:
         """
         chat = payload['from']
         if chat['is_bot']:
-            logger.error("Bot %s accessed %s", chat['username'], payload.get('text'))
+            logger.error("Bot %s accessed %s", chat['username'], payload['text'])
             self.send_message(chat_id=chat['id'],
                               response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
             return False
         if chat['id'] not in models.env.bot_chat_ids or not username_is_valid(username=chat['username']):
-            logger.info("%s: %s", chat['username'], payload['text']) if payload.get('text') else None
+            logger.info("%s: %s", chat['username'], payload['text']) if payload['text'] else None
             logger.error("Unauthorized chatID [%d] or userName [%s]", chat['id'], chat['username'])
             self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
             return False
@@ -350,10 +350,10 @@ class TelegramBot:
         if int(time.time()) - payload['date'] < 60:
             return True
         request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
-        logger.warning("Request timed out when %s requested %s", payload['from']['username'], payload.get('text'))
+        logger.warning("Request timed out when %s requested %s", payload['from']['username'], payload['text'])
         logger.warning("Request time: %s", request_time)
-        if "override" in payload.get('text', '').lower() and not \
-                word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords['kill']):
+        if "override" in payload['text'].lower() and not \
+                word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['kill']):
             logger.info("%s requested a timeout override.", payload['from']['username'])
             return True
         else:
@@ -371,9 +371,9 @@ class TelegramBot:
             bool:
             Boolean flag to indicate whether to proceed.
         """
-        if not word_match.word_match(phrase=payload.get('text', ''), match_list=keywords.keywords['kill']):
+        if not word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['kill']):
             return True
-        if "override" in payload.get('text', '').lower():
+        if "override" in payload['text'].lower():
             logger.info("%s requested a STOP override.", payload['from']['username'])
             self.reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
             with db.connection:
@@ -465,7 +465,12 @@ class TelegramBot:
             - | Requesting files and secrets are considered as special requests, so they cannot be combined with
               | other requests using 'and' or 'also'
         """
-        if payload.get('text', '').lower() == 'help':
+        if payload.get('text'):
+            payload['text'] = payload['text'].strip()
+        else:
+            self.send_message(chat_id=payload['from']['id'], response="Un-processable payload")
+            return
+        if payload['text'].lower() == 'help':
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{greeting()} {payload['from']['first_name']}!\n"
                                        f"Good {util.part_of_day()}! {intro()}\n\n"
@@ -477,14 +482,16 @@ class TelegramBot:
             return
         if not self.verify_stop(payload=payload):
             return
-        payload['text'] = payload.get('text', '').replace('override', '').replace('OVERRIDE', '')
-        if word_match.word_match(phrase=payload.get('text').lower(),
-                                 match_list=("hey", "hi", "hola", "what's up", "ssup", "whats up", "hello",
-                                             "howdy", "hey", "chao", "hiya", "aloha"), strict=True):
-            self.reply_to(payload=payload,
-                          response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                   f"Good {util.part_of_day()}! How can I be of service today?")
-            return
+        payload['text'] = payload['text'].replace('override', '').replace('OVERRIDE', '')
+        if match_word := word_match.word_match(phrase=payload['text'].lower(),
+                                               match_list=("hey", "hola", "what's up", "ssup", "whats up", "hello",
+                                                           "hi", "howdy", "hey", "chao", "hiya", "aloha"), strict=True):
+            rest_of_msg = payload['text'].replace(match_word, '')
+            if not rest_of_msg or 'jarvis' in rest_of_msg.strip().lower():
+                self.reply_to(payload=payload,
+                              response=f"{greeting()} {payload['from']['first_name']}!\n"
+                                       f"Good {util.part_of_day()}! How can I be of service today?")
+                return
         if payload['text'] == '/start':
             self.send_message(chat_id=payload['from']['id'],
                               response=f"{greeting()} {payload['from']['first_name']}! {intro()}")

@@ -1389,13 +1389,14 @@ last_value: the last value assigned or None</p>
 <span id="routers-stockanalysis"></span><h1>Routers - StockAnalysis<a class="headerlink" href="#module-jarvis.api.routers.stock_analysis" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stock_analysis.get_signals">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_analysis.</span></span><span class="sig-name descname"><span class="pre">get_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_analysis.get_signals" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_analysis.</span></span><span class="sig-name descname"><span class="pre">get_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_analysis.get_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get buy, sell and hold signals for a particular stock or all tickers supported by webull.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>symbol</strong> – Stock ticker.</p></li>
-<li><p><strong>bar_count</strong> – Number of bars from webull.</p></li>
+<li><p><strong>- symbol</strong> – Stock ticker.</p></li>
+<li><p><strong>- bar_count</strong> – Number of bars from webull.</p></li>
+<li><p><strong>- data_dict</strong> – Boolean flag to receive tickers as a dictionary with the ORG names. Applies only for <cite>all</cite> symbol.</p></li>
 </ul>
 </dd>
 </dl>

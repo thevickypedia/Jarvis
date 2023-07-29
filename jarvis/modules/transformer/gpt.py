@@ -1,6 +1,9 @@
 import collections
 import difflib
 import os
+from multiprocessing.context import \
+    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import NoReturn, Union
 
@@ -127,7 +130,7 @@ class ChatGPT:
         })
         try:
             chat: OpenAIObject = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo", messages=self.MESSAGES, timeout=10
+                model="gpt-3.5-turbo", messages=self.MESSAGES
             )
             self.MESSAGES.append({"role": "system", "content": chat.choices[0].message.content})
             self.authenticated = True
@@ -180,9 +183,12 @@ if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
     else:
         logger.info("Initiating GPT instance for '%s'", models.settings.pname)
     try:
-        instance = ChatGPT()
-    except TimeoutError as error_:
-        logger.error(error_)
+        # because, openai built-in timeout doesn't really timeout when failed to initiate
+        instance = ThreadPool(processes=1).apply_async(func=ChatGPT)
+        instance = instance.get(timeout=10)
+        logger.info("GPT instance has been loaded for '%s'", models.settings.pname)
+    except ThreadTimeoutError:
+        logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
 else:
     instance = None
