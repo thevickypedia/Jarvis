@@ -116,6 +116,8 @@ def _main_process_validations() -> NoReturn:
         env.sensitivity = [env.sensitivity] * len(env.wake_words)
 
     # Create all necessary DB tables during startup
+    if not os.path.isdir(fileio.root):
+        os.mkdir(fileio.root)
     db = database.Database(database=fileio.base_db)
     for table, column in TABLES.items():
         db.create_table(table_name=table, columns=column)

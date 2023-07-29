@@ -1,3 +1,4 @@
+import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from http import HTTPStatus
 from typing import Callable, NoReturn
@@ -14,19 +15,22 @@ router = APIRouter()
 
 
 @router.get(path="/get-signals")
-async def get_signals(symbol: str, bar_count: int = 100):
+async def get_signals(symbol: str, bar_count: int = 100, data_dict: bool = False):
     """Get buy, sell and hold signals for a particular stock or all tickers supported by webull.
 
     Args:
 
-        symbol: Stock ticker.
-        bar_count: Number of bars from webull.
+        - symbol: Stock ticker.
+        - bar_count: Number of bars from webull.
+        - data_dict: Boolean flag to receive tickers as a dictionary with the ORG names. Applies only for `all` symbol.
     """
     symbol = symbol.strip().upper()
     logger.info("Received request for '%s'", symbol)
     if symbol == "ALL":
         if settings.trader.stock_list:
-            raise APIResponse(status_code=HTTPStatus.OK.real, detail=settings.trader.stock_list)
+            if data_dict:
+                raise APIResponse(status_code=HTTPStatus.OK.real, detail=settings.trader.stock_list)
+            raise APIResponse(status_code=HTTPStatus.OK.real, detail=json.dumps(settings.trader.stock_list))
             # todo:
             #  repeated URL errors, no luck with traditional loop
             # thread_worker(function_to_call=get_signals_per_ticker)

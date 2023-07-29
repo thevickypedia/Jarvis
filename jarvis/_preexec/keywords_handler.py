@@ -9,9 +9,9 @@ from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.models import models
 
-# Used by docs
+# Used by docs, actual fileio is created in models.py as it gets invoked during the imports above
 if not os.path.isdir(models.fileio.root):
-    os.makedirs(name=models.fileio.root)
+    os.mkdir(models.fileio.root)
 
 
 def rewrite_keywords() -> NoReturn:

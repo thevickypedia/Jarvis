@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.5.3 (07/28/2023)
+------------------
+- Brute force ``timeout`` on ``ChatGPT`` instance creation
+- Fix some random start up errors and delays
+- Create an option to get stock tickers as a dict
+- Update docs page for API endpoint
+- Release v3.3
+
 7.5.2 (07/20/2023)
 ------------------
 - Implement a new feature to analyze stocks

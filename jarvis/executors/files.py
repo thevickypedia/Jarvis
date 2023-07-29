@@ -121,7 +121,7 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
     Returns:
         A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
     """
-    if models.fileio.conditions:
+    if os.path.isfile(models.fileio.conditions):
         with open(models.fileio.conditions) as file:
             try:
                 return yaml.load(stream=file, Loader=yaml.SafeLoader)
