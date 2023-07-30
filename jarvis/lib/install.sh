@@ -84,7 +84,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
       python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
     else
-      python -m pip install pvporcupine==1.9.5 dlib==19.24.0 opencv-python==4.5.5.64
+      python -m pip install pvporcupine==1.9.5 dlib==19.24.2 opencv-python==4.5.5.64
     fi
 
     # Install as stand alone as face recognition depends on dlib

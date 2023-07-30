@@ -124,7 +124,7 @@ def initiator(phrase: str = None) -> None:
             speaker.speak(text=inactive_msg)
             return
         shared.called['time_travel'] = True
-        if (event := support.celebrate()) and 'night' not in phrase.lower():
+        if (event := others.celebrate()) and 'night' not in phrase.lower():
             speaker.speak(text=f'Happy {event}!')
         if 'night' in phrase.split() or 'goodnight' in phrase.split():
             Thread(target=controls.sleep_control).start()

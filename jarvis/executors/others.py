@@ -13,6 +13,8 @@ from typing import Dict, List, NoReturn, Tuple, Union
 import boto3
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
+from holidays import country_holidays
+from holidays.registry import COUNTRIES
 from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from packaging.version import Version
@@ -342,12 +344,54 @@ def report(*args) -> NoReturn:
     shared.called['report'] = False
 
 
+def celebrate(phrase: str = None) -> str:
+    """Function to look if the current date is a holiday or a birthday.
+
+    Returns:
+        str:
+        A string of the event observed today.
+    """
+    countrycode = None
+    countryname = None
+    if phrase:
+        phrase = phrase.strip()
+        countries = {country[1]: [' '.join(re.findall('[A-Z][^A-Z]*', country[0])), country[2]] for country in
+                     COUNTRIES.values()}
+        for code, names in countries.items():
+            # If country code is used, then it should be a precise match, otherwise just regex it
+            if code in phrase.split() or any(name in phrase for name in names):
+                countryname = names[0]
+                countrycode = code
+                logger.info("%s: %s", countrycode, countryname)
+                break
+    else:
+        location = files.get_location()
+        if not (countrycode := location.get('address', {}).get('country_code')):  # get country code from location.yaml
+            if idna_timezone := location.get('timezone'):  # get timezone from location.yaml
+                countrycode = support.country_timezone().get(idna_timezone)  # get country code using timezone map
+    if not countrycode:
+        countrycode = "US"
+        countryname = "USA"
+    if current_holiday := country_holidays(countrycode.upper()).get(datetime.today().date()):
+        if phrase:
+            speaker.speak(text=f"Today is {current_holiday!r} in {countryname}")
+        else:
+            return current_holiday
+    elif models.env.birthday == datetime.now().strftime("%d-%B"):
+        if phrase:
+            speaker.speak(text=f"Today is your birthday {models.env.title}!")
+        else:
+            return "Birthday"
+    elif phrase:
+        speaker.speak(text=f"There are no events to celebrate today in {countryname}")
+
+
 def time_travel() -> None:
     """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
     part_day = util.part_of_day()
     speaker.speak(text=f"Good {part_day} {models.env.name}!")
     if part_day == 'Night':
-        if event := support.celebrate():
+        if event := celebrate():
             speaker.speak(text=f'Happy {event}!')
         return
     date_time.current_date()

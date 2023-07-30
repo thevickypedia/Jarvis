@@ -90,7 +90,7 @@ def _set_default_voice_name() -> NoReturn:
 
 def _main_process_validations() -> NoReturn:
     """Validations that should happen only when the main process is triggered."""
-    if not env.recognizer_settings and not env.phrase_limit:
+    if not env.recognizer_settings and not env.listener_phrase_limit:
         env.recognizer_settings = RecognizerSettings()  # Default override when phrase limit is not available
 
     if settings.legacy:

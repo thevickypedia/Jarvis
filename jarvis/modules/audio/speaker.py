@@ -96,7 +96,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         text = text.replace('\n', '\t').strip()
         shared.text_spoken = text
         if shared.called_by_offline:
-            logger.debug("Speaker called by: '%s'", caller)
+            logger.debug("Speaker called by: '%s' with text: '%s'", caller, text)
             shared.offline_caller = caller
             return
         logger.info("Response: %s", text)

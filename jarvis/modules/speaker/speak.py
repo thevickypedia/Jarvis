@@ -85,7 +85,7 @@ class Speaker:
                 yield voice
 
     # noinspection PyUnresolvedReferences
-    def set_voice(self, voice_index: int, rate: int = 200) -> NoReturn:
+    def set_voice_by_index(self, voice_index: int, rate: int = 200) -> NoReturn:
         """Set voice attributes per given values.
 
         Args:
@@ -96,17 +96,34 @@ class Speaker:
         self.engine.setProperty("voice", self.voices[voice_index].id)
         self.engine.setProperty("rate", rate)
 
+    def set_voice_by_name(self, voice_name: str, rate: int = 200) -> NoReturn:
+        """Set voice attributes per given values.
+
+        Args:
+            voice_name: Name of the voice that has to be used.
+            rate: Rate at which the voice should speak.
+        """
+        logger.debug("Setting voice name to %s and speech rate to '%d'", voice_name, rate)
+        voices: Union[list, object] = self.engine.getProperty("voices")
+        for voice in voices:
+            if voice.name == voice_name or voice_name in voice.name:
+                self.engine.setProperty("voice", voice.id)
+                self.engine.setProperty("rate", rate)
+                break
+        else:
+            raise ValueError("No matching voice found for the name: '%s'" % voice_name)
+
     def speak_all_voices(self) -> NoReturn:
         """Speaks the voice name in all available voices."""
         for voice in self.get_all_voices():
-            self.set_voice(voice_index=voice['index'])
+            self.set_voice_by_index(voice_index=voice['index'])
             logger.info("Speaker voice [%s]: '%s'", voice['index'], voice['name'])
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
     def speak_english_voices(self) -> NoReturn:
         """Speaks the voice name in all available english voices."""
         for voice in self.get_english_voices():
-            self.set_voice(voice_index=voice['index'])
+            self.set_voice_by_index(voice_index=voice['index'])
             logger.info("Speaker voice [%s]: '%s'", voice['index'], voice['name'])
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
@@ -120,3 +137,9 @@ class Speaker:
             text = SAMPLE_TEXT
         self.engine.say(text)
         self.engine.runAndWait()
+
+
+if __name__ == '__main__':
+    speaker = Speaker()
+    speaker.set_voice_by_name(voice_name="Daniel (Enhanced)", rate=182)
+    speaker.run(text="Welcome to the world of natural language processing.")

@@ -20,9 +20,8 @@ import inflect
 import psutil
 import pytz
 import yaml
-from holidays import country_holidays
 
-from jarvis.executors import files, internet, word_match
+from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -88,26 +87,6 @@ def country_timezone() -> Dict[str, str]:
         for timezone_ in timezones:
             timezone_country[timezone_] = countrycode
     return timezone_country
-
-
-def celebrate() -> str:
-    """Function to look if the current date is a holiday or a birthday.
-
-    Returns:
-        str:
-        A string of the event observed today.
-    """
-    location = files.get_location()
-    countrycode = location.get('address', {}).get('country_code')  # get country code from location.yaml
-    if not countrycode:
-        if idna_timezone := location.get('timezone'):  # get timezone from location.yaml
-            countrycode = country_timezone().get(idna_timezone)  # get country code using timezone map
-    if not countrycode:
-        countrycode = "US"  # default to US
-    if current_holiday := country_holidays(countrycode.upper()).get(datetime.today().date()):
-        return current_holiday
-    elif models.env.birthday == datetime.now().strftime("%d-%B"):
-        return "Birthday"
 
 
 def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> Union[str, None]:
@@ -362,7 +341,7 @@ def exit_message() -> str:
     else:
         exit_msg = "Have a nice night."
 
-    if event := celebrate():
+    if event := others.celebrate():
         exit_msg += f"\nAnd by the way, happy {event}"
 
     return exit_msg

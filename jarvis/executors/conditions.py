@@ -61,7 +61,7 @@ def conditions(phrase: str) -> bool:
                 continue
 
             # Requires manual intervention [skip for offline communicator]
-            if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes',
+            if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes', 'faces',
                                                          'music', 'voice_changer', 'restart_control', 'shutdown'):
                 # WATCH OUT: for changes in function name
                 if models.settings.pname == "background_tasks" and category == "restart_control":

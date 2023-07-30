@@ -26,7 +26,7 @@ def detected_face() -> NoReturn:
     speaker.speak(text=f"I've taken a photo of you. Preview on your screen {models.env.title}! "
                        "Please tell me a name if you'd like to recognize this face in the future, or simply say exit.",
                   run=True)
-    phrase = listener.listen()
+    phrase = listener.listen(timeout=3, phrase_time_limit=5)
     if not phrase or 'exit' in phrase or 'quit' in phrase or 'Xzibit' in phrase:
         os.remove('cv2_open.jpg')
         speaker.speak(text="I've deleted the image.", run=True)
@@ -45,8 +45,16 @@ def faces(phrase: str) -> None:
     """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
     support.flush_screen()
     if word_match.word_match(phrase=phrase, match_list=("detect", "detection", "faces", "look")):
-        if FaceNet().face_detection(retry_count=5):
+        try:
+            face_detection = FaceNet().face_detection(retry_count=5)
+        except FileNotFoundError as error:
+            logger.error(error)
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to initiate face detection.")
+            return
+        if face_detection:
             detected_face()
+        else:
+            speaker.speak(text=f"No faces were detected {models.env.title}!")
     else:
         if os.path.isdir(TRAINING_DIR) and \
                 set(os.path.dirname(p) for p in glob.glob(os.path.join(TRAINING_DIR, "*", ""), recursive=True)):

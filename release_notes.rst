@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+7.5.4 (07/30/2023)
+------------------
+- Add a feature to get holidays across the world
+- Upgrade version locked dependencies
+- Update keywords for events/holidays
+- Override defaults in listener function
+- Update standalone speaker module to get voice by name
+- Fix no response in failed face detection
+- Fix one more random startup error
+
 7.5.3 (07/28/2023)
 ------------------
 - Brute force ``timeout`` on ``ChatGPT`` instance creation
@@ -9,7 +19,7 @@ Release Notes
 - Update docs page for API endpoint
 - Release v3.3
 
-7.5.2 (07/20/2023)
+7.5.2 (07/22/2023)
 ------------------
 - Implement a new feature to analyze stocks
 - Remove unwanted ticker gathering methods
