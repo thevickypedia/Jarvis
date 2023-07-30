@@ -381,13 +381,27 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.set_voice">
-<span class="sig-name descname"><span class="pre">set_voice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.set_voice" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.set_voice_by_index">
+<span class="sig-name descname"><span class="pre">set_voice_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voice_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.set_voice_by_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set voice attributes per given values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>voice_index</strong> – Index of the voice that has to be used.</p></li>
+<li><p><strong>rate</strong> – Rate at which the voice should speak.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.set_voice_by_name">
+<span class="sig-name descname"><span class="pre">set_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voice_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.set_voice_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set voice attributes per given values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>voice_name</strong> – Name of the voice that has to be used.</p></li>
 <li><p><strong>rate</strong> – Rate at which the voice should speak.</p></li>
 </ul>
 </dd>
@@ -4017,6 +4031,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.others.celebrate">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.others.celebrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to look if the current date is a holiday or a birthday.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A string of the event observed today.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.others.time_travel">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">time_travel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.others.time_travel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Triggered only from <code class="docutils literal notranslate"><span class="pre">initiator()</span></code> to give a quick update on the user’s daily routine.</p>
@@ -4924,13 +4952,15 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.listener.listen">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 <li><p><strong>stdout</strong> – Flag whether to print the listener status on screen.</p></li>
+<li><p><strong>timeout</strong> – Custom timeout for functions expecting a longer wait time.</p></li>
+<li><p><strong>phrase_time_limit</strong> – Custom time limit for functions expecting a longer user input.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -8565,20 +8595,6 @@ last_value: the last value assigned or None</p>
 <dt class="sig sig-object py" id="jarvis.modules.utils.support.country_timezone">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">country_timezone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.country_timezone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a mapping of timezone and the country where the timezone belongs.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.utils.support.celebrate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.celebrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function to look if the current date is a holiday or a birthday.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A string of the event observed today.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">

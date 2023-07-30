@@ -79,6 +79,7 @@ class FaceNet:
 
     def load_dataset(self, location: str) -> NoReturn:
         """Loads the dataset."""
+        logger.debug("Loading dataset to classify existing images.")
         for char_dir in os.listdir(location):  # loads the training dataset
             if not os.path.isdir(os.path.join(location, char_dir)):
                 continue
@@ -102,6 +103,7 @@ class FaceNet:
             str:
             Name of the enclosing directory in case of a recognized face.
         """
+        logger.debug("Initiating face recognition.")
         self.load_dataset(location=location)
         for _ in range(retry_count):
             ret, img = self.validation_video.read()  # reads video from web cam
@@ -133,9 +135,11 @@ class FaceNet:
             bool:
             A boolean value if not a face was detected.
         """
+        logger.debug("Initiating face detection.")
         cv2_cascades = cv2_data.haarcascades + "haarcascade_frontalface_default.xml"
         if not os.path.isfile(cv2_cascades):
-            return False
+            logger.debug("Cascades not found at: %s", cv2_cascades)
+            raise FileNotFoundError(cv2_cascades)
         cascade = cv2.CascadeClassifier(cv2_cascades)
         for _ in range(retry_count + 1):
             ret, image = self.validation_video.read()  # reads video from web cam

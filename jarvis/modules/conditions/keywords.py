@@ -45,7 +45,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         # internal
 
         meetings=['meeting', 'meetings'],
-        events=['event', 'events'],
+        events=[],  # will be loaded based on the event app that's chosen during startup
         current_date=["today's date", 'current date', 'what is the date', "what's the date", 'todays date',
                       'whats the date'],
         current_time=['current time', 'time now', 'time in', 'what is the time', "what's the time", 'whats the time'],
@@ -94,6 +94,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         photo=['picture', 'snap', 'photo', 'pictures', 'photos'],
         version=['version'],
         simulation=['simulator', 'variation', 'simulation', 'variations'],
+        celebrate=['festival', 'festivals', 'celebrate', 'celebration', 'holiday', 'holidays', 'event', 'events'],
         sleep_control=['lock', 'screen', 'pc', 'computer'],
         sentry=['sleep', 'activate sentry mode'],
         restart_control=['restart', 'reboot'],

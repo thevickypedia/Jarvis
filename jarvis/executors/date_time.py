@@ -4,7 +4,7 @@ import inflect
 import pytz
 from timezonefinder import TimezoneFinder
 
-from jarvis.executors import location
+from jarvis.executors import location, others
 from jarvis.modules.audio import speaker
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
@@ -46,7 +46,7 @@ def current_date(*args) -> None:
     dt_string = datetime.now().strftime("%A, %B")
     date_ = inflect.engine().ordinal(datetime.now().strftime("%d"))
     year = str(datetime.now().year)
-    event = support.celebrate()
+    event = others.celebrate()
     if shared.called['time_travel']:
         dt_string = f'{dt_string} {date_}'
     else:

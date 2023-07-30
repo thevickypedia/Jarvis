@@ -7,6 +7,7 @@
 from typing import Union
 
 from playsound import playsound
+from pydantic import PositiveFloat, PositiveInt
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
@@ -27,12 +28,16 @@ if models.env.recognizer_settings and models.settings.pname == "JARVIS":
     recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
 
 
-def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
+def listen(sound: bool = True, stdout: bool = True,
+           timeout: Union[PositiveInt, PositiveFloat] = models.env.listener_timeout,
+           phrase_time_limit: Union[PositiveInt, PositiveFloat] = models.env.listener_phrase_limit) -> Union[str, None]:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
         sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
         stdout: Flag whether to print the listener status on screen.
+        timeout: Custom timeout for functions expecting a longer wait time.
+        phrase_time_limit: Custom time limit for functions expecting a longer user input.
 
     Returns:
         str:
@@ -42,8 +47,7 @@ def listen(sound: bool = True, stdout: bool = True) -> Union[str, None]:
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
             support.write_screen(text="Listener activated...") if stdout else None
-            listened = recognizer.listen(source=source, timeout=models.env.listener_timeout,
-                                         phrase_time_limit=models.env.listener_phrase_limit)
+            listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
             playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()
             recognized = recognizer.recognize_google(audio_data=listened)

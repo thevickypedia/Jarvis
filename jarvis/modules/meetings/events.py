@@ -21,7 +21,7 @@ import pynotification
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.logger.custom_logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util
 
@@ -48,7 +48,7 @@ def events_writer() -> NoReturn:
 
 def event_app_launcher() -> NoReturn:
     """Launches either Calendar or Outlook application which is required to read events."""
-    if models.env.event_app == "calendar":
+    if models.env.event_app == classes.EventApp.CALENDAR.value:
         os.system(f"osascript {models.fileio.app_launcher} Calendar")
     else:
         # Just `Outlook` works too but requires manual click to map the shortcut for the first time
@@ -72,7 +72,7 @@ def events_gatherer() -> str:
                f"but the host machine is currently running {models.settings.os}."
     failure = None
     process = subprocess.Popen(["/usr/bin/osascript", models.fileio.event_script] + [str(arg) for arg in [1, 3]],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     out, err = process.communicate()
     # Undo unspecified changes done by ScriptEditor (should only be necessary when package is not pip installed)
     os.system(f"git checkout HEAD -- {models.fileio.event_script} >/dev/null 2>&1")

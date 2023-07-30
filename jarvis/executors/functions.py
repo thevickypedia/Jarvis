@@ -78,6 +78,7 @@ def function_mapping() -> OrderedDict[str, Callable]:
         photo=others.photo,
         version=others.version,
         simulation=simulator.simulation,
+        celebrate=others.celebrate,
         sleep_control=controls.sleep_control,
         sentry=controls.sentry,
         restart_control=controls.restart_control,
