@@ -94,10 +94,6 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase)
 
     logger.info("Request: %s", command)
-    if 'alarm' in command.lower() or 'remind' in command.lower():
-        command = command.lower()
-    else:
-        command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if command.lower() == 'test':
         logger.info("Test message received.")
         raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
@@ -115,8 +111,14 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
             response = "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n" \
                        "Note that the secret cannot be retrieved again using the same token and the token will " \
                        f"expire in 5 minutes.\n\n{response}"
+        else:
+            logger.error("Response: %s", response)
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
+    if 'alarm' in command.lower() or 'remind' in command.lower():
+        command = command.lower()
+    else:
+        command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
         and_response = ""
         for each in command.split(' and '):

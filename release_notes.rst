@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.5.5 (07/31/2023)
+------------------
+- Change response for ``ChatGPT``'s failed authentication
+- Fix secret access via offline communicator
+
 7.5.4 (07/30/2023)
 ------------------
 - Add a feature to get holidays across the world

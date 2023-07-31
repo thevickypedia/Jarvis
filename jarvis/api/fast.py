@@ -53,6 +53,6 @@ if models.settings.pname == "fast_api":  # Avoid looping when called by subproce
 @app.on_event(event_type='startup')
 async def startup_func() -> NoReturn:
     """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
-    logger.info("Hosting at http://{%s}:{%s}", models.env.offline_host, models.env.offline_port)
+    logger.info("Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:
         Thread(target=stockanalysis_squire.nasdaq).start()

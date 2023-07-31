@@ -13,9 +13,9 @@ from openai.error import AuthenticationError, OpenAIError
 from openai.openai_object import OpenAIObject
 
 from jarvis.modules.audio import speaker
+from jarvis.modules.exceptions import MissingEnvVars
 from jarvis.modules.logger.custom_logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import support
 
 
 def dump_history(request: str, response: str) -> NoReturn:
@@ -115,6 +115,8 @@ class ChatGPT:
         """Initiates authentication to GPT api."""
         self.authenticated = False
         self.authenticate()
+        if not self.authenticated:
+            raise MissingEnvVars
 
     def authenticate(self) -> NoReturn:
         """Initiates authentication and prepares GPT responses ready to be audio fed."""
@@ -152,9 +154,6 @@ class ChatGPT:
         if response := existing_response(request=phrase):
             speaker.speak(text=response)
             return
-        if not self.authenticated:
-            support.no_env_vars()
-            return
         self.MESSAGES.append(
             {"role": "user", "content": phrase},
         )
@@ -189,6 +188,8 @@ if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
         logger.info("GPT instance has been loaded for '%s'", models.settings.pname)
     except ThreadTimeoutError:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
+        instance = None
+    except MissingEnvVars:
         instance = None
 else:
     instance = None
