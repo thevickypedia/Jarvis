@@ -11,7 +11,7 @@ from typing import Dict, List, Union
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.models import models
 
-Windows = """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
+Windows = """wmic path CIM_LogicalDevice where "Description like 'Dispositivo video USB%'" get /value"""
 Darwin = "system_profiler SPCameraDataType"
 Linux = "v4l2-ctl --list-devices"
 
