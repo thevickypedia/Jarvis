@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.5.6 (08/01/2023)
+------------------
+- Avoid <1 values for correction in ``stock-monitor``
+
 7.5.5 (07/31/2023)
 ------------------
 - Change response for ``ChatGPT``'s failed authentication

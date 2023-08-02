@@ -139,6 +139,8 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is less than set maximum by correction percentage.
         """
+        if correction < 1:  # Because math.floor will round it off to the previous whole number
+            return False
         max_corrected_amt = math.floor(maximum - (stock_price * correction / 100))
         return stock_price >= max_corrected_amt
 
@@ -163,6 +165,8 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is more than set maximum by correction percentage.
         """
+        if correction < 1:  # Because math.ceil will round it off to the next whole number
+            return False
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
 
