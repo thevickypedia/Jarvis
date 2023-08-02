@@ -191,7 +191,7 @@ class Camera:
         """
         if models.settings.os == models.supported_platforms.macOS:
             return list(self._list_cameras_darwin())
-        elif models.supported_platforms.macOS == models.supported_platforms.windows:
+        elif models.settings.os == models.supported_platforms.windows:
             return list(self._list_cameras_windows())
         else:
             return list(self._list_cameras_linux())
