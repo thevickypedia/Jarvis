@@ -64,7 +64,7 @@ async def main() -> NoReturn:
                 logger.info('Listening..')
                 audio = RECOGNIZER.listen(source)
                 logger.info('Recognizing..')
-                recognized = RECOGNIZER.recognize_google(audio_data=audio, language="it-IT")  # Requires stable internet connection
+                recognized = RECOGNIZER.recognize_google(audio_data=audio)  # Requires stable internet connection
                 # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)  # Requires pocketsphinx module
                 print(recognized)
                 if "stop" in recognized.lower().split():
