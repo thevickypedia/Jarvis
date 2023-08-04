@@ -32,7 +32,7 @@ voices: Union[list, object] = audio_driver.getProperty("voices") if audio_driver
 indicators = Indicators()
 # TABLES to be created in `fileio.base_db`
 TABLES = {
-    "calendar": ("info", "date"),
+    env.event_app: ("info", "date"),
     "ics": ("info", "date"),
     "stopper": ("flag", "caller"),
     "restart": ("flag", "caller"),
