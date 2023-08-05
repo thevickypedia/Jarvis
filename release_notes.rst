@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+7.5.7 (08/03/2023)
+------------------
+- Fix list_cameras error in windows
+
 7.5.6 (08/01/2023)
 ------------------
 - Avoid <1 values for correction in ``stock-monitor``
@@ -1037,7 +1041,7 @@ Release Notes
 ------------------
 - Close `audio_stream` before opening `Microphone`
 - Support `Jarvis_API` even further
-- Replace Â° sign with unicode string
+- Replace ° sign with unicode string
 - Add api paths for keywords.py, conversation.py and offline_compatible
 - Fix speech_synthesis module
 - Narrow conditions for speedtest
