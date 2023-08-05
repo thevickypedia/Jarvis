@@ -8,6 +8,7 @@ from threading import Thread
 from typing import NoReturn, Union
 
 import openai
+from litellm import completion
 import yaml
 from openai.error import AuthenticationError, OpenAIError
 from openai.openai_object import OpenAIObject
@@ -131,7 +132,7 @@ class ChatGPT:
                        "so keep your replies within 1 to 2 sentences without any parenthesis."
         })
         try:
-            chat: OpenAIObject = openai.ChatCompletion.create(
+            chat: OpenAIObject = completion(
                 model="gpt-3.5-turbo", messages=self.MESSAGES
             )
             self.MESSAGES.append({"role": "system", "content": chat.choices[0].message.content})
@@ -158,7 +159,7 @@ class ChatGPT:
             {"role": "user", "content": phrase},
         )
         try:
-            chat: OpenAIObject = openai.ChatCompletion.create(
+            chat: OpenAIObject = completion(
                 model="gpt-3.5-turbo", messages=self.MESSAGES
             )
         except OpenAIError as error:
