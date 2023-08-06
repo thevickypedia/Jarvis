@@ -12,7 +12,7 @@ from typing import Callable, Union
 
 from pydantic import FilePath
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 
 importlib.reload(module=logging)
 

@@ -509,6 +509,7 @@ class FileIO(BaseModel):
     # Custom keyword-function map
     keywords: FilePath = os.path.join(root, 'keywords.yaml')
     conditions: FilePath = os.path.join(root, 'conditions.yaml')
+    restrictions: FilePath = os.path.join(root, 'restrictions.yaml')
 
     # Databases
     base_db: FilePath = os.path.join(root, 'database.db')

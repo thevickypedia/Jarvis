@@ -107,7 +107,8 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
                'a.m.', 'p.m.', 'update my to do list', 'launch', 'safari', 'body', 'human', 'centimeter', 'server',
                'cloud', 'update'],
         ngrok=['ngrok', 'public url'],
-        secrets=['secret', 'secrets', 'param', 'params', 'parameter', 'parameters']
+        secrets=['secret', 'secrets', 'param', 'params', 'parameter', 'parameters'],
+        restrictions=['restriction', 'restrictions', 'restrict', 'release']
     )
 
 

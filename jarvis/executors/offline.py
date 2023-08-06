@@ -17,8 +17,7 @@ from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger import config
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, models
 from jarvis.modules.utils import shared, support, util

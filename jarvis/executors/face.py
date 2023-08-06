@@ -10,7 +10,7 @@ from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet.face import FaceNet
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 

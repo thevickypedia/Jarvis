@@ -7,7 +7,7 @@ from typing import Any, DefaultDict, Dict, List, NoReturn, Union
 
 import yaml
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
@@ -97,7 +97,7 @@ def delete_secure_send(key: str) -> NoReturn:
     else:
         logger.critical("data for key [%s] was removed unprecedentedly", key)
     with open(models.fileio.secure_send, 'w') as file:
-        yaml.dump(data=current_data, stream=file, Dumper=yaml.SafeDumper)
+        yaml.dump(data=current_data, stream=file, Dumper=yaml.Dumper)
         file.flush()  # Write buffer to file immediately
 
 
@@ -109,7 +109,7 @@ def put_secure_send(data: Dict[str, Dict[str, Any]]):
     """
     existing = get_secure_send()
     with open(models.fileio.secure_send, 'w') as file:
-        yaml.dump(data={**existing, **data}, stream=file, Dumper=yaml.SafeDumper)
+        yaml.dump(data={**existing, **data}, stream=file, Dumper=yaml.Dumper)
         file.flush()  # Write buffer to file immediately
     logger.info("Secure dict for [%s] will be cleared after 5 minutes", [*[*data.values()][0].keys()][0])
     Timer(function=delete_secure_send, args=data.keys(), interval=300).start()
@@ -119,14 +119,68 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
     """Custom conditions to map specific keywords to one or many functions.
 
     Returns:
+        Dict[str, Dict[str, str]]:
         A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
     """
     if os.path.isfile(models.fileio.conditions):
         with open(models.fileio.conditions) as file:
             try:
-                return yaml.load(stream=file, Loader=yaml.SafeLoader)
+                return yaml.load(stream=file, Loader=yaml.FullLoader)
             except yaml.YAMLError as error:
                 logger.error(error)
+
+
+def get_restrictions() -> List[str]:
+    """Function level restrictions to restrict certain keywords via offline communicator.
+
+    Returns:
+        List[str]:
+        A list of function names that has to be restricted.
+    """
+    if os.path.isfile(models.fileio.restrictions):
+        with open(models.fileio.restrictions) as file:
+            try:
+                return yaml.load(stream=file, Loader=yaml.FullLoader)
+            except yaml.YAMLError as error:
+                logger.error(error)
+    return []
+
+
+def put_restrictions(restrictions: List[str]) -> NoReturn:
+    """Function level restrictions to restrict certain keywords via offline communicator.
+
+    Args:
+        restrictions: A list of function names that has to be restricted.
+    """
+    with open(models.fileio.restrictions, 'w') as file:
+        yaml.dump(data=restrictions, stream=file, indent=2, sort_keys=False)
+        file.flush()  # Write buffer to file immediately
+
+
+def get_gpt_data() -> List[Dict[str, str]]:
+    """Get history from Jarvis -> ChatGPT conversation.
+
+    Returns:
+        List[Dict[str, str]]:
+        A list of dictionaries with request and response key-value pairs.
+    """
+    if os.path.isfile(models.fileio.gpt_data):
+        try:
+            with open(models.fileio.gpt_data) as file:
+                return yaml.load(stream=file, Loader=yaml.FullLoader)
+        except yaml.YAMLError as error:
+            logger.error(error)
+
+
+def put_gpt_data(data: List[Dict[str, str]]) -> NoReturn:
+    """Stores Jarvis -> ChatGPT conversations in a history file.
+
+    Args:
+        data: List of dictionaries that have to be saved for future reference.
+    """
+    with open(models.fileio.gpt_data, 'w') as file:
+        yaml.dump(data=data, stream=file, indent=4, Dumper=yaml.Dumper)
+        file.flush()  # Write buffer to file immediately
 
 
 def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:

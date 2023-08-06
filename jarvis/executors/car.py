@@ -13,7 +13,7 @@ from jarvis.executors import communicator, files, location, weather, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.car import connector, controller
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util

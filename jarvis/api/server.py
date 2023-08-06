@@ -7,8 +7,7 @@ import uvicorn
 from jarvis.executors import port_handler
 from jarvis.modules.builtin_overrides import APIServer
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger import config
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 
 

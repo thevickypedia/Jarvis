@@ -16,7 +16,7 @@ from jarvis.executors.offline import background_tasks, tunneling
 from jarvis.executors.telegram import telegram_api
 from jarvis.modules.audio.speech_synthesis import speech_synthesizer
 from jarvis.modules.database import database
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry

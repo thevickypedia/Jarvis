@@ -8,7 +8,7 @@ import yaml
 from pydantic.error_wrappers import ValidationError
 
 from jarvis.modules.audio import speaker
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.models.classes import BackgroundTask
 from jarvis.modules.utils import support

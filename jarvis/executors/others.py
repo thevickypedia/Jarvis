@@ -31,7 +31,7 @@ from jarvis.modules.database import database
 from jarvis.modules.dictionary import dictionary
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet import face
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 

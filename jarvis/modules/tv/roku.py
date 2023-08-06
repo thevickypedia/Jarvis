@@ -14,7 +14,7 @@ from xml.etree import ElementTree
 import requests
 
 from jarvis.modules.exceptions import EgressErrors, TVError
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 
 
 class RokuECP:

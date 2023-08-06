@@ -16,7 +16,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 
 SESSION = requests.Session()
 RETRY = Retry(connect=3, backoff_factor=1.5)

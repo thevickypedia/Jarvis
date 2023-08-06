@@ -6,8 +6,7 @@ from typing import NoReturn
 
 from jarvis.executors import controls
 from jarvis.modules.exceptions import BotInUse, EgressErrors
-from jarvis.modules.logger import config
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram.bot import TelegramBot
 

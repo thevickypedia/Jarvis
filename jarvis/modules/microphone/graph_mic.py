@@ -199,8 +199,7 @@ if __name__ == '__main__':
 
     current_process().name = "PlotMic"
     from jarvis.modules.database import database
-    from jarvis.modules.logger import config
-    from jarvis.modules.logger.custom_logger import logger
+    from jarvis.modules.logger import config, logger
     from jarvis.modules.models import models
 
     plot_mic()

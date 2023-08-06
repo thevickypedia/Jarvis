@@ -2,10 +2,10 @@ import warnings
 from threading import Thread
 
 from jarvis.executors import (custom_conditions, functions, listener_controls,
-                              others, static_responses, unconditional,
-                              word_match)
+                              others, restrictions, static_responses,
+                              unconditional, word_match)
 from jarvis.modules.conditions import keywords
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.transformer import gpt
 from jarvis.modules.utils import shared, support
@@ -39,6 +39,8 @@ def conditions(phrase: str) -> bool:
         return False
 
     function_map = functions.function_mapping()
+    if shared.called_by_offline and restrictions.restricted(phrase=phrase):
+        return False
     if custom_conditions.custom_conditions(phrase=phrase, function_map=function_map):
         return False
 

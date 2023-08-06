@@ -7,8 +7,7 @@ from typing import NoReturn
 from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis.executors import controls
-from jarvis.modules.logger import config
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 
 

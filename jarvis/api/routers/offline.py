@@ -14,11 +14,12 @@ from jarvis.api.modals.models import (OfflineCommunicatorModal,
                                       SpeechSynthesisModal)
 from jarvis.api.routers import speech_synthesis
 from jarvis.api.squire.logger import logger
-from jarvis.executors import commander, offline, others, word_match
+from jarvis.executors import (commander, offline, others, restrictions,
+                              word_match)
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import APIResponse
+from jarvis.modules.exceptions import APIResponse, InvalidArgument
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
@@ -104,6 +105,12 @@ async def offline_communicator_api(request: Request, input_data: OfflineCommunic
         return await process_ok_response(response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
                                          input_data=input_data)
 
+    if word_match.word_match(phrase=command, match_list=keywords.keywords['restrictions']):
+        try:
+            raise APIResponse(status_code=HTTPStatus.OK.real,
+                              detail=restrictions.handle_restrictions(phrase=command))
+        except InvalidArgument as error:
+            raise APIResponse(status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__())
     if word_match.word_match(phrase=command, match_list=keywords.keywords['secrets']) and \
             word_match.word_match(phrase=command, match_list=('list', 'get', 'send', 'create', 'share')):
         response = others.secrets(phrase=command)

@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.5.7 (08/05/2023)
+------------------
+- Place ``functional`` restrictions on offline commands
+- Set logging module as a ``pyinit``
+- Set ``flake8`` to ``github`` instead of ``gitlab``
+
 7.5.6 (08/01/2023)
 ------------------
 - Avoid <1 values for correction in ``stock-monitor``

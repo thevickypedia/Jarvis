@@ -9,8 +9,7 @@ import yaml
 
 from jarvis.executors import offline
 from jarvis.modules.audio import speaker
-from jarvis.modules.logger import config
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 

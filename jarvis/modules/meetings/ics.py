@@ -11,7 +11,7 @@ import dateutil.tz
 from icalendar import Calendar
 from icalendar.prop import vDDDTypes, vText
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 
 
 class ICS:

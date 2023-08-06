@@ -16,7 +16,7 @@ from timezonefinder import TimezoneFinder
 
 from jarvis.executors import files, internet
 from jarvis.modules.audio import listener, speaker
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 

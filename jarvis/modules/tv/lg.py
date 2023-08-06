@@ -17,7 +17,7 @@ from pywebostv.controls import (ApplicationControl, AudioOutputSource,
 from jarvis.executors import files
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import TVError
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 

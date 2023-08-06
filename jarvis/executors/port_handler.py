@@ -6,7 +6,7 @@ import sys
 import warnings
 from typing import Union
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 

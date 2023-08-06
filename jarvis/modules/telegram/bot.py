@@ -19,12 +19,13 @@ from typing import NoReturn, Union
 import requests
 from pydantic import FilePath
 
-from jarvis.executors import commander, offline, others, word_match
+from jarvis.executors import (commander, offline, others, restrictions,
+                              word_match)
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import BotInUse, EgressErrors
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.exceptions import BotInUse, EgressErrors, InvalidArgument
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import audio_handler, file_handler
 from jarvis.modules.utils import support, util
@@ -522,6 +523,13 @@ class TelegramBot:
             else:
                 self.reply_to(payload=payload, response="No filename was received. "
                                                         "Please include only the filename after the keyword 'file'.")
+            return
+        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['restrictions']):
+            try:
+                response = restrictions.handle_restrictions(phrase=payload['text'])
+            except InvalidArgument as error:
+                response = error.__str__()
+            self.send_message(chat_id=payload['from']['id'], response=response)
             return
         # this feature for telegram bot relies on Jarvis API to function
         if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['secrets']) and \

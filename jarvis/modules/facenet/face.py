@@ -15,7 +15,7 @@ from cv2 import data as cv2_data
 from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 

@@ -478,6 +478,13 @@ Remind
    :members:
    :undoc-members:
 
+Restrictions
+============
+
+.. automodule:: jarvis.executors.restrictions
+   :members:
+   :undoc-members:
+
 Robinhood
 =========
 

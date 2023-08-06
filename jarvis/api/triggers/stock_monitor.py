@@ -240,7 +240,7 @@ if __name__ == '__main__':
     from jarvis.api.squire import stockmonitor_squire
     from jarvis.executors import crontab
     from jarvis.modules.logger import config
-    from jarvis.modules.logger.custom_logger import logger as main_logger
+    from jarvis.modules.logger import logger as main_logger
     from jarvis.modules.models import models
     from jarvis.modules.templates import templates
     from jarvis.modules.utils import util

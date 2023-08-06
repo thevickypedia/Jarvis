@@ -5,7 +5,7 @@ from threading import Thread
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.exceptions import TVError
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.tv import lg, roku
 from jarvis.modules.utils import shared, support, util

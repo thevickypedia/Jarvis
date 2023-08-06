@@ -20,7 +20,7 @@ import pynotification
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util

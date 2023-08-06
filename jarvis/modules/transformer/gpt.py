@@ -1,6 +1,5 @@
 import collections
 import difflib
-import os
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
@@ -8,13 +7,13 @@ from threading import Thread
 from typing import NoReturn, Union
 
 import openai
-import yaml
 from openai.error import AuthenticationError, OpenAIError
 from openai.openai_object import OpenAIObject
 
+from jarvis.executors import files
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import MissingEnvVars
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
@@ -25,16 +24,9 @@ def dump_history(request: str, response: str) -> NoReturn:
         request: Request from user.
         response: Response from GPT.
     """
-    data = []
-    if os.path.isfile(models.fileio.gpt_data):
-        try:
-            with open(models.fileio.gpt_data) as file:
-                data = yaml.load(stream=file, Loader=yaml.SafeLoader)
-        except yaml.YAMLError as error:
-            logger.error(error)
+    data = files.get_gpt_data()
     data.append({'request': request, 'response': response})
-    with open(models.fileio.gpt_data, 'w') as file:
-        yaml.dump(data=data, stream=file, indent=4, Dumper=yaml.SafeDumper)
+    files.put_gpt_data(data)
 
 
 def existing_response(request: str) -> Union[str, None]:
@@ -60,19 +52,11 @@ def existing_response(request: str) -> Union[str, None]:
         str:
         Returns the closest matching response stored in historical transactions.
     """
-    if not os.path.isfile(models.fileio.gpt_data):
-        return
     # exclude if numbers present in new request
     if any(word.isdigit() for word in request):
         logger.debug("request: '%s' contains numbers in it, so skipping existing search", request)
         return
-    try:
-        with open(models.fileio.gpt_data) as file:
-            data = yaml.load(stream=file, Loader=yaml.SafeLoader)
-    except yaml.YAMLError as error:
-        logger.error(error)
-        return
-    if not data:
+    if not (data := files.get_gpt_data()):
         logger.debug("GPT history is empty")
         return
 

@@ -9,7 +9,7 @@ from jarvis.executors import (conditions, controls, listener_controls, offline,
                               others, word_match)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 

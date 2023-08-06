@@ -14,8 +14,7 @@ from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.facenet import face
-from jarvis.modules.logger.config import multiprocessing_logger
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
@@ -126,7 +125,7 @@ def guard_disable(*args) -> NoReturn:
 def security_runner(offline: bool = True) -> NoReturn:
     """Enables microphone and camera to watch and listen for potential threats. Notifies if any."""
     if offline:
-        multiprocessing_logger(filename=os.path.join('logs', 'guardian_mode_%d-%m-%Y.log'))
+        config.multiprocessing_logger(filename=os.path.join('logs', 'guardian_mode_%d-%m-%Y.log'))
     notified, converted = None, None
     face_object = face.FaceNet()
     while True:

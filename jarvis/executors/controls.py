@@ -19,7 +19,7 @@ from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import StopSignal
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 

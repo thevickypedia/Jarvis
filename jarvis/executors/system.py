@@ -12,7 +12,7 @@ import psutil
 from jarvis.executors import controls, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support, util

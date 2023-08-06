@@ -25,7 +25,7 @@ from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared
 

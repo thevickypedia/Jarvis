@@ -6,7 +6,7 @@ from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import CoverNotOnline, NoCoversFound
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.myq import myq
 from jarvis.modules.utils import support

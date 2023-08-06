@@ -61,8 +61,9 @@
 <li class="toctree-l2"><a class="reference internal" href="README.html#smart-devices-optional">Smart Devices [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#automation-optional">Automation [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#background-tasks-optional">Background Tasks [Optional]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="README.html#simulation-optional">Simulation [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#restrictions-optional">Restrictions [Optional]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="README.html#custom-conditions-optional">Custom Conditions [Optional]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#simulation-optional">Simulation [Optional]</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#guide">Guide</a></li>
@@ -3113,6 +3114,59 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.</p>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_restrictions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_restrictions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_restrictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function level restrictions to restrict certain keywords via offline communicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of function names that has to be restricted.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_restrictions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrictions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_restrictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function level restrictions to restrict certain keywords via offline communicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>restrictions</strong> – A list of function names that has to be restricted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_gpt_data">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_gpt_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_gpt_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get history from Jarvis -&gt; ChatGPT conversation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dictionaries with request and response key-value pairs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_gpt_data">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_gpt_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_gpt_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores Jarvis -&gt; ChatGPT conversations in a history file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – List of dictionaries that have to be saved for future reference.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -4346,6 +4400,72 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Personalized icons for <a class="reference external" href="https://wiki.ubuntu.com/Artwork/BreatheIconSet/Icons">Linux OS</a></p></li>
 </ul>
 </div>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.restrictions">
+<span id="restrictions"></span><h1>Restrictions<a class="headerlink" href="#module-jarvis.executors.restrictions" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.restrictions.restricted">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.restrictions.</span></span><span class="sig-name descname"><span class="pre">restricted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.restrictions.restricted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if phrase matches the category that’s restricted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a boolean flag if the category (function name) is present in restricted functions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.restrictions.get_func">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.restrictions.</span></span><span class="sig-name descname"><span class="pre">get_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.restrictions.get_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract function name from the phrase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#jarvis.modules.exceptions.InvalidArgument" title="jarvis.modules.exceptions.InvalidArgument"><strong>InvalidArgument</strong></a> – </p></li>
+<li><p><strong>- If the phrase doesn't match any of the operations supported.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Function name matching the existing function map.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.restrictions.handle_restrictions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.restrictions.</span></span><span class="sig-name descname"><span class="pre">handle_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.restrictions.handle_restrictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles adding/removing restrictions for offline communicators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#jarvis.modules.exceptions.InvalidArgument" title="jarvis.modules.exceptions.InvalidArgument"><strong>InvalidArgument</strong></a> – </p></li>
+<li><p><strong>- If the phrase doesn't match any of the operations supported.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the response as a string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -7343,6 +7463,11 @@ last_value: the last value assigned or None</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.conditions">
 <span class="sig-name descname"><span class="pre">conditions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.conditions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.restrictions">
+<span class="sig-name descname"><span class="pre">restrictions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.restrictions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -10660,6 +10785,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.port_handler">Port Handler</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.processor">Processor</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.remind">Remind</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.restrictions">Restrictions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.simulator">Simulator</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.static_responses">StaticResponses</a></li>

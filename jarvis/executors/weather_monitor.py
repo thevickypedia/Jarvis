@@ -3,13 +3,12 @@ import string
 from datetime import datetime
 
 from jarvis.executors import communicator, weather
-from jarvis.modules.logger import config, custom_logger
+from jarvis.modules.logger import config, logger
 from jarvis.modules.models import models
 
 
 def monitor() -> None:
     """Weather monitoring system to trigger notifications for high, low weather and severe weather alert."""
-    logger = custom_logger.logger
     config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     condition, high, low, temp_f, alert = weather.weather(monitor=True)
     if not any((high >= models.env.weather_alert_max, low <= models.env.weather_alert_min, alert)):

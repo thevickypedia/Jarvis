@@ -14,7 +14,7 @@ from aiohttp import ClientSession
 from pymyq.garagedoor import MyQGaragedoor
 
 from jarvis.modules.exceptions import CoverNotOnline, NoCoversFound
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import util
 

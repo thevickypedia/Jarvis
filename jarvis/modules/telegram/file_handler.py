@@ -8,7 +8,7 @@
 import os
 from typing import Dict
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 

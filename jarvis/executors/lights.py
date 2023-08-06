@@ -12,7 +12,7 @@ from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.lights import preset_values
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 

@@ -10,7 +10,7 @@ import struct
 import time
 from typing import NoReturn
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.utils import support
 
 

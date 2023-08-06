@@ -12,7 +12,7 @@ from typing import Any, Callable, NoReturn, Union
 
 import inflect
 
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 
 
 def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False, exclude_exc=None) -> \

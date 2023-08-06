@@ -12,7 +12,7 @@ from pyttsx3.engine import Engine
 from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 

@@ -23,7 +23,7 @@ def rewrite_keywords() -> NoReturn:
     if os.path.isfile(models.fileio.keywords):
         with open(models.fileio.keywords) as dst_file:
             try:
-                data = ordered_load(stream=dst_file, Loader=yaml.SafeLoader) or {}
+                data = ordered_load(stream=dst_file, Loader=yaml.FullLoader) or {}
             except yaml.YAMLError as error:
                 warnings.warn(message=str(error))
                 data = None

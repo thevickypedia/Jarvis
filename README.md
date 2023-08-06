@@ -1,16 +1,16 @@
-<p align="center">
+<p align="center" style="text-align: center">
   <img src="https://vigneshrao.com/Jarvis/logo.png" width="371px" height="350px">
 </p>
 <h2 align="center">Fully Functional Voice Based Natural Language UI</h2>
 
-[![ForTheBadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-[![ForTheBadge built-with-swag](http://ForTheBadge.com/images/badges/built-with-swag.svg)](https://github.com/thevickypedia/Jarvis)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python)](https://python.org)
 
-![Python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)
+![Python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-orange)
+[![Pypi-downloads](https://img.shields.io/pypi/dm/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
 
 **Platform Supported**
 
-![Generic badge](https://img.shields.io/badge/Platform-Linux|MacOS|Windows-1f425f.svg)
+![Platform](https://img.shields.io/badge/Platform-Linux|MacOS|Windows-1f425f.svg)
 
 **Language Stats**
 
@@ -26,7 +26,6 @@
 [![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)
 [![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub code size](https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![LOC](https://img.shields.io/tokei/lines/github/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 
 [![GitHub Repo issues](https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
 [![GitHub Repo issues](https://img.shields.io/github/issues-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
@@ -49,6 +48,7 @@
 [![pages-build-deployment](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment)
 [![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml)
 
+[![PyPI version shields.io](https://img.shields.io/pypi/v/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
 [![Pypi-format](https://img.shields.io/pypi/format/jarvis-ironman)](https://pypi.org/project/jarvis-ironman/#files)
 [![Pypi-status](https://img.shields.io/pypi/status/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
 [![sourcerank](https://img.shields.io/librariesio/sourcerank/pypi/jarvis-ironman)](https://libraries.io/pypi/jarvis-ironman)
@@ -73,6 +73,9 @@
 
 ## Kick off
 
+> :bulb: Using a dedicated [virtual environment](https://docs.python.org/3/tutorial/venv.html) and an IDE like 
+> [PyCharm](https://www.jetbrains.com/pycharm/) is highly recommended.
+
 **Install**
 ```shell
 python -m pip install jarvis-ironman
@@ -88,7 +91,7 @@ if __name__ == '__main__':
 ```
 
 ## Prerequisites
-   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura***_
+   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura**_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
        - `Microphone` - **Required** to listen and respond.
@@ -416,7 +419,7 @@ at pre-defined times without any user interaction.
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-The YAML file should be a dictionary within a dictionary that looks like the below.
+The YAML file should contain a dictionary within a dictionary that looks like the below.
 
 **OPTIONAL:** The key, `day` can be a `list` of days, or a `str` of a specific day or simply a `str` saying `weekday` or
 `weekend` when the particular automation should be executed.
@@ -467,20 +470,27 @@ Jarvis supports both internal and external background tasks to be scheduled.
 ```
 </details>
 
-### Simulation [Optional]
-Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.
-> This feature requires a `simulation.yaml` file which should be stored within the `fileio` directory.
+### Restrictions [Optional]
+Jarvis can place function(s) level [restrictions](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/restrictions.py) for offline communicators.
+
+- This restriction can also be modified by offline communicators.
+- Once a restriction is placed, the matching commands will not be executed unless the restriction is removed explicitly.
+
+> This feature requires a `restrictions.yaml` file which should be stored within the `fileio` directory.
 
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-The YAML file should be a list of phrases within a dictionary that looks like the below.
+The YAML file should contain a list of function names that looks like the below.
 
 ```yaml
-meeting_event:
-- get me the events from my calendar
-- what meetings do I have today
+- car  # Blocks ALL car related operations via offline communication
+- garage  # Blocks ALL garage related operations via offline communication
 ```
+
+:warning: This is a direct mapping to the [functions](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py), 
+so invalid function names are not validated by Jarvis. This will make the restriction void.
+
 </details>
 
 ### Custom Conditions [Optional]
@@ -496,7 +506,7 @@ via both voice and offline communicators.
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary>
 
-The YAML file should be a dictionary within a dictionary that looks like the below.
+The YAML file should contain a dictionary within a dictionary that looks like the below.
 
 ```yaml
 lumos:  # custom keyword
@@ -512,6 +522,22 @@ fire up the chopper:  # custom phrase
 :warning: This is a direct mapping to the [functions](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/executors/functions.py), 
 so the input phrases are not validated by Jarvis. This will raise a `UserWarning` if invalid function name or phrase is entered in the mapping file.
 
+</details>
+
+### Simulation [Optional]
+Jarvis can execute tasks as a simulation to test the required functions and send an email with the results.
+> This feature requires a `simulation.yaml` file which should be stored within the `fileio` directory.
+
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
+
+The YAML file should contain a list of phrases within a dictionary that looks like the below.
+
+```yaml
+meeting_event:
+- get me the events from my calendar
+- what meetings do I have today
+```
 </details>
 
 ## Guide

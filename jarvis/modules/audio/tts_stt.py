@@ -17,7 +17,7 @@ from pydantic import FilePath
 from speech_recognition import AudioFile, Recognizer, UnknownValueError
 
 from jarvis.modules.audio import voices
-from jarvis.modules.logger.custom_logger import logger
+from jarvis.modules.logger import logger
 from jarvis.modules.utils import shared
 
 recognizer = Recognizer()
