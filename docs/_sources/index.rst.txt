@@ -76,60 +76,60 @@ API - Server
    :members:
    :undoc-members:
 
-Modals - Authenticator
+Models - Authenticator
 ======================
 
-.. automodule:: jarvis.api.modals.authenticator
+.. automodule:: jarvis.api.models.authenticator
    :members:
    :undoc-members:
 
-Modals - Models
+Models - Modals
 ===============
 
-.. autoclass:: jarvis.api.modals.models.OfflineCommunicatorModal(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.modals.OfflineCommunicatorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: jarvis.api.modals.models.StockMonitorModal(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.modals.StockMonitorModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: jarvis.api.modals.models.CameraIndexModal(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.modals.CameraIndexModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
 ====
 
-.. autoclass:: jarvis.api.modals.models.SpeechSynthesisModal(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.modals.SpeechSynthesisModal(pydantic.BaseModel)
    :members:
    :exclude-members:
 
-Modals - Settings
+Models - Settings
 =================
 
-.. autoclass:: jarvis.api.modals.settings.Robinhood(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.settings.Robinhood(pydantic.BaseModel)
    :members:
    :undoc-members:
 
 ====
 
-.. autoclass:: jarvis.api.modals.settings.Surveillance(pydantic.BaseConfig)
+.. autoclass:: jarvis.api.models.settings.Surveillance(pydantic.BaseConfig)
    :members:
    :undoc-members:
 
 ====
 
-.. autoclass:: jarvis.api.modals.settings.StockMonitor(pydantic.BaseModel)
+.. autoclass:: jarvis.api.models.settings.StockMonitor(pydantic.BaseModel)
    :members:
    :undoc-members:
 
 ====
 
-.. automodule:: jarvis.api.modals.settings.ConnectionManager
+.. automodule:: jarvis.api.models.settings.ConnectionManager
    :members:
    :undoc-members:
 

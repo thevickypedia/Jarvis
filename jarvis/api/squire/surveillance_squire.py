@@ -6,9 +6,9 @@ from typing import AsyncIterable, List, NoReturn, Tuple
 import cv2
 import numpy
 
-from jarvis.api.modals.settings import surveillance
+from jarvis.api.models import settings
 from jarvis.api.squire.logger import logger
-from jarvis.modules.camera.camera import Camera
+from jarvis.modules.camera import camera
 from jarvis.modules.exceptions import CameraError
 
 
@@ -63,38 +63,38 @@ def test_camera() -> NoReturn:
         CameraError:
         If unable to connect to the camera.
     """
-    camera_object = Camera()
+    camera_object = camera.Camera()
     available_cameras = camera_object.list_cameras()
 
     if not available_cameras:
         raise CameraError("No available cameras to monitor.")
 
-    if surveillance.camera_index is None \
-            or surveillance.camera_index == "" \
-            or not str(surveillance.camera_index).isdigit():  # Initial value is string while calls will be integer
-        logger.info("Camera index received: %s", surveillance.camera_index)
+    if settings.surveillance.camera_index is None \
+            or settings.surveillance.camera_index == "" \
+            or not str(settings.surveillance.camera_index).isdigit():  # Initial value is str but requests will be int
+        logger.info("Camera index received: %s", settings.surveillance.camera_index)
         logger.info("Available cameras: %s", available_cameras)
         raise CameraError(f"Available cameras:\n{camera_object.get_index()}")
 
-    surveillance.camera_index = int(surveillance.camera_index)
+    settings.surveillance.camera_index = int(settings.surveillance.camera_index)
 
-    if surveillance.camera_index >= len(available_cameras):
+    if settings.surveillance.camera_index >= len(available_cameras):
         logger.info("Available cameras: %s", available_cameras)
-        raise CameraError(f"Camera index [{surveillance.camera_index}] is out of range.\n\n"
+        raise CameraError(f"Camera index [{settings.surveillance.camera_index}] is out of range.\n\n"
                           f"Available cameras:\n{camera_object.get_index()}")
-    camera = cv2.VideoCapture(surveillance.camera_index)
-    error = CameraError(f"Unable to read the camera index [{surveillance.camera_index}] - "
-                        f"{available_cameras[surveillance.camera_index]}")
-    if camera is None or not camera.isOpened():
+    cam = cv2.VideoCapture(settings.surveillance.camera_index)
+    error = CameraError(f"Unable to read the camera index [{settings.surveillance.camera_index}] - "
+                        f"{available_cameras[settings.surveillance.camera_index]}")
+    if cam is None or not cam.isOpened():
         raise error
-    success, frame = camera.read()
+    success, frame = cam.read()
     if not success:
         raise error
-    surveillance.frame = frame.shape
-    if camera.isOpened():
-        camera.release()
-    logger.info("%s is ready to use.", available_cameras[surveillance.camera_index])
-    surveillance.available_cameras = available_cameras
+    settings.surveillance.frame = frame.shape
+    if cam.isOpened():
+        cam.release()
+    logger.info("%s is ready to use.", available_cameras[settings.surveillance.camera_index])
+    settings.surveillance.available_cameras = available_cameras
 
 
 def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoReturn:
@@ -105,14 +105,14 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoRe
         index: Index of the camera.
         available_cameras: List of available cameras.
     """
-    camera = cv2.VideoCapture(index)
+    cam = cv2.VideoCapture(index)
     logger.info("Capturing frames from %s", available_cameras[index])
     while True:
-        success, frame = camera.read()
+        success, frame = cam.read()
         if not success:
             logger.error("Failed to capture frames from [%d]: %s", index, available_cameras[index])
             logger.info("Releasing camera: %s", available_cameras[index])
-            camera.release()
+            cam.release()
             break
         frame = cv2.flip(src=frame, flipCode=1)  # mirrors the frame
         ret, buffer = cv2.imencode(ext='.jpg', img=frame)
@@ -131,7 +131,7 @@ def streamer() -> AsyncIterable[bytes]:
         - | When pushing large items onto a multiprocess queue, the items are essentially buffered, despite the
           | immediate return of the queue’s put function. This may increase the latency during live feed.
     """
-    queue = surveillance.queue_manager[surveillance.client_id]
+    queue = settings.surveillance.queue_manager[settings.surveillance.client_id]
     try:
         while queue:
             yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + bytearray(queue.get()) + b'\r\n'

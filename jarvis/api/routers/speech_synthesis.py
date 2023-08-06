@@ -7,8 +7,7 @@ import requests
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
-from jarvis.api.modals.models import SpeechSynthesisModal
+from jarvis.api.models import authenticator, modals
 from jarvis.api.squire.logger import logger
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import APIResponse, EgressErrors
@@ -18,7 +17,7 @@ from jarvis.modules.utils import support
 router = APIRouter()
 
 
-@router.get(path='/speech-synthesis-voices', dependencies=OFFLINE_PROTECTOR)
+@router.get(path='/speech-synthesis-voices', dependencies=authenticator.OFFLINE_PROTECTOR)
 async def speech_synthesis_voices():
     """Get all available voices in speech synthesis.
 
@@ -49,8 +48,8 @@ async def speech_synthesis_voices():
         raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
-@router.post(path='/speech-synthesis', response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
-async def speech_synthesis(input_data: SpeechSynthesisModal, raise_for_status: bool = True):
+@router.post(path='/speech-synthesis', response_class=FileResponse, dependencies=authenticator.OFFLINE_PROTECTOR)
+async def speech_synthesis(input_data: modals.SpeechSynthesisModal, raise_for_status: bool = True):
     """Process request to convert text to speech if docker container is running.
 
     Args:

@@ -30,7 +30,7 @@ from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
                       validator)
 
 from jarvis import indicators, scripts
-from jarvis.modules.crontab.expression import CronExpression
+from jarvis.modules.crontab import expression
 from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
                                        UnsupportedOS)
 from jarvis.modules.peripherals import channel_type, get_audio_devices
@@ -407,7 +407,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: PositiveInt = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
 
     # Background tasks
-    crontab: List[CronExpression] = Field(default=[], env='CRONTAB')
+    crontab: List[expression.CronExpression] = Field(default=[], env='CRONTAB')
     weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')
     weather_alert_min: Union[int, PositiveInt] = Field(default=36, env='WEATHER_ALERT_MIN')
     weather_alert_max: Union[int, PositiveInt] = Field(default=104, env='WEATHER_ALERT_MAX')

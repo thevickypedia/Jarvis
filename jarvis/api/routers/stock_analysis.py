@@ -7,7 +7,7 @@ import pandas
 from fastapi import APIRouter
 from webull import paper_webull, webull
 
-from jarvis.api.modals import settings
+from jarvis.api.models import settings
 from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
 

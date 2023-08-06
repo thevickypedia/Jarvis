@@ -2,7 +2,7 @@ from typing import List, NoReturn, Optional, Tuple, Union
 
 from pydantic import EmailStr
 
-from jarvis.api.modals.settings import stock_monitor
+from jarvis.api.models import settings
 from jarvis.api.squire.logger import logger
 from jarvis.modules.database import database
 from jarvis.modules.models import models
@@ -20,8 +20,8 @@ def cleanup_stock_userdata() -> NoReturn:
             cursor = stock_db.connection.cursor()
             cursor.execute("DELETE FROM stock")
             for record in cleaned:
-                cursor.execute(f"INSERT or REPLACE INTO stock {stock_monitor.user_info} "
-                               f"VALUES {stock_monitor.values};", record)
+                cursor.execute(f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
+                               f"VALUES {settings.stock_monitor.values};", record)
             stock_db.connection.commit()
 
 
@@ -33,8 +33,8 @@ def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[i
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        cursor.execute(f"INSERT or REPLACE INTO stock {stock_monitor.user_info} VALUES {stock_monitor.values};",
-                       entry)
+        cursor.execute(f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
+                       f"VALUES {settings.stock_monitor.values};", entry)
         stock_db.connection.commit()
 
 

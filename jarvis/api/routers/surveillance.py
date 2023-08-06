@@ -13,10 +13,7 @@ import jinja2
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 
-from jarvis.api.modals.authenticator import SURVEILLANCE_PROTECTOR
-from jarvis.api.modals.models import CameraIndexModal
-from jarvis.api.modals.settings import (ConnectionManager, stock_monitor,
-                                        surveillance)
+from jarvis.api.models import authenticator, modals, settings
 from jarvis.api.squire import surveillance_squire, timeout_otp
 from jarvis.api.squire.logger import logger
 from jarvis.modules.database import database
@@ -28,15 +25,15 @@ from jarvis.modules.utils import support, util
 router = APIRouter()
 db = database.Database(database=models.fileio.base_db)
 stock_db = database.Database(database=models.fileio.stock_db)
-stock_db.create_table(table_name="stock", columns=stock_monitor.user_info)
+stock_db.create_table(table_name="stock", columns=settings.stock_monitor.user_info)
 
 # Get websocket loaded
-ws_manager = ConnectionManager()
+ws_manager = settings.ConnectionManager()
 
 # Conditional endpoint: Condition matches without env vars during docs generation
 if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
-    @router.post(path="/surveillance-authenticate", dependencies=SURVEILLANCE_PROTECTOR)
-    async def authenticate_surveillance(cam: CameraIndexModal):
+    @router.post(path="/surveillance-authenticate", dependencies=authenticator.SURVEILLANCE_PROTECTOR)
+    async def authenticate_surveillance(cam: modals.CameraIndexModal):
         """Tests the given camera index, generates a token for the endpoint to authenticate.
 
         Args:
@@ -57,7 +54,7 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
             - Also stores the token in the Surveillance object which is verified in the /surveillance endpoint.
             - The token is nullified in the object as soon as it is verified, making it single use.
         """
-        surveillance.camera_index = cam.index
+        settings.surveillance.camera_index = cam.index
         try:
             surveillance_squire.test_camera()
         except CameraError as error:
@@ -70,9 +67,9 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
         if not auth_stat.ok:
             logger.error(auth_stat.json())
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
-        surveillance.token = util.keygen_uuid(length=16)
+        settings.surveillance.token = util.keygen_uuid(length=16)
         rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'surveillance' endpoint",
-                                                                             TOKEN=surveillance.token,
+                                                                             TOKEN=settings.surveillance.token,
                                                                              EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                         subject=f"Surveillance Token - {datetime.now().strftime('%c')}",
@@ -123,9 +120,12 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.phrase)
         # token might be present because its added as headers but surveillance.token will be cleared after one time auth
-        if surveillance.token and secrets.compare_digest(token, surveillance.token):
-            surveillance.client_id = int(''.join(str(time.time()).split('.')))  # include milliseconds to avoid dupes
-            rendered = jinja2.Template(templates.endpoint.surveillance).render(CLIENT_ID=surveillance.client_id)
+        if settings.surveillance.token and secrets.compare_digest(token, settings.surveillance.token):
+            # include milliseconds to avoid dupes
+            settings.surveillance.client_id = int(''.join(str(time.time()).split('.')))
+            rendered = jinja2.Template(templates.endpoint.surveillance).render(
+                CLIENT_ID=settings.surveillance.client_id
+            )
             content_type, _ = mimetypes.guess_type(rendered)
             return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
                                 content=rendered, media_type=content_type)
@@ -163,22 +163,22 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
             logger.warning('/video-feed was accessed directly.')
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.phrase)
-        if token != surveillance.token:
+        if token != settings.surveillance.token:
             raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
                               detail='Requires authentication since endpoint uses single-use token.')
-        surveillance.token = None
-        surveillance.queue_manager[surveillance.client_id] = Queue()
+        settings.surveillance.token = None
+        settings.surveillance.queue_manager[settings.surveillance.client_id] = Queue()
         process = Process(target=surveillance_squire.gen_frames,
-                          kwargs={"manager": surveillance.queue_manager[surveillance.client_id],
-                                  "index": surveillance.camera_index,
-                                  "available_cameras": surveillance.available_cameras})
+                          kwargs={"manager": settings.surveillance.queue_manager[settings.surveillance.client_id],
+                                  "index": settings.surveillance.camera_index,
+                                  "available_cameras": settings.surveillance.available_cameras})
         process.start()
         # Insert process IDs into the children table to kill it in case, Jarvis is stopped during an active session
         with db.connection:
             cursor = db.connection.cursor()
             cursor.execute("INSERT INTO children (surveillance) VALUES (?);", (process.pid,))
             db.connection.commit()
-        surveillance.processes[surveillance.client_id] = process
+        settings.surveillance.processes[settings.surveillance.client_id] = process
         return StreamingResponse(content=surveillance_squire.streamer(),
                                  media_type='multipart/x-mixed-replace; boundary=frame',
                                  status_code=HTTPStatus.PARTIAL_CONTENT.real)
@@ -214,25 +214,26 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
                 if data:
                     logger.info("Client [%d] sent %s", client_id, data)
                     if data == "Healthy":
-                        surveillance.session_manager[client_id] = time.time()
-                        timestamp = surveillance.session_manager[client_id] + models.env.surveillance_session_timeout
+                        settings.surveillance.session_manager[client_id] = time.time()
+                        timestamp = settings.surveillance.session_manager[client_id] + \
+                            models.env.surveillance_session_timeout
                         logger.info("Surveillance session will expire at %s",
                                     datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'))
                     if data == "IMG_ERROR":
                         logger.info("Sending error image frame to client.")
                         bytes_, tmp_file = surveillance_squire.generate_error_frame(
-                            dimension=surveillance.frame,
+                            dimension=settings.surveillance.frame,
                             text="Unable to get image frame from "
-                                 f"{surveillance.available_cameras[surveillance.camera_index]}")
+                                 f"{settings.surveillance.available_cameras[settings.surveillance.camera_index]}")
                         await websocket.send_bytes(data=bytes_)
                         Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': tmp_file},
                                daemon=True).start()
                         raise WebSocketDisconnect  # Raise error to release camera after a failed read
-                if surveillance.session_manager.get(client_id, time.time()) + \
+                if settings.surveillance.session_manager.get(client_id, time.time()) + \
                         models.env.surveillance_session_timeout <= time.time():
                     logger.info("Sending session timeout to client: %d", client_id)
                     bytes_, tmp_file = surveillance_squire.generate_error_frame(
-                        dimension=surveillance.frame,
+                        dimension=settings.surveillance.frame,
                         text="SESSION EXPIRED! Re-authenticate to continue live stream.")
                     await websocket.send_bytes(data=bytes_)
                     Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': tmp_file}, daemon=True).start()
@@ -241,9 +242,9 @@ if os.environ.get('pre_commit') or models.env.surveillance_endpoint_auth:
             ws_manager.disconnect(websocket)
             logger.info("Client [%d] disconnected.", client_id)
             if ws_manager.active_connections:
-                if process := surveillance.processes.get(int(client_id)):
+                if process := settings.surveillance.processes.get(int(client_id)):
                     support.stop_process(pid=process.pid)
             else:
                 logger.info("No active connections found.")
-                for client_id, process in surveillance.processes.items():
+                for client_id, process in settings.surveillance.processes.items():
                     support.stop_process(pid=process.pid)

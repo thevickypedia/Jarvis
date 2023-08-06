@@ -14,8 +14,8 @@ import pvporcupine
 import requests
 from pydantic import PositiveInt
 
-from jarvis.api.squire.scheduler import rh_cron_schedule, sm_cron_schedule
-from jarvis.modules.camera.camera import Camera
+from jarvis.api.squire import scheduler
+from jarvis.modules.camera import camera
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (CameraError, EgressErrors,
                                        InvalidEnvVars, MissingEnvVars,
@@ -179,8 +179,8 @@ def _global_validations() -> NoReturn:
 
     if env.author_mode:
         if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
-            env.crontab.append(rh_cron_schedule(extended=True))
-        env.crontab.append(sm_cron_schedule())
+            env.crontab.append(scheduler.rh_cron_schedule(extended=True))
+        env.crontab.append(scheduler.sm_cron_schedule())
 
     if env.limited:  # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
         settings.limited = True
@@ -200,7 +200,7 @@ def _global_validations() -> NoReturn:
         if env.camera_index is None:
             cameras = []
         else:
-            cameras = Camera().list_cameras()
+            cameras = camera.Camera().list_cameras()
     except CameraError:
         cameras = []
     if cameras:

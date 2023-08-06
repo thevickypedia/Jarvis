@@ -9,7 +9,7 @@ See Also:
 
 from typing import Callable, Dict, List, NoReturn, Union
 
-from jarvis.modules.car.connector import Connect
+from jarvis.modules.car import connector
 
 DEFAULT_CONTENT_TYPE = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8"
 
@@ -21,7 +21,7 @@ class Control:
 
     """
 
-    def __init__(self, vin: str, connection: Union[Connect, Callable]):
+    def __init__(self, vin: str, connection: Union[connector.Connect, Callable]):
         """Instantiates a super class with incoming data and existing connection.
 
         Args:

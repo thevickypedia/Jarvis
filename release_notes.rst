@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+7.5.8 (08/06/2023)
+------------------
+- Remove almost all ``function`` level imports
+- Rename ``modals`` and ``models`` for api functions
+- Add test case for ``main.py``
+
 7.5.7 (08/05/2023)
 ------------------
 - Place ``functional`` restrictions on offline commands

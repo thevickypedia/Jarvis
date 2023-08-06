@@ -717,11 +717,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.api.modals.authenticator">
-<span id="modals-authenticator"></span><h1>Modals - Authenticator<a class="headerlink" href="#module-jarvis.api.modals.authenticator" title="Permalink to this heading">¶</a></h1>
+<section id="module-jarvis.api.models.authenticator">
+<span id="models-authenticator"></span><h1>Models - Authenticator<a class="headerlink" href="#module-jarvis.api.models.authenticator" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.modals.authenticator.offline_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.authenticator.</span></span><span class="sig-name descname"><span class="pre">offline_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.modals.authenticator.offline_has_access" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.authenticator.offline_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.authenticator.</span></span><span class="sig-name descname"><span class="pre">offline_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.authenticator.offline_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -737,8 +737,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.modals.authenticator.robinhood_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.modals.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.authenticator.robinhood_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.authenticator.</span></span><span class="sig-name descname"><span class="pre">robinhood_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.authenticator.robinhood_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -754,8 +754,8 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.modals.authenticator.surveillance_has_access">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.authenticator.</span></span><span class="sig-name descname"><span class="pre">surveillance_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.modals.authenticator.surveillance_has_access" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.authenticator.surveillance_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.authenticator.</span></span><span class="sig-name descname"><span class="pre">surveillance_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.authenticator.surveillance_has_access" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates the token if mentioned as a dependency.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -771,11 +771,11 @@ last_value: the last value assigned or None</p>
 </dd></dl>
 
 </section>
-<section id="modals-models">
-<h1>Modals - Models<a class="headerlink" href="#modals-models" title="Permalink to this heading">¶</a></h1>
+<section id="models-modals">
+<h1>Models - Modals<a class="headerlink" href="#models-modals" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.OfflineCommunicatorModal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.models.</span></span><span class="sig-name descname"><span class="pre">OfflineCommunicatorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.models.OfflineCommunicatorModal" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.modals.</span></span><span class="sig-name descname"><span class="pre">OfflineCommunicatorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for <code class="docutils literal notranslate"><span class="pre">OfflineCommunicatorModal</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OfflineCommunicatorModal</span>
 </pre></div>
@@ -783,31 +783,31 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.OfflineCommunicatorModal.command">
-<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.modals.models.OfflineCommunicatorModal.command" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal.command">
+<span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.command" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.OfflineCommunicatorModal.native_audio">
-<span class="sig-name descname"><span class="pre">native_audio</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.OfflineCommunicatorModal.native_audio" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal.native_audio">
+<span class="sig-name descname"><span class="pre">native_audio</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.native_audio" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.OfflineCommunicatorModal.speech_timeout">
-<span class="sig-name descname"><span class="pre">speech_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.OfflineCommunicatorModal.speech_timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal.speech_timeout">
+<span class="sig-name descname"><span class="pre">speech_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.speech_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.OfflineCommunicatorModal._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.models.OfflineCommunicatorModal._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.models.</span></span><span class="sig-name descname"><span class="pre">StockMonitorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.modals.</span></span><span class="sig-name descname"><span class="pre">StockMonitorModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for <code class="docutils literal notranslate"><span class="pre">StockMonitorModal</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitorModal</span>
 </pre></div>
@@ -815,36 +815,36 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal.email">
-<span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal.email" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.email">
+<span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.email" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal.token">
-<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal.token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal.request">
-<span class="sig-name descname"><span class="pre">request</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal.request" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.request">
+<span class="sig-name descname"><span class="pre">request</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.request" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal.plaintext">
-<span class="sig-name descname"><span class="pre">plaintext</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal.plaintext" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.plaintext">
+<span class="sig-name descname"><span class="pre">plaintext</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.plaintext" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.StockMonitorModal._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.models.StockMonitorModal._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.CameraIndexModal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.models.</span></span><span class="sig-name descname"><span class="pre">CameraIndexModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.models.CameraIndexModal" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.CameraIndexModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.modals.</span></span><span class="sig-name descname"><span class="pre">CameraIndexModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.modals.CameraIndexModal" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for <code class="docutils literal notranslate"><span class="pre">CameraIndexModal</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CameraIndexModal</span>
 </pre></div>
@@ -852,21 +852,21 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.CameraIndexModal.index">
-<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.CameraIndexModal.index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.CameraIndexModal.index">
+<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.CameraIndexModal.index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.CameraIndexModal._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.models.CameraIndexModal._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.CameraIndexModal._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.modals.CameraIndexModal._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.models.</span></span><span class="sig-name descname"><span class="pre">SpeechSynthesisModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.modals.</span></span><span class="sig-name descname"><span class="pre">SpeechSynthesisModal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal" title="Permalink to this definition">¶</a></dt>
 <dd><p>BaseModel that handles input data for <code class="docutils literal notranslate"><span class="pre">SpeechSynthesisModal</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesisModal</span>
 </pre></div>
@@ -874,38 +874,38 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal.text">
-<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal.text" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal.timeout" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal.quality">
-<span class="sig-name descname"><span class="pre">quality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal.quality" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.quality">
+<span class="sig-name descname"><span class="pre">quality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.quality" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal.voice">
-<span class="sig-name descname"><span class="pre">voice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal.voice" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.voice">
+<span class="sig-name descname"><span class="pre">voice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.voice" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.models.SpeechSynthesisModal._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.models.SpeechSynthesisModal._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
-<section id="modals-settings">
-<h1>Modals - Settings<a class="headerlink" href="#modals-settings" title="Permalink to this heading">¶</a></h1>
+<section id="models-settings">
+<h1>Models - Settings<a class="headerlink" href="#models-settings" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Robinhood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.settings.</span></span><span class="sig-name descname"><span class="pre">Robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.settings.Robinhood" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Robinhood">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">Robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.settings.Robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Robinhood</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Robinhood</span>
 </pre></div>
@@ -913,76 +913,76 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Robinhood.token">
-<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Robinhood.token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Robinhood.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><a class="headerlink" href="#jarvis.api.models.settings.Robinhood.token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Robinhood._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Robinhood._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Robinhood._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.settings.Robinhood._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.settings.</span></span><span class="sig-name descname"><span class="pre">Surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">Surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseConfig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.settings.Surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Surveillance</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Surveillance</span>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.token">
-<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.public_url">
-<span class="sig-name descname"><span class="pre">public_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.public_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.public_url">
+<span class="sig-name descname"><span class="pre">public_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.public_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.camera_index">
-<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.camera_index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.camera_index">
+<span class="sig-name descname"><span class="pre">camera_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.camera_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.client_id">
-<span class="sig-name descname"><span class="pre">client_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.client_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.client_id">
+<span class="sig-name descname"><span class="pre">client_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.client_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.available_cameras">
-<span class="sig-name descname"><span class="pre">available_cameras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.available_cameras" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.available_cameras">
+<span class="sig-name descname"><span class="pre">available_cameras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.available_cameras" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.processes">
-<span class="sig-name descname"><span class="pre">processes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.processes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.processes">
+<span class="sig-name descname"><span class="pre">processes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.processes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.queue_manager">
-<span class="sig-name descname"><span class="pre">queue_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.queue_manager" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.queue_manager">
+<span class="sig-name descname"><span class="pre">queue_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Queue</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.queue_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.session_manager">
-<span class="sig-name descname"><span class="pre">session_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.session_manager" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.session_manager">
+<span class="sig-name descname"><span class="pre">session_manager</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.session_manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.Surveillance.frame">
-<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#jarvis.api.modals.settings.Surveillance.frame" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Surveillance.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#jarvis.api.models.settings.Surveillance.frame" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.modals.settings.</span></span><span class="sig-name descname"><span class="pre">StockMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">StockMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitor</span></code> object to handle members across modules.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitor</span>
 </pre></div>
@@ -990,24 +990,24 @@ last_value: the last value assigned or None</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor.user_info">
-<span class="sig-name descname"><span class="pre">user_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor.user_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor.user_info">
+<span class="sig-name descname"><span class="pre">user_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor.user_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor.values">
-<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor.values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor.values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.modals.settings.StockMonitor._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.modals.settings.StockMonitor._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.api.modals.settings.ConnectionManager"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
+<span class="target" id="module-jarvis.api.models.settings.ConnectionManager"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ConnectionManager</span>
 </pre></div>
 </div>
@@ -1191,7 +1191,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.offline.process_ok_response">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">process_ok_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.OfflineCommunicatorModal" title="jarvis.api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.offline.process_ok_response" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">process_ok_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.OfflineCommunicatorModal" title="jarvis.api.models.modals.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FileResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.offline.process_ok_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes responses for 200 messages. Response is framed as synthesized or native based on input data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1211,7 +1211,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.offline.offline_communicator_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.OfflineCommunicatorModal" title="jarvis.api.modals.models.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.offline.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.OfflineCommunicatorModal" title="jarvis.api.models.modals.OfflineCommunicatorModal"><span class="pre">OfflineCommunicatorModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.offline.offline_communicator_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Offline Communicator API endpoint for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1286,7 +1286,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.speech_synthesis.speech_synthesis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.SpeechSynthesisModal" title="jarvis.api.modals.models.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.speech_synthesis.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.SpeechSynthesisModal" title="jarvis.api.models.modals.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.speech_synthesis.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process request to convert text to speech if docker container is running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1344,7 +1344,7 @@ last_value: the last value assigned or None</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stock_monitor.stock_monitor_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.StockMonitorModal" title="jarvis.api.modals.models.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_otp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_monitor.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stock_monitor.</span></span><span class="sig-name descname"><span class="pre">stock_monitor_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.StockMonitorModal" title="jarvis.api.models.modals.StockMonitorModal"><span class="pre">StockMonitorModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">email_otp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stock_monitor.stock_monitor_api" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://vigneshrao.com/stock-monitor">Stock monitor api endpoint</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1459,7 +1459,7 @@ last_value: the last value assigned or None</p>
 <span id="routers-surveillance"></span><h1>Routers - Surveillance<a class="headerlink" href="#module-jarvis.api.routers.surveillance" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.surveillance.authenticate_surveillance">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.modals.models.CameraIndexModal" title="jarvis.api.modals.models.CameraIndexModal"><span class="pre">CameraIndexModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.surveillance.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.surveillance.</span></span><span class="sig-name descname"><span class="pre">authenticate_surveillance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cam</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.CameraIndexModal" title="jarvis.api.models.modals.CameraIndexModal"><span class="pre">CameraIndexModal</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.surveillance.authenticate_surveillance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the given camera index, generates a token for the endpoint to authenticate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -10732,9 +10732,9 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis-api">———-Jarvis API———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.fast">API - Application</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.server">API - Server</a></li>
-<li><a class="reference internal" href="#module-jarvis.api.modals.authenticator">Modals - Authenticator</a></li>
-<li><a class="reference internal" href="#modals-models">Modals - Models</a></li>
-<li><a class="reference internal" href="#modals-settings">Modals - Settings</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.models.authenticator">Models - Authenticator</a></li>
+<li><a class="reference internal" href="#models-modals">Models - Modals</a></li>
+<li><a class="reference internal" href="#models-settings">Models - Settings</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>

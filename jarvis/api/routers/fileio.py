@@ -4,7 +4,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, UploadFile
 from fastapi.responses import FileResponse
 
-from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
+from jarvis.api.models import authenticator
 from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
@@ -12,7 +12,7 @@ from jarvis.modules.models import models
 router = APIRouter()
 
 
-@router.get(path="/list-files", dependencies=OFFLINE_PROTECTOR)
+@router.get(path="/list-files", dependencies=authenticator.OFFLINE_PROTECTOR)
 async def list_files():
     """Get all YAML files from fileio and all log files from logs directory.
 
@@ -25,7 +25,7 @@ async def list_files():
             **{"fileio": [f for f in os.listdir(models.fileio.root) if f.endswith('.yaml')]}}
 
 
-@router.get(path="/get-file", response_class=FileResponse, dependencies=OFFLINE_PROTECTOR)
+@router.get(path="/get-file", response_class=FileResponse, dependencies=authenticator.OFFLINE_PROTECTOR)
 async def get_file(filename: str):
     """Download a particular YAML file from fileio or log file from logs directory.
 
@@ -55,7 +55,7 @@ async def get_file(filename: str):
     return FileResponse(status_code=HTTPStatus.OK.real, path=target_file, media_type="text/yaml", filename=filename)
 
 
-@router.post(path="/put-file", dependencies=OFFLINE_PROTECTOR)
+@router.post(path="/put-file", dependencies=authenticator.OFFLINE_PROTECTOR)
 async def put_file(file: UploadFile):
     """Upload a particular YAML file to the fileio directory.
 

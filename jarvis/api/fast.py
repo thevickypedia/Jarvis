@@ -14,8 +14,7 @@ from jarvis.modules.models import models
 app = FastAPI(
     title="Jarvis API",
     description="Acts as a gateway to communicate with **Jarvis**, and an entry point for the natural language UI.\n\n"
-                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)\n\n"
-                "**Interactive page:** [https://jarvis.vigneshrao.com/docs](https://jarvis.vigneshrao.com/docs)",
+                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version=version
 )
 

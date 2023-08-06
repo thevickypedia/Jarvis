@@ -10,8 +10,7 @@ import jinja2
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
-from jarvis.api.modals.authenticator import ROBINHOOD_PROTECTOR
-from jarvis.api.modals.settings import robinhood
+from jarvis.api.models import authenticator, settings
 from jarvis.api.squire import timeout_otp
 from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
@@ -24,7 +23,7 @@ router = APIRouter()
 # Conditional endpoint: Condition matches without env vars during docs generation
 if os.environ.get('pre_commit') or all([models.env.robinhood_user, models.env.robinhood_pass,
                                         models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
-    @router.post(path="/robinhood-authenticate", dependencies=ROBINHOOD_PROTECTOR)
+    @router.post(path="/robinhood-authenticate", dependencies=authenticator.ROBINHOOD_PROTECTOR)
     async def authenticate_robinhood():
         """Authenticates the request and generates single use token.
 
@@ -47,9 +46,9 @@ if os.environ.get('pre_commit') or all([models.env.robinhood_user, models.env.ro
         auth_stat = mail_obj.authenticate
         if not auth_stat.ok:
             raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
-        robinhood.token = util.keygen_uuid(length=16)
+        settings.robinhood.token = util.keygen_uuid(length=16)
         rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'robinhood' endpoint",
-                                                                             TOKEN=robinhood.token,
+                                                                             TOKEN=settings.robinhood.token,
                                                                              EMAIL=models.env.recipient)
         mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                         subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
@@ -104,8 +103,8 @@ if os.environ.get('pre_commit') or all([models.env.robinhood_user, models.env.ro
             raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
                               detail=HTTPStatus.UNAUTHORIZED.phrase)
         # token might be present because its added as headers but robinhood.token will be cleared after one time auth
-        if robinhood.token and secrets.compare_digest(token, robinhood.token):
-            robinhood.token = None
+        if settings.robinhood.token and secrets.compare_digest(token, settings.robinhood.token):
+            settings.robinhood.token = None
             if not os.path.isfile(models.fileio.robinhood):
                 raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
             with open(models.fileio.robinhood) as static_file:

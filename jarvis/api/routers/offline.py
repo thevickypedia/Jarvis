@@ -9,9 +9,7 @@ from typing import NoReturn, Union
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse
 
-from jarvis.api.modals.authenticator import OFFLINE_PROTECTOR
-from jarvis.api.modals.models import (OfflineCommunicatorModal,
-                                      SpeechSynthesisModal)
+from jarvis.api.models import authenticator, modals
 from jarvis.api.routers import speech_synthesis
 from jarvis.api.squire.logger import logger
 from jarvis.executors import (commander, offline, others, restrictions,
@@ -35,7 +33,7 @@ def kill_power() -> NoReturn:
         cursor.connection.commit()
 
 
-async def process_ok_response(response: str, input_data: OfflineCommunicatorModal) -> Union[bytes, FileResponse]:
+async def process_ok_response(response: str, input_data: modals.OfflineCommunicatorModal) -> Union[bytes, FileResponse]:
     """Processes responses for 200 messages. Response is framed as synthesized or native based on input data.
 
     Args:
@@ -48,7 +46,7 @@ async def process_ok_response(response: str, input_data: OfflineCommunicatorModa
     """
     if input_data.speech_timeout:
         logger.info("Storing response as %s", models.fileio.speech_synthesis_wav)
-        if binary := await speech_synthesis.speech_synthesis(input_data=SpeechSynthesisModal(
+        if binary := await speech_synthesis.speech_synthesis(input_data=modals.SpeechSynthesisModal(
                 text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
         ), raise_for_status=False):
             return binary
@@ -65,8 +63,8 @@ async def process_ok_response(response: str, input_data: OfflineCommunicatorModa
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-@router.post(path="/offline-communicator", dependencies=OFFLINE_PROTECTOR)
-async def offline_communicator_api(request: Request, input_data: OfflineCommunicatorModal):
+@router.post(path="/offline-communicator", dependencies=authenticator.OFFLINE_PROTECTOR)
+async def offline_communicator_api(request: Request, input_data: modals.OfflineCommunicatorModal):
     """Offline Communicator API endpoint for Jarvis.
 
     Args:

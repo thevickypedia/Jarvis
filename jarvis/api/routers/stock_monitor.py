@@ -12,8 +12,7 @@ from fastapi import APIRouter, Header, Request
 from pydantic import EmailStr
 from webull import webull
 
-from jarvis.api.modals.models import StockMonitorModal
-from jarvis.api.modals.settings import stock_monitor, stock_monitor_helper
+from jarvis.api.models import modals, settings
 from jarvis.api.squire import stockmonitor_squire, timeout_otp
 from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
@@ -39,10 +38,10 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
     """
     mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     logger.info("Sending stock monitor token as OTP")
-    stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
+    settings.stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.one_time_passcode).render(
         TIMEOUT=support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute"),
-        TOKEN=stock_monitor_helper.otp_sent[email_address], EMAIL=email_address,
+        TOKEN=settings.stock_monitor_helper.otp_sent[email_address], EMAIL=email_address,
         ENDPOINT="https://vigneshrao.com/stock-monitor"
     )
     mail_stat = mail_obj.send_email(recipient=email_address, sender='Jarvis API',
@@ -61,7 +60,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
 
 
 @router.post(path="/stock-monitor")
-async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
+async def stock_monitor_api(request: Request, input_data: modals.StockMonitorModal,
                             email_otp: Optional[str] = Header(None), apikey: Optional[str] = Header(None)):
     """`Stock monitor api endpoint <https://vigneshrao.com/stock-monitor>`__.
 
@@ -118,8 +117,8 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
         logger.info("%s sent an invalid API key", input_data.email)
         raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
     else:  # If apikey auth fails or unsupported
-        sent_dict = stock_monitor_helper.otp_sent
-        recd_dict = stock_monitor_helper.otp_recd
+        sent_dict = settings.stock_monitor_helper.otp_sent
+        recd_dict = settings.stock_monitor_helper.otp_recd
         email_otp = email_otp or request.headers.get('email-otp')  # variable will be _ but headers should always be `-`
         if email_otp:
             recd_dict[input_data.email] = email_otp
@@ -142,13 +141,15 @@ async def stock_monitor_api(request: Request, input_data: StockMonitorModal,
             logger.info(db_entry)
             if input_data.plaintext:
                 raise APIResponse(status_code=HTTPStatus.OK.real,
-                                  detail=[dict(zip(stock_monitor.user_info, each_entry)) for each_entry in db_entry])
+                                  detail=[dict(zip(settings.stock_monitor.user_info, each_entry))
+                                          for each_entry in db_entry])
             # Format as an HTML table to serve in https://vigneshrao.com/stock-monitor
             # This is a mess, yet required because JavaScript can't handle dataframes and
             # pandas to html can't include custom buttons
             html_data = """<table border="1" class="dataframe" id="dataframe"><tbody><tr><td><b>Selector</b></td>"""
             html_data += "<td><b>" + "</b></td><td><b>".join((string.capwords(p)
-                                                              for p in stock_monitor.user_info)) + "</b></td></tr>"
+                                                              for p in settings.stock_monitor.user_info)) + \
+                         "</b></td></tr>"
             rows = ""
             for ind, each_entry in enumerate(db_entry):
                 # give same name to all the radio buttons to enable single select
