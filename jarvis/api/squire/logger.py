@@ -24,11 +24,11 @@ config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
 
 
 # Creates log files
-if not os.path.isfile(config.APIConfig().ACCESS_LOG_FILENAME):
-    pathlib.Path(config.APIConfig().ACCESS_LOG_FILENAME).touch()
+if not os.path.isfile(api_config.ACCESS_LOG_FILENAME):
+    pathlib.Path(api_config.ACCESS_LOG_FILENAME).touch()
 
-if not os.path.isfile(config.APIConfig().DEFAULT_LOG_FILENAME):
-    pathlib.Path(config.APIConfig().DEFAULT_LOG_FILENAME).touch()
+if not os.path.isfile(api_config.DEFAULT_LOG_FILENAME):
+    pathlib.Path(api_config.DEFAULT_LOG_FILENAME).touch()
 
 # Configure logging
 importlib.reload(module=logging)

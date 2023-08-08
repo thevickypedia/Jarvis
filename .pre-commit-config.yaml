@@ -25,7 +25,7 @@ repos:
       -
         id: pytest
         name: pytest
-        entry: cd tests pytest
+        entry: bash -c 'cd tests && pytest && rm -rf logs fileio .pytest_cache && cd ..'
         language: system
         pass_filenames: false
         always_run: true

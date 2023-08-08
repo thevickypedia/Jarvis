@@ -10700,6 +10700,247 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 </section>
+<section id="test-cases">
+<h1>———-Test Cases———-<a class="headerlink" href="#test-cases" title="Permalink to this heading">¶</a></h1>
+</section>
+<section id="module-tests.test_api">
+<span id="testapi"></span><h1>TestAPI<a class="headerlink" href="#module-tests.test_api" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_api.server">
+<span class="sig-prename descclassname"><span class="pre">tests.test_api.</span></span><span class="sig-name descname"><span class="pre">server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_api.server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run pytest on APIServer which runs in a thread.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.test_listener">
+<span id="testlistener"></span><h1>TestListener<a class="headerlink" href="#module-tests.test_listener" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_listener.TestListener">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_listener.</span></span><span class="sig-name descname"><span class="pre">TestListener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_listener.TestListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>TestCase object for testing listener module.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestListener</span>
+</pre></div>
+</div>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_listener.TestListener.test_listen">
+<span class="sig-name descname"><span class="pre">test_listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_support</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_playsound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_recognizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_microphone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_listener.TestListener.test_listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the listen function.</p>
+<p>Mock the return values and set up necessary mocks to simulate the behavior of the listen function.
+Ensure that the listen function is called with the correct arguments.
+Ensure that the playsound function is not called when sound=False is passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_support</strong> – Mocked support module.</p></li>
+<li><p><strong>mock_playsound</strong> – Mocked playsound function.</p></li>
+<li><p><strong>mock_recognizer</strong> – Mocked recognizer module.</p></li>
+<li><p><strong>mock_microphone</strong> – Mocked microphone module.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.test_main">
+<span id="testmain"></span><h1>TestMain<a class="headerlink" href="#module-tests.test_main" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_main.TestActivator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_main.</span></span><span class="sig-name descname"><span class="pre">TestActivator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_main.TestActivator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test cases for the Activator class.</p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_main.TestActivator.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_main.TestActivator.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the Activator instance for testing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_main.TestActivator.test_init_activator">
+<span class="sig-name descname"><span class="pre">test_init_activator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_audio_open</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_pvporcupine_create</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_main.TestActivator.test_init_activator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether the Activator is initialized correctly.</p>
+<p>Mock the return values of the create function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_audio_open</strong> – Patched audio_engine.open from jarvis.main.py.</p></li>
+<li><p><strong>mock_pvporcupine_create</strong> – Patched pvporcupine.create from jarvis.main.py.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_main.TestActivator.test_executor">
+<span class="sig-name descname"><span class="pre">test_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_audio_close</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_speak</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_initiator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_listen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_main.TestActivator.test_executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the executor method of Activator.</p>
+<p>Mock return values of the listen function and set up necessary mocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_audio_close</strong> – Patched audio_engine.close from jarvis.main.py.</p></li>
+<li><p><strong>mock_speak</strong> – Patched <code class="docutils literal notranslate"><span class="pre">speaker.speak</span></code> from jarvis.modules.audio.</p></li>
+<li><p><strong>mock_initiator</strong> – Patched <code class="docutils literal notranslate"><span class="pre">commander.initiator</span></code> from jarvis.executors.</p></li>
+<li><p><strong>mock_listen</strong> – Patched <code class="docutils literal notranslate"><span class="pre">listener.listen</span></code> from jarvis.modules.audio.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.test_speaker">
+<span id="testspeaker"></span><h1>TestSpeaker<a class="headerlink" href="#module-tests.test_speaker" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_speaker.</span></span><span class="sig-name descname"><span class="pre">TestSpeak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_speaker.TestSpeak" title="Permalink to this definition">¶</a></dt>
+<dd><p>TestCase object for testing the speaker module.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestSpeak</span>
+</pre></div>
+</div>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak.test_speech_synthesis_usage">
+<span class="sig-name descname"><span class="pre">test_speech_synthesis_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_playsound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_speech_synthesizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speaker.TestSpeak.test_speech_synthesis_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test speech synthesis usage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_playsound</strong> – Mock object for playsound module.</p></li>
+<li><p><strong>mock_speech_synthesizer</strong> – Mock object for speaker.speech_synthesizer function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak.test_audio_driver_usage">
+<span class="sig-name descname"><span class="pre">test_audio_driver_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_playsound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_speaker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_speech_synthesizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speaker.TestSpeak.test_audio_driver_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test audio driver usage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_playsound</strong> – Mock object for playsound module.</p></li>
+<li><p><strong>mock_speaker</strong> – Mock object for <code class="docutils literal notranslate"><span class="pre">speaker.speak</span></code> function.</p></li>
+<li><p><strong>mock_speech_synthesizer</strong> – Mock object for speaker.speech_synthesizer function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak.test_no_text_input">
+<span class="sig-name descname"><span class="pre">test_no_text_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_write_screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speaker.TestSpeak.test_no_text_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test speak function with no text input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_write_screen</strong> – Mock object for support.write_screen function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak.test_text_input_and_run">
+<span class="sig-name descname"><span class="pre">test_text_input_and_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_write_screen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speaker.TestSpeak.test_text_input_and_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test speak function with text input and run flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_write_screen</strong> – Mock object for support.write_screen function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speaker.TestSpeak.test_offline_mode">
+<span class="sig-name descname"><span class="pre">test_offline_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_playsound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mock_speech_synthesizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speaker.TestSpeak.test_offline_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test speak function in offline mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mock_playsound</strong> – Mock object for playsound module.</p></li>
+<li><p><strong>mock_speech_synthesizer</strong> – Mock object for speaker.speech_synthesizer function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.test_speech_synthesis">
+<span id="testspeechsynthesis"></span><h1>TestSpeechSynthesis<a class="headerlink" href="#module-tests.test_speech_synthesis" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_speech_synthesis.TestSpeechSynthesizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">TestSpeechSynthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_speech_synthesis.TestSpeechSynthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>TestSpeechSynthesizer object for testing speech synthesis module.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TestSpeechSynthesizer</span>
+</pre></div>
+</div>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speech_synthesis.TestSpeechSynthesizer.test_successful_synthesis">
+<span class="sig-name descname"><span class="pre">test_successful_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speech_synthesis.TestSpeechSynthesizer.test_successful_synthesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test successful speech synthesis.</p>
+<p>This method tests the behavior of the speech_synthesizer function when a successful
+response is mocked from the post request call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_post</strong> – Mock of the <code class="docutils literal notranslate"><span class="pre">requests.post</span></code> function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speech_synthesis.TestSpeechSynthesizer.test_unsuccessful_synthesis">
+<span class="sig-name descname"><span class="pre">test_unsuccessful_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speech_synthesis.TestSpeechSynthesizer.test_unsuccessful_synthesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test unsuccessful speech synthesis.</p>
+<p>This method tests the behavior of the speech_synthesizer function when an unsuccessful
+response is mocked from the post request call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_post</strong> – Mock of the <code class="docutils literal notranslate"><span class="pre">requests.post</span></code> function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speech_synthesis.TestSpeechSynthesizer.test_unicode_error_handling">
+<span class="sig-name descname"><span class="pre">test_unicode_error_handling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speech_synthesis.TestSpeechSynthesizer.test_unicode_error_handling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test UnicodeError handling in speech synthesis.</p>
+<p>This method tests the handling of UnicodeError within the speech_synthesizer function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_post</strong> – Mock of the <code class="docutils literal notranslate"><span class="pre">requests.post</span></code> function with side effect.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_speech_synthesis.TestSpeechSynthesizer.test_egress_error_handling">
+<span class="sig-name descname"><span class="pre">test_egress_error_handling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mock_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MagicMock</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#tests.test_speech_synthesis.TestSpeechSynthesizer.test_egress_error_handling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test EgressErrors handling in speech synthesis.</p>
+<p>This method tests the handling of EgressErrors within the speech_synthesizer function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mock_post</strong> – Mock of the <code class="docutils literal notranslate"><span class="pre">requests.post</span></code> function with side effect.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
@@ -10828,6 +11069,12 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.transformer.gpt">Transformer</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.tv.lg">TV Connector</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
+<li><a class="reference internal" href="#test-cases">———-Test Cases———-</a></li>
+<li><a class="reference internal" href="#module-tests.test_api">TestAPI</a></li>
+<li><a class="reference internal" href="#module-tests.test_listener">TestListener</a></li>
+<li><a class="reference internal" href="#module-tests.test_main">TestMain</a></li>
+<li><a class="reference internal" href="#module-tests.test_speaker">TestSpeaker</a></li>
+<li><a class="reference internal" href="#module-tests.test_speech_synthesis">TestSpeechSynthesis</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 

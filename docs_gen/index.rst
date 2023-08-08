@@ -914,6 +914,44 @@ WakeOnLAN
    :members:
    :undoc-members:
 
+----------Test Cases----------
+==============================
+
+TestAPI
+=======
+
+.. automodule:: tests.test_api
+   :members:
+   :undoc-members:
+
+TestListener
+============
+
+.. automodule:: tests.test_listener
+   :members:
+   :undoc-members:
+
+TestMain
+========
+
+.. automodule:: tests.test_main
+   :members:
+   :undoc-members:
+
+TestSpeaker
+===========
+
+.. automodule:: tests.test_speaker
+   :members:
+   :undoc-members:
+
+TestSpeechSynthesis
+===================
+
+.. automodule:: tests.test_speech_synthesis
+   :members:
+   :undoc-members:
+
 Indices and tables
 ==================
 

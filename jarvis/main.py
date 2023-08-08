@@ -19,9 +19,6 @@ from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
 
-# todo: Rewrite logger.py for jarvis-api and avoid circular imports
-# todo: Remove all function/method level imports (still exists for api-logger)
-
 
 def restart_checker() -> NoReturn:
     """Operations performed during internal/external request to restart."""

@@ -1,12 +1,16 @@
+import os
+import sys
 import unittest
+from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 import pvporcupine
 import pyaudio
 
-from jarvis.main import Activator, models
+sys.path.insert(0, os.path.abspath('..'))
 
-SAMPLE_PHRASE = "Welcome to the world of Natural Language Processing."
+from jarvis.main import Activator, models  # noqa: E402
+from tests.constant import SAMPLE_PHRASE  # noqa: E402
 
 
 class TestActivator(unittest.TestCase):
@@ -18,7 +22,7 @@ class TestActivator(unittest.TestCase):
 
     @patch("pvporcupine.create")
     @patch("jarvis.main.audio_engine.open")
-    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock):
+    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock) -> NoReturn:
         """Test whether the Activator is initialized correctly.
 
         Mock the return values of the create function.
@@ -58,16 +62,16 @@ class TestActivator(unittest.TestCase):
                       mock_audio_close: MagicMock,
                       mock_speak: MagicMock,
                       mock_initiator: MagicMock,
-                      mock_listen: MagicMock):
+                      mock_listen: MagicMock) -> NoReturn:
         """Test the executor method of Activator.
 
         Mock return values of the listen function and set up necessary mocks.
 
         Args:
             mock_audio_close: Patched audio_engine.close from jarvis.main.py.
-            mock_speak: Patched speaker.speak from jarvis.modules.audio.
-            mock_initiator: Patched commander.initiator from jarvis.executors.
-            mock_listen: Patched listener.listen from jarvis.modules.audio.
+            mock_speak: Patched ``speaker.speak`` from jarvis.modules.audio.
+            mock_initiator: Patched ``commander.initiator`` from jarvis.executors.
+            mock_listen: Patched ``listener.listen`` from jarvis.modules.audio.
         """
         mock_listen.return_value = SAMPLE_PHRASE
         mock_initiator.return_value = None  # Not testing the behavior of initiator here

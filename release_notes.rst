@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+7.5.9 (08/07/2023)
+------------------
+- Fix broken unit test trigger by ``pre-commit``
+- Add more tests
+
 7.5.8 (08/06/2023)
 ------------------
 - Remove almost all ``function`` level imports
