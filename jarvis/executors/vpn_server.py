@@ -8,7 +8,7 @@ from botocore.exceptions import (BotoCoreError, ClientError,
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
@@ -113,7 +113,7 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    config.multiprocessing_logger(filename=os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log'))
     kwargs = dict(vpn_username=models.env.vpn_username or models.env.root_user,
                   vpn_password=models.env.vpn_password or models.env.root_password,
                   domain=models.env.vpn_domain, record_name=models.env.vpn_record_name,

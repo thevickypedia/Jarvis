@@ -2,7 +2,7 @@ import os
 import subprocess
 from typing import NoReturn
 
-from jarvis.modules.logger import config
+from jarvis.modules.logger import multiprocessing_logger
 
 LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')  # Used by api functions that run on cron schedule
 
@@ -19,7 +19,7 @@ def crontab_executor(statement: str, log_file: str = None) -> NoReturn:
         - On the bright side, almost all executions made by Jarvis are short-lived.
     """
     if not log_file:
-        log_file = config.multiprocessing_logger(filename=LOG_FILE)
+        log_file = multiprocessing_logger(filename=LOG_FILE)
     with open(log_file, 'a') as file:
         file.write('\n')
         try:

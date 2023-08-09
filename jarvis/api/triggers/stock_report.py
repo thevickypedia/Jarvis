@@ -229,13 +229,14 @@ if __name__ == '__main__':
     from jarvis.executors import crontab
     from jarvis.modules.database import database
     from jarvis.modules.exceptions import EgressErrors
-    from jarvis.modules.logger import config, custom_logger
+    from jarvis.modules.logger import logger as main_logger
+    from jarvis.modules.logger import multiprocessing_logger
     from jarvis.modules.models import models
     from jarvis.modules.templates import templates
 
-    config.multiprocessing_logger(filename=crontab.LOG_FILE)
-    for log_filter in custom_logger.logger.filters:
-        custom_logger.logger.removeFilter(filter=log_filter)
-
+    multiprocessing_logger(filename=crontab.LOG_FILE)
+    # Remove process name filter
+    for log_filter in main_logger.filters:
+        main_logger.removeFilter(filter=log_filter)
     db = database.Database(database=models.fileio.base_db)
-    Investment(logger=custom_logger.logger).report_gatherer()
+    Investment(logger=main_logger).report_gatherer()

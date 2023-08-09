@@ -2,8 +2,8 @@ from typing import List, NoReturn, Optional, Tuple, Union
 
 from pydantic import EmailStr
 
+from jarvis.api.logger import logger
 from jarvis.api.models import settings
-from jarvis.api.squire.logger import logger
 from jarvis.modules.database import database
 from jarvis.modules.models import models
 

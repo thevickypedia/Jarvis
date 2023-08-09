@@ -13,9 +13,9 @@ import jinja2
 from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 
+from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, modals, settings
 from jarvis.api.squire import surveillance_squire, timeout_otp
-from jarvis.api.squire.logger import logger
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import APIResponse, CameraError
 from jarvis.modules.models import models

@@ -6,8 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from jarvis import version
 from jarvis.api import routers
+from jarvis.api.logger import logger
 from jarvis.api.squire import discover, stockanalysis_squire
-from jarvis.api.squire.logger import logger
 from jarvis.modules.models import models
 
 # Initiate API

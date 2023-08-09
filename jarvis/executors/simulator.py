@@ -9,7 +9,7 @@ import yaml
 
 from jarvis.executors import offline
 from jarvis.modules.audio import speaker
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
@@ -38,7 +38,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
         simulation_data: A key value pair of category and phrase list.
     """
     start = time.time()
-    log_file = config.multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
+    log_file = multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
     successful, failed = 0, 0
     shared.called_by_offline = True
     for category, task_list in simulation_data.items():

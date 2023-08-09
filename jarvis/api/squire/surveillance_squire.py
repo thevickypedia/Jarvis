@@ -6,8 +6,8 @@ from typing import AsyncIterable, List, NoReturn, Tuple
 import cv2
 import numpy
 
+from jarvis.api.logger import logger
 from jarvis.api.models import settings
-from jarvis.api.squire.logger import logger
 from jarvis.modules.camera import camera
 from jarvis.modules.exceptions import CameraError
 

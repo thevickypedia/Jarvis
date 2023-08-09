@@ -7,7 +7,7 @@ from typing import List
 
 from fastapi import APIRouter
 
-from jarvis.api.squire.logger import logger
+from jarvis.api.logger import logger
 
 
 class Entrypoint:
@@ -50,12 +50,14 @@ def get_entrypoints(routers: str) -> Generator[Entrypoint]:
         if __path.endswith('__'):
             continue
         for file_ in __file:
-            if file_.startswith('__'):
+            if file_.startswith('__') or file_ == 'favicon.ico':
                 continue
-            stem = pathlib.PurePath(file_).stem
-            breaker = pathlib.PurePath(os.path.join(__path, stem)).parts
-            # Replace paths with . to make it appear as a module
-            yield Entrypoint(module='.'.join((base_package,) + breaker[breaker.index(package):]), stem=stem)
+            filepath = pathlib.PurePath(file_)
+            if filepath.suffix == '.py':
+                breaker = pathlib.PurePath(os.path.join(__path, filepath.stem)).parts
+                # Replace paths with . to make it appear as a module
+                yield Entrypoint(module='.'.join((base_package,) + breaker[breaker.index(package):]),
+                                 stem=filepath.stem)
 
 
 def routes(routers: str) -> Generator[APIRouter]:

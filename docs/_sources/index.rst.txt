@@ -24,7 +24,13 @@ Audio Devices
 =============
 .. automodule:: jarvis.modules.peripherals
    :members:
-   :undoc-members:
+   :exclude-members: ChannelType
+
+====
+
+.. autoclass:: jarvis.modules.peripherals.ChannelType(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 Text To Speech
 ==============
@@ -66,6 +72,13 @@ API - Application
 =================
 
 .. automodule:: jarvis.api.fast
+   :members:
+   :undoc-members:
+
+API - Logger
+============
+
+.. automodule:: jarvis.api.logger
    :members:
    :undoc-members:
 
@@ -200,13 +213,6 @@ Squire - Discover Routers
 =========================
 
 .. automodule:: jarvis.api.squire.discover
-   :members:
-   :undoc-members:
-
-Squire - Logger
-===============
-
-.. automodule:: jarvis.api.squire.logger
    :members:
    :undoc-members:
 
@@ -671,57 +677,93 @@ Crontab
 Classes
 =======
 
-.. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
+.. automodule:: jarvis.modules.models.classes
    :members:
-   :undoc-members:
+   :exclude-members: SupportedPlatforms, Settings, VehicleAuthorization, VehicleConnection, Sensitivity, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
 
 ====
 
-.. autoclass:: jarvis.modules.models.classes.EventApp(Enum)
+.. autoclass:: jarvis.modules.models.classes.SupportedPlatforms(Enum)
    :members:
-   :undoc-members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
+   :members:
+   :exclude-members: _abc_impl
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.VehicleAuthorization(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.Sensitivity(Enum)
    :members:
-   :undoc-members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 ====
 
-.. autoclass:: jarvis.modules.models.classes.RecognizerSettings(pydantic.BaseSettings)
+.. autoclass:: jarvis.modules.models.classes.RecognizerSettings(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.TemperatureUnits(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.DistanceUnits(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.EventApp(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.SSQuality(Enum)
    :members:
-   :undoc-members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.BackgroundTask(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.EnvConfig(pydantic.BaseSettings)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.FileIO(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.Indicators(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl
 
 Database
 ========
@@ -760,24 +802,20 @@ Lights
 
 Logger
 ======
-.. automodule:: jarvis.modules.logger.custom_logger
-   :members:
-   :exclude-members:
 
-Config
-======
-
-.. autoclass:: jarvis.modules.logger.config.APIConfig(pydantic.BaseModel)
+.. autoclass:: jarvis.modules.logger.APIConfig(pydantic.BaseModel)
    :members:
    :exclude-members: _abc_impl
 
-.. autoclass:: jarvis.modules.logger.config.AddProcessName(logging.Filter)
+.. autoclass:: jarvis.modules.logger.AddProcessName(logging.Filter)
    :members:
    :exclude-members:
 
-.. autoclass:: jarvis.modules.logger.config.multiprocessing_logger
+====
+
+.. automodule:: jarvis.modules.logger
    :members:
-   :exclude-members:
+   :exclude-members: APIConfig, AddProcessName
 
 Meanings
 ========
@@ -817,7 +855,13 @@ MyQ
 
 .. automodule:: jarvis.modules.myq.myq
    :members:
-   :undoc-members:
+   :exclude-members: Operation
+
+====
+
+.. autoclass:: jarvis.modules.myq.myq.Operation(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 Retry Handler
 =============

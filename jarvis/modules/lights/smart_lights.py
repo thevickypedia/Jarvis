@@ -8,6 +8,7 @@
 import socket
 import struct
 import time
+from ipaddress import IPv4Address
 from typing import NoReturn
 
 from jarvis.modules.logger import logger
@@ -60,7 +61,7 @@ class MagicHomeApi:
 
     API_PORT = 5577
 
-    def __init__(self, device_ip: str, device_type: int, operation: str):
+    def __init__(self, device_ip: IPv4Address, device_type: int, operation: str):
         """Initialize device setup via UDP.
 
         Args:
@@ -76,7 +77,7 @@ class MagicHomeApi:
                 - 3: Bulb (v.4+)
                 - 4: Bulb (v.3-)
         """
-        self.device_ip = device_ip
+        self.device_ip = str(device_ip)
         self.device_type = device_type
         self.operation = operation
         self.latest_connection = time.time()

@@ -18,41 +18,6 @@ from urllib3.util.retry import Retry
 
 from jarvis.modules.logger import logger
 
-SESSION = requests.Session()
-RETRY = Retry(connect=3, backoff_factor=1.5)
-ADAPTER = HTTPAdapter(max_retries=RETRY)
-SESSION.mount('http://', adapter=ADAPTER)
-SESSION.mount('https://', adapter=ADAPTER)
-SESSION.headers = {}  # Headers can't be set to SESSION as they change for each call
-
-
-def _open(url: str, headers: dict = None, data: dict = None) -> Dict:
-    """Open a connection to post the request.
-
-    Args:
-        url: URL to which the request has to be posted.
-        headers: Headers for the request.
-        data: Data to be posted.
-
-    Returns:
-        dict:
-        JSON loaded response from post request.
-    """
-    if data:
-        if data.get('grant_type', '') == 'password':
-            headers['Connection'] = 'close'
-        response = SESSION.post(url=url, headers=headers, data=bytes(json.dumps(data), "utf-8"))
-    else:
-        response = SESSION.get(url=url, headers=headers)
-    if not response.ok:
-        logger.debug("Response: %d", response.status_code)
-        response.raise_for_status()
-    # not all functions return a JSON response and I don't have an EV to test which does and which doesn't so ¯\_(ツ)_/¯
-    try:
-        return response.json()
-    except json.JSONDecodeError as error:
-        logger.debug(error)
-
 
 class Connect:
     """Initiates Connection object to connect to the Jaguar LandRover InControl Remote Car API.
@@ -61,6 +26,7 @@ class Connect:
 
     """
 
+    SESSION = requests.Session()
     IFAS_BASE_URL = "https://ifas.prod-row.jlrmotor.com/ifas/jlr"
     IFOP_BASE_URL = "https://ifop.prod-row.jlrmotor.com/ifop/jlr"
     IF9_BASE_URL = "https://if9.prod-row.jlrmotor.com/if9/jlr"
@@ -103,6 +69,39 @@ class Connect:
         self.expiration = auth_expiry
         self.username = username
 
+        adapter = HTTPAdapter(max_retries=Retry(connect=3, backoff_factor=1.5))
+        self.SESSION.mount('http://', adapter=adapter)
+        self.SESSION.mount('https://', adapter=adapter)
+        self.SESSION.headers = {}  # Headers can't be set to SESSION as they change for each call
+
+    def _open(self, url: str, headers: dict = None, data: dict = None) -> Dict:
+        """Open a connection to post the request.
+
+        Args:
+            url: URL to which the request has to be posted.
+            headers: Headers for the request.
+            data: Data to be posted.
+
+        Returns:
+            dict:
+            JSON loaded response from post request.
+        """
+        if data:
+            if data.get('grant_type', '') == 'password':
+                headers['Connection'] = 'close'
+            response = self.SESSION.post(url=url, headers=headers, data=bytes(json.dumps(data), "utf-8"))
+        else:
+            response = self.SESSION.get(url=url, headers=headers)
+        if not response.ok:
+            logger.debug("Response: %d", response.status_code)
+            response.raise_for_status()
+
+        # not all functions return a JSON response
+        try:
+            return response.json()
+        except json.JSONDecodeError as error:
+            logger.debug(error)
+
     def post_data(self, command: str, url: str, headers: dict, data: dict = None) -> Dict:
         """Add header authorization and sends a post request.
 
@@ -125,7 +124,7 @@ class Connect:
             self.connect()
             if headers.get('Authorization'):
                 headers['Authorization'] = self.head['Authorization']
-        return _open(url=f"{url}/{command}", headers=headers, data=data)
+        return self._open(url=f"{url}/{command}", headers=headers, data=data)
 
     def connect(self) -> NoReturn:
         """Authenticates device and establishes connection."""
@@ -185,7 +184,7 @@ class Connect:
             "Content-Type": "application/json",
             "X-Device-Id": self.device_id
         }
-        return _open(url=url, headers=auth_headers, data=data)
+        return self._open(url=url, headers=auth_headers, data=data)
 
     def _register_device(self, headers: dict = None) -> Dict:
         """Frames the url and data to post to register the device.
@@ -204,7 +203,7 @@ class Connect:
             "expires_in": "86400",
             "deviceID": self.device_id
         }
-        return _open(url=url, headers=headers, data=data)
+        return self._open(url=url, headers=headers, data=data)
 
     def _login_user(self, headers: dict) -> Dict:
         """Login the user.
@@ -220,7 +219,7 @@ class Connect:
         user_login_header = headers.copy()
         user_login_header["Accept"] = "application/vnd.wirelesscar.ngtp.if9.User-v3+json"
 
-        user_data = _open(url, user_login_header)
+        user_data = self._open(url, user_login_header)
         self.user_id = user_data.get('userId')
         return user_data
 
@@ -247,7 +246,7 @@ class Connect:
             Vehicles data.
         """
         url = f"{self.IF9_BASE_URL}/users/{self.user_id}/vehicles?primaryOnly=true"
-        return _open(url=url, headers=headers)
+        return self._open(url=url, headers=headers)
 
     def get_user_info(self) -> Dict:
         """Makes a request to get the user information.

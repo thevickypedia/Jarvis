@@ -10,8 +10,8 @@ import yaml
 from bs4 import BeautifulSoup
 from webull import webull
 
+from jarvis.api.logger import logger
 from jarvis.api.models import settings
-from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
 

@@ -1,6 +1,7 @@
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
+from ipaddress import IPv4Address
 from threading import Thread
 from typing import Dict, List, Tuple, Union
 
@@ -27,28 +28,30 @@ def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str
             return data[key], key
 
 
-def tv_status(tv_ip_list: list, attempt: int = 0) -> str:
-    """Pings the tv and returns the status. 0 if able to ping, 256 if unable to ping.
+def tv_status(tv_ip_list: List[IPv4Address], attempt: int = 0) -> IPv4Address:
+    """Pings the tv and returns the IPv4Address.
 
     Args:
         tv_ip_list: List of possible IP addresses for the Television.
         attempt: Takes iteration count as an argument.
 
+    See Also:
+        Status codes:
+            - 0 if able to ping, 256 if unable to ping.
+
     Returns:
-        int:
+        IPv4Address:
         Returns the reachable IP address from the list.
     """
+    if models.settings.os == models.supported_platforms.windows:
+        command = "ping -c 1 -t 2 {IP_ADDRESS} > NUL"
+    else:
+        command = "ping -c 1 -t 2 {IP_ADDRESS} >/dev/null 2>&1"
     for ip in tv_ip_list:
-        if models.settings.os == models.supported_platforms.windows:
-            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} > NUL"):
-                logger.error("Connection timed out on %s. Ping result: %s", ip, tv_stat) if not attempt else None
-            else:
-                return ip
+        if tv_stat := os.system(command=command.format(IP_ADDRESS=ip)):
+            logger.error("Connection timed out on %s. Ping result: %s", ip, tv_stat) if not attempt else None
         else:
-            if tv_stat := os.system(f"ping -c 1 -t 2 {ip} >/dev/null 2>&1"):
-                logger.error("Connection timed out on %s. Ping result: %s", ip, tv_stat) if not attempt else None
-            else:
-                return ip
+            return ip
 
 
 def television(phrase: str) -> None:
@@ -126,6 +129,7 @@ def television(phrase: str) -> None:
         if isinstance(tv_mac, str):
             tv_mac = [tv_mac]
 
+        # todo: Create objects to avoid redundancy in keywords mapping
         if 'turn off' in phrase.lower() or 'shutdown' in phrase.lower() or 'shut down' in phrase.lower():
             if not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
                 # WARNING: TV that was turned off recently might still respond to ping
@@ -158,7 +162,11 @@ def television(phrase: str) -> None:
             shared.tv[target_tv] = None
         logger.debug("TV database: %s", shared.tv)
         if 'lg' in tv_name.lower():
-            tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='LG',
-                                      client_key=tv_client_key, nickname=target_tv, key=key)
+            kwargs = dict(
+                phrase=phrase, tv_ip=tv_ip, identifier='LG', client_key=tv_client_key, nickname=target_tv, key=key
+            )
         else:
-            tv_controls.tv_controller(phrase=phrase, tv_ip=tv_ip, identifier='ROKU', nickname=target_tv)
+            kwargs = dict(
+                phrase=phrase, tv_ip=tv_ip, identifier='ROKU', nickname=target_tv
+            )
+        tv_controls.tv_controller(**kwargs)

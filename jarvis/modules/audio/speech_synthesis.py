@@ -15,7 +15,7 @@ import requests
 
 from jarvis.executors import controls, port_handler
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 
 DOCKER_CMD = """echo {PASSWORD} | sudo -S \
@@ -72,7 +72,7 @@ def speech_synthesis_runner() -> NoReturn:
         - Initiates container using traditional commandline for Linux.
         - Stores the container ID in a .cid file, to later stop and remove the container.
     """
-    config.multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
+    multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
     if check_existing():
         return
 
@@ -93,7 +93,7 @@ def speech_synthesis_runner() -> NoReturn:
             log_file.write("Starting speech synthesis in docker container\n")
             subprocess.Popen([cmd], shell=True, bufsize=0, stdout=log_file, stderr=log_file)
         else:
-            models.env.home = models.env.home.__str__()
+            models.env.home = str(models.env.home)
             client = docker.from_env()
             result = client.containers.run(
                 image="thevickypedia/speech-synthesis",

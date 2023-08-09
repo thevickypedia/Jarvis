@@ -4,7 +4,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Header, Request
 
-from jarvis.api.squire.logger import logger
+from jarvis.api.logger import logger
 from jarvis.executors import files
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models

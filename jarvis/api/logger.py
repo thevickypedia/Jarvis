@@ -16,11 +16,10 @@ import os
 import pathlib
 from logging.config import dictConfig
 
-from jarvis.modules.logger import config
+from jarvis.modules.logger import APIConfig, multiprocessing_logger
 
-api_config = config.APIConfig()
-config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
-                              log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
+api_config = APIConfig()
+multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME)
 
 
 # Creates log files

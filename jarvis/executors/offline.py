@@ -17,7 +17,7 @@ from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, models
 from jarvis.modules.utils import shared, support, util
@@ -36,7 +36,7 @@ def background_tasks() -> NoReturn:
 
 def background_task_runner() -> NoReturn:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
-    config.multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     # Since env vars are loaded only during startup, validate weather alert only then
     automation.validate_weather_alert()
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
@@ -229,7 +229,7 @@ def tunneling() -> NoReturn:
         - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
     """
     # processName filter is not added since process runs on a single function that is covered by funcName
-    config.multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
     if models.settings.os != models.supported_platforms.macOS:
         return
 

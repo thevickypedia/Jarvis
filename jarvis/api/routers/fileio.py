@@ -4,8 +4,8 @@ from http import HTTPStatus
 from fastapi import APIRouter, UploadFile
 from fastapi.responses import FileResponse
 
+from jarvis.api.logger import logger
 from jarvis.api.models import authenticator
-from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 

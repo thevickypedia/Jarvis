@@ -1,5 +1,6 @@
 import random
 from concurrent.futures import ThreadPoolExecutor
+from ipaddress import IPv4Address
 from multiprocessing import Process
 from typing import List, NoReturn, Union
 
@@ -12,69 +13,69 @@ from jarvis.modules.utils import support
 db = database.Database(database=models.fileio.base_db)
 
 
-def turn_off(host: str) -> NoReturn:
+def turn_off(host: IPv4Address) -> NoReturn:
     """Turns off the device.
 
     Args:
-        host: Takes target device IP address as an argument.
+        host: Takes target device's IP address as an argument.
     """
     smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
 
 
-def warm(host: str) -> NoReturn:
+def warm(host: IPv4Address) -> NoReturn:
     """Sets lights to warm/yellow.
 
     Args:
-        host: Takes target device IP address as an argument.
+        host: Takes target device's IP address as an argument.
     """
     smart_lights.MagicHomeApi(device_ip=host, device_type=1,
                               operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
 
 
-def cool(host: str) -> NoReturn:
+def cool(host: IPv4Address) -> NoReturn:
     """Sets lights to cool/white.
 
     Args:
-        host: Takes target device IP address as an argument.
+        host: Takes target device's IP address as an argument.
     """
     smart_lights.MagicHomeApi(device_ip=host, device_type=2,
                               operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
                                                                      cool_white=255)
 
 
-def lumen(host: str, rgb: int = 255) -> NoReturn:
+def lumen(host: IPv4Address, rgb: int = 255) -> NoReturn:
     """Sets lights to custom brightness.
 
     Args:
-        host: Takes target device IP address as an argument.
+        host: Takes target device's IP address as an argument.
         rgb: Red, Green andBlue values to alter the brightness.
     """
     args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
     smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
 
-def preset(device_ip, color: int = None, speed: int = 100) -> NoReturn:
+def preset(host: IPv4Address, color: int = None, speed: int = 100) -> NoReturn:
     """Changes light colors to preset values.
 
     Args:
-        device_ip: Takes target device IP address as an argument.
+        host: Takes target device's IP address as an argument.
         color: Preset value extracted from list of color codes. Defaults to a random color code.
         speed: Speed of color change. Defaults to 100.
     """
-    smart_lights.MagicHomeApi(device_ip=device_ip, operation='Preset Values', device_type=2).send_preset_function(
+    smart_lights.MagicHomeApi(device_ip=host, operation='Preset Values', device_type=2).send_preset_function(
         preset_number=color or random.choice(list(preset_values.PRESET_VALUES.values())), speed=speed
     )
 
 
-def runner(host_ip: List[str]) -> NoReturn:
+def runner(host: List[IPv4Address]) -> NoReturn:
     """Runs a never ending loop setting random light IP addresses to random color preset values.
 
     Args:
-        host_ip: Takes list of light IP addresses as argument.
+        host: Takes list of lights' IP addresses as argument.
     """
     while True:
-        with ThreadPoolExecutor(max_workers=len(host_ip)) as executor:
-            executor.map(preset, host_ip)
+        with ThreadPoolExecutor(max_workers=len(host)) as executor:
+            executor.map(preset, host)
 
 
 def check_status() -> Union[str, int, None]:
@@ -112,11 +113,11 @@ def update_status(process: Process) -> NoReturn:
         db.connection.commit()
 
 
-def party_mode(host_ip: List[str], phrase: str) -> bool:
+def party_mode(host: List[IPv4Address], phrase: str) -> bool:
     """Handles party mode by altering colors in given light hostnames with random color codes.
 
     Args:
-        host_ip: List of light IP addresses.
+        host: Takes list of lights' IP addresses as argument.
         phrase: Takes the phrase spoken as an argument.
 
     Returns:
@@ -129,7 +130,7 @@ def party_mode(host_ip: List[str], phrase: str) -> bool:
             speaker.speak(text=f'Party mode has already been enabled {models.env.title}!')
         else:
             speaker.speak(text=f'Enabling party mode! Enjoy yourself {models.env.title}!')
-            process = Process(target=runner, args=(host_ip,))
+            process = Process(target=runner, args=(host,))
             process.start()
             update_status(process=process)
     elif 'disable' in phrase:

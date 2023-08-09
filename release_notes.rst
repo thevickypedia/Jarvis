@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+7.6.0 (08/09/2023)
+------------------
+- Reconfigure usage of ``logger`` across the board
+- Remove top level vars from vehicle control module
+- Fix failed exception handling in ``AsyncThread``
+- Fix edge case scenario on TV power functions
+- Update runbook
+
 7.5.9 (08/07/2023)
 ------------------
 - Fix broken unit test trigger by ``pre-commit``

@@ -239,13 +239,14 @@ if __name__ == '__main__':
     current_process().name = "StockMonitor"
     from jarvis.api.squire import stockmonitor_squire
     from jarvis.executors import crontab
-    from jarvis.modules.logger import config
     from jarvis.modules.logger import logger as main_logger
+    from jarvis.modules.logger import multiprocessing_logger
     from jarvis.modules.models import models
     from jarvis.modules.templates import templates
     from jarvis.modules.utils import util
 
-    config.multiprocessing_logger(filename=crontab.LOG_FILE)
+    multiprocessing_logger(filename=crontab.LOG_FILE)
+    # Remove process name filter
     for log_filter in main_logger.filters:
         main_logger.removeFilter(filter=log_filter)
     StockMonitor(logger=main_logger).send_notification()

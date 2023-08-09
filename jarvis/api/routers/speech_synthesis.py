@@ -7,8 +7,8 @@ import requests
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
+from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, modals
-from jarvis.api.squire.logger import logger
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import APIResponse, EgressErrors
 from jarvis.modules.models import models

@@ -104,7 +104,7 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         rate: How quick the graph should be moving on screen (lower is slower, 1000 is pretty quick)
         dark_mode: Sets graph background to almost black
     """
-    config.multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
     subprocess_id = os.getpid()
     logger.info("Updating process ID [%d] in [plot_mic] children table.", subprocess_id)
     db = database.Database(database=models.fileio.base_db)
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 
     current_process().name = "PlotMic"
     from jarvis.modules.database import database
-    from jarvis.modules.logger import config, logger
+    from jarvis.modules.logger import logger, multiprocessing_logger
     from jarvis.modules.models import models
 
     plot_mic()

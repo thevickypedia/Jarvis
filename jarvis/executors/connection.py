@@ -7,7 +7,7 @@ from typing import NoReturn
 from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis.executors import controls
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 
 
@@ -18,7 +18,7 @@ def wifi_connector() -> NoReturn:
         - Logs up to 5 unknown errors before restarting process.
     """
     # processName filter is not added since process runs on a single function that is covered by funcName
-    config.multiprocessing_logger(filename=os.path.join('logs', 'wifi_connector_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'wifi_connector_%d-%m-%Y.log'))
     if not models.env.wifi_ssid or not models.env.wifi_password:
         logger.warning("Cannot retry connections without SSID and password.")
         return

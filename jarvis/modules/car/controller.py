@@ -11,8 +11,6 @@ from typing import Callable, Dict, List, NoReturn, Union
 
 from jarvis.modules.car import connector
 
-DEFAULT_CONTENT_TYPE = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8"
-
 
 class Control:
     """Initiates Vehicle object to perform remote actions after connecting to the InControl API.
@@ -20,6 +18,8 @@ class Control:
     >>> Control
 
     """
+
+    DEFAULT_CONTENT_TYPE = "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8"
 
     def __init__(self, vin: str, connection: Union[connector.Connect, Callable]):
         """Instantiates a super class with incoming data and existing connection.
@@ -85,7 +85,7 @@ class Control:
         vhs_data = self._authenticate_service(service_name="VHS")
         return self.post_data(command='healthstatus', data=vhs_data,
                               headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
-                                       "Content-Type": DEFAULT_CONTENT_TYPE})
+                                       "Content-Type": self.DEFAULT_CONTENT_TYPE})
 
     def get_departure_timers(self) -> Dict:
         """Get departure timers for specified vehicle.
@@ -278,14 +278,14 @@ class Control:
         """
         self.post_data(command="unlock",
                        headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
-                                "Content-Type": DEFAULT_CONTENT_TYPE},
+                                "Content-Type": self.DEFAULT_CONTENT_TYPE},
                        data=self._authenticate_service(pin=pin, service_name="ALOFF"))
 
     def honk_blink(self) -> Dict:
         """Honk the horn and flash the lights associated with the specified vehicle."""
         return self.post_data(command="honkBlink",
                               headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json",
-                                       "Content-Type": DEFAULT_CONTENT_TYPE},
+                                       "Content-Type": self.DEFAULT_CONTENT_TYPE},
                               data=self._authenticate_vin_protected_service(service_name="HBLF"))
 
     def remote_engine_start(self, pin: int, target_temperature: int) -> Dict:
@@ -679,7 +679,7 @@ class Control:
         """
         return self.post_data(command="swu", data=wakeup_data,
                               headers={"Accept": "application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v3+json",
-                                       "Content-Type": DEFAULT_CONTENT_TYPE})
+                                       "Content-Type": self.DEFAULT_CONTENT_TYPE})
 
     def enable_service_mode(self, pin: int, expiration_time: Union[int, float] = None) -> Dict:
         """Service Mode will allow the vehicle to be serviced without InControl triggering a vehicle theft alarm.

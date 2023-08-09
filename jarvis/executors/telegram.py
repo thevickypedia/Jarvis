@@ -6,7 +6,7 @@ from typing import NoReturn
 
 from jarvis.executors import controls
 from jarvis.modules.exceptions import BotInUse, EgressErrors
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram.bot import TelegramBot
 
@@ -22,7 +22,7 @@ def telegram_api() -> NoReturn:
         - BotInUse: Restarts polling to take control over.
         - ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Restarts after 3 attempts.
     """
-    config.multiprocessing_logger(filename=os.path.join('logs', 'telegram_api_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join('logs', 'telegram_api_%d-%m-%Y.log'))
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return

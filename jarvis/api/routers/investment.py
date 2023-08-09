@@ -10,9 +10,9 @@ import jinja2
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
+from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, settings
 from jarvis.api.squire import timeout_otp
-from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates

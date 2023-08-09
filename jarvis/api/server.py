@@ -1,5 +1,4 @@
-import logging
-import os.path
+import os
 
 import requests
 import uvicorn
@@ -7,7 +6,7 @@ import uvicorn
 from jarvis.executors import port_handler
 from jarvis.modules.builtin_overrides import APIServer
 from jarvis.modules.exceptions import EgressErrors
-from jarvis.modules.logger import config, logger
+from jarvis.modules.logger import APIConfig, logger, multiprocessing_logger
 from jarvis.modules.models import models
 
 
@@ -18,9 +17,7 @@ def fast_api() -> None:
         - Checks if the port is being used. If so, makes a ``GET`` request to the endpoint.
         - Attempts to kill the process listening to the port, if the endpoint doesn't respond.
     """
-    api_config = config.APIConfig()
-    config.multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME,
-                                  log_format=logging.Formatter(api_config.DEFAULT_LOG_FORMAT))
+    multiprocessing_logger(filename=APIConfig().DEFAULT_LOG_FILENAME)
     url = f'http://{models.env.offline_host}:{models.env.offline_port}'
 
     if port_handler.is_port_in_use(port=models.env.offline_port):

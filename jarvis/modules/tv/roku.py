@@ -7,6 +7,7 @@
 
 import socket
 from collections.abc import Generator
+from ipaddress import IPv4Address
 from threading import Thread
 from typing import Dict, NoReturn, Union
 from xml.etree import ElementTree
@@ -29,7 +30,7 @@ class RokuECP:
     PORT: int = 8060
     SESSION: requests.Session = requests.Session()
 
-    def __init__(self, ip_address: str):
+    def __init__(self, ip_address: IPv4Address):
         """Instantiates the roku tv and makes a test call.
 
         Args:
@@ -44,7 +45,7 @@ class RokuECP:
         else:
             if response.ok:
                 try:
-                    resolved = socket.gethostbyaddr(ip_address)
+                    resolved = socket.gethostbyaddr(str(ip_address))
                 except socket.error as error:
                     logger.error(error)
                     raise TVError

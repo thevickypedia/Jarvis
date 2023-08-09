@@ -1,5 +1,6 @@
 import random
 import time
+from ipaddress import IPv4Address
 from threading import Thread
 
 from jarvis.modules.audio import speaker
@@ -11,7 +12,7 @@ from jarvis.modules.tv import lg, roku
 from jarvis.modules.utils import shared, support, util
 
 
-def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
+def tv_controller(phrase: str, tv_ip: IPv4Address, identifier: str, nickname: str,
                   client_key: str = None, key: str = None) -> None:
     """Controller for Roku or LG tv actions.
 
@@ -31,9 +32,6 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
                 shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname, key=key)
             elif identifier == 'ROKU':
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
-                if not shared.tv[nickname].current_app():
-                    for _ in range(3):  # REDUNDANT-Roku: Launch home thrice to ensure device wakes up from sleep
-                        shared.tv[nickname].startup()
         except TVError as error:
             logger.error("Failed to connect to the TV. %s", error)
             speaker.speak(text=f"I was unable to connect to the {nickname} {models.env.title}! "
@@ -48,6 +46,19 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
         if 'turn on' in phrase_lower or 'connect' in phrase_lower:
             speaker.speak(text=f'Your {nickname} is already powered on {models.env.title}!')
         elif 'shutdown' in phrase_lower or 'shut down' in phrase_lower or 'turn off' in phrase_lower:
+            # ROKU:
+            #   Connections to Roku TVs are made with IP, so it almost always connects as long as it is powered
+            #   Roku tends to return 'Home' even when powered off, so check state of the TV first
+            # LG:
+            #   Extremely unlikely to reach as LG TVs typically close the connections when powered off
+            #   Edge case scenario is when the TV is powered on and off by different processes
+            #   leaving the processes that powered on with a memory reference that'd assume the TV is powered on
+            #   end up failing to connect to the TV as it is powered off already
+            if shared.tv[nickname].get_state() and (running_app := shared.tv[nickname].current_app()):
+                logger.info("Currently running '%s'", running_app)
+            else:
+                speaker.speak(text=f"I don't think your {nickname} is powered on {models.env.title}!")
+                return
             Thread(target=shared.tv[nickname].shutdown).start()
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning your {nickname} off.')
             shared.tv.pop(nickname)

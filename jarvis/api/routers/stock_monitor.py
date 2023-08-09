@@ -12,9 +12,9 @@ from fastapi import APIRouter, Header, Request
 from pydantic import EmailStr
 from webull import webull
 
+from jarvis.api.logger import logger
 from jarvis.api.models import modals, settings
 from jarvis.api.squire import stockmonitor_squire, timeout_otp
-from jarvis.api.squire.logger import logger
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates

@@ -14,7 +14,7 @@ from jarvis.executors import (commander, controls, internet, listener_controls,
                               location, processor)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import StopSignal
-from jarvis.modules.logger import custom_logger, logger
+from jarvis.modules.logger import custom_handler, logger
 from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
@@ -29,7 +29,7 @@ def restart_checker() -> NoReturn:
             logger.propagate = False
             for _handler in logger.handlers:
                 logger.removeHandler(hdlr=_handler)
-            handler = custom_logger.custom_handler()
+            handler = custom_handler()
             logger.info("Switching to %s", handler.baseFilename)
             logger.addHandler(hdlr=handler)
             controls.starter()

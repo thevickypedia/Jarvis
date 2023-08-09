@@ -17,14 +17,14 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
 
-def get_lights(data: dict) -> Tuple[Dict[str, Union[List[str], List[List[str]]]], str]:
+def get_lights(data: dict) -> Tuple[Dict[str, Union[List[str], List[List[str]], List[List[IPv4Address]]]], str]:
     """Extract lights' mapping from the data in smart devices.
 
     Args:
         data: Raw data from smart devices.
 
     Returns:
-        Tuple[Dict[str, Union[List[str], List[List[str]]]], str]:
+        Tuple[Dict[str, Union[List[str], List[List[str]], List[List[IPv4Address]]]], str]:
         Return lights' information and the key name under which it was stored. The key will be used to update the file.
     """
     for key, value in data.items():
@@ -39,7 +39,7 @@ class ThreadExecutor:
 
     """
 
-    def __init__(self, host_ip: List[str], mapping: Dict[str, List[List[str]]]):
+    def __init__(self, host_ip: List[IPv4Address], mapping: Dict[str, List[List[str]]]):
         """Initializes the class and assign object members."""
         self.host_ip = host_ip
         self.mapping = mapping
@@ -170,7 +170,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             executor.avail_check(function_to_call=squire.turn_off)
     elif 'party mode' in phrase:
-        if squire.party_mode(host_ip=host_ip, phrase=phrase):
+        if squire.party_mode(host=host_ip, phrase=phrase):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             time.sleep(1)
             Thread(target=executor.thread_worker, args=[squire.turn_off]).start()
@@ -185,7 +185,7 @@ def lights(phrase: str) -> Union[None, NoReturn]:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I've changed {len(host_ip)} {plural} to {color}!")
         for light_ip in host_ip:
-            squire.preset(device_ip=light_ip, speed=50,
+            squire.preset(host=light_ip, speed=50,
                           color=[preset_values.PRESET_VALUES[_type] for _type in
                                  list(preset_values.PRESET_VALUES.keys()) if _type in phrase][0])
     elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
