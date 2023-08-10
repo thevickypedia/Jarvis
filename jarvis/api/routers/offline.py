@@ -1,6 +1,5 @@
 import imghdr
 import os
-import string
 import traceback
 from http import HTTPStatus
 from threading import Thread
@@ -122,8 +121,6 @@ async def offline_communicator_api(request: Request, input_data: modals.OfflineC
 
     if 'alarm' in command.lower() or 'remind' in command.lower():
         command = command.lower()
-    else:
-        command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
     if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
         and_response = ""
         for each in command.split(' and '):

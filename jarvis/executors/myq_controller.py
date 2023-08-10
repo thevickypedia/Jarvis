@@ -10,6 +10,7 @@ from jarvis.modules.exceptions import CoverNotOnline, NoCoversFound
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.myq import myq
+from jarvis.modules.retry import retry
 from jarvis.modules.utils import support
 
 
@@ -36,27 +37,10 @@ class AsyncThread(Thread):
 
     def run(self) -> NoReturn:
         """Initiates ``asyncio.run`` with arguments passed."""
-        try:
-            self.result = asyncio.run(self.func(*self.args, **self.kwargs))
-        except InvalidCredentialsError as error:
-            logger.error(error)
-            self.result = f"I'm sorry {models.env.title}! Your credentials do not match."
-        except AuthenticationError as error:
-            logger.error(error)
-            self.result = f"I'm sorry {models.env.title}! There was an authentication error."
-        except (MyQError, RequestError) as error:
-            logger.error(error)
-            self.result = f"I wasn't able to connect to the module {models.env.title}! " \
-                          "Please check the logs for more information."
-        except NoCoversFound as error:
-            logger.error(error)
-            self.result = f"No garage doors were found in your MyQ account {models.env.title}! " \
-                          "Please check your MyQ account and add a garage door name to control it."
-        except CoverNotOnline as error:
-            logger.error(error)
-            self.result = f"I'm sorry {models.env.title}! Your {error.device} is not online!"
+        self.result = asyncio.run(self.func(*self.args, **self.kwargs))
 
 
+@retry.retry(attempts=3, warn=False, exclude_exc=(RequestError, AuthenticationError))
 def run_async(func: Callable, *args: Any, **kwargs: Any) -> Any:
     """Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.
 
@@ -91,6 +75,23 @@ def garage(phrase: str) -> NoReturn:
         return
 
     logger.info("Getting status of the garage door.")
-    # todo: Setup Retry logic for RequestError and AuthenticationError (gets raised for some weird reasons)
-    response = run_async(func=myq.garage_controller, phrase=phrase)
+    try:
+        response = run_async(func=myq.garage_controller, phrase=phrase)
+    except InvalidCredentialsError as error:
+        logger.error(error)
+        response = f"I'm sorry {models.env.title}! Your credentials do not match."
+    except AuthenticationError as error:
+        logger.error(error)
+        response = f"I'm sorry {models.env.title}! There was an authentication error."
+    except MyQError as error:
+        logger.error(error)
+        response = f"I wasn't able to connect to the module {models.env.title}! " \
+                   "Please check the logs for more information."
+    except NoCoversFound as error:
+        logger.error(error)
+        response = f"No garage doors were found in your MyQ account {models.env.title}! " \
+                   "Please check your MyQ account and add a garage door name to control it."
+    except CoverNotOnline as error:
+        logger.error(error)
+        response = f"I'm sorry {models.env.title}! Your {error.device} is not online!"
     speaker.speak(text=response)

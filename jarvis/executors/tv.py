@@ -129,7 +129,6 @@ def television(phrase: str) -> None:
         if isinstance(tv_mac, str):
             tv_mac = [tv_mac]
 
-        # todo: Create objects to avoid redundancy in keywords mapping
         if 'turn off' in phrase.lower() or 'shutdown' in phrase.lower() or 'shut down' in phrase.lower():
             if not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
                 # WARNING: TV that was turned off recently might still respond to ping

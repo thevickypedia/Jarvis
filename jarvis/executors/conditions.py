@@ -45,7 +45,8 @@ def conditions(phrase: str) -> bool:
         return False
 
     for category, identifiers in keywords.keywords.items():
-        if word_match.word_match(phrase=phrase, match_list=identifiers):
+        if matched := word_match.word_match(phrase=phrase, match_list=identifiers):
+            logger.info("'%s' matched the category '%s'", matched, category)
 
             # custom rules for additional keyword matching
             if category == "send_notification":
@@ -66,8 +67,8 @@ def conditions(phrase: str) -> bool:
             if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes', 'faces',
                                                          'music', 'voice_changer', 'restart_control', 'shutdown'):
                 # WATCH OUT: for changes in function name
-                if models.settings.pname == "background_tasks" and category == "restart_control":
-                    # Eg: Allowing 'restart' through the category 'restart_control' for the process 'background_tasks'
+                if models.settings.pname in ("background_tasks", "telegram_api", "fast_api") and \
+                        category == "restart_control":
                     logger.info("Allowing '%s' through the category '%s', for the process: '%s'",
                                 phrase, category, models.settings.pname)
                 else:

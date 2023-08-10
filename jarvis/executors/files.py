@@ -23,26 +23,15 @@ def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str
     return collections.defaultdict(lambda: {}, phone={}, email={})
 
 
-def get_frequent(func: str) -> Dict[str, int]:
-    """Support getting frequently used keywords' mapping file.
-
-    Args:
-        func: Takes function name as an argument.
-    """
+def get_frequent() -> Dict[str, int]:
+    """Support getting frequently used keywords' mapping file."""
     if os.path.isfile(models.fileio.frequent):
         try:
             with open(models.fileio.frequent) as file:
-                data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+                return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         except yaml.YAMLError as error:
-            data = {}
             logger.error(error)
-        if data.get(func):
-            data[func] += 1
-        else:
-            data[func] = 1
-    else:
-        data = {func: 1}
-    return data
+    return {}
 
 
 def put_frequent(data: Dict[str, int]) -> NoReturn:
@@ -239,3 +228,18 @@ def put_smart_devices(data: dict) -> NoReturn:
     with open(models.fileio.smart_devices, 'w') as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
+
+
+def get_processes() -> Dict[str, List[Union[int, List[str]]]]:
+    """Get the processes' mapping from stored map file.
+
+    Returns:
+        Dict[str, List[Union[int, List[str]]]]:
+        Processes' mapping data.
+    """
+    try:
+        with open(models.fileio.processes) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    except yaml.YAMLError as error:
+        logger.error(error)
+    return {}

@@ -36,6 +36,8 @@ def background_task_handler(phrase: str) -> NoReturn:
             speaker.speak(text=f"Background tasks were never enabled {models.env.title}!")
         else:
             speaker.speak(text=f"I couldn't not find the source file to disable background tasks {models.env.title}!")
+    else:
+        speaker.speak(text="Please specify whether you'd like to enable or disable background tasks.")
 
 
 def compare_tasks(dict1: dict, dict2: dict) -> bool:

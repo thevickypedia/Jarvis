@@ -127,15 +127,11 @@ def frequently_used(function_name: str) -> NoReturn:
     See Also:
         - This function does not have purpose, but to analyze and re-order the conditions' module at a later time.
     """
-    data = files.get_frequent(func=function_name)
-    # todo: see whats happening here
-    # {'executor': '1 3', 'lights': 2, 'volume': 1, 'query': 1, 'listener_control': 1}
-    try:
-        data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}
-    except Exception as error:  # Commonly raises key error or type error but don't care, log it and remove the file
-        logger.error(error)
-        logger.warning(data)
-        if os.path.isfile(models.fileio.frequent):
-            os.remove(models.fileio.frequent)
-        return
+    data = files.get_frequent()
+    data = {k: v for k, v in data.items() if isinstance(v, int)}  # clean up
+    if data.get(function_name):
+        data[function_name] += 1
+    else:
+        data[function_name] = 1
+    data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}  # sort by size
     files.put_frequent(data=data)

@@ -1,5 +1,4 @@
 import os
-import string
 import warnings
 from datetime import datetime, timedelta
 from typing import NoReturn, Union
@@ -145,7 +144,6 @@ def auto_helper() -> Union[str, None]:
 
             if automation_info.get("status"):
                 continue
-            exec_task = exec_task.translate(str.maketrans('', '', string.punctuation))  # Remove punctuation from string
             automation_data[automation_time][index]["status"] = True
             rewrite_automator(write_data=automation_data)
             return exec_task

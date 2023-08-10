@@ -40,6 +40,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         car=['car', 'vehicle'],
         garage=['garage'],
         weather=['weather', 'temperature', 'sunrise', 'sun rise', 'sunset', 'sun set'],
+        restart_control=['restart', 'reboot'],
 
         # ORDER OF THE ABOVE SHOULD BE RETAINED, AS THE CONDITION LOOP WILL RUN IN THE SAME ORDER
         # internal
@@ -97,7 +98,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         celebrate=['festival', 'festivals', 'celebrate', 'celebration', 'holiday', 'holidays', 'event', 'events'],
         sleep_control=['lock', 'screen', 'pc', 'computer'],
         sentry=['sleep', 'activate sentry mode'],
-        restart_control=['restart', 'reboot'],
         shutdown=['shutdown', 'shut down', 'terminate'],
         ok=['yeah', 'yes', 'yep', 'go ahead', 'proceed', 'continue', 'carry on', 'please', 'keep going'],
         exit_=['exit', 'quit', 'no', 'nope', 'thank you', 'Xzibit', 'bye', 'good bye', 'see you later',

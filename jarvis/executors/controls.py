@@ -14,14 +14,15 @@ import psutil
 import pybrightness
 import pywslocker
 
-from jarvis.executors import listener_controls, system, volume, word_match
+from jarvis.executors import (files, listener_controls, system, volume,
+                              word_match)
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
 
@@ -143,10 +144,26 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         logger.info("Restarting '%s'", caller)
         db_restart_entry(caller=caller)
         return
-    if shared.called_by_offline:  # restarted ONLY via automation.yaml
-        logger.info("Restarting all background processes!")
-        db_restart_entry(caller="OFFLINE")
-        speaker.speak(text="Restarting all background processes!")  # this is only to log the response
+    if shared.called_by_offline:
+        if phrase:
+            if "all" in phrase.lower().split():
+                logger.info("Restarting all background processes!")
+                db_restart_entry(caller="OFFLINE")
+                speaker.speak(text="Restarting all background processes!")
+                return
+            if avail := list(files.get_processes().keys()):
+                avail.remove('jarvis')  # cannot be restarted
+            else:
+                speaker.speak(text="Unable to fetch background processes. Try specifying 'all'")
+                return
+            if func := word_match.word_match(phrase=phrase, match_list=avail, strict=True):
+                logger.info("Restarting %s", func)
+                db_restart_entry(caller=func)
+                speaker.speak(text=f"Restarting the background process {func!r}")
+            else:
+                speaker.speak(text=f"Please specify a function name. Available: {util.comma_separator(avail)}")
+        else:
+            speaker.speak(text="Invalid request to restart.")
         return
     if phrase:
         if not shared.hosted_device.get('device'):
@@ -222,15 +239,19 @@ def delete_docker_container() -> NoReturn:
 
 def terminator() -> NoReturn:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc."""
+    logger.info("Removing docker container")
     delete_docker_container()
-    os.remove(models.fileio.processes) if os.path.isfile(models.fileio.processes) else None
+    if os.path.isfile(models.fileio.processes):
+        logger.info("Removing %s", models.fileio.processes)
+        os.remove(models.fileio.processes)
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
     if process_info.get('environ'):
         del process_info['environ']  # To ensure env vars are not printed in log files
     logger.debug(process_info)
     support.stop_process(pid=proc.pid)
-    os._exit(1)  # noqa
+    # noinspection PyUnresolvedReferences,PyProtectedMember
+    os._exit(1)
 
 
 def shutdown(*args, proceed: bool = False) -> NoReturn:

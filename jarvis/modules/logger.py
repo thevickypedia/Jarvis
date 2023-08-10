@@ -23,7 +23,7 @@ dictConfig({
 })
 logging.getLogger("_code_cache").propagate = False
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("JARVIS")
 if models.env.debug:
     logger.setLevel(level=logging.DEBUG)
 else:

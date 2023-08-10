@@ -128,11 +128,14 @@ class LGWebOS:
     def get_state(self) -> bool:
         """Get current state of the TV.
 
+        Notes:
+            Since LGWebOS module doesn't have a status call, get the current volume to check if TV is powered on.
+
         Returns:
             bool:
             True if powered on.
         """
-        if self.get_volume():
+        if isinstance(self.get_volume(), int):
             return True
 
     def set_volume(self, target: int) -> NoReturn:

@@ -6,11 +6,9 @@
 """
 
 import json
-import logging
 import os
 import random
 import secrets
-import string
 import sys
 import time
 import traceback
@@ -287,7 +285,7 @@ class TelegramBot:
             Swaps ``offset`` value during every iteration to avoid reprocessing messages.
         """
         offset = 0
-        logger.info(msg="Polling for incoming messages..")
+        logger.info("Polling for incoming messages..")
         while True:
             response = self._make_request(url=self.BASE_URL + models.env.bot_token + '/getUpdates',
                                           payload={'offset': offset, 'timeout': 60})
@@ -555,8 +553,6 @@ class TelegramBot:
         command_lower = command.lower()
         if 'alarm' in command_lower or 'remind' in command_lower:
             command = command_lower
-        else:
-            command = command.translate(str.maketrans('', '', string.punctuation))  # Remove punctuations from string
         if command_lower == 'test':
             self.send_message(chat_id=payload['from']['id'], response="Test message received.")
             return
@@ -576,13 +572,12 @@ class TelegramBot:
                 return
         self.executor(command=command, payload=payload)
 
-    def executor(self, command: str, payload: dict, respond: bool = True) -> NoReturn:
+    def executor(self, command: str, payload: dict) -> NoReturn:
         """Executes the command via offline communicator.
 
         Args:
             command: Command to be executed.
             payload: Payload received, to extract information from.
-            respond: Boolean flag to restrict the response after executing a command.
         """
         logger.info("Request: %s", command)
         try:
@@ -594,7 +589,7 @@ class TelegramBot:
             logger.error(traceback.format_exc())
             response = f"Jarvis failed to process the request.\n\n`{error}`"
         logger.info("Response: %s", response)
-        self.process_response(payload=payload, response=response) if respond else None
+        self.process_response(payload=payload, response=response)
 
     def process_response(self, response: str, payload: dict) -> NoReturn:
         """Processes the response via Telegram API.
@@ -612,21 +607,4 @@ class TelegramBot:
             self.send_audio(chat_id=payload['from']['id'], filename=filename)
             os.remove(filename)
             return
-        self.send_message(chat_id=payload['from']['id'], response=response)
-
-
-if __name__ == '__main__':
-    from jarvis.modules.exceptions import StopSignal
-
-    logger = logging.getLogger(__name__)  # noqa: F811
-    log_handler = logging.StreamHandler()
-    log_handler.setFormatter(fmt=logging.Formatter(
-        fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",
-        datefmt="%b %d, %Y %H:%M:%S"
-    ))
-    logger.addHandler(hdlr=log_handler)
-    logger.setLevel(level=logging.DEBUG)
-    try:
-        TelegramBot().poll_for_messages()
-    except StopSignal:
-        logger.info("Terminated")
+        self.send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)

@@ -23,7 +23,7 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False
         attempts: Number of retry attempts.
         interval: Seconds to wait between each iteration.
         warn: Takes a boolean flag whether to throw a warning message instead of raising final exception.
-        exclude_exc: Exception that has to be logged and ignored.
+        exclude_exc: Exception(s) that has to be logged and ignored.
 
     Returns:
         Callable:
@@ -56,26 +56,30 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False
             Raises:
                 Raises the exception as received beyond the given number of attempts.
             """
+            if isinstance(exclude_exc, tuple):
+                exclusions = exclude_exc + (KeyboardInterrupt,)
+            elif isinstance(exclude_exc, list):
+                exclusions = exclude_exc + [KeyboardInterrupt]
+            else:
+                exclusions = (exclude_exc, KeyboardInterrupt)
             return_exc = None
             for i in range(1, attempts + 1):
                 try:
                     return_val = func(*args, **kwargs)
                     # Log messages only when the function did not return during the first attempt
                     if i > 1:
-                        logger.info(msg=f"{func.__name__} returned at {inflect.engine().ordinal(num=i)} attempt")
+                        logger.info(f"{func.__name__} returned at {inflect.engine().ordinal(num=i)} attempt")
                     return return_val
-                except exclude_exc or KeyboardInterrupt as excl_error:
-                    logger.error(msg=excl_error)
+                except exclusions as excl_error:
+                    logger.error(excl_error)
                 except Exception as error:
                     return_exc = error
                 time.sleep(interval)
-            logger.error(msg=f"{func.__name__} exceeded retry count::{attempts}")
+            logger.error(f"{func.__name__} exceeded retry count::{attempts}")
             if return_exc and warn:
                 warnings.warn(
-                    f"{type(return_exc).__name__}: {return_exc}"
+                    f"{type(return_exc).__name__}: {return_exc.__str__()}"
                 )
-            elif return_exc:
-                raise return_exc
 
         return wrapper
 

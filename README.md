@@ -555,12 +555,12 @@ Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/
 ## [Release Notes](https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst)
 **Requirement**
 ```shell
-python -m pip install changelog-generator
+python -m pip install gitverse
 ```
 
 **Usage**
 ```shell
-changelog reverse -f release_notes.rst -t 'Release Notes'
+gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 ```
 
 ## Linting
