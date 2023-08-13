@@ -32,8 +32,8 @@ alarm
 reminder
 
 # sphinx docs builder within docs_gen
-_build
-_static
+docs_gen/_build
+docs_gen/_static
 
 # credentials stored locally
 .env
