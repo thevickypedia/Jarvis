@@ -2,6 +2,7 @@ import json
 import os
 import random
 import re
+import string
 import subprocess
 import urllib.error
 import urllib.request
@@ -11,6 +12,8 @@ from threading import Thread
 from typing import Dict, List, NoReturn, Tuple, Union
 
 import boto3
+from blockstdout import BlockPrint
+from dateutil import parser, relativedelta
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import country_holidays
@@ -223,9 +226,8 @@ def google_home(device: str = None, file: str = None) -> None:
         for target in chosen:
             file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
             support.flush_screen()
-            util.block_print()
-            GoogleHome(host=target).play(file_url, "audio/mp3")
-            util.release_print()
+            with BlockPrint():
+                GoogleHome(host=target).play(file_url, "audio/mp3")
         if len(chosen) > 1:
             speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
                                f"I hope you'll enjoy this {models.env.title}.", run=True)
@@ -344,8 +346,51 @@ def report(*args) -> NoReturn:
     shared.called['report'] = False
 
 
+def extract_humanized_date(phrase: str) -> Tuple[datetime.date, str, str]:
+    """Converts most humanized date into datetime object.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+
+    Returns:
+        Tuple[datetime.date, str, str]:
+        A tuple of the date object, human friendly name, and the tense.
+    """
+    today = datetime.now().date()
+
+    if "day after tomorrow" in phrase:
+        return today + relativedelta.relativedelta(days=2), "day after tomorrow", "is"
+    elif "day before yesterday" in phrase:
+        return today - relativedelta.relativedelta(days=2), "day before yesterday", "was"
+    elif "tomorrow" in phrase:
+        return today + relativedelta.relativedelta(days=1), "tomorrow", "is"
+    elif "yesterday" in phrase:
+        return today - relativedelta.relativedelta(days=1), "yesterday", "was"
+
+    try:
+        parsed_date = parser.parse(phrase, fuzzy=True)
+    except parser.ParserError as error:
+        logger.error(error)
+        return today, "today", "is"
+
+    if "next" in phrase:
+        next_occurrence = parsed_date + relativedelta.relativedelta(weeks=1)
+        return next_occurrence.date(), f"next {next_occurrence.strftime('%A')}, ({next_occurrence.strftime('%B')} " \
+                                       f"{support.ENGINE.ordinal(next_occurrence.strftime('%d'))})", "is"
+    elif "last" in phrase:
+        last_occurrence = parsed_date - relativedelta.relativedelta(weeks=1)
+        return last_occurrence.date(), f"last {last_occurrence.strftime('%A')}, ({last_occurrence.strftime('%B')} " \
+                                       f"{support.ENGINE.ordinal(last_occurrence.strftime('%d'))})", "was"
+
+    return parsed_date, f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} " \
+                        f"{support.ENGINE.ordinal(parsed_date.strftime('%d'))})", "is"
+
+
 def celebrate(phrase: str = None) -> str:
     """Function to look if the current date is a holiday or a birthday.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
 
     Returns:
         str:
@@ -354,9 +399,15 @@ def celebrate(phrase: str = None) -> str:
     countrycode = None
     countryname = None
     if phrase:
+        date, day, tense = extract_humanized_date(phrase)
+        logger.info(f"Extracted humanized date: {date}")
+    else:
+        date, day, tense = datetime.today().date(), "today", "is"
+    if phrase:
         phrase = phrase.strip()
-        countries = {country[1]: [' '.join(re.findall('[A-Z][^A-Z]*', country[0])), country[2]] for country in
-                     COUNTRIES.values()}
+        countries = {
+            country[1]: [' '.join(re.findall('[A-Z][^A-Z]*', country[0])), country[2]] for country in COUNTRIES.values()
+        }
         for code, names in countries.items():
             # If country code is used, then it should be a precise match, otherwise just regex it
             if code in phrase.split() or any(name in phrase for name in names):
@@ -372,18 +423,18 @@ def celebrate(phrase: str = None) -> str:
     if not countrycode:
         countrycode = "US"
         countryname = "USA"
-    if current_holiday := country_holidays(countrycode.upper()).get(datetime.today().date()):
+    if current_holiday := country_holidays(countrycode.upper()).get(date):
         if phrase:
-            speaker.speak(text=f"Today is {current_holiday!r} in {countryname}")
+            speaker.speak(text=f"{string.capwords(day)} {tense} {current_holiday!r} in {countryname}")
         else:
             return current_holiday
-    elif models.env.birthday == datetime.now().strftime("%d-%B"):
+    elif models.env.birthday == date.strftime("%d-%B"):
         if phrase:
-            speaker.speak(text=f"Today is your birthday {models.env.title}!")
+            speaker.speak(text=f"{string.capwords(day)} {tense} your birthday {models.env.title}!")
         else:
             return "Birthday"
     elif phrase:
-        speaker.speak(text=f"There are no events to celebrate today in {countryname}")
+        speaker.speak(text=f"There are no events to celebrate {day}, in {countryname}")
 
 
 def time_travel() -> None:

@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Any, Dict, NoReturn, Optional, Tuple, Union
 from urllib.parse import urlencode
 
-import inflect
 import requests
 
 from jarvis.executors import files, location, word_match
@@ -108,7 +107,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
         elif 'next week' in phrase:
             key = -1
             next_week = datetime.fromtimestamp(response['daily'][-1]['dt']).strftime("%A, %B %d")
-            tell = f"on {' '.join(next_week.split()[:-1])} {inflect.engine().ordinal(next_week.split()[-1])}"
+            tell = f"on {' '.join(next_week.split()[:-1])} {support.ENGINE.ordinal(next_week.split()[-1])}"
         else:
             key = 0
             tell = 'today'

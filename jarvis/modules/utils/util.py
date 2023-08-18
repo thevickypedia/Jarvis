@@ -8,15 +8,13 @@
 import contextlib
 import difflib
 import hashlib
-import os
 import random
 import re
 import socket
 import string
-import sys
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, Hashable, List, NoReturn, Union
+from typing import Any, Dict, Hashable, List, Union
 
 
 def get_timezone() -> str:
@@ -341,16 +339,6 @@ def remove_duplicates(input_: List[Any]) -> List[Any]:
     """
     # return list(set(input_))
     return [i for n, i in enumerate(input_) if i not in input_[n + 1:]]
-
-
-def block_print() -> NoReturn:
-    """Suppresses print statement."""
-    sys.stdout = open(os.devnull, 'w')
-
-
-def release_print() -> NoReturn:
-    """Removes print statement's suppression."""
-    sys.stdout = sys.__stdout__
 
 
 def get_free_port() -> int:

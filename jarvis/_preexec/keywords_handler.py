@@ -3,12 +3,12 @@ import warnings
 from collections import OrderedDict
 from typing import NoReturn
 
-import inflect
 import yaml
 
 from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.models import models
+from jarvis.modules.utils import support
 
 # Used by docs, actual fileio is created in models.py as it gets invoked during the imports above
 if not os.path.isdir(models.fileio.root):
@@ -19,7 +19,7 @@ def rewrite_keywords() -> NoReturn:
     """Loads keywords.yaml file if available, else loads the base keywords module as an object."""
     keywords_src = OrderedDict(**keywords.keyword_mapping(), **conversation.conversation_mapping())
     # WATCH OUT: for changes in keyword/function name
-    keywords_src['events'] = [models.env.event_app.lower(), inflect.engine().plural(models.env.event_app)]
+    keywords_src['events'] = [models.env.event_app.lower(), support.ENGINE.plural(models.env.event_app)]
     if os.path.isfile(models.fileio.keywords):
         with open(models.fileio.keywords) as dst_file:
             try:

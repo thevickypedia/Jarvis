@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+3.5.1 (08/18/2023)
+------------------
+- Adds a new feature to request holidays on any date/day
+- Minor improvements in stability
+
 3.5 (08/10/2023)
 ----------------
 - Adds a new feature to place functional restrictions on offline commands

@@ -1,7 +1,6 @@
 import re
 import webbrowser
 
-import inflect
 import requests
 from geopy.distance import geodesic
 
@@ -81,7 +80,7 @@ def google_maps(query: str) -> bool:
             option = 'only option I found is'
             next_val = f"Do you want to head there {models.env.title}?"
         elif n <= 2:
-            option = f'{inflect.engine().ordinal(n)} option is'
+            option = f'{support.ENGINE.ordinal(n)} option is'
             next_val = f"Do you want to head there {models.env.title}?"
         elif n <= 5:
             option = 'next option would be'

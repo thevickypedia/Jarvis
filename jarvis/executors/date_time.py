@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import inflect
 import pytz
 from timezonefinder import TimezoneFinder
 
@@ -44,7 +43,7 @@ def current_time(converted: str = None) -> None:
 def current_date(*args) -> None:
     """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
     dt_string = datetime.now().strftime("%A, %B")
-    date_ = inflect.engine().ordinal(datetime.now().strftime("%d"))
+    date_ = support.ENGINE.ordinal(datetime.now().strftime("%d"))
     year = str(datetime.now().year)
     event = others.celebrate()
     if shared.called['time_travel']:

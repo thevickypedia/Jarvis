@@ -13,12 +13,12 @@ axju-jokes==1.0.3
 inflect==7.0.0
 pywebostv==0.8.9
 speedtest-cli==2.1.3
-holidays==0.29
+holidays==0.30
 randfacts==0.20.2
 openai==0.27.8
 fastapi==0.95.1  # Upgrades pydantic
 uvicorn==0.22.0  # Upgrades pydantic
-aiofiles==23.1.0
+aiofiles==23.2.1
 python-multipart==0.0.6
 pydantic[email]==1.10.7  # Major code change, hold
 icalendar==5.0.7
@@ -31,7 +31,7 @@ pytest==7.4.0
 bs4==0.0.1
 Pillow==10.0.0
 packaging==23.1
-numpy==1.25.1
+numpy==1.25.2
 SoundFile==0.12.1
 deepdiff==6.3.1
 pymyq==3.1.6

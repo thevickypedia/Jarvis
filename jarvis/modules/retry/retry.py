@@ -10,9 +10,8 @@ import time
 import warnings
 from typing import Any, Callable, NoReturn, Union
 
-import inflect
-
 from jarvis.modules.logger import logger
+from jarvis.modules.utils import support
 
 
 def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False, exclude_exc=None) -> \
@@ -68,7 +67,7 @@ def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False
                     return_val = func(*args, **kwargs)
                     # Log messages only when the function did not return during the first attempt
                     if i > 1:
-                        logger.info(f"{func.__name__} returned at {inflect.engine().ordinal(num=i)} attempt")
+                        logger.info(f"{func.__name__} returned at {support.ENGINE.ordinal(num=i)} attempt")
                     return return_val
                 except exclusions as excl_error:
                     logger.error(excl_error)
