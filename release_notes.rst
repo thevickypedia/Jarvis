@@ -14,122 +14,85 @@ Release Notes
 
 3.4 (07/31/2023)
 ----------------
-- Change response for ``ChatGPT``'s failed authentication
-- Fix secret access via offline communicator
+- Includes bug fixes and startup improvements
+- Updates keyword mapping
+- Updates to standalone test modules
 
 3.3 (07/28/2023)
 ----------------
-- Brute force ``timeout`` on ``ChatGPT`` instance creation
-- Fix some random start up errors and delays
-- Create an option to get stock tickers as a dict
-- Update docs page for API endpoint
-- Release v3.3
+- Adds a feature to get all stock tickers via API
+- Includes bug fixes and startup improvements
 
 3.2 (07/22/2023)
 ----------------
-- Implement a new feature to analyze stocks
-- Remove unwanted ticker gathering methods
-- Release version 3.2
+- Adds a new feature to analyze stocks
 
 3.1.3 (07/19/2023)
 ------------------
-- Multiple tasks to run simultaneously in automation
-- Add low and high threshold for weather alerts
-- Update README.md and bump sub-version
+- Allow multiple tasks to run simultaneously in automation
+- Allow high and low threshold for weather alerts
 
 3.1.2 (07/12/2023)
 ------------------
-- Fix flaky response for failed lights
+- Includes bug fixes on response to failed to lights' response
 
 3.1.1 (07/11/2023)
 ------------------
-- Allow ``secure-send`` to work via UI
-- Better way to distinguish smart devices
-- Reduce redundancy and re-use variables
-- Add more keywords for secure send
-- Update CORS allowance for headers
-- Update README.md and type hints
-- Bump version
+- Includes a new feature to allow ``secure-send`` via UI
+- Implements a better approach to distinguish smart devices
+- Minor performance and stability improvements
 
 3.1 (07/01/2023)
 ----------------
-- Fix flaky connection reset in car module
-- Allow restart via ``automation.yaml``
-- Log vehicle auth expiration
-- Fix missing hosted device information in logs
-- Add inline comments
-- Instantiate vehicle objects
+- Includes bug fixes on vehicle connections
+- Includes a new feature to set timed restarts via automation
+- Improved logging for better visibility
 
 3.0 (06/27/2023)
 ----------------
-- Enable custom keywords to functions mapping
-- Remove redundancy in weather alert trigger
-- Set weather alert trigger via background tasks
-- Keep weather alert time format consistent
-- Add an option to manually enable the listener
-- Add automation and smart devices to files.py
-- Cleanup keywords_handler.py
-- Rename timeout and phrase_limit to more sensible ones
-- Auto store LG tv's client key in smart_devices.yaml
+- Includes a new feature to have a custom keyword mapping
+- Removes redundancy in weather alerts
+- Now there is no manual intervention required to store LG tv's client key
 
-3.0a (05/08/2023)
------------------
-- Optimize memory usage and remove globals
-- Reduce top level variable declarations
-- Create function mapping dict in place of globals
-- Reuse stock report for robinhood summarization
+3.0 (05/08/2023)
+----------------
+- Optimized memory usage and less redundant stuff
 
 2.7 (05/05/2023)
 ----------------
-- Fix inconsistent offline compatibles
-- Remove todo for NLTK since compute time is high
+- Adds a new feature to share local env vars and AWS secrets via secure endpoint
+- Reduces break time on Telegram API by introducing retry logic
+- Runs all cron jobs once during startup
+- Includes support for different units for temperature and distance
+- Improved logging
+- Includes minor bug fixes on offline commands
 
-2.7a (05/04/2023)
------------------
-- Create a feature to send env vars/secrets securely
-- Create a retry logic in TelegramAPI for parsing errors
-- Kick off all cron jobs during startup
-- Fix a bug in location request failing for offline process
-- Support different units for temperature and distance
-- Add *args to functions associated to conditions
-- Avoid converting to dict for APIResponse
-- Convert Thread to Timer for reset OTPs
-- Remove revaluation of CronExpression
-- Change headers to use hyphen instead of underscore
-- Add more logging towards unrecognized models
-- Add todos for next release
-- Update .gitignore and docs
-- Release alpha version
+2.7 (05/04/2023)
+----------------
+- Alpha version
 
 2.5 (04/26/2023)
 ----------------
-- Run `py3-tts` test on current python `bin`
-- Run pre-checks on meetings in background tasks
+- Improved reliability and stability
 
 2.4 (04/22/2023)
 ----------------
-- Feature improvements and bug fixes on `JarvisAPI`
+- Includes feature improvements and bug fixes on ``JarvisAPI``
 - Support audio responses for multiple and timed tasks
-- Exhaust all audio options before returning string
-- Resolve edge case scenario in pyttsx3
-- Enable speech-synthesis if audio driver fails
-- Create weather alert monitor to notify harsh weather
-- Remove redundant template
+- Includes ``speech-synthesis`` as a backup when audio driver fails
+- Includes a new feature to create weather alert monitor to notify harsh weather
 
 2.3 (04/17/2023)
 ----------------
-- Create apikey authentication for stock monitor
-- Use constant-time compare for authentication
-- Update docs and bump version
+- Includes a new feature to authenticate stock monitor endpoint via apikey
 
 2.1 (04/10/2023)
 ----------------
-- Replace string to `enum` for condition on linux OS
-- Update release notes
+- Minor bug fix for Linux OS
 
 2.0 (04/09/2023)
 ----------------
-- Disable security mode trigger via offline on Linux
+- Disables security mode trigger via offline on Linux to improve stability
 
 7.0.8 (01/29/2023)
 ------------------
