@@ -11,8 +11,8 @@ from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from jarvis.executors import (alarm, automation, background_task, conditions,
-                              controls, crontab, listener_controls, others,
-                              remind, weather_monitor, word_match)
+                              controls, crontab, files, listener_controls,
+                              others, remind, weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -66,14 +66,11 @@ def background_task_runner() -> NoReturn:
                         background_task.remove_corrupted(task=task)
 
         # Trigger cron jobs once during start up (regardless of schedule) and follow schedule after that
-        if start_cron + 60 <= time.time() or dry_run:  # Condition passes every minute
+        if start_cron + 60 <= time.time():  # Condition passes every minute
             start_cron = time.time()
             for job in models.env.crontab:
-                if job.check_trigger() or dry_run:
-                    if dry_run:
-                        logger.info("Executing cron job: '%s' during startup", job.comment)
-                    else:
-                        logger.debug("Executing cron job: '%s'", job.comment)
+                if job.check_trigger():
+                    logger.debug("Executing cron job: '%s'", job.comment)
                     cron_process = Process(target=crontab.crontab_executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
@@ -169,23 +166,16 @@ def background_task_runner() -> NoReturn:
                     os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
 
         # Trigger reminders
-        if reminder_files := support.lock_files(reminder_files=True):
-            for reminder_file in reminder_files:
-                each_reminder = reminder_file.split('|')
-                if len(each_reminder) == 3:
-                    remind_time, remind_msg, name = each_reminder
-                else:
-                    remind_time, remind_msg = each_reminder
-                    name = None
-                if name:
-                    name = name.replace('.lock', '').replace('_', ' ')
-                else:
-                    remind_msg = remind_msg.replace('.lock', '')
-                remind_msg = remind_msg.replace('_', ' ')
-                if remind_time == now.strftime("%I_%M_%p"):
-                    logger.info("Executing reminder: %s", each_reminder)
-                    Thread(target=remind.executor, kwargs={'message': remind_msg, 'contact': name}).start()
-                    os.remove(os.path.join("reminder", reminder_file))
+        if reminders := files.get_reminders():
+            copied = reminders.copy()
+            for reminder in reminders:
+                if reminder['time'] == now.strftime("%I:%M %p"):
+                    logger.info("Executing reminder: %s", reminder)
+                    Thread(target=remind.executor,
+                           kwargs={'message': reminder['message'], 'contact': reminder['name']}).start()
+                    copied.remove(reminder)
+            if copied != reminders:
+                files.put_reminders(data=copied)
 
         # Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

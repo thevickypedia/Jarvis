@@ -29,8 +29,6 @@ def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = N
         repeat: Boolean flag if the alarm should be repeated every day.
         day: Day of week when the alarm should be repeated.
     """
-    if not os.path.isdir('alarm'):
-        os.mkdir('alarm')
     if repeat:
         pathlib.Path(os.path.join('alarm', f'{hour}_{minute}_{am_pm}_repeat.lock')).touch()
     elif day:

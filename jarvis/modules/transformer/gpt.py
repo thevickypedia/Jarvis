@@ -116,7 +116,9 @@ class ChatGPT:
         })
         try:
             chat: OpenAIObject = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo", messages=self.MESSAGES
+                messages=self.MESSAGES,
+                model=models.env.openai_model,
+                timeout=models.env.openai_timeout
             )
             self.MESSAGES.append({"role": "system", "content": chat.choices[0].message.content})
             self.authenticated = True
@@ -143,7 +145,9 @@ class ChatGPT:
         )
         try:
             chat: OpenAIObject = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo", messages=self.MESSAGES
+                messages=self.MESSAGES,
+                model=models.env.openai_model,
+                timeout=models.env.openai_timeout
             )
         except OpenAIError as error:
             logger.error(error)

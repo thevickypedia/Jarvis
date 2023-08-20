@@ -286,142 +286,144 @@ class EnvConfig(BaseSettings):
     """
 
     # Custom units
-    distance_unit: DistanceUnits = Field(default=None, env='DISTANCE_UNIT')
-    temperature_unit: TemperatureUnits = Field(default=None, env='TEMPERATURE_UNIT')
+    distance_unit: DistanceUnits = Field(default=None)
+    temperature_unit: TemperatureUnits = Field(default=None)
 
     # System config
-    home: DirectoryPath = Field(default=os.path.expanduser('~'), env='HOME')
-    volume: PositiveInt = Field(default=50, env='VOLUME')
-    limited: bool = Field(default=None, env='LIMITED')
-    root_user: str = Field(default=getpass.getuser(), env='USER')
-    root_password: str = Field(default=None, env='ROOT_PASSWORD')
+    home: DirectoryPath = Field(default=os.path.expanduser('~'))
+    volume: PositiveInt = Field(default=50)
+    limited: bool = Field(default=None)
+    root_user: str = Field(default=getpass.getuser())
+    root_password: str = Field(default=None)
 
     # Mute during meetings
-    mute_for_meetings: bool = Field(default=False, env='MUTE_FOR_MEETINGS')
+    mute_for_meetings: bool = Field(default=False)
 
     # Built-in speaker config
-    voice_name: str = Field(default=None, env='VOICE_NAME')
+    voice_name: str = Field(default=None)
     _rate = audio_driver.getProperty("rate") if audio_driver else dynamic_rate()
-    speech_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate, env='SPEECH_RATE')
+    speech_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate)
 
     # Peripheral config
-    camera_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='CAMERA_INDEX')
-    speaker_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='SPEAKER_INDEX')
-    microphone_index: Union[int, PositiveInt] = Field(default=None, ge=0, env='MICROPHONE_INDEX')
+    camera_index: Union[int, PositiveInt] = Field(default=None, ge=0)
+    speaker_index: Union[int, PositiveInt] = Field(default=None, ge=0)
+    microphone_index: Union[int, PositiveInt] = Field(default=None, ge=0)
 
     # Log config
-    debug: bool = Field(default=False, env='DEBUG')
-    log_retention: Union[int, PositiveInt] = Field(default=10, lt=90, gt=0, env='LOG_RETENTION')
+    debug: bool = Field(default=False)
+    log_retention: Union[int, PositiveInt] = Field(default=10, lt=90, gt=0)
 
     # User add-ons
-    birthday: str = Field(default=None, env='BIRTHDAY')
-    title: str = Field(default='sir', env='TITLE')
-    name: str = Field(default='Vignesh', env='NAME')
-    website: HttpUrl = Field(default='https://vigneshrao.com', env='WEBSITE')
-    plot_mic: bool = Field(default=True, env='PLOT_MIC')
+    birthday: str = Field(default=None)
+    title: str = Field(default='sir')
+    name: str = Field(default='Vignesh')
+    website: HttpUrl = Field(default='https://vigneshrao.com')
+    plot_mic: bool = Field(default=True)
 
     # Author specific
-    author_mode: bool = Field(default=False, env='AUTHOR_MODE')
+    author_mode: bool = Field(default=False)
 
     # Third party api config
-    weather_api: str = Field(default=None, env='WEATHER_API')
-    maps_api: str = Field(default=None, env='MAPS_API')
-    news_api: str = Field(default=None, env='NEWS_API')
-    openai_api: str = Field(default=None, env='OPENAI_API')
-    openai_reuse_threshold: float = Field(default=None, ge=0.5, le=0.9, env='OPENAI_REUSE_THRESHOLD')
+    weather_api: str = Field(default=None)
+    maps_api: str = Field(default=None)
+    news_api: str = Field(default=None)
+    openai_api: str = Field(default=None)
+    openai_model: str = Field(default='gpt-3.5-turbo')
+    openai_timeout: int = Field(default=5, le=10, ge=1)
+    openai_reuse_threshold: float = Field(default=None, ge=0.5, le=0.9)
 
     # Communication config
-    gmail_user: EmailStr = Field(default=None, env='GMAIL_USER')
-    gmail_pass: str = Field(default=None, env='GMAIL_PASS')
-    open_gmail_user: EmailStr = Field(default=None, env='OPEN_GMAIL_USER')
-    open_gmail_pass: str = Field(default=None, env='OPEN_GMAIL_PASS')
-    recipient: EmailStr = Field(default=None, env='RECIPIENT')
-    phone_number: str = Field(default=None, regex="\\d{10}$", env='PHONE_NUMBER')
+    gmail_user: EmailStr = Field(default=None)
+    gmail_pass: str = Field(default=None)
+    open_gmail_user: EmailStr = Field(default=None)
+    open_gmail_pass: str = Field(default=None)
+    recipient: EmailStr = Field(default=None)
+    phone_number: str = Field(default=None, regex="\\d{10}$")
 
     # Offline communicator config
-    offline_host: str = Field(default=socket.gethostbyname('localhost'), env='OFFLINE_HOST')
-    offline_port: PositiveInt = Field(default=4483, env='OFFLINE_PORT')
-    offline_pass: str = Field(default='OfflineComm', env='OFFLINE_PASS')
-    workers: PositiveInt = Field(default=1, env='WORKERS')
+    offline_host: str = Field(default=socket.gethostbyname('localhost'))
+    offline_port: PositiveInt = Field(default=4483)
+    offline_pass: str = Field(default='OfflineComm')
+    workers: PositiveInt = Field(default=1)
 
     # Calendar events and meetings config
-    event_app: EventApp = Field(default=EventApp.CALENDAR, env='EVENT_APP')
-    ics_url: HttpUrl = Field(default=None, env='ICS_URL')
+    event_app: EventApp = Field(default=EventApp.CALENDAR)
+    ics_url: HttpUrl = Field(default=None)
     # Set background sync limits to range: 15 minutes to 12 hours
-    sync_meetings: int = Field(default=None, ge=900, le=43_200, env='SYNC_MEETINGS')
-    sync_events: int = Field(default=None, ge=900, le=43_200, env='SYNC_EVENTS')
+    sync_meetings: int = Field(default=None, ge=900, le=43_200)
+    sync_events: int = Field(default=None, ge=900, le=43_200)
 
     # Stock monitor apikey
-    stock_monitor_api: Dict[EmailStr, str] = Field(default={}, env="STOCK_MONITOR_API")
+    stock_monitor_api: Dict[EmailStr, str] = Field(default={})
 
     # Surveillance config
-    surveillance_endpoint_auth: str = Field(default=None, env='SURVEILLANCE_ENDPOINT_AUTH')
-    surveillance_session_timeout: PositiveInt = Field(default=300, env='SURVEILLANCE_SESSION_TIMEOUT')
+    surveillance_endpoint_auth: str = Field(default=None)
+    surveillance_session_timeout: PositiveInt = Field(default=300)
 
     # Apple devices' config
-    icloud_user: EmailStr = Field(default=None, env='ICLOUD_USER')
-    icloud_pass: str = Field(default=None, env='ICLOUD_PASS')
-    icloud_recovery: str = Field(default=None, regex="\\d{10}$", env='ICLOUD_RECOVERY')
+    icloud_user: EmailStr = Field(default=None)
+    icloud_pass: str = Field(default=None)
+    icloud_recovery: str = Field(default=None, regex="\\d{10}$")
 
     # Robinhood config
-    robinhood_user: EmailStr = Field(default=None, env='ROBINHOOD_USER')
-    robinhood_pass: str = Field(default=None, env='ROBINHOOD_PASS')
-    robinhood_qr: str = Field(default=None, env='ROBINHOOD_QR')
-    robinhood_endpoint_auth: str = Field(default=None, env='ROBINHOOD_ENDPOINT_AUTH')
+    robinhood_user: EmailStr = Field(default=None)
+    robinhood_pass: str = Field(default=None)
+    robinhood_qr: str = Field(default=None)
+    robinhood_endpoint_auth: str = Field(default=None)
 
     # GitHub config
-    git_user: str = Field(default=None, env='GIT_USER')
-    git_pass: str = Field(default=None, env='GIT_PASS')
+    git_user: str = Field(default=None)
+    git_pass: str = Field(default=None)
 
     # VPN Server config
-    vpn_username: str = Field(default=None, env='VPN_USERNAME')
-    vpn_password: str = Field(default=None, env='VPN_PASSWORD')
-    vpn_domain: str = Field(default=None, env='VPN_DOMAIN')
-    vpn_record_name: str = Field(default=None, env='VPN_RECORD_NAME')
+    vpn_username: str = Field(default=None)
+    vpn_password: str = Field(default=None)
+    vpn_domain: str = Field(default=None)
+    vpn_record_name: str = Field(default=None)
 
     # Vehicle config
-    car_email: EmailStr = Field(default=None, env='CAR_EMAIL')
-    car_pass: str = Field(default=None, env='CAR_PASS')
-    car_pin: str = Field(default=None, regex="\\d{4}$", env='CAR_PIN')
+    car_email: EmailStr = Field(default=None)
+    car_pass: str = Field(default=None)
+    car_pin: str = Field(default=None, regex="\\d{4}$")
 
     # Garage door config
-    myq_username: EmailStr = Field(default=None, env='MYQ_USERNAME')
-    myq_password: str = Field(default=None, env='MYQ_PASSWORD')
+    myq_username: EmailStr = Field(default=None)
+    myq_password: str = Field(default=None)
 
     # Listener config
-    sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0, env='SENSITIVITY')
-    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=3, env='LISTENER_TIMEOUT')
-    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None, env='LISTENER_PHRASE_LIMIT')
-    recognizer_settings: RecognizerSettings = Field(default=None, env='RECOGNIZER_SETTINGS')
+    sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0)
+    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=3)
+    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None)
+    recognizer_settings: RecognizerSettings = Field(default=None)
 
     # Telegram config
-    bot_token: str = Field(default=None, env='BOT_TOKEN')
-    bot_chat_ids: List[int] = Field(default=[], env='BOT_CHAT_IDS')
-    bot_users: List[str] = Field(default=[], env='BOT_USERS')
+    bot_token: str = Field(default=None)
+    bot_chat_ids: List[int] = Field(default=[])
+    bot_users: List[str] = Field(default=[])
 
     # Speech synthesis config
-    speech_synthesis_timeout: int = Field(default=3, env='SPEECH_SYNTHESIS_TIMEOUT')
-    speech_synthesis_voice: str = Field(default='en-us_northern_english_male-glow_tts', env='SPEECH_SYNTHESIS_VOICE')
-    speech_synthesis_quality: SSQuality = Field(default=SSQuality.Medium_Quality, env='SPEECH_SYNTHESIS_QUALITY')
-    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'), env='SPEECH_SYNTHESIS_HOST')
-    speech_synthesis_port: PositiveInt = Field(default=5002, env='SPEECH_SYNTHESIS_PORT')
+    speech_synthesis_timeout: int = Field(default=3)
+    speech_synthesis_voice: str = Field(default='en-us_northern_english_male-glow_tts')
+    speech_synthesis_quality: SSQuality = Field(default=SSQuality.Medium_Quality)
+    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'))
+    speech_synthesis_port: PositiveInt = Field(default=5002)
 
     # Background tasks
-    crontab: List[expression.CronExpression] = Field(default=[], env='CRONTAB')
-    weather_alert: Union[str, datetime] = Field(default=None, env='WEATHER_ALERT')
-    weather_alert_min: Union[int, PositiveInt] = Field(default=36, env='WEATHER_ALERT_MIN')
-    weather_alert_max: Union[int, PositiveInt] = Field(default=104, env='WEATHER_ALERT_MAX')
+    crontab: List[expression.CronExpression] = Field(default=[])
+    weather_alert: Union[str, datetime] = Field(default=None)
+    weather_alert_min: Union[int, PositiveInt] = Field(default=36)
+    weather_alert_max: Union[int, PositiveInt] = Field(default=104)
 
     # WiFi config
-    wifi_ssid: str = Field(default=None, env='WIFI_SSID')
-    wifi_password: str = Field(default=None, env='WIFI_PASSWORD')
-    connection_retry: Union[PositiveInt, PositiveFloat] = Field(default=10, env='CONNECTION_RETRY')
+    wifi_ssid: str = Field(default=None)
+    wifi_password: str = Field(default=None)
+    connection_retry: Union[PositiveInt, PositiveFloat] = Field(default=10)
 
     # Legacy macOS config
     if settings.legacy:
-        wake_words: List[str] = Field(default=['alexa'], env='WAKE_WORDS')
+        wake_words: List[str] = Field(default=['alexa'])
     else:
-        wake_words: List[str] = Field(default=['jarvis'], env='WAKE_WORDS')
+        wake_words: List[str] = Field(default=['jarvis'])
 
     class Config:
         """Environment variables configuration."""
@@ -494,6 +496,8 @@ class FileIO(BaseModel):
 
     # Directories
     root: DirectoryPath = os.path.realpath('fileio')
+    alarm_root: DirectoryPath = os.path.realpath('alarm')
+    reminder_root: DirectoryPath = os.path.realpath('reminder')
 
     # Home automation
     automation: FilePath = os.path.join(root, 'automation.yaml')
@@ -502,6 +506,10 @@ class FileIO(BaseModel):
     tmp_background_tasks: FilePath = os.path.join(root, 'tmp_background_tasks.yaml')
     smart_devices: FilePath = os.path.join(root, 'smart_devices.yaml')
     contacts: FilePath = os.path.join(root, 'contacts.yaml')
+
+    # Alarms and Reminders
+    alarms: FilePath = os.path.join(alarm_root, 'alarms.yaml')
+    reminders: FilePath = os.path.join(reminder_root, 'reminders.yaml')
 
     # Simulation
     simulation: FilePath = os.path.join(root, 'simulation.yaml')

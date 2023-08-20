@@ -6,6 +6,7 @@
 """
 
 import os
+import pathlib
 import warnings
 from typing import NoReturn, Union
 
@@ -121,6 +122,16 @@ def _main_process_validations() -> NoReturn:
     db = database.Database(database=fileio.base_db)
     for table, column in TABLES.items():
         db.create_table(table_name=table, columns=column)
+    # Create required directory for alarms
+    if not os.path.isdir(fileio.alarm_root):
+        os.mkdir(fileio.alarm_root)
+    if not os.path.isfile(fileio.alarms):
+        pathlib.Path(fileio.alarms).touch()
+    # Create required directory for reminders
+    if not os.path.isdir(fileio.reminder_root):
+        os.mkdir(fileio.reminder_root)
+    if not os.path.isfile(fileio.reminders):
+        pathlib.Path(fileio.reminders).touch()
 
 
 def _global_validations() -> NoReturn:

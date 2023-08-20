@@ -1,9 +1,7 @@
-import os
-import pathlib
 import random
 import re
 from datetime import datetime, timedelta
-from typing import NoReturn, Union
+from typing import NoReturn
 
 import pynotification
 
@@ -15,35 +13,35 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, util
 
 
-def create_reminder(hour: Union[str, int], minute: Union[str, int], am_pm: str,
-                    message: str, to_about: str, timer: str = None, name: str = None) -> NoReturn:
+def create_reminder(time: datetime, message: str, to_about: str, timer: str = None, name: str = None) -> NoReturn:
     """Creates the lock file necessary to set a reminder.
 
     Args:
-        hour: Hour of reminder time.
-        minute: Minute of reminder time.
-        am_pm: AM/PM of reminder time.
+        time: Time of reminder as a datetime object.
         message: Message to be reminded for.
         to_about: remind to or remind about as said in phrase.
         timer: Number of minutes/hours to reminder.
         name: Custom contact to remind.
     """
-    if not os.path.isdir('reminder'):
-        os.mkdir('reminder')
-    if name:
-        filename = f"{hour}_{minute}_{am_pm}|{message.replace(' ', '_')}|{name.replace(' ', '_')}.lock"
-    else:
-        filename = f"{hour}_{minute}_{am_pm}|{message.replace(' ', '_')}.lock"
-        name = "you"
-    pathlib.Path(os.path.join("reminder", filename)).touch()
+    existing_reminders = files.get_reminders()
+    formatted = dict(
+        time=time.strftime("%I:%M %p"),
+        message=message,
+        name=name
+    )
+    name = name or "you"
+    if formatted in existing_reminders:
+        speaker.speak(text=f"You have a duplicate reminder {models.env.title}!")
+        return
+    existing_reminders.append(formatted)
+    files.put_reminders(data=existing_reminders)
     if timer:
-        logger.info("Reminder created for '{message}' at {hour}:{minute} {am_pm}".format(message=message, hour=hour,
-                                                                                         minute=minute, am_pm=am_pm))
+        logger.info("Reminder created for '%s' at %s", message, time.strftime("%I:%M %p"))
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
                            f"I will remind {name} {to_about} {message}, after {timer}.")
     else:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I will remind {name} {to_about} {message}, at {hour}:{minute} {am_pm}.")
+                           f"I will remind {name} {to_about} {message}, at {time.strftime('%I:%M %p')}.")
 
 
 def find_name(phrase: str) -> str:
@@ -76,15 +74,13 @@ def reminder(phrase: str) -> None:
         phrase = phrase.replace("a minute", "1 minute").replace("now", "1 minute")
         if minutes := util.extract_nos(input_=phrase, method=int):
             min_ = 'minutes' if minutes > 1 else 'minute'
-            hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
-            create_reminder(hour=hour, minute=minute, am_pm=am_pm, message=message.group(1).strip(),
+            create_reminder(time=datetime.now() + timedelta(minutes=minutes), message=message.group(1).strip(),
                             timer=f"{minutes} {min_}", to_about=to_about, name=find_name(phrase=phrase))
             return
     elif 'hour' in phrase:
         if hours := util.extract_nos(input_=phrase, method=int):
             hour_ = 'hours' if hours > 1 else 'hour'
-            hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
-            create_reminder(hour=hour, minute=minute, am_pm=am_pm, message=message.group(1).strip(),
+            create_reminder(time=datetime.now() + timedelta(hours=hours), message=message.group(1).strip(),
                             timer=f"{hours} {hour_}", to_about=to_about, name=find_name(phrase=phrase))
             return
     if not (extracted_time := util.extract_time(input_=phrase)):
@@ -110,8 +106,8 @@ def reminder(phrase: str) -> None:
     # makes sure hour and minutes are two digits
     hour, minute = f"{hour:02}", f"{minute:02}"
     if int(hour) <= 12 and int(minute) <= 59:
-        create_reminder(hour=hour, minute=minute, am_pm=am_pm,
-                        to_about=to_about, message=message, name=find_name(phrase=phrase))
+        datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
+        create_reminder(time=datetime_obj, to_about=to_about, message=message, name=find_name(phrase=phrase))
     else:
         speaker.speak(text=f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
                            f"I don't think a time like that exists on Earth.")

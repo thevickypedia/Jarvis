@@ -222,7 +222,10 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **WEATHER_API** - API Key from [openweathermap](https://openweathermap.org/) 
 - **NEWS_API** - API Key from [newsapi](https://newsapi.org/docs/client-libraries/python)
 - **MAPS_API** - API Key for maps from [Google](https://developers.google.com/maps/documentation/maps-static/get-api-key)
+<br><br>
 - **OPENAI_API** - API Key from [openai](https://platform.openai.com/account/api-keys)
+- **OPENAI_MODEL** - GPT model to use. Defaults to `gpt-3.5-turbo`
+- **OPENAI_TIMEOUT** - Number of seconds to wait for a response from GPT.
 - **OPENAI_REUSE_THRESHOLD** - This is the threshold for sequence matching repeated requests. Defaults to `None`
 > Setting the `OPENAI_REUSE_THRESHOLD` (**range:** `0.5` to `0.9`) will try to avoid hitting OpenAI API more frequently 
 > for repeated identical requests.<br>

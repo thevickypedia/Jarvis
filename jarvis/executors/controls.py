@@ -64,20 +64,17 @@ def restart(ask: bool = True) -> NoReturn:
 
 def exit_process() -> NoReturn:
     """Function that holds the list of operations done upon exit."""
-    reminders = {}
     alarms = support.lock_files(alarm_files=True)
-    if reminder_files := support.lock_files(reminder_files=True):
-        for file in reminder_files:
-            split_val = file.replace('.lock', '').split('|')
-            reminders.update({split_val[0]: split_val[-1]})
-    if reminders:
-        logger.info("Deleting Reminders - %s", reminders)
+    if reminders := files.get_reminders():
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
             speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
-        for key, value in reminders.items():
-            speaker.speak(text=f"{value.replace('_', ' ')} at {key.lstrip('0').replace('00', '').replace('_', ' ')}")
+        for reminder in reminders:
+            if reminder['name']:
+                speaker.speak(text=f"{reminder['message']} to {reminder['name']} at {reminder['time']}")
+            else:
+                speaker.speak(text=f"{reminder['message']} at {reminder['time']}")
     if alarms:
         alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
         alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
