@@ -64,7 +64,6 @@ def restart(ask: bool = True) -> NoReturn:
 
 def exit_process() -> NoReturn:
     """Function that holds the list of operations done upon exit."""
-    alarms = support.lock_files(alarm_files=True)
     if reminders := files.get_reminders():
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
@@ -72,13 +71,14 @@ def exit_process() -> NoReturn:
             speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
         for reminder in reminders:
             if reminder['name']:
-                speaker.speak(text=f"{reminder['message']} to {reminder['name']} at {reminder['time']}")
+                speaker.speak(text=f"{reminder['message']} to {reminder['name']} at {reminder['reminder_time']}")
             else:
-                speaker.speak(text=f"{reminder['message']} at {reminder['time']}")
-    if alarms:
-        alarms = ', and '.join(alarms) if len(alarms) != 1 else ''.join(alarms)
-        alarms = alarms.replace('.lock', '').replace('_', ':').replace(':PM', ' PM').replace(':AM', ' AM')
-        speaker.speak(text=f"You have a pending alarm at {alarms} {models.env.title}!")
+                speaker.speak(text=f"{reminder['message']} at {reminder['reminder_time']}")
+    if alarms := files.get_alarms():
+        if len(alarms) == 1:
+            speaker.speak(text=f"'You have a pending alarm at {alarms[0]['alarm_time']} {models.env.title}!'")
+        else:
+            speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm deactivated!")
     speaker.speak(text=f"Shutting down now {models.env.title}!")

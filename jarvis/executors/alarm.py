@@ -1,14 +1,14 @@
 import os
-import pathlib
 import random
+import string
 import subprocess
 import time
 from datetime import datetime, timedelta
-from typing import NoReturn
+from typing import List, NoReturn
 
 import pyvolume
 
-from jarvis.executors import word_match
+from jarvis.executors import files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
@@ -16,45 +16,53 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
-def create_alarm(hour: str, minute: str, am_pm: str, phrase: str, timer: str = None,
+def create_alarm(alarm_time: datetime, phrase: str, timer: str = None,
                  repeat: bool = False, day: str = None) -> NoReturn:
     """Creates the lock file necessary to set an alarm/timer.
 
     Args:
-        hour: Hour of alarm time.
-        minute: Minute of alarm time.
-        am_pm: AM/PM of alarm time.
+        alarm_time: Time of alarm as a datetime object.
         phrase: Takes the phrase spoken as an argument.
         timer: Number of minutes/hours to alarm.
         repeat: Boolean flag if the alarm should be repeated every day.
         day: Day of week when the alarm should be repeated.
     """
-    if repeat:
-        pathlib.Path(os.path.join('alarm', f'{hour}_{minute}_{am_pm}_repeat.lock')).touch()
-    elif day:
-        pathlib.Path(os.path.join('alarm', f'{day}_{hour}_{minute}_{am_pm}_repeat.lock')).touch()
-    else:
-        pathlib.Path(os.path.join('alarm', f'{hour}_{minute}_{am_pm}.lock')).touch()
+    existing_alarms = files.get_alarms()
+    formatted = dict(
+        alarm_time=alarm_time.strftime("%I:%M %p"),
+        day=day,
+        repeat=repeat,
+    )
+    if not day:
+        formatted.pop('day')
+    if formatted in existing_alarms:
+        speaker.speak(text=f"You have a duplicate alarm {models.env.title}!")
+        return
+    existing_alarms.append(formatted)
+    files.put_alarms(data=existing_alarms)
+    logger.info("Alarm/timer set at {%s}", alarm_time.strftime("%I:%M %p"))
     if 'wake' in phrase:
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I will wake you up at {hour}:{minute} {am_pm}.")
+                           f"I will wake you up at {alarm_time.strftime('%I:%M %p')}.")
     elif 'timer' in phrase and timer:
-        logger.info("Timer set at {hour}:{minute} {am_pm}".format(hour=hour, minute=minute, am_pm=am_pm))
-        response = [f"{random.choice(conversation.acknowledgement)}! I have set a timer for {timer}.",
-                    f"{timer}! Counting down.."]
+        response = [
+            f"{random.choice(conversation.acknowledgement)}! I have set a timer for {timer}.",
+            f"{timer}! Counting down.."
+        ]
         speaker.speak(text=random.choice(response))
     else:
-        if repeat:
-            add = " every day."
-        elif day:
-            add = f" every {day}."
-        elif datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= \
-                datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p"):
-            add = " tomorrow."
+        if day:  # If day is set, then it's obviously a repeat with a 'day' filter
+            add = f"every {day}."
+        elif repeat:  # If no day is set, then it's a repeat everyday
+            add = "every day."
+        elif alarm_time.date() > datetime.today().date():
+            add = "tomorrow."
         else:
             add = "."
-        response = [f"Alarm has been set for {hour}:{minute} {am_pm}{add}",
-                    f"Your alarm is set for {hour}:{minute} {am_pm}{add}"]
+        response = [
+            f"Alarm has been set for {alarm_time.strftime('%I:%M %p')} {add}",
+            f"Your alarm is set for {alarm_time.strftime('%I:%M %p')} {add}"
+        ]
         speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! {random.choice(response)}")
 
 
@@ -70,13 +78,17 @@ def set_alarm(phrase: str) -> None:
     phrase = phrase.lower()
     if 'minute' in phrase:
         if minutes := util.extract_nos(input_=phrase, method=int):
-            hour, minute, am_pm = (datetime.now() + timedelta(minutes=minutes)).strftime("%I %M %p").split()
-            create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{minutes} minutes")
+            create_alarm(
+                alarm_time=datetime.now() + timedelta(minutes=minutes), phrase=phrase,
+                timer=f"{minutes} {support.ENGINE.plural(text='minute', count=minutes)}"
+            )
             return
     elif 'hour' in phrase:
         if hours := util.extract_nos(input_=phrase, method=int):
-            hour, minute, am_pm = (datetime.now() + timedelta(hours=hours)).strftime("%I %M %p").split()
-            create_alarm(hour=hour, minute=minute, am_pm=am_pm, phrase=phrase, timer=f"{hours} hours")
+            create_alarm(
+                alarm_time=datetime.now() + timedelta(hours=hours), phrase=phrase,
+                timer=f"{hours} {support.ENGINE.plural(text='hour', count=hours)}"
+            )
             return
     if extracted_time := util.extract_time(input_=phrase) or word_match.word_match(
             phrase=phrase, match_list=('noon', 'midnight', 'mid night')
@@ -97,14 +109,16 @@ def set_alarm(phrase: str) -> None:
         hour, minute = f"{hour:02}", f"{minute:02}"
         am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
         if int(hour) <= 12 and int(minute) <= 59:
+            datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
+            # todo: alarm at 5 AM every day has been set already and user is trying to set a new 5 AM alarm for Friday
+            # todo: match existing alarms and duplicate it in the create_alarm function
             if day := word_match.word_match(phrase=phrase, match_list=('sunday', 'monday', 'tuesday', 'wednesday',
                                                                        'thursday', 'friday', 'saturday')):
-                day = day[0].upper() + day[1:].lower()
-                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, day=day)
+                create_alarm(phrase=phrase, alarm_time=datetime_obj, day=string.capwords(day), repeat=True)
             elif word_match.word_match(phrase=phrase, match_list=('everyday', 'every day', 'daily')):
-                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm, repeat=True)
+                create_alarm(phrase=phrase, alarm_time=datetime_obj, repeat=True)
             else:
-                create_alarm(phrase=phrase, hour=hour, minute=minute, am_pm=am_pm)
+                create_alarm(phrase=phrase, alarm_time=datetime_obj)
         else:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                "I don't think a time like that exists on Earth.")
@@ -120,6 +134,23 @@ def set_alarm(phrase: str) -> None:
                 set_alarm(converted)
 
 
+def get_alarm_state() -> List[str]:
+    """Frames a response text with all the alarms present.
+
+    Returns:
+        List[str]:
+        Returns a list of alarms framed as a response.
+    """
+    # todo: extract response for a particular time here instead of using .startswith()
+    response = []
+    for _alarm in files.get_alarms():
+        if _alarm['repeat']:
+            response.append(f"{_alarm['alarm_time']} on every {_alarm.get('day', 'day')}")
+        else:
+            response.append(_alarm['alarm_time'])
+    return response
+
+
 def kill_alarm(phrase: str) -> None:
     """Removes lock file to stop the alarm which rings only when the certain lock file is present.
 
@@ -127,38 +158,61 @@ def kill_alarm(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     word = 'timer' if 'timer' in phrase else 'alarm'
-    alarm_state = support.lock_files(alarm_files=True)
-    if not alarm_state:
+    alarms = files.get_alarms()
+    if not alarms:
         speaker.speak(text=f"You have no {word}s set {models.env.title}!")
-    elif len(alarm_state) == 1:
-        hour, minute, am_pm = alarm_state[0][:2], alarm_state[0][3:5], alarm_state[0][6:8]
-        os.remove(os.path.join("alarm", alarm_state[0]))
-        speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
-    elif "all" in phrase.split():
-        [os.remove(os.path.join("alarm", alarm_file)) for alarm_file in alarm_state]
-        speaker.speak(text=f"I have silenced {len(alarm_state)} of your alarms {models.env.title}!")
-    else:
-        speaker.speak(text=f"Your {word}s are at {', and '.join(alarm_state).replace('.lock', '')}. "
-                           f"Please let me know which {word} you want to remove.", run=True)
-        if shared.called_by_offline:
-            return
-        if not (converted := listener.listen()):
-            return
-        alarm_time = converted.split()[0]
-        am_pm = converted.split()[-1]
-        if ":" in converted:
+        return
+    if len(alarms) == 1:
+        _alarm = alarms[0]
+        response = f"Your {word} at {_alarm['alarm_time']} "
+        if _alarm['repeat']:
+            response += f"on every {_alarm.get('day', 'day')} "
+        response += f"has been silenced {models.env.title}!"
+        speaker.speak(text=response)
+        return
+    if "all" in phrase.split():
+        alarms.clear()
+        files.put_alarms(data=alarms)
+        speaker.speak(text=f"I have silenced {len(alarms)} of your alarms {models.env.title}!")
+        return
+    if extracted_time := util.extract_time(input_=phrase) or word_match.word_match(
+            phrase=phrase, match_list=('noon', 'midnight', 'mid night')
+    ):
+        if 'noon' in phrase:
+            extracted_time = ["12:00 PM"]
+        elif 'night' in phrase:
+            extracted_time = ["12:00 AM"]
+        extracted_time = extracted_time[0]
+        alarm_time = extracted_time.split()[0]
+        if ":" in extracted_time:
             hour = int(alarm_time.split(":")[0])
             minute = int(alarm_time.split(":")[-1])
         else:
             hour = int(alarm_time.split()[0])
             minute = 0
+        # makes sure hour and minutes are two digits
         hour, minute = f"{hour:02}", f"{minute:02}"
-        am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-        if f"{hour}_{minute}_{am_pm}.lock" in alarm_state:
-            os.remove(os.path.join("alarm", f"{hour}_{minute}_{am_pm}.lock"))
-            speaker.speak(text=f"Your {word} at {hour}:{minute} {am_pm} has been silenced {models.env.title}!")
+        am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
+        if int(hour) <= 12 and int(minute) <= 59:
+            chosen_alarm = f"{hour}:{minute} {am_pm}"
+            if chosen_alarm in [_alarm['alarm_time'] for _alarm in alarms]:
+                # construct response before updating the base file
+                alarm_states = [_alarm for _alarm in get_alarm_state() if _alarm.startswith(chosen_alarm)]
+                # todo: there might different alarms set at the same time (eg: 5 AM on Monday and Friday)
+                # if len(alarm_states) > 1:
+                #     speaker.speak(f"You have {len(alarm_states)} alarms matching the same time {models.env.title}!")
+                response = f"Your alarm at {alarm_states[0]} has been silenced {models.env.title}!"
+                files.put_alarms(data=[_alarm for _alarm in alarms if _alarm['alarm_time'] != chosen_alarm])
+                speaker.speak(text=response)
+            else:
+                speaker.speak(text=f"There are no such alarms setup {models.env.title}!")
         else:
-            speaker.speak(text=f"I wasn't able to find your {word} at {hour}:{minute} {am_pm}. Try again.")
+            speaker.speak(text="Such an alarm time is impossible!")
+    else:
+        alarm_states = get_alarm_state()
+        response = f"Your alarms are at, {util.comma_separator(alarm_states)}. " \
+                   "Please let me know which one I should delete."
+        speaker.speak(text=response)
 
 
 def executor() -> NoReturn:

@@ -272,27 +272,27 @@ def put_reminders(data: List[Dict[str, str]]):
         file.flush()  # Write buffer to file immediately
 
 
-# def get_alarms() -> Dict[str, Union[str, bool]]:
-#     """Get all alarms stored.
-#
-#     Returns:
-#         Dict[str, Union[str, bool]]:
-#         Returns a dictionary of information for stored alarms.
-#     """
-#     try:
-#         with open(models.fileio.reminders) as file:
-#             return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-#     except yaml.YAMLError as error:
-#         logger.error(error)
-#     return {}
-#
-#
-# def put_alarms(data: Dict[str, Union[str, bool]]):
-#     """Dumps the alarm data into the respective yaml file.
-#
-#     Args:
-#         data: Data to be dumped.
-#     """
-#     with open(models.fileio.alarms, 'w') as file:
-#         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-#         file.flush()  # Write buffer to file immediately
+def get_alarms() -> List[Dict[str, Union[str, bool]]]:
+    """Get all alarms stored.
+
+    Returns:
+        Dict[str, Union[str, bool]]:
+        Returns a dictionary of information for stored alarms.
+    """
+    try:
+        with open(models.fileio.alarms) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or []
+    except yaml.YAMLError as error:
+        logger.error(error)
+    return []
+
+
+def put_alarms(data: List[Dict[str, Union[str, bool]]]):
+    """Dumps the alarm data into the respective yaml file.
+
+    Args:
+        data: Data to be dumped.
+    """
+    with open(models.fileio.alarms, 'w') as file:
+        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
+        file.flush()  # Write buffer to file immediately

@@ -13,7 +13,6 @@ from typing import Dict, List, NoReturn, Tuple, Union
 
 import boto3
 from blockstdout import BlockPrint
-from dateutil import parser, relativedelta
 from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import country_holidays
@@ -346,46 +345,6 @@ def report(*args) -> NoReturn:
     shared.called['report'] = False
 
 
-def extract_humanized_date(phrase: str) -> Tuple[datetime.date, str, str]:
-    """Converts most humanized date into datetime object.
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-
-    Returns:
-        Tuple[datetime.date, str, str]:
-        A tuple of the date object, human friendly name, and the tense.
-    """
-    today = datetime.now().date()
-
-    if "day after tomorrow" in phrase:
-        return today + relativedelta.relativedelta(days=2), "day after tomorrow", "is"
-    elif "day before yesterday" in phrase:
-        return today - relativedelta.relativedelta(days=2), "day before yesterday", "was"
-    elif "tomorrow" in phrase:
-        return today + relativedelta.relativedelta(days=1), "tomorrow", "is"
-    elif "yesterday" in phrase:
-        return today - relativedelta.relativedelta(days=1), "yesterday", "was"
-
-    try:
-        parsed_date = parser.parse(phrase, fuzzy=True)
-    except parser.ParserError as error:
-        logger.error(error)
-        return today, "today", "is"
-
-    if "next" in phrase:
-        next_occurrence = parsed_date + relativedelta.relativedelta(weeks=1)
-        return next_occurrence.date(), f"next {next_occurrence.strftime('%A')}, ({next_occurrence.strftime('%B')} " \
-                                       f"{support.ENGINE.ordinal(next_occurrence.strftime('%d'))})", "is"
-    elif "last" in phrase:
-        last_occurrence = parsed_date - relativedelta.relativedelta(weeks=1)
-        return last_occurrence.date(), f"last {last_occurrence.strftime('%A')}, ({last_occurrence.strftime('%B')} " \
-                                       f"{support.ENGINE.ordinal(last_occurrence.strftime('%d'))})", "was"
-
-    return parsed_date, f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} " \
-                        f"{support.ENGINE.ordinal(parsed_date.strftime('%d'))})", "is"
-
-
 def celebrate(phrase: str = None) -> str:
     """Function to look if the current date is a holiday or a birthday.
 
@@ -399,7 +358,7 @@ def celebrate(phrase: str = None) -> str:
     countrycode = None
     countryname = None
     if phrase:
-        date, day, tense = extract_humanized_date(phrase)
+        date, day, tense = support.extract_humanized_date(phrase)
         logger.info(f"Extracted humanized date: {date}")
     else:
         date, day, tense = datetime.today().date(), "today", "is"

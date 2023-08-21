@@ -10,24 +10,28 @@ from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, util
+from jarvis.modules.utils import shared, support, util
 
 
-def create_reminder(time: datetime, message: str, to_about: str, timer: str = None, name: str = None) -> NoReturn:
-    """Creates the lock file necessary to set a reminder.
+def create_reminder(reminder_time: datetime, message: str, to_about: str, phrase: str,
+                    day: str = None, timer: str = None) -> NoReturn:
+    """Updates the reminder file to set a reminder.
 
     Args:
-        time: Time of reminder as a datetime object.
+        reminder_time: Time of reminder as a datetime object.
         message: Message to be reminded for.
         to_about: remind to or remind about as said in phrase.
+        phrase: Phrase spoken by the user.
+        day: Day to include in the response.
         timer: Number of minutes/hours to reminder.
-        name: Custom contact to remind.
     """
     existing_reminders = files.get_reminders()
+    name = find_name(phrase)
     formatted = dict(
-        time=time.strftime("%I:%M %p"),
+        name=name,
         message=message,
-        name=name
+        date=reminder_time.date(),
+        reminder_time=reminder_time.strftime("%I:%M %p")
     )
     name = name or "you"
     if formatted in existing_reminders:
@@ -35,13 +39,25 @@ def create_reminder(time: datetime, message: str, to_about: str, timer: str = No
         return
     existing_reminders.append(formatted)
     files.put_reminders(data=existing_reminders)
+    logger.info("Reminder created for '%s' at %s", message, reminder_time.strftime("%I:%M %p"))
     if timer:
-        logger.info("Reminder created for '%s' at %s", message, time.strftime("%I:%M %p"))
-        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I will remind {name} {to_about} {message}, after {timer}.")
+        response = f"{random.choice(conversation.acknowledgement)}! " \
+                   f"I will remind {name} {to_about} {message}, after {timer}."
+    elif day in ("today", "tonight", "tomorrow"):
+        response = f"{random.choice(conversation.acknowledgement)}! " \
+                   f"I will remind {name} {to_about} {message}, {day} at {reminder_time.strftime('%I:%M %p')}."
+    elif reminder_time.date() == datetime.today().date():
+        response = f"{random.choice(conversation.acknowledgement)}! " \
+                   f"I will remind {name} {to_about} {message}, today at {reminder_time.strftime('%I:%M %p')}."
+    elif day:
+        response = f"{random.choice(conversation.acknowledgement)}! " \
+                   f"I will remind {name} {to_about} {message}, on {day} at {reminder_time.strftime('%I:%M %p')}."
     else:
-        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! "
-                           f"I will remind {name} {to_about} {message}, at {time.strftime('%I:%M %p')}.")
+        response = f"{random.choice(conversation.acknowledgement)}! " \
+                   f"I will remind {name} {to_about} {message}, at {reminder_time.strftime('%I:%M %p')}."
+    if "every" in phrase:
+        response += " For repeated reminders, please use the automation feature."
+    speaker.speak(text=response)
 
 
 def find_name(phrase: str) -> str:
@@ -74,14 +90,14 @@ def reminder(phrase: str) -> None:
         phrase = phrase.replace("a minute", "1 minute").replace("now", "1 minute")
         if minutes := util.extract_nos(input_=phrase, method=int):
             min_ = 'minutes' if minutes > 1 else 'minute'
-            create_reminder(time=datetime.now() + timedelta(minutes=minutes), message=message.group(1).strip(),
-                            timer=f"{minutes} {min_}", to_about=to_about, name=find_name(phrase=phrase))
+            create_reminder(reminder_time=datetime.now() + timedelta(minutes=minutes), message=message.group(1).strip(),
+                            timer=f"{minutes} {min_}", to_about=to_about, phrase=phrase)
             return
     elif 'hour' in phrase:
         if hours := util.extract_nos(input_=phrase, method=int):
             hour_ = 'hours' if hours > 1 else 'hour'
-            create_reminder(time=datetime.now() + timedelta(hours=hours), message=message.group(1).strip(),
-                            timer=f"{hours} {hour_}", to_about=to_about, name=find_name(phrase=phrase))
+            create_reminder(reminder_time=datetime.now() + timedelta(hours=hours), message=message.group(1).strip(),
+                            timer=f"{hours} {hour_}", to_about=to_about, phrase=phrase)
             return
     if not (extracted_time := util.extract_time(input_=phrase)):
         if shared.called_by_offline:
@@ -106,8 +122,31 @@ def reminder(phrase: str) -> None:
     # makes sure hour and minutes are two digits
     hour, minute = f"{hour:02}", f"{minute:02}"
     if int(hour) <= 12 and int(minute) <= 59:
-        datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
-        create_reminder(time=datetime_obj, to_about=to_about, message=message, name=find_name(phrase=phrase))
+        reminder_time_ = f"{hour}:{minute} {am_pm}"
+        try:
+            reminder_date_, day, _ = support.extract_humanized_date(phrase=phrase, fail_past=True)
+            datetime_obj = datetime.combine(reminder_date_, datetime.strptime(reminder_time_, "%I:%M %p").time())
+            # if user specifically mentions today or tonight with a time in the past
+            if datetime_obj <= datetime.now() and "today" in phrase or "tonight" in phrase:
+                raise ValueError(f"{datetime_obj!r} is in the past!")
+        except ValueError as error:
+            logger.error(error)
+            speaker.speak("We are not time travellers yet, so reminders in the past is not a thing.")
+            return
+
+        # if user doesn't specify the date but time is in the past, reminder will be defaulted for the next day
+        if datetime_obj.date() == datetime.now().date() and datetime_obj.hour > 17:
+            day = "tonight"
+        elif datetime_obj <= datetime.now():
+            datetime_obj += timedelta(days=1)
+            day = "tomorrow"
+        elif datetime_obj.date() == (datetime.now().date() + timedelta(days=1)):  # requested for next day
+            day = "tomorrow"
+
+        message = message.replace(day, "")  # strip off statements like today, tomorrow, day after tomorrow from message
+
+        create_reminder(reminder_time=datetime_obj, to_about=to_about,
+                        message=message, phrase=phrase, day=day)
     else:
         speaker.speak(text=f"A reminder at {hour}:{minute} {am_pm}? Are you an alien? "
                            f"I don't think a time like that exists on Earth.")

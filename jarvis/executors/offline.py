@@ -150,32 +150,32 @@ def background_task_runner() -> NoReturn:
                                   kwargs=dict(state=True)).start()
 
         # Trigger alarms
-        if alarm_state := support.lock_files(alarm_files=True):
-            for each_alarm in alarm_state:
-                if each_alarm == now.strftime("%I_%M_%p.lock") or \
-                        each_alarm == now.strftime("%I_%M_%p_repeat.lock") or \
-                        each_alarm == now.strftime("%A_%I_%M_%p_repeat.lock"):
+        if alarms := files.get_alarms():
+            copied_alarms = alarms.copy()
+            for alarmer in alarms:
+                # alarms match 'time' and 'day' of alarm
+                if alarmer['alarm_time'] == now.strftime("%I:%M %p") and \
+                        alarmer.get('day', datetime.now().strftime('%A')) == datetime.now().strftime('%A'):
+                    logger.info("Executing alarm: %s", alarmer)
                     Process(target=alarm.executor).start()
-                    if each_alarm.endswith("_repeat.lock"):
-                        os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", f"_{each_alarm}"))
-                    else:
-                        os.remove(os.path.join("alarm", each_alarm))
-                elif each_alarm.startswith('_') and not \
-                        (each_alarm == now.strftime("_%I_%M_%p_repeat.lock") or
-                         each_alarm == now.strftime("_%A_%I_%M_%p_repeat.lock")):
-                    os.rename(os.path.join("alarm", each_alarm), os.path.join("alarm", each_alarm.lstrip("_")))
+                    if not alarmer['repeat']:
+                        copied_alarms.remove(alarmer)
+            if copied_alarms != alarms:
+                files.put_alarms(data=copied_alarms)
 
         # Trigger reminders
         if reminders := files.get_reminders():
-            copied = reminders.copy()
+            copied_reminders = reminders.copy()
             for reminder in reminders:
-                if reminder['time'] == now.strftime("%I:%M %p"):
+                # reminders match the 'time' and 'date' of reminder
+                if reminder['reminder_time'] == now.strftime("%I:%M %p") and \
+                        reminder['date'] == datetime.now().date():
                     logger.info("Executing reminder: %s", reminder)
                     Thread(target=remind.executor,
                            kwargs={'message': reminder['message'], 'contact': reminder['name']}).start()
-                    copied.remove(reminder)
-            if copied != reminders:
-                files.put_reminders(data=copied)
+                    copied_reminders.remove(reminder)
+            if copied_reminders != reminders:
+                files.put_reminders(data=copied_reminders)
 
         # Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

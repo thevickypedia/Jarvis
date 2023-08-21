@@ -20,6 +20,7 @@ import inflect
 import psutil
 import pytz
 import yaml
+from dateutil import parser, relativedelta
 
 from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
@@ -169,23 +170,6 @@ def size_converter(byte_size: int) -> str:
     return f"{round(byte_size / pow(1024, index), 2)} {size_name[index]}"
 
 
-def lock_files(alarm_files: bool = False, reminder_files: bool = False) -> List[str]:
-    """Checks for ``*.lock`` files within the ``alarm`` directory if present.
-
-    Args:
-        alarm_files: Takes a boolean value to gather list of alarm lock files.
-        reminder_files: Takes a boolean value to gather list of reminder lock files.
-
-    Returns:
-        list:
-        List of ``*.lock`` file names ignoring other hidden files.
-    """
-    if alarm_files:
-        return [f for f in os.listdir("alarm") if not f.startswith(".")] if os.path.isdir("alarm") else None
-    if reminder_files:
-        return [f for f in os.listdir("reminder") if not f.startswith(".")] if os.path.isdir("reminder") else None
-
-
 def check_restart() -> List[str]:
     """Checks for entries in the restart table in base db.
 
@@ -272,6 +256,7 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoRetu
     See Also:
         - | Supports terms like ``day before yesterday``, ``yesterday``, ``tomorrow``, ``day after tomorrow``,
           | ``last friday``, ``this wednesday``, ``next monday``
+        - For extended lookup, refer to extract_humanized_date
 
     Returns:
         Tuple[datetime, str]:
@@ -298,6 +283,56 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoRetu
         logger.error("Supports only 'last', 'next' and 'this' but received %s", phrase)
         return
     return datetime.today() + td, addon
+
+
+def extract_humanized_date(phrase: str, fail_past: bool = False) -> Union[Tuple[datetime.date, str, str], None]:
+    """Converts most humanized date into datetime object.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+        fail_past: Boolean value to raise an error in case the humanized datetime is in the past.
+
+    Returns:
+        Tuple[datetime.date, str, str]:
+        A tuple of the date object, human friendly name, and the tense.
+    """
+    today = datetime.now().date()
+
+    if "day after tomorrow" in phrase:
+        return today + relativedelta.relativedelta(days=2), "day after tomorrow", "is"
+    elif "day before yesterday" in phrase:
+        if fail_past:
+            raise ValueError("'day before yesterday' is in the past!")
+        return today - relativedelta.relativedelta(days=2), "day before yesterday", "was"
+    elif "tomorrow" in phrase:
+        return today + relativedelta.relativedelta(days=1), "tomorrow", "is"
+    elif "yesterday" in phrase:
+        if fail_past:
+            raise ValueError("'yesterday' is in the past!")
+        return today - relativedelta.relativedelta(days=1), "yesterday", "was"
+
+    try:
+        parsed_date = parser.parse(phrase, fuzzy=True)
+    except parser.ParserError as error:
+        logger.error(error)
+        return today, "today", "is"
+
+    if "next" in phrase:
+        next_occurrence = parsed_date + relativedelta.relativedelta(weeks=1)
+        return next_occurrence.date(), f"next {next_occurrence.strftime('%A')}, ({next_occurrence.strftime('%B')} " \
+                                       f"{ENGINE.ordinal(next_occurrence.strftime('%d'))})", "is"
+    elif "last" in phrase:
+        last_occurrence = parsed_date - relativedelta.relativedelta(weeks=1)
+        if fail_past:
+            raise ValueError(f"'last {last_occurrence.strftime('%A')}' is in the past!")
+        return last_occurrence.date(), f"last {last_occurrence.strftime('%A')}, ({last_occurrence.strftime('%B')} " \
+                                       f"{ENGINE.ordinal(last_occurrence.strftime('%d'))})", "was"
+
+    if parsed_date.date() < today and fail_past:  # validates only the date, so the date might be same with a past-time
+        raise ValueError(f"{parsed_date!r} is in the past!")
+
+    return parsed_date.date(), f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} " \
+                               f"{ENGINE.ordinal(parsed_date.strftime('%d'))})", "is"
 
 
 def check_stop() -> List[str]:
