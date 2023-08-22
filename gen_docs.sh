@@ -3,7 +3,6 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
-export pre_commit=1;
 rm -rf docs  # Remove existing docs directory
 mkdir docs  # Create new docs directory
 mkdir -p docs_gen/_static  # Create a _static directory if unavailable

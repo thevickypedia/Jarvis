@@ -10,10 +10,6 @@ from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
-# Used by docs, actual fileio is created in models.py as it gets invoked during the imports above
-if not os.path.isdir(models.fileio.root):
-    os.mkdir(models.fileio.root)
-
 
 def rewrite_keywords() -> NoReturn:
     """Loads keywords.yaml file if available, else loads the base keywords module as an object."""

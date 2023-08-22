@@ -8,6 +8,7 @@
 import ctypes
 from collections.abc import Generator
 from contextlib import contextmanager
+from http import HTTPStatus
 from typing import ByteString, NoReturn
 
 import requests
@@ -166,3 +167,10 @@ class SegmentationError(EnvironmentError):
     >>> SegmentationError
 
     """
+
+
+CONDITIONAL_ENDPOINT_RESTRICTION = APIResponse(
+    status_code=HTTPStatus.NOT_IMPLEMENTED.real,
+    detail="Required environment variables have not been setup.\nPlease refer: "
+           "https://github.com/thevickypedia/Jarvis/wiki#conditional-api-endpoints"
+)

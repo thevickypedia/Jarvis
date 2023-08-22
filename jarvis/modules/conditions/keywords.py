@@ -68,7 +68,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
                     'stop another timer', 'turn off timer', 'delete alarm', 'delete my alarm', 'delete another alarm',
                     'delete an alarm', 'delete timer', 'delete my timer', 'delete another timer', 'delete an timer',
                     'stop all my alarms', 'turn off all my alarms', 'delete all my alarms'],
-        set_alarm=['alarm', 'wake me', 'timer'],
+        set_alarm=['alarm', 'alarms', 'wake me', 'timer'],
         google_home=['google home', 'googlehome'],
         jokes=['joke', 'jokes', 'make me laugh'],
         reminder=['remind', 'reminder', 'reminders'],

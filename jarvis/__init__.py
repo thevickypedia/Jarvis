@@ -1,7 +1,7 @@
 import os
 from multiprocessing import current_process
 
-version = "3.5.1"
+version = "3.6"
 
 install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 
@@ -21,8 +21,7 @@ except ImportError as error:
                       "Note: Shell script will quit for any non-zero exit status, "
                       "so it might have to be triggered twice.")
 else:
-    if current_process().name == 'MainProcess' and \
-            not os.environ.get('pre_commit'):  # Ignore unwanted triggers when docs are generated
+    if current_process().name == 'MainProcess':
         current_process().name = 'JARVIS'
     from ._preexec import keywords_handler  # noqa: F401
     from .main import start  # noqa: F401

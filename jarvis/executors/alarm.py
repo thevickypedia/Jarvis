@@ -4,7 +4,7 @@ import string
 import subprocess
 import time
 from datetime import datetime, timedelta
-from typing import List, NoReturn
+from typing import Dict, List, NoReturn, Union
 
 import pyvolume
 
@@ -16,9 +16,40 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
+def check_overlap(new_alarm: Dict[str, Union[str, bool]],
+                  old_alarms: List[Dict[str, Union[str, bool]]]) -> bool:
+    """Checks to see if there is a possibility of an overlap.
+
+    Args:
+        new_alarm: Current alarm formatted as a dict.
+        old_alarms: List of existing alarms.
+
+    Returns:
+        bool:
+        Returns a True flag if it is an overlap.
+    """
+    if new_alarm in old_alarms:
+        speaker.speak(text=f"You have a duplicate alarm {models.env.title}!")
+        return True
+    for old_alarm in old_alarms:
+        # old alarm is set for the same time and the old alarm is set for everyday
+        difference = abs((datetime.strptime(old_alarm['alarm_time'], '%I:%M %p') -
+                          datetime.strptime(new_alarm['alarm_time'], '%I:%M %p')).total_seconds())
+        # check if alarm time are the same or overlaps within 230 seconds (number of seconds an alarm will play)
+        # check if the alarm is set daily ('repeat' is 'True' but 'day' is null)
+        if (new_alarm['alarm_time'] == old_alarm['alarm_time'] or difference <= 203) and \
+                old_alarm['repeat'] and \
+                not old_alarm.get('day'):
+            if difference <= 203:  # within 203 seconds of an existing alarm
+                logger.info("Difference between both the alarms in seconds: %.2f", difference)
+            speaker.speak(text=f"You have an existing alarm, at {old_alarm['alarm_time']} "
+                               f"that overlaps with this one {models.env.title}!")
+            return True
+
+
 def create_alarm(alarm_time: datetime, phrase: str, timer: str = None,
                  repeat: bool = False, day: str = None) -> NoReturn:
-    """Creates the lock file necessary to set an alarm/timer.
+    """Creates an entry in the alarms' mapping file.
 
     Args:
         alarm_time: Time of alarm as a datetime object.
@@ -35,8 +66,7 @@ def create_alarm(alarm_time: datetime, phrase: str, timer: str = None,
     )
     if not day:
         formatted.pop('day')
-    if formatted in existing_alarms:
-        speaker.speak(text=f"You have a duplicate alarm {models.env.title}!")
+    if check_overlap(new_alarm=formatted, old_alarms=existing_alarms):
         return
     existing_alarms.append(formatted)
     files.put_alarms(data=existing_alarms)
@@ -110,8 +140,6 @@ def set_alarm(phrase: str) -> None:
         am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
         if int(hour) <= 12 and int(minute) <= 59:
             datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
-            # todo: alarm at 5 AM every day has been set already and user is trying to set a new 5 AM alarm for Friday
-            # todo: match existing alarms and duplicate it in the create_alarm function
             if day := word_match.word_match(phrase=phrase, match_list=('sunday', 'monday', 'tuesday', 'wednesday',
                                                                        'thursday', 'friday', 'saturday')):
                 create_alarm(phrase=phrase, alarm_time=datetime_obj, day=string.capwords(day), repeat=True)
@@ -123,6 +151,15 @@ def set_alarm(phrase: str) -> None:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                "I don't think a time like that exists on Earth.")
     else:
+        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list')):
+            if alarm_states := get_alarm_state():
+                if len(alarm_states) > 1:
+                    speaker.speak(text=f"Your alarms are at, {util.comma_separator(alarm_states)}.")
+                else:
+                    speaker.speak(text=f"You have an alarm at, {util.comma_separator(alarm_states)}.")
+            else:
+                speaker.speak(text=f"You don't have any alarms set {models.env.title}!")
+            return
         speaker.speak(text=f"Please tell me a time {models.env.title}!")
         if shared.called_by_offline:
             return
@@ -134,16 +171,18 @@ def set_alarm(phrase: str) -> None:
                 set_alarm(converted)
 
 
-def get_alarm_state() -> List[str]:
+def get_alarm_state(alarm_time: str = None) -> List[str]:
     """Frames a response text with all the alarms present.
 
     Returns:
         List[str]:
         Returns a list of alarms framed as a response.
     """
-    # todo: extract response for a particular time here instead of using .startswith()
+    _alarms = files.get_alarms()
+    if alarm_time:
+        _alarms = [_alarm for _alarm in _alarms if _alarm['alarm_time'] == alarm_time]
     response = []
-    for _alarm in files.get_alarms():
+    for _alarm in _alarms:
         if _alarm['repeat']:
             response.append(f"{_alarm['alarm_time']} on every {_alarm.get('day', 'day')}")
         else:
@@ -151,8 +190,41 @@ def get_alarm_state() -> List[str]:
     return response
 
 
+def more_than_one_alarm_to_kill(alarms: List[Dict[str, Union[str, bool]]],
+                                phrase: str, alarm_states: List[str]) -> NoReturn:
+    """Helper function for kill alarm, if there are multiple alarms set at the same time with different days.
+
+    Args:
+        alarms: All existing alarms.
+        phrase: Takes the phrase spoken as an argument.
+        alarm_states: Alarms that were converted as response.
+    """
+    if day := word_match.word_match(phrase=phrase,
+                                    match_list=('sunday', 'monday', 'tuesday', 'wednesday',
+                                                'thursday', 'friday', 'saturday')):
+        del_alarm = None
+        for __alarm in alarms:
+            if __alarm.get('day', '').lower() == day.lower():
+                del_alarm = __alarm
+                break
+        if del_alarm:
+            if del_alarm['repeat']:
+                speaker.speak(text=f"Your alarm at {del_alarm['alarm_time']} on every "
+                                   f"{del_alarm.get('day', 'day')} has been silenced {models.env.title}!")
+            else:
+                speaker.speak(text=f"Your alarm at {del_alarm['alarm_time']} "
+                                   f"has been silenced {models.env.title}!")
+            alarms.remove(del_alarm)
+            files.put_alarms(alarms)
+        else:
+            speaker.speak(text=f"There are no such alarms setup {models.env.title}!")
+    else:
+        speaker.speak(f"You have {len(alarm_states)} alarms matching the same time {models.env.title}! "
+                      f"{util.comma_separator(alarm_states)}. Please be more specific.")
+
+
 def kill_alarm(phrase: str) -> None:
-    """Removes lock file to stop the alarm which rings only when the certain lock file is present.
+    """Removes the entry from the alarms' mapping file.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
@@ -169,11 +241,13 @@ def kill_alarm(phrase: str) -> None:
             response += f"on every {_alarm.get('day', 'day')} "
         response += f"has been silenced {models.env.title}!"
         speaker.speak(text=response)
-        return
-    if "all" in phrase.split():
         alarms.clear()
         files.put_alarms(data=alarms)
+        return
+    if "all" in phrase.split():
         speaker.speak(text=f"I have silenced {len(alarms)} of your alarms {models.env.title}!")
+        alarms.clear()
+        files.put_alarms(data=alarms)
         return
     if extracted_time := util.extract_time(input_=phrase) or word_match.word_match(
             phrase=phrase, match_list=('noon', 'midnight', 'mid night')
@@ -197,10 +271,10 @@ def kill_alarm(phrase: str) -> None:
             chosen_alarm = f"{hour}:{minute} {am_pm}"
             if chosen_alarm in [_alarm['alarm_time'] for _alarm in alarms]:
                 # construct response before updating the base file
-                alarm_states = [_alarm for _alarm in get_alarm_state() if _alarm.startswith(chosen_alarm)]
-                # todo: there might different alarms set at the same time (eg: 5 AM on Monday and Friday)
-                # if len(alarm_states) > 1:
-                #     speaker.speak(f"You have {len(alarm_states)} alarms matching the same time {models.env.title}!")
+                alarm_states = get_alarm_state(alarm_time=chosen_alarm)
+                if len(alarm_states) > 1:
+                    more_than_one_alarm_to_kill(alarms, phrase, alarm_states)
+                    return
                 response = f"Your alarm at {alarm_states[0]} has been silenced {models.env.title}!"
                 files.put_alarms(data=[_alarm for _alarm in alarms if _alarm['alarm_time'] != chosen_alarm])
                 speaker.speak(text=response)
