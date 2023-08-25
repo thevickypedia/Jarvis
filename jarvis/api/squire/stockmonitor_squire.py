@@ -8,6 +8,8 @@ from jarvis.modules.database import database
 from jarvis.modules.models import models
 
 stock_db = database.Database(database=models.fileio.stock_db)
+# todo: create a new DB for daily alerts and store it in DB instead of yaml mapping
+stock_db.create_table(table_name="stock", columns=settings.stock_monitor.user_info)
 
 
 def cleanup_stock_userdata() -> NoReturn:
@@ -25,7 +27,7 @@ def cleanup_stock_userdata() -> NoReturn:
             stock_db.connection.commit()
 
 
-def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[int, float], int]) -> NoReturn:
+def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
     """Inserts new entry into the stock database.
 
     Args:
@@ -39,7 +41,7 @@ def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[i
 
 
 def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
-        List[Tuple[str, EmailStr, Union[int, float], Union[int, float], int]]:
+        List[Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]]:
     """Reads the stock database to get all the user data.
 
     Returns:
@@ -55,7 +57,7 @@ def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
     return data
 
 
-def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int]) -> NoReturn:
+def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
     """Delete particular user data from stock database.
 
     Args:
@@ -63,6 +65,7 @@ def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[in
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        cursor.execute("DELETE FROM stock WHERE ticker=(?) AND email=(?) AND max=(?) AND min=(?) AND correction=(?);",
+        cursor.execute("DELETE FROM stock WHERE ticker=(?) AND email=(?) AND "
+                       "max=(?) AND min=(?) AND correction=(?) AND repeat=(?);",
                        data)
         stock_db.connection.commit()

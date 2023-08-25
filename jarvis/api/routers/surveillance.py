@@ -24,9 +24,6 @@ from jarvis.modules.utils import support, util
 
 router = APIRouter()
 db = database.Database(database=models.fileio.base_db)
-stock_db = database.Database(database=models.fileio.stock_db)
-stock_db.create_table(table_name="stock", columns=settings.stock_monitor.user_info)
-
 # Get websocket loaded
 ws_manager = settings.ConnectionManager()
 

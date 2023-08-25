@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+3.6 (08/22/2023)
+----------------
+- Implement a feature to check for overlap in alarms
+- Add a feature to get existing alarms
+- Handle deletion of more than one alarms
+- Remove env var for pre-commit
+- Remove filtering process name for pre-commit
+- Fix broken docs
+
 3.5.1 (08/18/2023)
 ------------------
 - Adds a new feature to request holidays on any date/day

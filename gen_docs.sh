@@ -3,6 +3,7 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
+gitverse-release reverse -f release_notes.rst -t 'Release Notes'  # Update release notes
 rm -rf docs  # Remove existing docs directory
 mkdir docs  # Create new docs directory
 mkdir -p docs_gen/_static  # Create a _static directory if unavailable

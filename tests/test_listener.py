@@ -42,7 +42,7 @@ class TestListener(unittest.TestCase):
         mock_recognizer.listen.return_value = mock_listened
         mock_recognizer.recognize_google.return_value = SAMPLE_PHRASE
 
-        result = listener.listen(sound=False, stdout=False, timeout=5, phrase_time_limit=10)
+        result = listener.listen(sound=False, timeout=5, phrase_time_limit=10)
 
         # Assertions
         self.assertEqual(result, SAMPLE_PHRASE)

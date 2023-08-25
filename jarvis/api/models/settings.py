@@ -60,7 +60,8 @@ class StockMonitor(BaseModel):
 
     """
 
-    user_info: Tuple[str, str, str, str, str] = ("ticker", "email", "max", "min", "correction")
+    # todo: Replace tuple to be a key-value pair
+    user_info: Tuple[str, str, str, str, str, str] = ("ticker", "email", "max", "min", "correction", "repeat")
     values: str = '(' + ','.join('?' for _ in user_info) + ')'
 
 

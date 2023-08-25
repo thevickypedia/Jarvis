@@ -1,7 +1,6 @@
 """Wrapper for frequently used mapping files."""
 
 import collections
-import os
 from threading import Timer
 from typing import Any, DefaultDict, Dict, List, NoReturn, Union
 
@@ -13,24 +12,22 @@ from jarvis.modules.models import models
 
 def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
     """Reads the contact file and returns the data."""
-    if os.path.isfile(models.fileio.contacts):
-        with open(models.fileio.contacts) as file:
-            try:
-                if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
-                    return contacts
-            except yaml.YAMLError as error:
-                logger.error(error)
+    with open(models.fileio.contacts) as file:
+        try:
+            if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
+                return contacts
+        except (yaml.YAMLError, FileNotFoundError) as error:
+            logger.error(error)
     return collections.defaultdict(lambda: {}, phone={}, email={})
 
 
 def get_frequent() -> Dict[str, int]:
     """Support getting frequently used keywords' mapping file."""
-    if os.path.isfile(models.fileio.frequent):
-        try:
-            with open(models.fileio.frequent) as file:
-                return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            logger.error(error)
+    try:
+        with open(models.fileio.frequent) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return {}
 
 
@@ -47,13 +44,12 @@ def put_frequent(data: Dict[str, int]) -> NoReturn:
 
 def get_location() -> Dict:
     """Reads the location file and returns the location data."""
-    if os.path.isfile(models.fileio.location):
-        try:
-            with open(models.fileio.location) as file:
-                if location := yaml.load(stream=file, Loader=yaml.FullLoader):
-                    return location
-        except yaml.YAMLError as error:
-            logger.error(error)
+    try:
+        with open(models.fileio.location) as file:
+            if location := yaml.load(stream=file, Loader=yaml.FullLoader):
+                return location
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return collections.defaultdict(lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False)
 
 
@@ -64,12 +60,11 @@ def get_secure_send() -> Dict[str, Dict[str, Any]]:
         Dict[str, Dict[str, Any]]:
         Dictionary of secure send data.
     """
-    if os.path.isfile(models.fileio.secure_send):
-        try:
-            with open(models.fileio.secure_send) as file:
-                return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            logger.error(error)
+    try:
+        with open(models.fileio.secure_send) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return {}
 
 
@@ -111,12 +106,11 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
         Dict[str, Dict[str, str]]:
         A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
     """
-    if os.path.isfile(models.fileio.conditions):
-        with open(models.fileio.conditions) as file:
-            try:
-                return yaml.load(stream=file, Loader=yaml.FullLoader)
-            except yaml.YAMLError as error:
-                logger.error(error)
+    with open(models.fileio.conditions) as file:
+        try:
+            return yaml.load(stream=file, Loader=yaml.FullLoader)
+        except (yaml.YAMLError, FileNotFoundError) as error:
+            logger.error(error)
 
 
 def get_restrictions() -> List[str]:
@@ -126,12 +120,11 @@ def get_restrictions() -> List[str]:
         List[str]:
         A list of function names that has to be restricted.
     """
-    if os.path.isfile(models.fileio.restrictions):
-        with open(models.fileio.restrictions) as file:
-            try:
-                return yaml.load(stream=file, Loader=yaml.FullLoader)
-            except yaml.YAMLError as error:
-                logger.error(error)
+    with open(models.fileio.restrictions) as file:
+        try:
+            return yaml.load(stream=file, Loader=yaml.FullLoader)
+        except (yaml.YAMLError, FileNotFoundError) as error:
+            logger.error(error)
     return []
 
 
@@ -153,12 +146,11 @@ def get_gpt_data() -> List[Dict[str, str]]:
         List[Dict[str, str]]:
         A list of dictionaries with request and response key-value pairs.
     """
-    if os.path.isfile(models.fileio.gpt_data):
-        try:
-            with open(models.fileio.gpt_data) as file:
-                return yaml.load(stream=file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as error:
-            logger.error(error)
+    try:
+        with open(models.fileio.gpt_data) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader)
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
 
 
 def put_gpt_data(data: List[Dict[str, str]]) -> NoReturn:
@@ -179,12 +171,11 @@ def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[
         Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:
         Returns the automation data in the feed file.
     """
-    if os.path.isfile(models.fileio.automation):
-        try:
-            with open(models.fileio.automation) as read_file:
-                return yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
-        except yaml.YAMLError as error:
-            logger.error(error)
+    try:
+        with open(models.fileio.automation) as read_file:
+            return yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return {}
 
 
@@ -199,25 +190,26 @@ def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict
         file.flush()  # Write buffer to file immediately
 
 
-def get_smart_devices() -> Union[dict, bool]:
+def get_smart_devices() -> Union[dict, bool, NoReturn]:
     """Load smart devices' data from feed file.
 
     Returns:
         Union[dict, bool]:
         Returns the smart devices' data in the feed file.
     """
-    if os.path.isfile(models.fileio.smart_devices):
-        try:
-            with open(models.fileio.smart_devices) as file:
-                if smart_devices := yaml.load(stream=file, Loader=yaml.FullLoader):
-                    return smart_devices
-                else:
-                    logger.warning("'%s' is empty.", models.fileio.smart_devices)
-        except yaml.YAMLError as error:
+    try:
+        with open(models.fileio.smart_devices) as file:
+            if smart_devices := yaml.load(stream=file, Loader=yaml.FullLoader):
+                return smart_devices
+            else:
+                logger.warning("'%s' is empty.", models.fileio.smart_devices)
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        if isinstance(error, FileNotFoundError):
+            logger.warning("%s not found.", models.fileio.smart_devices)
+            return
+        else:
             logger.error(error)
             return False
-    else:
-        logger.warning("%s not found.", models.fileio.smart_devices)
 
 
 def put_smart_devices(data: dict) -> NoReturn:
@@ -241,7 +233,7 @@ def get_processes() -> Dict[str, List[Union[int, List[str]]]]:
     try:
         with open(models.fileio.processes) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-    except yaml.YAMLError as error:
+    except (yaml.YAMLError, FileNotFoundError) as error:
         logger.error(error)
     return {}
 
@@ -256,7 +248,7 @@ def get_reminders() -> List[Dict[str, str]]:
     try:
         with open(models.fileio.reminders) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or []
-    except yaml.YAMLError as error:
+    except (yaml.YAMLError, FileNotFoundError) as error:
         logger.error(error)
     return []
 
@@ -282,7 +274,7 @@ def get_alarms() -> List[Dict[str, Union[str, bool]]]:
     try:
         with open(models.fileio.alarms) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or []
-    except yaml.YAMLError as error:
+    except (yaml.YAMLError, FileNotFoundError) as error:
         logger.error(error)
     return []
 
@@ -294,5 +286,31 @@ def put_alarms(data: List[Dict[str, Union[str, bool]]]):
         data: Data to be dumped.
     """
     with open(models.fileio.alarms, 'w') as file:
+        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
+        file.flush()  # Write buffer to file immediately
+
+
+def get_daily_alerts() -> List[Dict[int, List[str]]]:
+    """Get all the daily alerts stored for stock monitor.
+
+    Returns:
+        List[Dict[int, List[str]]]:
+        Returns a list of dictionaries with the epoch time and the respective entry in DB.
+    """
+    try:
+        with open(models.fileio.stock_daily_alerts) as file:
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or []
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
+    return []
+
+
+def put_daily_alerts(data: List[Dict[int, List[str]]]):
+    """Dumps the daily alerts into the respective yaml file.
+
+    Args:
+        data: Data to be dumped.
+    """
+    with open(models.fileio.stock_daily_alerts, 'w') as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately

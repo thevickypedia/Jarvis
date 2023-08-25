@@ -83,6 +83,7 @@ async def stock_monitor_api(request: Request, input_data: modals.StockMonitorMod
             - Max: Max price for notification.
             - Min: Min price for notification.
             - Correction: Correction percentage.
+            - Daily Alerts: String value of "on" or "off"
         - Use `https://vigneshrao.com/jwt <https://vigneshrao.com/jwt>`__ for conversion.
 
     Raises:
@@ -196,7 +197,7 @@ async def stock_monitor_api(request: Request, input_data: modals.StockMonitorMod
 
     # Forms a tuple of the new entry provided by the user
     new_entry = (str(decoded['Ticker']), input_data.email, float(decoded['Max']), float(decoded['Min']),
-                 int(decoded['Correction']),)
+                 int(decoded['Correction']), str(decoded['Daily Alerts']))
 
     # Deletes an entry that's present already when requested
     if input_data.request == "DELETE":
@@ -233,6 +234,9 @@ async def stock_monitor_api(request: Request, input_data: modals.StockMonitorMod
 
     stockmonitor_squire.insert_stock_userdata(entry=new_entry)  # Store it in database
 
+    response = f"Entry added to the database. Jarvis will notify you at {input_data.email!r} when a " \
+               f"price change occurs in {decoded['Ticker']!r}."
+    if decoded['Daily Alerts'] == "on":
+        response += " Please note that these alerts will not be deleted from the database automatically."
     raise APIResponse(status_code=HTTPStatus.OK.real,
-                      detail=f"Entry added to the database. Jarvis will notify you at {input_data.email!r} when a "
-                             f"price change occurs in {decoded['Ticker']!r}.")
+                      detail=response)
