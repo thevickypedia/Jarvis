@@ -1,7 +1,8 @@
 import random
 import re
+import string
 from datetime import datetime, timedelta
-from typing import NoReturn
+from typing import List, NoReturn
 
 import pynotification
 
@@ -69,6 +70,23 @@ def find_name(phrase: str) -> str:
         return name
 
 
+def get_reminder_state() -> List[str]:
+    """Frames a response text with all the reminders present.
+
+    Returns:
+        List[str]:
+        Returns a list of reminders framed as a response.
+    """
+    reminders = files.get_reminders()
+    response = []
+    for reminder_ in reminders:
+        if reminder_['name']:
+            response.append(f"{reminder_['message']} to {reminder_['name']} at {reminder_['reminder_time']}")
+        else:
+            response.append(f"{reminder_['message']} at {reminder_['reminder_time']}")
+    return response
+
+
 def reminder(phrase: str) -> None:
     """Passes hour, minute, am/pm and reminder message to Reminder class which initiates a thread for reminder.
 
@@ -83,6 +101,13 @@ def reminder(phrase: str) -> None:
         re.search(' to (.*) in ', phrase) or re.search(' about (.*) in ', phrase) or \
         re.search(' to (.*)', phrase) or re.search(' about (.*)', phrase)
     if not message:
+        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list', 'exist', 'existing')):
+            if reminder_list := get_reminder_state():
+                speaker.speak(text=f"You have {len(reminder_list)} reminders {models.env.title}! "
+                                   f"{string.capwords(util.comma_separator(reminder_list))}")
+            else:
+                speaker.speak(text=f"You don't have any reminders {models.env.title}!")
+            return
         speaker.speak(text='Reminder format should be::Remind me to do something, at some time.')
         return
     to_about = 'about' if 'about' in phrase else 'to'

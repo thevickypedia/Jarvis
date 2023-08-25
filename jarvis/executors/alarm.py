@@ -141,7 +141,9 @@ def set_alarm(phrase: str) -> None:
         if int(hour) <= 12 and int(minute) <= 59:
             datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
             if day := word_match.word_match(phrase=phrase, match_list=('sunday', 'monday', 'tuesday', 'wednesday',
-                                                                       'thursday', 'friday', 'saturday')):
+                                                                       'thursday', 'friday', 'saturday',
+                                                                       'sundays', 'mondays', 'tuesdays', 'wednesdays',
+                                                                       'thursdays', 'fridays', 'saturdays')):
                 create_alarm(phrase=phrase, alarm_time=datetime_obj, day=string.capwords(day), repeat=True)
             elif word_match.word_match(phrase=phrase, match_list=('everyday', 'every day', 'daily')):
                 create_alarm(phrase=phrase, alarm_time=datetime_obj, repeat=True)
@@ -151,7 +153,7 @@ def set_alarm(phrase: str) -> None:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                "I don't think a time like that exists on Earth.")
     else:
-        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list')):
+        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list', 'exist', 'existing')):
             if alarm_states := get_alarm_state():
                 if len(alarm_states) > 1:
                     speaker.speak(text=f"Your alarms are at, {util.comma_separator(alarm_states)}.")
@@ -201,7 +203,9 @@ def more_than_one_alarm_to_kill(alarms: List[Dict[str, Union[str, bool]]],
     """
     if day := word_match.word_match(phrase=phrase,
                                     match_list=('sunday', 'monday', 'tuesday', 'wednesday',
-                                                'thursday', 'friday', 'saturday')):
+                                                'thursday', 'friday', 'saturday',
+                                                'sundays', 'mondays', 'tuesdays', 'wednesdays',
+                                                'thursdays', 'fridays', 'saturdays')):
         del_alarm = None
         for __alarm in alarms:
             if __alarm.get('day', '').lower() == day.lower():

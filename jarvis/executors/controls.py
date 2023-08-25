@@ -14,8 +14,8 @@ import psutil
 import pybrightness
 import pywslocker
 
-from jarvis.executors import (files, listener_controls, system, volume,
-                              word_match)
+from jarvis.executors import (alarm, files, listener_controls, remind, system,
+                              volume, word_match)
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
@@ -64,21 +64,18 @@ def restart(ask: bool = True) -> NoReturn:
 
 def exit_process() -> NoReturn:
     """Function that holds the list of operations done upon exit."""
-    if reminders := files.get_reminders():
+    if reminders := remind.get_reminder_state():
         if len(reminders) == 1:
             speaker.speak(text=f'You have a pending reminder {models.env.title}!')
         else:
             speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
-        for reminder in reminders:
-            if reminder['name']:
-                speaker.speak(text=f"{reminder['message']} to {reminder['name']} at {reminder['reminder_time']}")
-            else:
-                speaker.speak(text=f"{reminder['message']} at {reminder['reminder_time']}")
-    if alarms := files.get_alarms():
+        speaker.speak(text=util.comma_separator(reminders))  # No need for string.capwords as speaker runs in a new loop
+    if alarms := alarm.get_alarm_state():
         if len(alarms) == 1:
-            speaker.speak(text=f"'You have a pending alarm at {alarms[0]['alarm_time']} {models.env.title}!'")
+            speaker.speak(text="You have a pending alarm at ")
         else:
-            speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
+            speaker.speak(text=f"You have {len(alarms)} pending alarms {models.env.title}!")
+        speaker.speak(text=util.comma_separator(alarms))
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm deactivated!")
     speaker.speak(text=f"Shutting down now {models.env.title}!")
