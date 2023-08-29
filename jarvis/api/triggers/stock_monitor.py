@@ -6,12 +6,13 @@ import math
 import os
 import time
 from datetime import datetime
-from typing import Dict, List, NoReturn, Union
+from typing import Dict, NoReturn, Tuple, Union
 
 import gmailconnector
 import jinja2
 import matplotlib.dates
 import matplotlib.pyplot as plt
+from pydantic import EmailStr
 from webull import webull
 
 
@@ -73,15 +74,17 @@ class StockMonitor:
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
-        self.data = stockmonitor_squire.get_stock_userdata()
         self.logger = logger
-        self.ticker_grouped = collections.defaultdict(list)
         self.email_grouped = collections.defaultdict(list)
-        self.repeat_alerts = files.get_daily_alerts()
+        self.ticker_grouped = collections.defaultdict(list)
+        self.data = stockmonitor_squire.get_stock_userdata()
+        self.repeat_alerts = list(stockmonitor_squire.get_daily_alerts())
+        if self.repeat_alerts == [{}]:
+            self.repeat_alerts = []
 
     def at_exit(self):
         """Removes bin file created by webull client and updates the repeat alerts yaml mapping."""
-        files.put_daily_alerts(data=self.repeat_alerts)
+        stockmonitor_squire.put_daily_alerts(params=self.repeat_alerts)
         os.remove('did.bin') if os.path.isfile('did.bin') else None
 
     def group_data(self) -> NoReturn:
@@ -173,7 +176,8 @@ class StockMonitor:
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
 
-    def skip_signal(self, condition_list: List[str], hours: int = 12) -> bool:
+    def skip_signal(self, condition_list: Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str],
+                    hours: int = 12) -> bool:
         """Generate a skip signal for a particular stock monitoring alert.
 
         Args:
@@ -191,7 +195,7 @@ class StockMonitor:
                         return True
                     else:
                         self.repeat_alerts.remove({alert_time: alert_entry})
-                        return False  # notification should be triggered
+                        return False  # notification should be triggered if condition matches
 
     def send_notification(self) -> NoReturn:
         """Sends notification to the user when the stock price matches the requested condition."""
@@ -216,14 +220,10 @@ class StockMonitor:
                 if not prices[ticker]:
                     continue
                 if daily_alerts == "on" and self.skip_signal(
-                        condition_list=[ticker, email_addr, maximum, minimum, correction, daily_alerts],
+                        condition_list=(ticker, email_addr, maximum, minimum, correction, daily_alerts),
                 ):
-                    self.logger.debug("Skipping validations due to daily alerts.")
+                    self.logger.info("Skipping validations due to daily alerts.")
                     continue
-                elif daily_alerts == "on":
-                    self.repeat_alerts.append(
-                        {int(time.time()): [ticker, email_addr, maximum, minimum, correction, daily_alerts]}
-                    )
                 ticker_hyperlinked = '<a href="https://www.webull.com/quote/' \
                                      f'{prices[ticker]["exchange_code"].lower()}-{ticker.lower()}">{ticker}</a>'
                 if not maximum and not minimum:
@@ -244,7 +244,9 @@ class StockMonitor:
                 if email_text:
                     email_text += f"<br>Current price of {ticker_hyperlinked} is ${prices[ticker]['price']:,}"
                     datastore['text_gathered'].append(email_text)
-                    datastore['removals'].append((ticker, email_addr, maximum, minimum, correction, daily_alerts))
+                    datastore['removals'].append(
+                        (ticker, email_addr, float(maximum), float(minimum), correction, daily_alerts)
+                    )
                     datastore['attachments'].append(generate_graph(ticker=ticker, logger=self.logger))
             if not datastore['text_gathered']:
                 self.logger.info("Nothing to report")
@@ -262,6 +264,7 @@ class StockMonitor:
                         stockmonitor_squire.delete_stock_userdata(data=entry)
                     else:
                         self.logger.info("Retaining '%s' as user subscribed for daily alerts.", entry)
+                        self.repeat_alerts.append({int(time.time()): entry})
             else:
                 self.logger.error(response.json())
             [os.remove(stock_graph) for stock_graph in datastore['attachments'] if os.path.isfile(stock_graph)]
@@ -275,7 +278,7 @@ if __name__ == '__main__':
 
     current_process().name = "StockMonitor"
     from jarvis.api.squire import stockmonitor_squire
-    from jarvis.executors import crontab, files
+    from jarvis.executors import crontab
     from jarvis.modules.logger import logger as main_logger
     from jarvis.modules.logger import multiprocessing_logger
     from jarvis.modules.models import models

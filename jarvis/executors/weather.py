@@ -12,7 +12,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import support
 
 
 def make_request(lat: float, lon: float) -> Union[Dict, NoReturn]:
@@ -203,48 +203,11 @@ def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, 
                 tense = "was"
             speaker.speak(text=f"In {weather_location}, sunset {tense} at {sunset}")
             return
-    if shared.called['time_travel']:
-        if 'rain' in condition or 'showers' in condition:
-            feeling = 'rainy'
-            weather_suggest = 'You might need an umbrella" if you plan to head out.'
-        elif temp_feel_f <= 40:
-            feeling = 'freezing'
-            weather_suggest = 'Perhaps" it is time for winter clothing.'
-        elif 41 <= temp_feel_f <= 60:
-            feeling = 'cool'
-            weather_suggest = 'I think a lighter jacket would suffice" if you plan to head out.'
-        elif 61 <= temp_feel_f <= 75:
-            feeling = 'optimal'
-            weather_suggest = 'It might be a perfect weather for a hike, or perhaps a walk.'
-        elif 76 <= temp_feel_f <= 85:
-            feeling = 'warm'
-            weather_suggest = 'It is a perfect weather for some outdoor entertainment.'
-        elif temp_feel_f > 85:
-            feeling = 'hot'
-            weather_suggest = "I would not recommend thick clothes today."
-        else:
-            feeling, weather_suggest = '', ''
-        # open weather map returns wind speed as miles/hour if temperature is set to imperial, otherwise in metre/second
-        # how is threshold determined? Refer: https://www.weather.gov/mlb/seasonal_wind_threat
-        if models.env.temperature_unit == models.TemperatureUnits.IMPERIAL:
-            wind_speed = response['current']['wind_speed']
-            threshold = 25  # ~ equivalent for 40 kms
-        else:
-            wind_speed = response['current']['wind_speed'] * 3.6
-            threshold = 40  # ~ equivalent for 25 miles
-        if wind_speed > threshold:
-            output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, but due to the current wind ' \
-                     f'conditions (which is {wind_speed} {models.env.distance_unit.value} per hour), it feels like ' \
-                     f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
-        else:
-            output = f'The weather in {city} is {feeling} {temp_f}\N{DEGREE SIGN}, and it currently feels like ' \
-                     f'{temp_feel_f}\N{DEGREE SIGN}. {weather_suggest}'
-    else:
-        output = f'The weather in {weather_location} is ' \
-                 f'{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, with a high of {high}, ' \
-                 f'and a low of {low}. It currently feels like ' \
-                 f'{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}, ' \
-                 f'and the current condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
+    output = f'The weather in {weather_location} is ' \
+             f'{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, with a high of {high}, ' \
+             f'and a low of {low}. It currently feels like ' \
+             f'{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}, ' \
+             f'and the current condition is {condition}. Sunrise at {sunrise}. Sunset at {sunset}.'
     if 'alerts' in response:
         alerts = response['alerts'][0]['event']
         start_alert = datetime.fromtimestamp(response['alerts'][0]['start']).strftime("%I:%M %p")

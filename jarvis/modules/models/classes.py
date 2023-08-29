@@ -527,7 +527,6 @@ class FileIO(BaseModel):
     # API used
     robinhood: FilePath = os.path.join(root, 'robinhood.html')
     stock_list_backup: FilePath = os.path.join(root, 'stock_list_backup.yaml')
-    stock_daily_alerts: FilePath = os.path.join(root, 'stock_daily_alerts.yaml')
 
     # Future useful
     frequent: FilePath = os.path.join(root, 'frequent.yaml')

@@ -232,7 +232,7 @@ async def stock_monitor_api(request: Request, input_data: modals.StockMonitorMod
                           detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"
                                  "Please choose a lower 'Min' value or try at a later time.")
 
-    stockmonitor_squire.insert_stock_userdata(entry=new_entry)  # Store it in database
+    stockmonitor_squire.insert_stock_userdata(params=new_entry)  # Store it in database
 
     response = f"Entry added to the database. Jarvis will notify you at {input_data.email!r} when a " \
                f"price change occurs in {decoded['Ticker']!r}."

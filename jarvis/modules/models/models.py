@@ -44,7 +44,7 @@ TABLES = {
     "robinhood": ("summary",),
     "listener": ("state",),
 }
-KEEP_TABLES = ("vpn", "party")  # TABLES to keep from `fileio.base_db`
+KEEP_TABLES = ("vpn", "party", "listener")  # TABLES to keep from `fileio.base_db`
 
 
 def _distance_temperature_brute_force() -> NoReturn:

@@ -288,29 +288,3 @@ def put_alarms(data: List[Dict[str, Union[str, bool]]]):
     with open(models.fileio.alarms, 'w') as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
-
-
-def get_daily_alerts() -> List[Dict[int, List[str]]]:
-    """Get all the daily alerts stored for stock monitor.
-
-    Returns:
-        List[Dict[int, List[str]]]:
-        Returns a list of dictionaries with the epoch time and the respective entry in DB.
-    """
-    try:
-        with open(models.fileio.stock_daily_alerts) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or []
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
-    return []
-
-
-def put_daily_alerts(data: List[Dict[int, List[str]]]):
-    """Dumps the daily alerts into the respective yaml file.
-
-    Args:
-        data: Data to be dumped.
-    """
-    with open(models.fileio.stock_daily_alerts, 'w') as file:
-        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()  # Write buffer to file immediately

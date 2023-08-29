@@ -327,7 +327,7 @@ def news(news_source: str = 'fox') -> None:
     if shared.called_by_offline:
         return
 
-    if shared.called['report'] or shared.called['time_travel']:
+    if shared.called['report']:
         speaker.speak(run=True)
 
 
@@ -394,37 +394,6 @@ def celebrate(phrase: str = None) -> str:
             return "Birthday"
     elif phrase:
         speaker.speak(text=f"There are no events to celebrate {day}, in {countryname}")
-
-
-def time_travel() -> None:
-    """Triggered only from ``initiator()`` to give a quick update on the user's daily routine."""
-    part_day = util.part_of_day()
-    speaker.speak(text=f"Good {part_day} {models.env.name}!")
-    if part_day == 'Night':
-        if event := celebrate():
-            speaker.speak(text=f'Happy {event}!')
-        return
-    date_time.current_date()
-    date_time.current_time()
-    weather.weather()
-    speaker.speak(run=True)
-    with db.connection:
-        cursor = db.connection.cursor()
-        meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
-    if meeting_status and meeting_status[0].startswith('You') and \
-            meeting_status[1] == datetime.now().strftime('%Y_%m_%d'):
-        speaker.speak(text=meeting_status[0])
-    with db.connection:
-        cursor = db.connection.cursor()
-        # Use f-string or %s as table names cannot be parametrized
-        event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
-    if event_status and event_status[0].startswith('You'):
-        speaker.speak(text=event_status[0])
-    todo_list.get_todo()
-    communicator.read_gmail()
-    speaker.speak(text='Would you like to hear the latest news?', run=True)
-    if word_match.word_match(phrase=listener.listen(), match_list=keywords.keywords['ok']):
-        news()
 
 
 def abusive(phrase: str) -> NoReturn:

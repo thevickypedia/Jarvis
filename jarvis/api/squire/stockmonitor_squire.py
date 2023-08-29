@@ -1,4 +1,5 @@
-from typing import List, NoReturn, Optional, Tuple, Union
+from collections.abc import Generator
+from typing import Dict, List, NoReturn, Optional, Tuple, Union
 
 from pydantic import EmailStr
 
@@ -8,8 +9,8 @@ from jarvis.modules.database import database
 from jarvis.modules.models import models
 
 stock_db = database.Database(database=models.fileio.stock_db)
-# todo: create a new DB for daily alerts and store it in DB instead of yaml mapping
 stock_db.create_table(table_name="stock", columns=settings.stock_monitor.user_info)
+stock_db.create_table(table_name="stock_daily", columns=settings.stock_monitor.alerts)
 
 
 def cleanup_stock_userdata() -> NoReturn:
@@ -21,22 +22,24 @@ def cleanup_stock_userdata() -> NoReturn:
         with stock_db.connection:
             cursor = stock_db.connection.cursor()
             cursor.execute("DELETE FROM stock")
-            for record in cleaned:
-                cursor.execute(f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
-                               f"VALUES {settings.stock_monitor.values};", record)
+            for params in cleaned:
+                query = f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} " \
+                        f"VALUES {settings.stock_monitor.values};"
+                cursor.execute(query, params)
             stock_db.connection.commit()
 
 
-def insert_stock_userdata(entry: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
+def insert_stock_userdata(params: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
     """Inserts new entry into the stock database.
 
     Args:
-        entry: Tuple of information that has to be inserted.
+        params: Tuple of information that has to be inserted.
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        cursor.execute(f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
-                       f"VALUES {settings.stock_monitor.values};", entry)
+        query = f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} " \
+                f"VALUES {settings.stock_monitor.values};"
+        cursor.execute(query, params)
         stock_db.connection.commit()
 
 
@@ -55,6 +58,38 @@ def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
         else:
             data = cursor.execute("SELECT * FROM stock").fetchall()
     return data
+
+
+def get_daily_alerts() -> \
+        Generator[Dict[int, Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str]]]:
+    """Get all the information stored in ``stock_daily`` database table.
+
+    Yields:
+        A dictionary of epoch time and tuple of user information stored as key value pairs.
+    """
+    with stock_db.connection:
+        cursor = stock_db.connection.cursor()
+        data = cursor.execute("SELECT * FROM stock_daily").fetchall()
+        yield {record[0]: record[1:] for record in data}
+
+
+def put_daily_alerts(
+        params: List[Dict[int, Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str]]]
+):
+    """Updates the daily alerts into the ``stock_daily`` database table.
+
+    Args:
+        params: Takes the tuple of all entries that has to be inserted.
+    """
+    with stock_db.connection:
+        cursor = stock_db.connection.cursor()
+        params = [(key, *values) for param in params for key, values in param.items()]
+        cursor.execute("DELETE FROM stock_daily")  # clear all existing data
+        query = f"INSERT OR REPLACE INTO stock_daily {settings.stock_monitor.alerts} VALUES " \
+                f"{settings.stock_monitor.alert_values};"
+        for param in params:
+            cursor.execute(query, param)  # write new data in db
+        stock_db.connection.commit()
 
 
 def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:

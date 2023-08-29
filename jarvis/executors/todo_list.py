@@ -54,27 +54,24 @@ def get_todo() -> None:
         for category, item in result.items():  # browses dictionary and stores result in response and says it
             response = f"{item}, in {category} category."
             speaker.speak(text=response)
-    elif shared.called['report'] and not shared.called['time_travel']:
-        speaker.speak(text=f"You don't have any tasks in your to-do list {models.env.title}.")
-    elif shared.called['time_travel']:
-        pass
     else:
         speaker.speak(text=f"You don't have any tasks in your to-do list {models.env.title}.")
 
-    if shared.called['report'] or shared.called['time_travel']:
+    if shared.called['report']:
         speaker.speak(run=True)
 
 
 def add_todo() -> None:
     """Adds new items to the to-do list."""
     speaker.speak(text=f"What's your plan {models.env.title}?", run=True)
-    if not (item := listener.listen()) or 'exit' in item or 'quit' in item or 'Xzibit' in item:
+    if not (item := listener.listen()) or \
+            word_match.word_match(phrase=item, match_list=keywords.keywords['exit_']):
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     speaker.speak(text=f"I heard {item}. Which category you want me to add it to?", run=True)
     if not (category := listener.listen()):
         category = 'Unknown'
-    if 'exit' in category or 'quit' in category or 'Xzibit' in category:
+    if word_match.word_match(phrase=category, match_list=keywords.keywords['exit_']):
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:
@@ -90,8 +87,8 @@ def add_todo() -> None:
         cursor.execute("INSERT or REPLACE INTO tasks (category, item) VALUES (?,?)", (category, item))
     speaker.speak(text=f"I've added the item: {item} to the category: {category}. "
                        "Do you want to add anything else to your to-do list?", run=True)
-    category_continue = listener.listen()
-    if word_match.word_match(phrase=category_continue.lower(), match_list=keywords.keywords['ok']):
+    if (category_continue := listener.listen()) and \
+            word_match.word_match(phrase=category_continue.lower(), match_list=keywords.keywords['ok']):
         add_todo()
     else:
         speaker.speak(text='Alright')
@@ -100,7 +97,8 @@ def add_todo() -> None:
 def delete_todo_items() -> None:
     """Deletes items from an existing to-do list."""
     speaker.speak(text=f"Which one should I remove {models.env.title}?", run=True)
-    if not (word := listener.listen()) or 'exit' in word or 'quit' in word or 'Xzibit' in word:
+    if not (word := listener.listen()) or \
+            word_match.word_match(phrase=word, match_list=keywords.keywords['exit_']):
         speaker.speak(text=f'Your to-do list has been left intact {models.env.title}.')
         return
     with tdb.connection:
@@ -111,9 +109,9 @@ def delete_todo_items() -> None:
 
 
 def delete_todo() -> NoReturn:
-    """Drops the table ``tasks`` from the database."""
+    """Deletes all the data from the table ``tasks`` in the database."""
     with tdb.connection:
         cursor = tdb.connection.cursor()
-        cursor.execute('DROP TABLE IF EXISTS tasks')
+        cursor.execute('DELETE FROM tasks')
         cursor.connection.commit()
-    speaker.speak(text=f"I've dropped the table: tasks from the database {models.env.title}.")
+    speaker.speak(text=f"I've deleted all your tasks from the database {models.env.title}.")

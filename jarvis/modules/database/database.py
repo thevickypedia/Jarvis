@@ -30,7 +30,8 @@ class Database:
         """
         if not database.endswith('.db'):
             database = database + '.db'
-        self.connection = sqlite3.connect(database=database, check_same_thread=False, timeout=timeout)
+        self.datastore = database
+        self.connection = sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=timeout)
 
     def create_table(self, table_name: str, columns: Union[List[str], Tuple[str]]) -> NoReturn:
         """Creates the table with the required columns.
@@ -66,9 +67,9 @@ class __TestDatabase:
         logging.root.setLevel(level=logging.DEBUG)
         self.db = Database(database="sample")
 
-    def __del__(self):
+    def at_exit(self):
         """Deletes the database file ``sample``."""
-        os.remove("sample.db")
+        os.remove(self.db.datastore)
 
     def random_single(self) -> NoReturn:
         """Example using a single column."""
@@ -109,3 +110,4 @@ if __name__ == '__main__':
     test_db = __TestDatabase()
     test_db.random_single()
     test_db.random_double()
+    test_db.at_exit()

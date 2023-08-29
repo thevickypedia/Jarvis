@@ -23,7 +23,6 @@ called = {
     'locate_places': False,
     'directions': False,
     'google_maps': False,
-    'time_travel': False,
     'todo': False,
     'add_todo': False
 }

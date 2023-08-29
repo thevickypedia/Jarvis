@@ -34,22 +34,19 @@ def current_time(converted: str = None) -> None:
         else:
             speaker.speak(text=f'The current time in {time_location} is {time_tz}.')
     else:
-        if shared.called['report'] or shared.called['time_travel']:
+        if shared.called['report']:
             speaker.speak(text=f"The current time is, {datetime.now().strftime('%I:%M %p')}.")
             return
         speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
 
 
 def current_date(*args) -> None:
-    """Says today's date and adds the current time in speaker queue if report or time_travel function was called."""
+    """Says today's date and adds the current time in speaker queue if report function was called."""
     dt_string = datetime.now().strftime("%A, %B")
     date_ = support.ENGINE.ordinal(datetime.now().strftime("%d"))
     year = str(datetime.now().year)
     event = others.celebrate()
-    if shared.called['time_travel']:
-        dt_string = f'{dt_string} {date_}'
-    else:
-        dt_string = f'{dt_string} {date_}, {year}'
+    dt_string = f'{dt_string} {date_}, {year}'
     text = f"It's {dt_string}."
     if event and event == 'Birthday':
         text += f" It's also your {event} {models.env.title}!"
