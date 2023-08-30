@@ -7,7 +7,7 @@
 
 import imghdr
 import os
-from typing import NoReturn, Union
+from typing import Union
 
 import face_recognition
 from cv2 import cv2
@@ -77,7 +77,7 @@ class FaceNet:
         self.validation_video = cv2.VideoCapture(models.env.camera_index)
         self.train_faces, self.train_names = [], []
 
-    def load_dataset(self, location: str) -> NoReturn:
+    def load_dataset(self, location: str) -> None:
         """Loads the dataset."""
         logger.debug("Loading dataset to classify existing images.")
         for char_dir in os.listdir(location):  # loads the training dataset
@@ -168,7 +168,7 @@ class FaceNet:
                 if os.path.isfile(filename):
                     return True
 
-    def capture_image(self, filename: str = 'cv2_open.jpg') -> NoReturn:
+    def capture_image(self, filename: str = 'cv2_open.jpg') -> None:
         """Captures an image and saves it locally.
 
         Args:

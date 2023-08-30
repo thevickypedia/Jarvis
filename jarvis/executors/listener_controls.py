@@ -1,5 +1,4 @@
 import sqlite3
-from typing import NoReturn
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
@@ -10,7 +9,7 @@ from jarvis.modules.retry import retry
 db = database.Database(database=models.fileio.base_db)
 
 
-def listener_control(phrase: str) -> NoReturn:
+def listener_control(phrase: str) -> None:
     """Controls the listener table in base db.
 
     Args:
@@ -54,7 +53,7 @@ def get_listener_state() -> bool:
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
-def put_listener_state(state: bool) -> NoReturn:
+def put_listener_state(state: bool) -> None:
     """Updates the state of the listener.
 
     Args:

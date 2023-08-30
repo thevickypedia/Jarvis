@@ -1,7 +1,6 @@
 import os
 import warnings
 from collections import OrderedDict
-from typing import NoReturn
 
 import yaml
 
@@ -11,7 +10,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
 
-def rewrite_keywords() -> NoReturn:
+def rewrite_keywords() -> None:
     """Loads keywords.yaml file if available, else loads the base keywords module as an object."""
     keywords_src = OrderedDict(**keywords.keyword_mapping(), **conversation.conversation_mapping())
     # WATCH OUT: for changes in keyword/function name

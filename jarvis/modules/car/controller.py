@@ -7,7 +7,7 @@ See Also:
     **API Reference:** https://documenter.getpostman.com/view/6250319/RznBMzqo for Jaguar LandRover InControl API.
 """
 
-from typing import Callable, Dict, List, NoReturn, Union
+from typing import Callable, Dict, List, Union
 
 from jarvis.modules.car import connector
 
@@ -694,7 +694,7 @@ class Control:
         """
         return self._prov_command(pin=pin, expiration_time=expiration_time, mode="protectionStrategy_serviceMode")
 
-    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float]) -> NoReturn:
+    def enable_guardian_mode(self, pin: int, expiration_time: Union[int, float]) -> None:
         """Guardian Mode is a security feature that will generate alarms when vehicle interaction is detected.
 
         Args:

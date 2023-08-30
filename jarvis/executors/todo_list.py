@@ -1,5 +1,4 @@
 import json
-from typing import NoReturn
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
@@ -108,7 +107,7 @@ def delete_todo_items() -> None:
     speaker.speak(text=f'Done {models.env.title}!', run=True)
 
 
-def delete_todo() -> NoReturn:
+def delete_todo() -> None:
     """Deletes all the data from the table ``tasks`` in the database."""
     with tdb.connection:
         cursor = tdb.connection.cursor()

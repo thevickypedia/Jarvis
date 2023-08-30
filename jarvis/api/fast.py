@@ -1,5 +1,4 @@
 from threading import Thread
-from typing import NoReturn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +18,7 @@ app = FastAPI(
 )
 
 
-def enable_cors() -> NoReturn:
+def enable_cors() -> None:
     """Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API."""
     logger.info('Setting CORS policy.')
     origins = [
@@ -50,7 +49,7 @@ if models.settings.pname == "fast_api":  # Avoid looping when called by subproce
 
 
 @app.on_event(event_type='startup')
-async def startup_func() -> NoReturn:
+async def startup_func() -> None:
     """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
     logger.info("Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:

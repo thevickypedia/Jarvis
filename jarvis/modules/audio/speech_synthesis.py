@@ -8,7 +8,6 @@
 import os
 import subprocess
 import traceback
-from typing import NoReturn
 
 import docker
 import requests
@@ -55,7 +54,7 @@ def check_existing() -> bool:
                 logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
 
-def speech_synthesizer() -> NoReturn:
+def speech_synthesizer() -> None:
     """Initiate the runner function for speech-synthesis."""
     try:
         speech_synthesis_runner()
@@ -64,7 +63,7 @@ def speech_synthesizer() -> NoReturn:
         controls.restart_control(quiet=True)
 
 
-def speech_synthesis_runner() -> NoReturn:
+def speech_synthesis_runner() -> None:
     """Initiates speech synthesizer using docker.
 
     See Also:

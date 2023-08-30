@@ -3,7 +3,7 @@
 import logging
 import math
 from datetime import datetime
-from typing import NoReturn, Tuple
+from typing import Tuple
 
 import jinja2
 import requests
@@ -177,7 +177,7 @@ class Investment:
                       f'{price:,} &#8593 {difference}\n'
         return r1, r2
 
-    def gatherer(self) -> NoReturn:
+    def gatherer(self) -> None:
         """Gathers all the necessary information and creates an ``index.html`` using a ``Jinja`` template."""
         if not self.result:
             return
@@ -211,7 +211,7 @@ class Investment:
             db.connection.commit()
         self.logger.info("Stored summary in database.")
 
-    def report_gatherer(self) -> NoReturn:
+    def report_gatherer(self) -> None:
         """Runs gatherer to call other dependent methods."""
         try:
             self.gatherer()

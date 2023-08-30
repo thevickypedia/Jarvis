@@ -3,7 +3,7 @@ import os
 import traceback
 from http import HTTPStatus
 from threading import Thread
-from typing import NoReturn, Union
+from typing import Union
 
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse
@@ -24,7 +24,7 @@ router = APIRouter()
 db = database.Database(database=models.fileio.base_db)
 
 
-def kill_power() -> NoReturn:
+def kill_power() -> None:
     """Inserts a flag into stopper table in base database."""
     with db.connection:
         cursor = db.connection.cursor()

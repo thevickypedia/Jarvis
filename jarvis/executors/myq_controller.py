@@ -1,6 +1,6 @@
 import asyncio
 from threading import Thread
-from typing import Any, Callable, NoReturn
+from typing import Any, Callable
 
 from pymyq.errors import (AuthenticationError, InvalidCredentialsError,
                           MyQError, RequestError)
@@ -35,7 +35,7 @@ class AsyncThread(Thread):
         self.result = None
         super().__init__()
 
-    def run(self) -> NoReturn:
+    def run(self) -> None:
         """Initiates ``asyncio.run`` with arguments passed."""
         self.result = asyncio.run(self.func(*self.args, **self.kwargs))
 
@@ -62,7 +62,7 @@ def run_async(func: Callable, *args: Any, **kwargs: Any) -> Any:
         return asyncio.run(func(*args, **kwargs))
 
 
-def garage(phrase: str) -> NoReturn:
+def garage(phrase: str) -> None:
     """Handler for the garage door controller.
 
     Args:

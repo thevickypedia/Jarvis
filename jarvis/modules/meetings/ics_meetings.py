@@ -12,7 +12,7 @@ from multiprocessing import Process, Queue
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
-from typing import List, NoReturn
+from typing import List
 
 import requests
 
@@ -30,7 +30,7 @@ db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
-def meetings_writer(queue: Queue = None) -> NoReturn:
+def meetings_writer(queue: Queue = None) -> None:
     """Gets return value from ``meetings()`` and writes it to a file.
 
     This function runs in a dedicated process every hour to avoid wait time when meetings information is requested.

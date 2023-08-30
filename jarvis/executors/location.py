@@ -4,7 +4,7 @@ import re
 import ssl
 import time
 import webbrowser
-from typing import Dict, NoReturn, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import certifi
 import yaml
@@ -63,7 +63,7 @@ def get_location_from_coordinates(coordinates: tuple) -> Dict[str, str]:
         return {}
 
 
-def write_current_location() -> NoReturn:
+def write_current_location() -> None:
     """Extracts location information from public IP address and writes it to a yaml file."""
     data = files.get_location()
     address = data.get("address")
@@ -83,7 +83,7 @@ def write_current_location() -> NoReturn:
                   stream=location_writer, default_flow_style=False)
 
 
-def location(*args) -> NoReturn:
+def location(*args) -> None:
     """Gets the user's current location."""
     current_location = files.get_location()
     speaker.speak(text=f"I'm at {current_location.get('address', {}).get('road', '')} - "
@@ -92,7 +92,7 @@ def location(*args) -> NoReturn:
                        f"in {current_location.get('address', {}).get('country', '')}")
 
 
-def distance(phrase) -> NoReturn:
+def distance(phrase) -> None:
     """Extracts the start and end location to get the distance for it.
 
     Args:

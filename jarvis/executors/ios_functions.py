@@ -1,5 +1,5 @@
 import difflib
-from typing import NoReturn, Union
+from typing import Union
 
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import (PyiCloudAPIResponseException,
@@ -60,7 +60,7 @@ def location_services(device: AppleDevice) -> Union[None, dict]:
         return
 
 
-def locate_device(target_device: AppleDevice) -> NoReturn:
+def locate_device(target_device: AppleDevice) -> None:
     """Speaks the location information of the target device.
 
     Args:

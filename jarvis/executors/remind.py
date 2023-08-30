@@ -2,7 +2,7 @@ import random
 import re
 import string
 from datetime import datetime, timedelta
-from typing import List, NoReturn
+from typing import List
 
 import pynotification
 
@@ -15,7 +15,7 @@ from jarvis.modules.utils import shared, support, util
 
 
 def create_reminder(reminder_time: datetime, message: str, to_about: str, phrase: str,
-                    day: str = None, timer: str = None) -> NoReturn:
+                    day: str = None, timer: str = None) -> None:
     """Updates the reminder file to set a reminder.
 
     Args:
@@ -177,7 +177,7 @@ def reminder(phrase: str) -> None:
                            f"I don't think a time like that exists on Earth.")
 
 
-def executor(message: str, contact: str = None) -> NoReturn:
+def executor(message: str, contact: str = None) -> None:
     """Notifies user about the reminder and displays a notification on the device.
 
     Args:

@@ -1,7 +1,7 @@
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from http import HTTPStatus
-from typing import Callable, NoReturn
+from typing import Callable
 
 import pandas
 from fastapi import APIRouter
@@ -44,7 +44,7 @@ async def get_signals(symbol: str, bar_count: int = 100, data_dict: bool = False
     get_signals_per_ticker(symbol=symbol, bar_count=bar_count)
 
 
-def thread_worker(function_to_call: Callable) -> NoReturn:
+def thread_worker(function_to_call: Callable) -> None:
     """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
 
     Args:

@@ -1,6 +1,5 @@
 import random
 import sys
-from typing import NoReturn
 
 from pyvolume import pyvolume
 
@@ -11,7 +10,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, util
 
 
-def main_volume(level: int) -> NoReturn:
+def main_volume(level: int) -> None:
     """Changes system volume.
 
     Args:
@@ -20,7 +19,7 @@ def main_volume(level: int) -> NoReturn:
     pyvolume(level=level, debug=True, logger=logger)
 
 
-def speaker_volume(level: int) -> NoReturn:
+def speaker_volume(level: int) -> None:
     """Changes volume just for Jarvis' speech without disturbing the system volume.
 
     Args:
@@ -33,7 +32,7 @@ def speaker_volume(level: int) -> NoReturn:
         logger.warning("Setting Jarvis' volume is not available for speech-synthesis")
 
 
-def volume(phrase: str = None, level: int = None) -> NoReturn:
+def volume(phrase: str = None, level: int = None) -> None:
     """Controls volume from the numbers received. Defaults to 50%.
 
     See Also:

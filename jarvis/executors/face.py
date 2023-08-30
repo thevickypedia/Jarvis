@@ -2,7 +2,6 @@ import glob
 import os
 import shutil
 from datetime import datetime
-from typing import NoReturn
 
 from PIL import Image
 
@@ -18,7 +17,7 @@ TRAINING_DIR = os.path.realpath("train")
 FACE_DETECTION_TEMP_FILE = 'cv2_open.jpg'
 
 
-def detected_face() -> NoReturn:
+def detected_face() -> None:
     """Captures a picture, shows a preview and stores it for future recognition."""
     support.write_screen(text='New face has been detected. Like to give it a name?')
     speaker.speak(text='I was able to detect a face, but was unable to recognize it.')

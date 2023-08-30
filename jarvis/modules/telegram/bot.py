@@ -12,7 +12,7 @@ import secrets
 import sys
 import time
 import traceback
-from typing import NoReturn, Union
+from typing import Union
 
 import requests
 from pydantic import FilePath
@@ -272,7 +272,7 @@ class TelegramBot:
             self.send_message(chat_id=chat_id, response=response, parse_mode=None, retry=True)
         return result
 
-    def poll_for_messages(self) -> NoReturn:
+    def poll_for_messages(self) -> None:
         """Polls ``api.telegram.org`` for new messages.
 
         Raises:
@@ -572,7 +572,7 @@ class TelegramBot:
                 return
         self.executor(command=command, payload=payload)
 
-    def executor(self, command: str, payload: dict) -> NoReturn:
+    def executor(self, command: str, payload: dict) -> None:
         """Executes the command via offline communicator.
 
         Args:
@@ -591,7 +591,7 @@ class TelegramBot:
         logger.info("Response: %s", response)
         self.process_response(payload=payload, response=response)
 
-    def process_response(self, response: str, payload: dict) -> NoReturn:
+    def process_response(self, response: str, payload: dict) -> None:
         """Processes the response via Telegram API.
 
         Args:

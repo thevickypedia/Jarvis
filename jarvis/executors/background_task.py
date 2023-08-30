@@ -2,7 +2,7 @@ import os
 import warnings
 from collections import OrderedDict
 from collections.abc import Generator
-from typing import NoReturn, Union
+from typing import Union
 
 import yaml
 from pydantic.error_wrappers import ValidationError
@@ -14,7 +14,7 @@ from jarvis.modules.models.classes import BackgroundTask
 from jarvis.modules.utils import support
 
 
-def background_task_handler(phrase: str) -> NoReturn:
+def background_task_handler(phrase: str) -> None:
     """Handles background tasks file resets by renaming it to tmp if requested to disable.
 
     Args:
@@ -59,7 +59,7 @@ def compare_tasks(dict1: dict, dict2: dict) -> bool:
         return True
 
 
-def remove_corrupted(task: Union[BackgroundTask, dict]) -> NoReturn:
+def remove_corrupted(task: Union[BackgroundTask, dict]) -> None:
     """Removes a corrupted task from the background tasks feed file.
 
     Args:

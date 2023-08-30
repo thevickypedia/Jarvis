@@ -2,7 +2,6 @@ import importlib
 import logging
 import os
 import time
-from typing import NoReturn
 
 from jarvis.executors import controls
 from jarvis.modules.exceptions import BotInUse, EgressErrors
@@ -15,7 +14,7 @@ importlib.reload(module=logging)
 FAILED_CONNECTIONS = {'count': 0}
 
 
-def telegram_api() -> NoReturn:
+def telegram_api() -> None:
     """Initiates polling for new messages.
 
     Handles:

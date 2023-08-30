@@ -4,7 +4,7 @@ from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Dict, List, NoReturn, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 import gmailconnector
 import jinja2
@@ -22,7 +22,7 @@ CONNECTION = classes.VehicleConnection()
 AUTHORIZATION = classes.VehicleAuthorization()
 
 
-def create_connection() -> NoReturn:
+def create_connection() -> None:
     """Creates a new connection and stores the refresh token and device ID in a dedicated object."""
     if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
         # this might never happen, as the connection and vin are reused until auth expiry anyway

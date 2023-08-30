@@ -4,7 +4,7 @@ import re
 import shutil
 import subprocess
 from datetime import datetime
-from typing import Dict, NoReturn
+from typing import Dict
 
 import packaging.version
 import psutil
@@ -18,7 +18,7 @@ from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support, util
 
 
-def system_info(*args) -> NoReturn:
+def system_info(*args) -> None:
     """Tells the system configuration."""
     disk_usage = shutil.disk_usage("/")
     total = support.size_converter(byte_size=disk_usage.total)

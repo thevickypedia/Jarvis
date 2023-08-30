@@ -4,7 +4,7 @@ from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import NoReturn, Union
+from typing import Union
 
 import openai
 from openai.error import AuthenticationError, OpenAIError
@@ -17,7 +17,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
-def dump_history(request: str, response: str) -> NoReturn:
+def dump_history(request: str, response: str) -> None:
     """Dump responses from GPT to a yaml file for future response.
 
     Args:
@@ -102,7 +102,7 @@ class ChatGPT:
         if not self.authenticated:
             raise MissingEnvVars
 
-    def authenticate(self) -> NoReturn:
+    def authenticate(self) -> None:
         """Initiates authentication and prepares GPT responses ready to be audio fed."""
         if models.env.openai_api:
             openai.api_key = models.env.openai_api
@@ -127,7 +127,7 @@ class ChatGPT:
         except OpenAIError as error:
             logger.critical(error)
 
-    def query(self, phrase: str) -> NoReturn:
+    def query(self, phrase: str) -> None:
         """Queries ChatGPT api with the request and speaks the response.
 
         See Also:

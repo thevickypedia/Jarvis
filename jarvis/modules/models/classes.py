@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 from multiprocessing import current_process
 from threading import Thread
-from typing import Callable, Dict, List, NoReturn, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 from uuid import UUID
 
 import psutil
@@ -104,7 +104,7 @@ class VehicleConnection(BaseModel):
     connection: Optional[Callable] = None
 
 
-def import_module() -> NoReturn:
+def import_module() -> None:
     """Instantiates pyttsx3 after importing ``nsss`` drivers beforehand."""
     if settings.os == "Darwin":
         importlib.import_module("pyttsx3.drivers.nsss")

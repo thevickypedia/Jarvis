@@ -2,7 +2,6 @@ import os
 import socket
 import time
 from http.client import HTTPSConnection
-from typing import NoReturn
 
 from pywifi import ControlConnection, ControlPeripheral
 
@@ -11,7 +10,7 @@ from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 
 
-def wifi_connector() -> NoReturn:
+def wifi_connector() -> None:
     """Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.
 
     See Also:

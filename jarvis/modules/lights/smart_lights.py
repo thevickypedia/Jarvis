@@ -9,7 +9,6 @@ import socket
 import struct
 import time
 from ipaddress import IPv4Address
-from typing import NoReturn
 
 from jarvis.modules.logger import logger
 from jarvis.modules.utils import support
@@ -92,11 +91,11 @@ class MagicHomeApi:
             logger.error("%s while performing '%s'", error_msg, self.operation)
             raise socket.error(error)
 
-    def turn_on(self) -> NoReturn:
+    def turn_on(self) -> None:
         """Turn a device on."""
         self.send_bytes(0x71, 0x23, 0x0F, 0xA3) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
 
-    def turn_off(self) -> NoReturn:
+    def turn_off(self) -> None:
         """Turn a device off."""
         self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
@@ -178,7 +177,7 @@ class MagicHomeApi:
         else:
             support.write_screen(text="Incompatible device type received.")
 
-    def send_preset_function(self, preset_number: int, speed: int) -> NoReturn:
+    def send_preset_function(self, preset_number: int, speed: int) -> None:
         """Send a preset command to a device.
 
         Args:
@@ -203,7 +202,7 @@ class MagicHomeApi:
             message = [0x61, preset_number, speed, 0x0F]
             self.send_bytes(*(message + [calculate_checksum(message)]))
 
-    def send_bytes(self, *bytes_) -> NoReturn:
+    def send_bytes(self, *bytes_) -> None:
         """Send commands to the device.
 
         If the device hasn't been communicated to in 5 minutes, reestablish the connection.

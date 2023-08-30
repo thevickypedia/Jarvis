@@ -1,7 +1,7 @@
 import os
 import warnings
 from datetime import datetime, timedelta
-from typing import NoReturn, Union
+from typing import Union
 
 from deepdiff import DeepDiff
 
@@ -11,7 +11,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
-def automation_handler(phrase: str) -> NoReturn:
+def automation_handler(phrase: str) -> None:
     """Handles automation file resets by renaming it to tmp if requested to disable.
 
     Args:
@@ -35,7 +35,7 @@ def automation_handler(phrase: str) -> NoReturn:
             speaker.speak(text=f"I couldn't not find the source file to disable automation {models.env.title}!")
 
 
-def rewrite_automator(write_data: dict) -> NoReturn:
+def rewrite_automator(write_data: dict) -> None:
     """Rewrites the automation file with the updated dictionary.
 
     Args:
@@ -47,7 +47,7 @@ def rewrite_automator(write_data: dict) -> NoReturn:
     files.put_automation(data=write_data)
 
 
-def validate_weather_alert() -> NoReturn:
+def validate_weather_alert() -> None:
     """Adds the env var for weather alert (if present) to automation feed file."""
     if models.env.weather_alert:
         automation_data = files.get_automation()

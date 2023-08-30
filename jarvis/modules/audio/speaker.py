@@ -9,7 +9,7 @@ import re
 import sys
 from datetime import datetime
 from threading import Thread
-from typing import NoReturn, Union
+from typing import Union
 
 import pynotification
 import requests
@@ -79,7 +79,7 @@ def speech_synthesizer(text: str,
             models.env.speech_synthesis_timeout = 0
 
 
-def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
+def speak(text: str = None, run: bool = False, block: bool = True) -> None:
     """Calls ``audio_driver.say`` to speak a statement from the received text.
 
     Args:
@@ -118,7 +118,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> NoReturn:
         models.audio_driver.runAndWait()
 
 
-def frequently_used(function_name: str) -> NoReturn:
+def frequently_used(function_name: str) -> None:
     """Writes the function called and the number of times into a yaml file.
 
     Args:

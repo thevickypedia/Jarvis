@@ -9,7 +9,7 @@ import ctypes
 from collections.abc import Generator
 from contextlib import contextmanager
 from http import HTTPStatus
-from typing import ByteString, NoReturn
+from typing import ByteString
 
 import requests
 from fastapi import HTTPException
@@ -24,7 +24,8 @@ ALSA_ERROR_HANDLER = ctypes.CFUNCTYPE(None,
                                       ctypes.c_char_p)
 
 
-def py_error_handler(filename: ByteString, line: int, function: ByteString, err: int, fmt: ByteString) -> NoReturn:
+# noinspection PyUnusedLocal
+def py_error_handler(filename: ByteString, line: int, function: ByteString, err: int, fmt: ByteString) -> None:
     """Handles errors from pyaudio module especially for Linux based operating systems."""
     pass
 

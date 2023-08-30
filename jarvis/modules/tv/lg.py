@@ -9,7 +9,7 @@ import socket
 import time
 from collections.abc import Generator
 from ipaddress import IPv4Address
-from typing import List, NoReturn
+from typing import List
 
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import (ApplicationControl, AudioOutputSource,
@@ -103,13 +103,13 @@ class LGWebOS:
         self.source_control = SourceControl(self.client)
         self._init_status = True
 
-    def increase_volume(self) -> NoReturn:
+    def increase_volume(self) -> None:
         """Increases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_up()
         self.system.notify(f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%")
 
-    def decrease_volume(self) -> NoReturn:
+    def decrease_volume(self) -> None:
         """Decreases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_down()
@@ -138,7 +138,7 @@ class LGWebOS:
         if isinstance(self.get_volume(), int):
             return True
 
-    def set_volume(self, target: int) -> NoReturn:
+    def set_volume(self, target: int) -> None:
         """The argument is an integer from 1 to 100.
 
         Args:
@@ -147,32 +147,32 @@ class LGWebOS:
         self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
         self.media.set_volume(target)
 
-    def mute(self) -> NoReturn:
+    def mute(self) -> None:
         """Mutes the TV."""
         self.system.notify("Jarvis::Muted")
         self.media.mute(True)
 
-    def play(self) -> NoReturn:
+    def play(self) -> None:
         """Plays the paused content on the TV."""
         self.system.notify("Jarvis::Play")
         self.media.play()
 
-    def pause(self) -> NoReturn:
+    def pause(self) -> None:
         """Pauses the playing content on TV."""
         self.system.notify("Jarvis::Paused")
         self.media.pause()
 
-    def stop(self) -> NoReturn:
+    def stop(self) -> None:
         """Stop the playing content on TV."""
         self.system.notify("Jarvis::Stop")
         self.media.stop()
 
-    def rewind(self) -> NoReturn:
+    def rewind(self) -> None:
         """Rewinds the playing content on TV."""
         self.system.notify("Jarvis::Rewind")
         self.media.rewind()
 
-    def forward(self) -> NoReturn:
+    def forward(self) -> None:
         """Forwards the playing content on TV."""
         self.system.notify("Jarvis::Forward")
         self.media.fast_forward()
@@ -187,7 +187,7 @@ class LGWebOS:
         for app in self.app.list_apps():
             yield app["title"]
 
-    def launch_app(self, app_name: str) -> NoReturn:
+    def launch_app(self, app_name: str) -> None:
         """Launches an application.
 
         Args:
@@ -196,7 +196,7 @@ class LGWebOS:
         app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
         self.app.launch(app_launcher, content_id=None)
 
-    def close_app(self, app_name: str) -> NoReturn:
+    def close_app(self, app_name: str) -> None:
         """Closes a particular app using the launch_info received from launch_app method.
 
         Args:
@@ -214,7 +214,7 @@ class LGWebOS:
         for source in self.source_control.list_sources():
             yield source['label']
 
-    def set_source(self, val: str) -> NoReturn:
+    def set_source(self, val: str) -> None:
         """Sets an ``InputSource`` instance.
 
         Args:
@@ -252,11 +252,11 @@ class LGWebOS:
         """
         return self.media.list_audio_output_sources()
 
-    def set_audio_output_source(self) -> NoReturn:
+    def set_audio_output_source(self) -> None:
         """Sets to a particular AudioOutputSource instance."""
         self.media.set_audio_output(self.audio_output_source[0])  # noqa
 
-    def shutdown(self) -> NoReturn:
+    def shutdown(self) -> None:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""
         try:
             self.system.notify('Jarvis::SHUTTING DOWN now')

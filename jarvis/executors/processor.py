@@ -4,7 +4,7 @@ import warnings
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import Dict, List, NoReturn, Union
+from typing import Dict, List, Union
 
 import psutil
 import yaml
@@ -26,7 +26,7 @@ db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, warn=True)
-def delete_db() -> NoReturn:
+def delete_db() -> None:
     """Delete base db if exists. Called upon restart or shut down."""
     if os.path.isfile(models.fileio.base_db):
         logger.info("Removing %s", models.fileio.base_db)
@@ -36,7 +36,7 @@ def delete_db() -> NoReturn:
     return
 
 
-def clear_db() -> NoReturn:
+def clear_db() -> None:
     """Deletes entries from all databases except for the tables assigned to hold data forever."""
     with db.connection:
         cursor = db.connection.cursor()
@@ -50,7 +50,7 @@ def clear_db() -> NoReturn:
             cursor.execute(f"DELETE FROM {table}")
 
 
-def create_process_mapping(processes: Dict[str, Process], func_name: str = None) -> NoReturn:
+def create_process_mapping(processes: Dict[str, Process], func_name: str = None) -> None:
     """Creates or updates the processes mapping file.
 
     Args:
@@ -141,7 +141,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     return processes[func_name] if func_name else processes
 
 
-def stop_child_processes() -> NoReturn:
+def stop_child_processes() -> None:
     """Stops sub processes (for meetings and events) triggered by child processes."""
     children: Dict[str, List[int]] = {}
     with db.connection:
@@ -163,7 +163,7 @@ def stop_child_processes() -> NoReturn:
             support.stop_process(pid=proc.pid)
 
 
-def stop_processes(func_name: str = None) -> NoReturn:
+def stop_processes(func_name: str = None) -> None:
     """Stops all background processes initiated during startup and removes database source file."""
     stop_child_processes() if not func_name else None
     for func, process in shared.processes.items():

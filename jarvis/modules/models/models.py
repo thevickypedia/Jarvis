@@ -8,7 +8,7 @@
 import os
 import pathlib
 import warnings
-from typing import NoReturn, Union
+from typing import Union
 
 import cv2
 import pvporcupine
@@ -47,7 +47,7 @@ TABLES = {
 KEEP_TABLES = ("vpn", "party", "listener")  # TABLES to keep from `fileio.base_db`
 
 
-def _distance_temperature_brute_force() -> NoReturn:
+def _distance_temperature_brute_force() -> None:
     """Convert distance and temperature so that, metric goes with kilometers and imperial with miles."""
     # If distance is requested in miles, then temperature is brute forced to imperial units
     if env.distance_unit == DistanceUnits.MILES:
@@ -79,7 +79,7 @@ def _distance_temperature_brute_force() -> NoReturn:
             env.temperature_unit = TemperatureUnits.METRIC
 
 
-def _set_default_voice_name() -> NoReturn:
+def _set_default_voice_name() -> None:
     """Set default voice name based on the Operating System."""
     if settings.os == supported_platforms.macOS:
         env.voice_name = "Daniel"
@@ -89,7 +89,7 @@ def _set_default_voice_name() -> NoReturn:
         env.voice_name = "english-us"
 
 
-def _main_process_validations() -> NoReturn:
+def _main_process_validations() -> None:
     """Validations that should happen only when the main process is triggered."""
     if not env.recognizer_settings and not env.listener_phrase_limit:
         env.recognizer_settings = RecognizerSettings()  # Default override when phrase limit is not available
@@ -134,7 +134,7 @@ def _main_process_validations() -> NoReturn:
         pathlib.Path(fileio.reminders).touch()
 
 
-def _global_validations() -> NoReturn:
+def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
     main = True if settings.pname == "JARVIS" else False
     # Validate root password present for linux systems

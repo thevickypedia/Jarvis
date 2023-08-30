@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import Dict, List, NoReturn, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from pydantic import EmailStr
 
@@ -13,7 +13,7 @@ stock_db.create_table(table_name="stock", columns=settings.stock_monitor.user_in
 stock_db.create_table(table_name="stock_daily", columns=settings.stock_monitor.alerts)
 
 
-def cleanup_stock_userdata() -> NoReturn:
+def cleanup_stock_userdata() -> None:
     """Delete duplicates tuples within the database."""
     data = get_stock_userdata()
     if dupes := [x for n, x in enumerate(data) if x in data[:n]]:
@@ -29,7 +29,7 @@ def cleanup_stock_userdata() -> NoReturn:
             stock_db.connection.commit()
 
 
-def insert_stock_userdata(params: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
+def insert_stock_userdata(params: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> None:
     """Inserts new entry into the stock database.
 
     Args:
@@ -92,7 +92,7 @@ def put_daily_alerts(
         stock_db.connection.commit()
 
 
-def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> NoReturn:
+def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> None:
     """Delete particular user data from stock database.
 
     Args:

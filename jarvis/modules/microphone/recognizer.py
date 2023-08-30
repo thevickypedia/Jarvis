@@ -8,7 +8,6 @@
 import asyncio
 import logging
 import platform
-from typing import NoReturn
 
 import speech_recognition
 import yaml
@@ -49,13 +48,13 @@ changed = dict(energy_threshold=RECOGNIZER.energy_threshold,
                non_speaking_duration=RECOGNIZER.non_speaking_duration)
 
 
-async def save_for_reference() -> NoReturn:
+async def save_for_reference() -> None:
     """Saves the original config and new config in a yaml file."""
     with open('speech_recognition_values.yaml', 'w') as file:
         yaml.dump(data={"defaults": defaults, "modified": changed}, stream=file)
 
 
-async def main() -> NoReturn:
+async def main() -> None:
     """Initiates yaml dump in an asynchronous call and initiates listener in a never ending loop."""
     asyncio.create_task(save_for_reference())
     with MICROPHONE as source:

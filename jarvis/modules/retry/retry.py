@@ -8,14 +8,14 @@
 import functools
 import time
 import warnings
-from typing import Any, Callable, NoReturn, Union
+from typing import Any, Callable, Union
 
 from jarvis.modules.logger import logger
 from jarvis.modules.utils import support
 
 
 def retry(attempts: int = 3, interval: Union[int, float] = 0, warn: bool = False, exclude_exc=None) -> \
-        Union[Callable, Any, NoReturn, None]:
+        Union[Callable, Any, None]:
     """Wrapper for any function that has to be retried upon failure.
 
     Args:

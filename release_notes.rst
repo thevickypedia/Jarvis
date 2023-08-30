@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+3.7 (08/29/2023)
+----------------
+- Includes a new feature to setup daily alerts for ``stock-monitor``
+- Addtionally Jarvis can also list existing reminders now
+- Improve overall stability and error handling for FileIO operations
+
 3.6 (08/22/2023)
 ----------------
 - Implement a feature to check for overlap in alarms

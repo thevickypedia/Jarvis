@@ -2,7 +2,7 @@ import random
 from concurrent.futures import ThreadPoolExecutor
 from ipaddress import IPv4Address
 from multiprocessing import Process
-from typing import List, NoReturn, Union
+from typing import List, Union
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
@@ -13,7 +13,7 @@ from jarvis.modules.utils import support
 db = database.Database(database=models.fileio.base_db)
 
 
-def turn_off(host: IPv4Address) -> NoReturn:
+def turn_off(host: IPv4Address) -> None:
     """Turns off the device.
 
     Args:
@@ -22,7 +22,7 @@ def turn_off(host: IPv4Address) -> NoReturn:
     smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
 
 
-def warm(host: IPv4Address) -> NoReturn:
+def warm(host: IPv4Address) -> None:
     """Sets lights to warm/yellow.
 
     Args:
@@ -32,7 +32,7 @@ def warm(host: IPv4Address) -> NoReturn:
                               operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
 
 
-def cool(host: IPv4Address) -> NoReturn:
+def cool(host: IPv4Address) -> None:
     """Sets lights to cool/white.
 
     Args:
@@ -43,7 +43,7 @@ def cool(host: IPv4Address) -> NoReturn:
                                                                      cool_white=255)
 
 
-def lumen(host: IPv4Address, rgb: int = 255) -> NoReturn:
+def lumen(host: IPv4Address, rgb: int = 255) -> None:
     """Sets lights to custom brightness.
 
     Args:
@@ -54,7 +54,7 @@ def lumen(host: IPv4Address, rgb: int = 255) -> NoReturn:
     smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
 
 
-def preset(host: IPv4Address, color: int = None, speed: int = 100) -> NoReturn:
+def preset(host: IPv4Address, color: int = None, speed: int = 100) -> None:
     """Changes light colors to preset values.
 
     Args:
@@ -67,7 +67,7 @@ def preset(host: IPv4Address, color: int = None, speed: int = 100) -> NoReturn:
     )
 
 
-def runner(host: List[IPv4Address]) -> NoReturn:
+def runner(host: List[IPv4Address]) -> None:
     """Runs a never ending loop setting random light IP addresses to random color preset values.
 
     Args:
@@ -91,7 +91,7 @@ def check_status() -> Union[str, int, None]:
     return state
 
 
-def remove_status() -> NoReturn:
+def remove_status() -> None:
     """Removes all entries from the ``party`` table."""
     with db.connection:
         cursor = db.connection.cursor()
@@ -99,7 +99,7 @@ def remove_status() -> NoReturn:
         db.connection.commit()
 
 
-def update_status(process: Process) -> NoReturn:
+def update_status(process: Process) -> None:
     """Update the ``children`` and ``party`` tables with process ID.
 
     Args:

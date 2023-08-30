@@ -2,7 +2,7 @@
 
 import collections
 from threading import Timer
-from typing import Any, DefaultDict, Dict, List, NoReturn, Union
+from typing import Any, DefaultDict, Dict, List, Union
 
 import yaml
 
@@ -31,7 +31,7 @@ def get_frequent() -> Dict[str, int]:
     return {}
 
 
-def put_frequent(data: Dict[str, int]) -> NoReturn:
+def put_frequent(data: Dict[str, int]) -> None:
     """Support writing frequently used keywords' mapping file.
 
     Args:
@@ -68,7 +68,7 @@ def get_secure_send() -> Dict[str, Dict[str, Any]]:
     return {}
 
 
-def delete_secure_send(key: str) -> NoReturn:
+def delete_secure_send(key: str) -> None:
     """Delete a particular secure key dictionary stored in the mapping file.
 
     Args:
@@ -128,7 +128,7 @@ def get_restrictions() -> List[str]:
     return []
 
 
-def put_restrictions(restrictions: List[str]) -> NoReturn:
+def put_restrictions(restrictions: List[str]) -> None:
     """Function level restrictions to restrict certain keywords via offline communicator.
 
     Args:
@@ -153,7 +153,7 @@ def get_gpt_data() -> List[Dict[str, str]]:
         logger.error(error)
 
 
-def put_gpt_data(data: List[Dict[str, str]]) -> NoReturn:
+def put_gpt_data(data: List[Dict[str, str]]) -> None:
     """Stores Jarvis -> ChatGPT conversations in a history file.
 
     Args:
@@ -179,7 +179,7 @@ def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[
     return {}
 
 
-def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]) -> NoReturn:
+def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]) -> None:
     """Dumps automation data into feed file.
 
     Args:
@@ -190,7 +190,7 @@ def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict
         file.flush()  # Write buffer to file immediately
 
 
-def get_smart_devices() -> Union[dict, bool, NoReturn]:
+def get_smart_devices() -> Union[dict, bool, None]:
     """Load smart devices' data from feed file.
 
     Returns:
@@ -212,7 +212,7 @@ def get_smart_devices() -> Union[dict, bool, NoReturn]:
             return False
 
 
-def put_smart_devices(data: dict) -> NoReturn:
+def put_smart_devices(data: dict) -> None:
     """Dumps smart devices' data into feed file.
 
     Args:

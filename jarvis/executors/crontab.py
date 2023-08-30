@@ -1,13 +1,12 @@
 import os
 import subprocess
-from typing import NoReturn
 
 from jarvis.modules.logger import multiprocessing_logger
 
 LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')  # Used by api functions that run on cron schedule
 
 
-def crontab_executor(statement: str, log_file: str = None) -> NoReturn:
+def crontab_executor(statement: str, log_file: str = None) -> None:
     """Executes a cron statement.
 
     Args:

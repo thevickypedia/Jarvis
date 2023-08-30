@@ -1,7 +1,6 @@
 import os
 import sys
 import unittest
-from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 import pvporcupine
@@ -22,7 +21,7 @@ class TestActivator(unittest.TestCase):
 
     @patch("pvporcupine.create")
     @patch("jarvis.main.audio_engine.open")
-    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock) -> NoReturn:
+    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock) -> None:
         """Test whether the Activator is initialized correctly.
 
         Mock the return values of the create function.
@@ -62,7 +61,7 @@ class TestActivator(unittest.TestCase):
                       mock_audio_close: MagicMock,
                       mock_speak: MagicMock,
                       mock_initiator: MagicMock,
-                      mock_listen: MagicMock) -> NoReturn:
+                      mock_listen: MagicMock) -> None:
         """Test the executor method of Activator.
 
         Mock return values of the listen function and set up necessary mocks.

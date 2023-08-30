@@ -3,7 +3,7 @@ import string
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Callable, Iterable, List, NoReturn, Union
+from typing import Callable, Iterable, List, Union
 
 import requests
 import yaml
@@ -16,7 +16,7 @@ from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
 
 
-def ticker_gatherer(character: str) -> NoReturn:
+def ticker_gatherer(character: str) -> None:
     """Gathers the stock ticker in NASDAQ. Runs on ``multi-threading`` which drops run time by ~7 times.
 
     Args:
@@ -38,7 +38,7 @@ def ticker_gatherer(character: str) -> NoReturn:
         settings.trader.stock_list[td2[0].text] = td2[1].text
 
 
-def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], workers: int = None) -> NoReturn:
+def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], workers: int = None) -> None:
     """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
 
     Args:
@@ -66,7 +66,7 @@ def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], w
             settings.trader.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
 
 
-def nasdaq() -> NoReturn:
+def nasdaq() -> None:
     """Get all stock tickers available. Creates/Updates backup file to be used."""
     if os.path.isfile(models.fileio.stock_list_backup):
         modified = int(os.stat(models.fileio.stock_list_backup).st_mtime)

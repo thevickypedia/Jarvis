@@ -6,7 +6,7 @@ import math
 import os
 import time
 from datetime import datetime
-from typing import Dict, NoReturn, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import gmailconnector
 import jinja2
@@ -16,7 +16,7 @@ from pydantic import EmailStr
 from webull import webull
 
 
-def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Union[str, NoReturn]:
+def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Union[str, None]:
     """Generate historical graph for stock price.
 
     Args:
@@ -87,7 +87,7 @@ class StockMonitor:
         stockmonitor_squire.put_daily_alerts(params=self.repeat_alerts)
         os.remove('did.bin') if os.path.isfile('did.bin') else None
 
-    def group_data(self) -> NoReturn:
+    def group_data(self) -> None:
         """Groups columns in the database by ticker to check the current prices and by email to send a notification.
 
         See Also:
@@ -197,7 +197,7 @@ class StockMonitor:
                         self.repeat_alerts.remove({alert_time: alert_entry})
                         return False  # notification should be triggered if condition matches
 
-    def send_notification(self) -> NoReturn:
+    def send_notification(self) -> None:
         """Sends notification to the user when the stock price matches the requested condition."""
         if self.data:
             self.group_data()

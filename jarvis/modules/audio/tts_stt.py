@@ -10,7 +10,7 @@ import time
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
-from typing import NoReturn, Union
+from typing import Union
 
 import soundfile
 from pydantic import FilePath
@@ -25,7 +25,7 @@ recognizer = Recognizer()
 audio_driver = voices.voice_default()
 
 
-def generate_audio_file(filename: Union[FilePath, str], text: str) -> NoReturn:
+def generate_audio_file(filename: Union[FilePath, str], text: str) -> None:
     """Generates an audio file from text.
 
     Args:

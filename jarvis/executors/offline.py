@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process, Queue
 from threading import Thread, Timer
-from typing import AnyStr, List, NoReturn, Union
+from typing import AnyStr, List, Union
 
 import requests
 from deepdiff import DeepDiff
@@ -25,7 +25,7 @@ from jarvis.modules.utils import shared, support, util
 db = database.Database(database=models.fileio.base_db)
 
 
-def background_tasks() -> NoReturn:
+def background_tasks() -> None:
     """Initiate the runner function for background tasks."""
     try:
         background_task_runner()
@@ -34,7 +34,7 @@ def background_tasks() -> NoReturn:
         controls.restart_control(quiet=True)
 
 
-def background_task_runner() -> NoReturn:
+def background_task_runner() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     # Since env vars are loaded only during startup, validate weather alert only then
@@ -189,7 +189,7 @@ def background_task_runner() -> NoReturn:
         time.sleep(0.5)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
 
-def get_tunnel() -> Union[HttpUrl, NoReturn]:
+def get_tunnel() -> HttpUrl:
     """Checks for any active public URL tunneled using Ngrok.
 
     Returns:
@@ -211,7 +211,7 @@ def get_tunnel() -> Union[HttpUrl, NoReturn]:
         logger.error(error)
 
 
-def tunneling() -> NoReturn:
+def tunneling() -> None:
     """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
 
     Notes:

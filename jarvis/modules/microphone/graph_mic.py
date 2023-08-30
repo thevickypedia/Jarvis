@@ -12,7 +12,7 @@ References:
 import os
 import queue
 from struct import Struct
-from typing import List, NoReturn, Optional, Tuple, Union, cast
+from typing import List, Optional, Tuple, Union, cast
 
 import matplotlib.pyplot
 import numpy
@@ -59,7 +59,7 @@ def list_devices() -> sounddevice.DeviceList:
 
 
 # noinspection PyUnusedLocal
-def audio_callback(indata: numpy.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> NoReturn:
+def audio_callback(indata: numpy.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> None:
     """This is called (from a separate thread) for each audio block."""
     if status:
         logger.info(status)
@@ -90,7 +90,7 @@ def update_plot(frame: int) -> List[Line2D]:
 
 def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window: int = 200,
              interval: int = 30, samplerate: float = None, down_sample: int = 10,
-             window_size: Tuple[int, int] = (5, 3), rate: int = 40, dark_mode: bool = True) -> NoReturn:
+             window_size: Tuple[int, int] = (5, 3), rate: int = 40, dark_mode: bool = True) -> None:
     """Loads all the arguments into a dict and kicks off the mapping.
 
     Args:
@@ -149,7 +149,7 @@ def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window:
         logger.error(type(error).__name__ + ': ' + error.__str__())
 
 
-def _kick_off() -> NoReturn:
+def _kick_off() -> None:
     """Plots the live microphone signal(s) with matplotlib."""
     logger.info("Initiating microphone plotter")
     if settings.samplerate is None:

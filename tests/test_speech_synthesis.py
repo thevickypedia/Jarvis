@@ -1,7 +1,6 @@
 import os
 import sys
 import unittest
-from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -20,7 +19,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
     """
 
     @patch('requests.post')
-    def test_successful_synthesis(self, mock_post: MagicMock) -> NoReturn:
+    def test_successful_synthesis(self, mock_post: MagicMock) -> None:
         """Test successful speech synthesis.
 
         This method tests the behavior of the speech_synthesizer function when a successful
@@ -39,7 +38,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
         self.assertTrue(result)
 
     @patch('requests.post')
-    def test_unsuccessful_synthesis(self, mock_post: MagicMock) -> NoReturn:
+    def test_unsuccessful_synthesis(self, mock_post: MagicMock) -> None:
         """Test unsuccessful speech synthesis.
 
         This method tests the behavior of the speech_synthesizer function when an unsuccessful
@@ -58,7 +57,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
         self.assertFalse(result)
 
     @patch('requests.post', side_effect=UnicodeError("Test UnicodeError"))
-    def test_unicode_error_handling(self, mock_post: MagicMock) -> NoReturn:
+    def test_unicode_error_handling(self, mock_post: MagicMock) -> None:
         """Test UnicodeError handling in speech synthesis.
 
         This method tests the handling of UnicodeError within the speech_synthesizer function.
@@ -71,7 +70,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
         self.assertFalse(result)
 
     @patch('requests.post', side_effect=EgressErrors)
-    def test_egress_error_handling(self, mock_post: MagicMock) -> NoReturn:
+    def test_egress_error_handling(self, mock_post: MagicMock) -> None:
         """Test EgressErrors handling in speech synthesis.
 
         This method tests the handling of EgressErrors within the speech_synthesizer function.

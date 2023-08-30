@@ -4,7 +4,7 @@ import string
 import subprocess
 import time
 from datetime import datetime, timedelta
-from typing import Dict, List, NoReturn, Union
+from typing import Dict, List, Union
 
 import pyvolume
 
@@ -48,7 +48,7 @@ def check_overlap(new_alarm: Dict[str, Union[str, bool]],
 
 
 def create_alarm(alarm_time: datetime, phrase: str, timer: str = None,
-                 repeat: bool = False, day: str = None) -> NoReturn:
+                 repeat: bool = False, day: str = None) -> None:
     """Creates an entry in the alarms' mapping file.
 
     Args:
@@ -193,7 +193,7 @@ def get_alarm_state(alarm_time: str = None) -> List[str]:
 
 
 def more_than_one_alarm_to_kill(alarms: List[Dict[str, Union[str, bool]]],
-                                phrase: str, alarm_states: List[str]) -> NoReturn:
+                                phrase: str, alarm_states: List[str]) -> None:
     """Helper function for kill alarm, if there are multiple alarms set at the same time with different days.
 
     Args:
@@ -293,7 +293,7 @@ def kill_alarm(phrase: str) -> None:
         speaker.speak(text=response)
 
 
-def executor() -> NoReturn:
+def executor() -> None:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     pyvolume.pyvolume(level=100, debug=models.env.debug, logger=logger)
     if models.settings.os != models.supported_platforms.windows:

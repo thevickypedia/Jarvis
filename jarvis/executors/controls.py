@@ -27,7 +27,7 @@ from jarvis.modules.utils import shared, support, util
 db = database.Database(database=models.fileio.base_db)
 
 
-def restart(ask: bool = True) -> NoReturn:
+def restart(ask: bool = True) -> None:
     """Restart the host machine.
 
     Warnings:
@@ -62,7 +62,7 @@ def restart(ask: bool = True) -> NoReturn:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")
 
 
-def exit_process() -> NoReturn:
+def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
     if reminders := remind.get_reminder_state():
         if len(reminders) == 1:
@@ -104,7 +104,7 @@ def sentry(*args) -> bool:
     return True
 
 
-def kill(*args) -> NoReturn:
+def kill(*args) -> None:
     """Kills active listener.
 
     Raises:
@@ -114,7 +114,7 @@ def kill(*args) -> NoReturn:
     raise StopSignal
 
 
-def db_restart_entry(caller: str) -> NoReturn:
+def db_restart_entry(caller: str) -> None:
     """Writes an entry to the DB to restart the caller.
 
     Args:
@@ -126,7 +126,7 @@ def db_restart_entry(caller: str) -> NoReturn:
         cursor.connection.commit()
 
 
-def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
+def restart_control(phrase: str = None, quiet: bool = False) -> None:
     """Controls the restart functions based on the user request.
 
     Args:
@@ -169,7 +169,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> NoReturn:
         return
 
 
-def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
+def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
     """Stops background processes.
 
     Args:
@@ -180,7 +180,7 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> NoReturn:
             support.stop_process(pid=proc.pid)
 
 
-def delete_docker_container() -> NoReturn:
+def delete_docker_container() -> None:
     """Deletes the docker container spun up (if any) for speech synthesis.
 
     See Also:
@@ -248,7 +248,7 @@ def terminator() -> NoReturn:
     os._exit(1)
 
 
-def shutdown(*args, proceed: bool = False) -> NoReturn:
+def shutdown(*args, proceed: bool = False) -> None:
     """Gets confirmation and turns off the machine.
 
     Args:
@@ -275,7 +275,7 @@ def shutdown(*args, proceed: bool = False) -> NoReturn:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")
 
 
-def delete_logs() -> NoReturn:
+def delete_logs() -> None:
     """Delete log files that were updated before the log retention period. Checks if file's inode was changed."""
     for __path, __directory, __file in os.walk('logs'):
         for file_ in __file:
@@ -285,7 +285,7 @@ def delete_logs() -> NoReturn:
                 os.remove(os.path.join(__path, file_))  # removes the file if it is older than log retention time
 
 
-def delete_pycache() -> NoReturn:
+def delete_pycache() -> None:
     """Deletes ``__pycache__`` folder from all sub-dir."""
     for __path, __directory, __file in os.walk(os.getcwd()):
         if '__pycache__' in __directory:
@@ -294,7 +294,7 @@ def delete_pycache() -> NoReturn:
                 shutil.rmtree(os.path.join(__path, '__pycache__'))
 
 
-def set_executable() -> NoReturn:
+def set_executable() -> None:
     """Modify file permissions for all the files within the fileio directory."""
     for file in os.listdir("fileio"):
         f_path = os.path.join("fileio", file)
@@ -303,7 +303,7 @@ def set_executable() -> NoReturn:
     # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio") if not file.endswith('.cid')]
 
 
-def starter() -> NoReturn:
+def starter() -> None:
     """Initiates crucial functions which needs to be called during start up.
 
     Methods:

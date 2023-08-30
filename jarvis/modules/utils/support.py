@@ -13,7 +13,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
 from ipaddress import IPv4Address
-from typing import Any, Dict, Iterable, List, NoReturn, Tuple, Union
+from typing import Any, Dict, Iterable, List, Tuple, Union
 
 import dateutil.tz
 import inflect
@@ -115,7 +115,7 @@ def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> U
     return place.strip() if place.strip() else None
 
 
-def unrecognized_dumper(train_data: dict) -> NoReturn:
+def unrecognized_dumper(train_data: dict) -> None:
     """If none of the conditions are met, converted text is written to a yaml file for training purpose.
 
     Args:
@@ -247,7 +247,7 @@ def detect_lookup_date(phrase: str) -> Tuple[datetime, str]:
     return datetime_obj, addon
 
 
-def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], NoReturn]:
+def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], None]:
     """Converts human date from general conversations into a datetime object.
 
     Args:
@@ -384,19 +384,19 @@ def exit_message() -> str:
     return exit_msg
 
 
-def no_env_vars() -> NoReturn:
+def no_env_vars() -> None:
     """Says a message about permissions when env vars are missing."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
     speaker.speak(text=f"I'm sorry {models.env.title}! I lack the permissions!")
 
 
-def unsupported_features() -> NoReturn:
+def unsupported_features() -> None:
     """Says a message about unsupported features."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
     speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!")
 
 
-def write_screen(text: Any) -> NoReturn:
+def write_screen(text: Any) -> None:
     """Write text on screen that can be cleared later.
 
     Args:
@@ -407,7 +407,7 @@ def write_screen(text: Any) -> NoReturn:
     sys.stdout.write(f"\r{text}")
 
 
-def flush_screen() -> NoReturn:
+def flush_screen() -> None:
     """Flushes the screen output.
 
     See Also:
@@ -493,7 +493,7 @@ def time_converter(second: float) -> str:
         return pluralize(second, 'second')
 
 
-def remove_file(filepath: str, delay: int = 0) -> NoReturn:
+def remove_file(filepath: str, delay: int = 0) -> None:
     """Deletes the requested file after a certain time.
 
     Args:
@@ -504,7 +504,7 @@ def remove_file(filepath: str, delay: int = 0) -> NoReturn:
     os.remove(filepath) if os.path.isfile(filepath) else logger.error("%s not found.", filepath)
 
 
-def stop_process(pid: int) -> NoReturn:
+def stop_process(pid: int) -> None:
     """Stop a particular process using ``SIGTERM`` and ``SIGKILL`` signals.
 
     Args:

@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread, Timer
-from typing import NoReturn, Tuple, Union
+from typing import Tuple, Union
 
 import gmailconnector
 import jinja2
@@ -43,7 +43,7 @@ def get_state(log: bool = True) -> Tuple[int, str]:
         logger.info("Security mode is currently disabled") if log else None
 
 
-def put_state(state: bool) -> NoReturn:
+def put_state(state: bool) -> None:
     """Updates the state of guard column in the base db.
 
     Args:
@@ -65,7 +65,7 @@ def put_state(state: bool) -> NoReturn:
     time.sleep(0.5)
 
 
-def stop_and_respond(stop: bool) -> NoReturn:
+def stop_and_respond(stop: bool) -> None:
     """Stops security mode and responds accordingly.
 
     Args:
@@ -88,14 +88,14 @@ def stop_and_respond(stop: bool) -> NoReturn:
     speaker.speak(run=True)
 
 
-def politely_disable() -> NoReturn:
+def politely_disable() -> None:
     """Disable security mode in the background without any response."""
     if get_state(log=False):
         logger.debug("Security mode is still enabled.")
         put_state(state=False)
 
 
-def guard_disable(*args) -> NoReturn:
+def guard_disable(*args) -> None:
     """Checks the state of security mode, sets flag to False if currently enabled.
 
     See Also:
@@ -122,7 +122,7 @@ def guard_disable(*args) -> NoReturn:
             speaker.speak(text=f"Security mode was never enabled {models.env.title}!")
 
 
-def security_runner(offline: bool = True) -> NoReturn:
+def security_runner(offline: bool = True) -> None:
     """Enables microphone and camera to watch and listen for potential threats. Notifies if any."""
     if offline:
         multiprocessing_logger(filename=os.path.join('logs', 'guardian_mode_%d-%m-%Y.log'))
@@ -161,7 +161,7 @@ def security_runner(offline: bool = True) -> NoReturn:
             Thread(target=threat_notify, args=(converted, face_detected,)).start()
 
 
-def guard_enable(*args) -> NoReturn:
+def guard_enable(*args) -> None:
     """Security Mode will enable camera and microphone in the background.
 
     Notes:
@@ -196,7 +196,7 @@ def guard_enable(*args) -> NoReturn:
     security_runner(offline=False)
 
 
-def threat_notify(converted: str, face_detected: Union[str, None]) -> NoReturn:
+def threat_notify(converted: str, face_detected: Union[str, None]) -> None:
     """Sends an SMS and email notification in case of a threat.
 
     References:

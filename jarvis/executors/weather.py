@@ -1,7 +1,7 @@
 import string
 from collections import OrderedDict
 from datetime import datetime
-from typing import Any, Dict, NoReturn, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 from urllib.parse import urlencode
 
 import requests
@@ -15,7 +15,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
 
-def make_request(lat: float, lon: float) -> Union[Dict, NoReturn]:
+def make_request(lat: float, lon: float) -> Union[Dict, None]:
     """Get weather information from OpenWeatherMap API.
 
     Args:

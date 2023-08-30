@@ -1,7 +1,7 @@
 import base64
 import string
 from multiprocessing import Queue
-from typing import AsyncIterable, List, NoReturn, Tuple
+from typing import AsyncIterable, List, Tuple
 
 import cv2
 import numpy
@@ -56,7 +56,7 @@ def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> Tuple[by
     return encoded_string, filename
 
 
-def test_camera() -> NoReturn:
+def test_camera() -> None:
     """Tests a camera connected on the index number provided by the user.
 
     Raises:
@@ -97,7 +97,7 @@ def test_camera() -> NoReturn:
     settings.surveillance.available_cameras = available_cameras
 
 
-def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> NoReturn:
+def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> None:
     """Generates frames from the camera, flips the image and stores the frame in a multiprocessing queue.
 
     Args:

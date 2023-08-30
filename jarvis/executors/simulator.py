@@ -2,7 +2,7 @@ import os
 import time
 from datetime import datetime
 from multiprocessing import Process
-from typing import Dict, List, NoReturn
+from typing import Dict, List
 
 import gmailconnector
 import yaml
@@ -31,7 +31,7 @@ def get_simulation_data() -> Dict[str, List[str]]:
                 return data
 
 
-def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
+def initiate_simulator(simulation_data: Dict[str, List[str]]) -> None:
     """Runs simulation on a preset of phrases.
 
     Args:
@@ -72,7 +72,7 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> NoReturn:
         logger.critical(mail_res.json())
 
 
-def simulation(*args) -> NoReturn:
+def simulation(*args) -> None:
     """Initiates simulation in a dedicated process logging into a dedicated file."""
     simulation_data = get_simulation_data()
     if not simulation_data:

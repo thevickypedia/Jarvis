@@ -1,5 +1,5 @@
 from multiprocessing import Process, Queue
-from typing import Dict, Hashable, List, NoReturn, Optional, Tuple
+from typing import Dict, Hashable, List, Optional, Tuple
 
 from fastapi import WebSocket
 from pydantic import BaseConfig, BaseModel, EmailStr, HttpUrl
@@ -96,7 +96,7 @@ class ConnectionManager:
         """Loads up an active connection queue."""
         self.active_connections: List[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket) -> NoReturn:
+    async def connect(self, websocket: WebSocket) -> None:
         """Accepts the websocket connection.
 
         Args:
@@ -105,7 +105,7 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.append(websocket)
 
-    def disconnect(self, websocket: WebSocket) -> NoReturn:
+    def disconnect(self, websocket: WebSocket) -> None:
         """Remove socket from active connections.
 
         Args:

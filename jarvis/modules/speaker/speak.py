@@ -7,7 +7,7 @@
 
 import logging
 from collections.abc import Generator
-from typing import Dict, NoReturn, Union
+from typing import Dict, Union
 
 import pyttsx3
 
@@ -85,7 +85,7 @@ class Speaker:
                 yield voice
 
     # noinspection PyUnresolvedReferences
-    def set_voice_by_index(self, voice_index: int, rate: int = 200) -> NoReturn:
+    def set_voice_by_index(self, voice_index: int, rate: int = 200) -> None:
         """Set voice attributes per given values.
 
         Args:
@@ -96,7 +96,7 @@ class Speaker:
         self.engine.setProperty("voice", self.voices[voice_index].id)
         self.engine.setProperty("rate", rate)
 
-    def set_voice_by_name(self, voice_name: str, rate: int = 200) -> NoReturn:
+    def set_voice_by_name(self, voice_name: str, rate: int = 200) -> None:
         """Set voice attributes per given values.
 
         Args:
@@ -113,21 +113,21 @@ class Speaker:
         else:
             raise ValueError("No matching voice found for the name: '%s'" % voice_name)
 
-    def speak_all_voices(self) -> NoReturn:
+    def speak_all_voices(self) -> None:
         """Speaks the voice name in all available voices."""
         for voice in self.get_all_voices():
             self.set_voice_by_index(voice_index=voice['index'])
             logger.info("Speaker voice [%s]: '%s'", voice['index'], voice['name'])
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
-    def speak_english_voices(self) -> NoReturn:
+    def speak_english_voices(self) -> None:
         """Speaks the voice name in all available english voices."""
         for voice in self.get_english_voices():
             self.set_voice_by_index(voice_index=voice['index'])
             logger.info("Speaker voice [%s]: '%s'", voice['index'], voice['name'])
             self.run(text=f"Hello, I am {voice['name']}. This is my voice.")
 
-    def run(self, text: str = None) -> NoReturn:
+    def run(self, text: str = None) -> None:
         """Speaks the given text in the voice set.
 
         Args:

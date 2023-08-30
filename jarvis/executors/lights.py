@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from ipaddress import IPv4Address
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Callable, Dict, List, NoReturn, Tuple, Union
+from typing import Callable, Dict, List, Tuple, Union
 
 from jarvis.executors import files, internet
 from jarvis.executors import lights_squire as squire
@@ -64,7 +64,7 @@ class ThreadExecutor:
                 logger.error("Thread processing for '%s' received an exception: %s", iterator, future.exception())
         return thread_except
 
-    def avail_check(self, function_to_call: Callable) -> NoReturn:
+    def avail_check(self, function_to_call: Callable) -> None:
         """Speaks an error message if any of the lights aren't reachable.
 
         Args:
@@ -91,7 +91,7 @@ class ThreadExecutor:
             speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
 
 
-def lights(phrase: str) -> Union[None, NoReturn]:
+def lights(phrase: str) -> None:
     """Controller for smart lights.
 
     Args:

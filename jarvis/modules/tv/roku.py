@@ -9,7 +9,7 @@ import socket
 from collections.abc import Generator
 from ipaddress import IPv4Address
 from threading import Thread
-from typing import Dict, NoReturn, Union
+from typing import Dict, Union
 from xml.etree import ElementTree
 
 import requests
@@ -83,17 +83,17 @@ class RokuECP:
         if xml_parsed.find('power-mode').text:
             return xml_parsed.find('power-mode').text == 'PowerOn'
 
-    def startup(self) -> NoReturn:
+    def startup(self) -> None:
         """Powers on the TV and launches Home screen."""
         self.make_call(path='/keypress/PowerOn', method='POST')
         self.make_call(path='/keypress/Home', method='POST')
 
-    def shutdown(self) -> NoReturn:
+    def shutdown(self) -> None:
         """Turns off the TV is it is powered on."""
         if self.get_state():
             self.make_call(path='/keypress/PowerOff', method='POST')
 
-    def increase_volume(self, limit: int = 10) -> NoReturn:
+    def increase_volume(self, limit: int = 10) -> None:
         """Increases the volume on the TV.
 
         Args:
@@ -102,7 +102,7 @@ class RokuECP:
         for _ in range(limit + 1):
             self.make_call(path='/keypress/VolumeUp', method='POST')
 
-    def decrease_volume(self, limit: int = 10) -> NoReturn:
+    def decrease_volume(self, limit: int = 10) -> None:
         """Decreases the volume on the TV.
 
         Args:
@@ -111,27 +111,27 @@ class RokuECP:
         for _ in range(limit + 1):
             self.make_call(path='/keypress/VolumeDown', method='POST')
 
-    def mute(self) -> NoReturn:
+    def mute(self) -> None:
         """Mutes the TV."""
         self.make_call(path='/keypress/VolumeMute', method='POST')
 
-    def stop(self) -> NoReturn:
+    def stop(self) -> None:
         """Sends a keypress to stop content on TV."""
         self.make_call(path='/keypress/Stop', method='POST')
 
-    def pause(self) -> NoReturn:
+    def pause(self) -> None:
         """Sends a keypress to pause content on TV."""
         self.make_call(path='/keypress/Pause', method='POST')
 
-    def play(self) -> NoReturn:
+    def play(self) -> None:
         """Sends a keypress to play content on TV."""
         self.make_call(path='/keypress/Play', method='POST')
 
-    def forward(self) -> NoReturn:
+    def forward(self) -> None:
         """Sends a keypress to forward content on TV."""
         self.make_call(path='/keypress/Fwd', method='POST')
 
-    def rewind(self) -> NoReturn:
+    def rewind(self) -> None:
         """Sends a keypress to rewind content on TV."""
         self.make_call(path='/keypress/Rev', method='POST')
 
@@ -146,7 +146,7 @@ class RokuECP:
             if app['id'].startswith('tvinput'):
                 yield app['name']
 
-    def set_source(self, val: str) -> NoReturn:
+    def set_source(self, val: str) -> None:
         """Set input source on TV.
 
         Args:
@@ -154,7 +154,7 @@ class RokuECP:
         """
         self.make_call(path=f'/keypress/{val}', method='POST')
 
-    def _set_vol_executor(self, target: int) -> NoReturn:
+    def _set_vol_executor(self, target: int) -> None:
         """Executed in thread to set volume to a specific level.
 
         With the lack of a better option, volume is decreased to zero and then increased to the required level.
@@ -165,7 +165,7 @@ class RokuECP:
         self.decrease_volume(limit=100)
         self.increase_volume(limit=target)
 
-    def set_volume(self, target: int) -> NoReturn:
+    def set_volume(self, target: int) -> None:
         """Initiates threaded volume setter.
 
         Args:
@@ -195,7 +195,7 @@ class RokuECP:
         """Placeholder method as there is no call to get this information at the time of development."""
         return 'unknown'
 
-    def launch_app(self, app_name: str) -> NoReturn:
+    def launch_app(self, app_name: str) -> None:
         """Launches an application on the TV.
 
         Args:

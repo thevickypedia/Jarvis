@@ -9,7 +9,7 @@ import logging
 import os
 import random
 import sqlite3
-from typing import List, NoReturn, Tuple, Union
+from typing import List, Tuple, Union
 
 from pydantic import FilePath
 
@@ -33,7 +33,7 @@ class Database:
         self.datastore = database
         self.connection = sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=timeout)
 
-    def create_table(self, table_name: str, columns: Union[List[str], Tuple[str]]) -> NoReturn:
+    def create_table(self, table_name: str, columns: Union[List[str], Tuple[str]]) -> None:
         """Creates the table with the required columns.
 
         Args:
@@ -71,7 +71,7 @@ class __TestDatabase:
         """Deletes the database file ``sample``."""
         os.remove(self.db.datastore)
 
-    def random_single(self) -> NoReturn:
+    def random_single(self) -> None:
         """Example using a single column."""
         self.db.create_table(table_name="TestDatabase", columns=["column"])
         with self.db.connection:
@@ -87,7 +87,7 @@ class __TestDatabase:
             cursor_.execute("DROP TABLE IF EXISTS TestDatabase")
             self.db.connection.commit()
 
-    def random_double(self) -> NoReturn:
+    def random_double(self) -> None:
         """Example using two columns with only one holding a value at any given time."""
         self.db.create_table(table_name="TestDatabase", columns=["row", "column"])
         with self.db.connection:

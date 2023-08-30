@@ -14,7 +14,6 @@ from multiprocessing import Process
 from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
-from typing import NoReturn
 
 import pynotification
 
@@ -29,7 +28,7 @@ db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
-def events_writer() -> NoReturn:
+def events_writer() -> None:
     """Gets return value from ``events_gatherer`` function and writes it to events table in the database.
 
     This function runs in a dedicated process to avoid wait time when events information is requested.
@@ -46,7 +45,7 @@ def events_writer() -> NoReturn:
     return
 
 
-def event_app_launcher() -> NoReturn:
+def event_app_launcher() -> None:
     """Launches either Calendar or Outlook application which is required to read events."""
     if models.env.event_app == classes.EventApp.CALENDAR.value:
         os.system(f"osascript {models.fileio.app_launcher} Calendar")

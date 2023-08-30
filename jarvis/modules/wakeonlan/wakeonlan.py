@@ -6,7 +6,6 @@
 """
 
 import socket
-from typing import NoReturn
 
 from jarvis.modules.exceptions import InvalidArgument
 
@@ -43,7 +42,7 @@ class WakeOnLan:
         return bytes.fromhex("F" * 12 + macaddress * 16)
 
     def send_packet(self, *mac_addresses: str, ip_address: str = BROADCAST_IP, port: int = DEFAULT_PORT,
-                    interface: str = None) -> NoReturn:
+                    interface: str = None) -> None:
         """Wake up devices using mac addresses.
 
         Notes:

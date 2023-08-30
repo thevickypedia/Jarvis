@@ -1,7 +1,6 @@
 import os
 import sys
 import unittest
-from typing import NoReturn
 from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -20,7 +19,7 @@ class TestSpeak(unittest.TestCase):
 
     @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
     @patch('playsound.playsound')
-    def test_speech_synthesis_usage(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> NoReturn:
+    def test_speech_synthesis_usage(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
         """Test speech synthesis usage.
 
         Args:
@@ -35,7 +34,7 @@ class TestSpeak(unittest.TestCase):
     @patch('jarvis.modules.audio.speaker.speak', return_value=False)
     @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
     def test_audio_driver_usage(self, mock_playsound: MagicMock, mock_speaker: MagicMock,
-                                mock_speech_synthesizer: MagicMock) -> NoReturn:
+                                mock_speech_synthesizer: MagicMock) -> None:
         """Test audio driver usage.
 
         Args:
@@ -49,7 +48,7 @@ class TestSpeak(unittest.TestCase):
         mock_speech_synthesizer.assert_not_called()
 
     @patch('jarvis.modules.utils.support.write_screen')
-    def test_no_text_input(self, mock_write_screen: MagicMock) -> NoReturn:
+    def test_no_text_input(self, mock_write_screen: MagicMock) -> None:
         """Test speak function with no text input.
 
         Args:
@@ -59,7 +58,7 @@ class TestSpeak(unittest.TestCase):
         mock_write_screen.assert_not_called()
 
     @patch('jarvis.modules.utils.support.write_screen')
-    def test_text_input_and_run(self, mock_write_screen: MagicMock) -> NoReturn:
+    def test_text_input_and_run(self, mock_write_screen: MagicMock) -> None:
         """Test speak function with text input and run flag.
 
         Args:
@@ -70,7 +69,7 @@ class TestSpeak(unittest.TestCase):
 
     @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
     @patch('playsound.playsound')
-    def test_offline_mode(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> NoReturn:
+    def test_offline_mode(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
         """Test speak function in offline mode.
 
         Args:

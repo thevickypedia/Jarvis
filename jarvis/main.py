@@ -2,7 +2,6 @@ import string
 import struct
 import traceback
 from datetime import datetime
-from typing import NoReturn
 
 import pvporcupine
 import pyaudio
@@ -20,7 +19,7 @@ from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
 
 
-def restart_checker() -> NoReturn:
+def restart_checker() -> None:
     """Operations performed during internal/external request to restart."""
     if flag := support.check_restart():
         logger.info("Restart condition is set to %s by %s", flag[0], flag[1])
@@ -102,7 +101,7 @@ class Activator:
             input_device_index=models.env.microphone_index
         )
 
-    def executor(self) -> NoReturn:
+    def executor(self) -> None:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
         logger.debug("Wake word detected at %s", datetime.now().strftime('%c'))
         if listener_controls.get_listener_state():
@@ -120,7 +119,7 @@ class Activator:
         self.audio_stream = self.open_stream()
         support.write_screen(text=self.label)
 
-    def start(self) -> NoReturn:
+    def start(self) -> None:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
             wake_len = len(models.env.wake_words)
@@ -154,7 +153,7 @@ class Activator:
             self.stop()
             controls.terminator()
 
-    def stop(self) -> NoReturn:
+    def stop(self) -> None:
         """Invoked when the run loop is exited or manual interrupt.
 
         See Also:
@@ -176,7 +175,7 @@ class Activator:
         audio_engine.terminate()
 
 
-def start() -> NoReturn:
+def start() -> None:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     logger.info("Current Process ID: %d", models.settings.pid)
     controls.starter()
