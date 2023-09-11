@@ -47,7 +47,7 @@ def system_vitals(*args) -> None:
 
     See Also:
         - Jarvis will suggest a reboot if the system uptime is more than 2 days.
-        - If confirmed, invokes `restart <https://thevickypedia.github.io/Jarvis/#jarvis.restart>`__ function.
+        - If confirmed, invokes `restart <https://jarvis-docs.vigneshrao.com/#jarvis.restart>`__ function.
     """
     output = ""
     if models.settings.os == models.supported_platforms.macOS:

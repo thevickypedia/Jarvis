@@ -392,9 +392,9 @@ class EnvConfig(BaseSettings):
 
     # Listener config
     sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0)
-    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=3)
-    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=None)
-    recognizer_settings: RecognizerSettings = Field(default=None)
+    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=2)
+    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3)
+    recognizer_settings: RecognizerSettings = Field(default=RecognizerSettings())
 
     # Telegram config
     bot_token: str = Field(default=None)
@@ -496,8 +496,6 @@ class FileIO(BaseModel):
 
     # Directories
     root: DirectoryPath = os.path.realpath('fileio')
-    alarm_root: DirectoryPath = os.path.realpath('alarm')
-    reminder_root: DirectoryPath = os.path.realpath('reminder')
 
     # Home automation
     automation: FilePath = os.path.join(root, 'automation.yaml')
@@ -508,8 +506,8 @@ class FileIO(BaseModel):
     contacts: FilePath = os.path.join(root, 'contacts.yaml')
 
     # Alarms and Reminders
-    alarms: FilePath = os.path.join(alarm_root, 'alarms.yaml')
-    reminders: FilePath = os.path.join(reminder_root, 'reminders.yaml')
+    alarms: FilePath = os.path.join(root, 'alarms.yaml')
+    reminders: FilePath = os.path.join(root, 'reminders.yaml')
 
     # Simulation
     simulation: FilePath = os.path.join(root, 'simulation.yaml')
@@ -550,6 +548,9 @@ class FileIO(BaseModel):
 
     # Secure Send
     secure_send: FilePath = os.path.join(root, 'secure_send.yaml')
+
+    # On demand storage
+    uploads: DirectoryPath = os.path.join(root, "uploads")
 
 
 fileio = FileIO()

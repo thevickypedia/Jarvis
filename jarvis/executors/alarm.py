@@ -153,7 +153,8 @@ def set_alarm(phrase: str) -> None:
             speaker.speak(text=f"An alarm at {hour}:{minute} {am_pm}? Are you an alien? "
                                "I don't think a time like that exists on Earth.")
     else:
-        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list', 'exist', 'existing')):
+        if word_match.word_match(phrase=phrase,
+                                 match_list=('get', 'what', 'send', 'list', 'exist', 'existing', 'do', 'have', 'i')):
             if alarm_states := get_alarm_state():
                 if len(alarm_states) > 1:
                     speaker.speak(text=f"Your alarms are at, {util.comma_separator(alarm_states)}.")

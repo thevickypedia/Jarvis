@@ -19,8 +19,7 @@ from jarvis.modules.utils import support
 recognizer = Recognizer()
 microphone = Microphone(device_index=models.env.microphone_index)
 
-if models.env.recognizer_settings and models.settings.pname == "JARVIS":
-    logger.debug("Overriding recognizer settings: %s", models.env.recognizer_settings.__dict__)
+if models.settings.pname == "JARVIS":
     recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold
     recognizer.pause_threshold = models.env.recognizer_settings.pause_threshold
     recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
@@ -44,8 +43,8 @@ def listen(sound: bool = True,
     """
     with microphone as source:
         try:
-            support.write_screen(text=f"Listener activated [{timeout}:{phrase_time_limit}]...")
             playsound(sound=models.indicators.start, block=False) if sound else None
+            support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
             listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
             playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()

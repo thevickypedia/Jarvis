@@ -33,7 +33,9 @@ def split_phrase(phrase: str) -> 'conditions.conditions':
             return False
 
     if ' and ' in phrase and not word_match.word_match(phrase=phrase, match_list=keywords.ignore_and):
-        for each in phrase.split(' and '):
+        and_phrases = phrase.split(' and ')
+        logger.info("Looping through %s in iterations.", and_phrases)
+        for each in and_phrases:
             exit_check = conditions.conditions(phrase=each.strip())
             speaker.speak(run=True)
     else:

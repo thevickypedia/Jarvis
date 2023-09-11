@@ -1,7 +1,7 @@
 <p align="center" style="text-align: center">
   <img src="https://vigneshrao.com/Jarvis/logo.png" width="371px" height="350px">
 </p>
-<h2 align="center">Fully Functional Voice Based Natural Language UI</h2>
+<h2 align="center">Voice-Activated Natural Language UI</h2>
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python)](https://python.org)
 
@@ -189,7 +189,8 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
     Please use [recognizer.py](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/microphone/recognizer.py) to figure out the suitable values on a trial and error basis.
 
     Sample settings (formatted as JSON object)
-    - `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
+    <br>
+    `RECOGNIZER_SETTINGS`: `'{"energy_threshold": 1100, "dynamic_energy_threshold": false, "pause_threshold": 2, "phrase_threshold": 0.1, "non_speaking_duration": 2}'`
 
     **Description**
     - `energy_threshold`: Minimum audio energy to consider for recording. Greater the value, louder the voice should be.
@@ -587,7 +588,7 @@ pre-commit run --all-files
 ## Runbook
 [![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
 
-[https://thevickypedia.github.io/Jarvis/](https://thevickypedia.github.io/Jarvis/)
+[https://jarvis-docs.vigneshrao.com/](https://jarvis-docs.vigneshrao.com/)
 
 ## License & copyright
 

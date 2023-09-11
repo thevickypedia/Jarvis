@@ -67,7 +67,8 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
     if not subject:
         subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
     sms_object = gmailconnector.SendSMS(gmail_user=user, gmail_pass=password)
-    response = sms_object.send_sms(phone=number or models.env.phone_number, subject=subject, message=body)
+    response = sms_object.send_sms(phone=number or models.env.phone_number,
+                                   subject=subject, message=body, delete_sent=True)
     if response.ok:
         logger.info('SMS notification has been sent.')
         return True

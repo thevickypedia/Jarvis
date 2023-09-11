@@ -101,7 +101,8 @@ def reminder(phrase: str) -> None:
         re.search(' to (.*) in ', phrase) or re.search(' about (.*) in ', phrase) or \
         re.search(' to (.*)', phrase) or re.search(' about (.*)', phrase)
     if not message:
-        if word_match.word_match(phrase=phrase, match_list=('get', 'what', 'send', 'list', 'exist', 'existing')):
+        if word_match.word_match(phrase=phrase,
+                                 match_list=('get', 'what', 'send', 'list', 'exist', 'existing', 'do', 'have', 'i')):
             if reminder_list := get_reminder_state():
                 speaker.speak(text=f"You have {len(reminder_list)} reminders {models.env.title}! "
                                    f"{string.capwords(util.comma_separator(reminder_list))}")

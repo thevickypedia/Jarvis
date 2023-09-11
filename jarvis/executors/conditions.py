@@ -4,6 +4,7 @@ from threading import Thread
 from jarvis.executors import (custom_conditions, functions, listener_controls,
                               others, restrictions, static_responses,
                               unconditional, word_match)
+from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
@@ -92,5 +93,7 @@ def conditions(phrase: str) -> bool:
     if not unconditional.google_maps(query=phrase):
         if gpt.instance:
             gpt.instance.query(phrase=phrase)
+        elif response := gpt.existing_response(request=phrase):
+            speaker.speak(text=response)
         else:
             static_responses.un_processable()

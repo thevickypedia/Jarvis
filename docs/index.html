@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Welcome to Jarvis’s documentation! &#8212; Jarvis  documentation</title>
+    <title>Jarvis - Voice-Activated Natural Language UI &#8212; Jarvis  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/static.css" />
@@ -34,7 +34,7 @@
           <a href="README.html" title="Kick off"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Jarvis  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Welcome to Jarvis’s documentation!</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Jarvis - Voice-Activated Natural Language UI</a></li> 
       </ul>
     </div>  
 
@@ -43,8 +43,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="welcome-to-jarvis-s-documentation">
-<h1>Welcome to Jarvis’s documentation!<a class="headerlink" href="#welcome-to-jarvis-s-documentation" title="Permalink to this heading">¶</a></h1>
+  <section id="jarvis-voice-activated-natural-language-ui">
+<h1>Jarvis - Voice-Activated Natural Language UI<a class="headerlink" href="#jarvis-voice-activated-natural-language-ui" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Read Me:</span></p>
 <ul>
@@ -646,6 +646,12 @@
 </section>
 <section id="module-jarvis._preexec.keywords_handler">
 <span id="keywords-classifier"></span><h1>Keywords Classifier<a class="headerlink" href="#module-jarvis._preexec.keywords_handler" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis._preexec.keywords_handler.load_ignores">
+<span class="sig-prename descclassname"><span class="pre">jarvis._preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">load_ignores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis._preexec.keywords_handler.load_ignores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads <code class="docutils literal notranslate"><span class="pre">ignore_after</span></code> and <code class="docutils literal notranslate"><span class="pre">ignore_add</span></code> list to avoid iterations on the same phrase.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis._preexec.keywords_handler.rewrite_keywords">
 <span class="sig-prename descclassname"><span class="pre">jarvis._preexec.keywords_handler.</span></span><span class="sig-name descname"><span class="pre">rewrite_keywords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis._preexec.keywords_handler.rewrite_keywords" title="Permalink to this definition">¶</a></dt>
@@ -2843,7 +2849,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <ul>
 <li><div class="line-block">
 <div class="line">Restarts the machine without approval when <code class="docutils literal notranslate"><span class="pre">uptime</span></code> is more than 2 days as the confirmation is requested</div>
-<div class="line">in <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#executors.system.system_vitals">system_vitals</a>.</div>
+<div class="line">in <a class="reference external" href="https://jarvis-docs.vigneshrao.com/#executors.system.system_vitals">system_vitals</a>.</div>
 </div>
 </li>
 <li><p>This is done ONLY when the system vitals are read, and the uptime is more than 2 days.</p></li>
@@ -4757,7 +4763,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>Jarvis will suggest a reboot if the system uptime is more than 2 days.</p></li>
-<li><p>If confirmed, invokes <a class="reference external" href="https://thevickypedia.github.io/Jarvis/#jarvis.restart">restart</a> function.</p></li>
+<li><p>If confirmed, invokes <a class="reference external" href="https://jarvis-docs.vigneshrao.com/#jarvis.restart">restart</a> function.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -5228,7 +5234,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.listener.listen">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.listener.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PositiveInt</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PositiveFloat</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.audio.listener.listen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to activate listener, this function will be called by most upcoming functions to listen to user input.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -7620,16 +7626,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.alarm_root">
-<span class="sig-name descname"><span class="pre">alarm_root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.alarm_root" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.reminder_root">
-<span class="sig-name descname"><span class="pre">reminder_root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.reminder_root" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.automation">
 <span class="sig-name descname"><span class="pre">automation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.automation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7772,6 +7768,11 @@ Pass 155 for LO and 285 for HI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.secure_send">
 <span class="sig-name descname"><span class="pre">secure_send</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">FilePath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.secure_send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.uploads">
+<span class="sig-name descname"><span class="pre">uploads</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DirectoryPath</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.uploads" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11106,7 +11107,7 @@ response is mocked from the post request call.</p>
   <div>
     <h3><a href="#">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Welcome to Jarvis’s documentation!</a></li>
+<li><a class="reference internal" href="#">Jarvis - Voice-Activated Natural Language UI</a></li>
 <li><a class="reference internal" href="#preflight-tests">——–Preflight Tests——–</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.camera.camera">Camera</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.peripherals">Audio Devices</a></li>
@@ -11263,7 +11264,7 @@ response is mocked from the post request call.</p>
           <a href="README.html" title="Kick off"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">Jarvis  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Welcome to Jarvis’s documentation!</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Jarvis - Voice-Activated Natural Language UI</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

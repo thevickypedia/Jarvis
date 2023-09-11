@@ -307,7 +307,7 @@ class TelegramBot:
                     self.process_text(payload=message)
                 elif message.get('voice'):
                     self.process_voice(payload=message)
-                elif message.get('document'):
+                else:  # consider everything else as document and try to store it in fileio/uploads
                     self.process_document(payload=message)
                 offset = result['update_id'] + 1
 
@@ -558,7 +558,9 @@ class TelegramBot:
             return
 
         if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
-            for each in command.split(' and '):
+            and_phrases = command.split(' and ')
+            logger.info("Looping through %s in iterations.", and_phrases)
+            for each in and_phrases:
                 self.executor(command=each, payload=payload)
             return
 

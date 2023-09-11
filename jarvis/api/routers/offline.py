@@ -122,8 +122,10 @@ async def offline_communicator_api(request: Request, input_data: modals.OfflineC
     if 'alarm' in command.lower() or 'remind' in command.lower():
         command = command.lower()
     if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
+        and_phrases = command.split(' and ')
+        logger.info("Looping through %s in iterations.", and_phrases)
         and_response = ""
-        for each in command.split(' and '):
+        for each in and_phrases:
             try:
                 and_response += f"{offline.offline_communicator(command=each)}\n"
             except Exception as error:

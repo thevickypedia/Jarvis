@@ -99,7 +99,8 @@ class RokuECP:
         Args:
             limit: Number of iterations to increase the volume.
         """
-        for _ in range(limit + 1):
+        # RokuTVs perform in 2-step iterations for volume, so a single VolumeUp button increases the volume by 2%
+        for _ in range(int(limit / 2)):
             self.make_call(path='/keypress/VolumeUp', method='POST')
 
     def decrease_volume(self, limit: int = 10) -> None:
@@ -108,7 +109,8 @@ class RokuECP:
         Args:
             limit: Number of iterations to decrease the volume.
         """
-        for _ in range(limit + 1):
+        # RokuTVs perform in 2-step iterations for volume, so a single VolumeDown button decreases the volume by 2%
+        for _ in range(int(limit / 2)):
             self.make_call(path='/keypress/VolumeDown', method='POST')
 
     def mute(self) -> None:

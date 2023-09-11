@@ -10,7 +10,7 @@ import openai
 from openai.error import AuthenticationError, OpenAIError
 from openai.openai_object import OpenAIObject
 
-from jarvis.executors import files
+from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import MissingEnvVars
 from jarvis.modules.logger import logger
@@ -151,7 +151,7 @@ class ChatGPT:
             )
         except OpenAIError as error:
             logger.error(error)
-            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")
+            static_responses.un_processable()
             return
         if chat.choices:
             reply = chat.choices[0].message.content
@@ -160,7 +160,7 @@ class ChatGPT:
             speaker.speak(text=reply)
         else:
             logger.error(chat)
-            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")
+            static_responses.un_processable()
 
 
 if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):

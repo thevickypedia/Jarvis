@@ -32,7 +32,7 @@ def restart(ask: bool = True) -> None:
 
     Warnings:
         - | Restarts the machine without approval when ``uptime`` is more than 2 days as the confirmation is requested
-          | in `system_vitals <https://thevickypedia.github.io/Jarvis/#executors.system.system_vitals>`__.
+          | in `system_vitals <https://jarvis-docs.vigneshrao.com/#executors.system.system_vitals>`__.
         - This is done ONLY when the system vitals are read, and the uptime is more than 2 days.
 
     Args:

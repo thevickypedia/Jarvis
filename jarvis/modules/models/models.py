@@ -8,7 +8,6 @@
 import os
 import pathlib
 import warnings
-from typing import Union
 
 import cv2
 import pvporcupine
@@ -22,14 +21,13 @@ from jarvis.modules.exceptions import (CameraError, EgressErrors,
                                        InvalidEnvVars, MissingEnvVars,
                                        SegmentationError)
 from jarvis.modules.models.classes import (DistanceUnits, Indicators,
-                                           RecognizerSettings,
                                            TemperatureUnits, audio_driver, env,
                                            fileio, settings,
                                            supported_platforms)
 from jarvis.modules.utils import util
 
 # Shared across other modules
-voices: Union[list, object] = audio_driver.getProperty("voices") if audio_driver else []
+voices = audio_driver.getProperty("voices") if audio_driver else []
 indicators = Indicators()
 # TABLES to be created in `fileio.base_db`
 TABLES = {
@@ -91,21 +89,15 @@ def _set_default_voice_name() -> None:
 
 def _main_process_validations() -> None:
     """Validations that should happen only when the main process is triggered."""
-    if not env.recognizer_settings and not env.listener_phrase_limit:
-        env.recognizer_settings = RecognizerSettings()  # Default override when phrase limit is not available
-
     if settings.legacy:
         pvporcupine.KEYWORD_PATHS = {}
-        pvporcupine.MODEL_PATH = os.path.join(os.path.dirname(pvporcupine.__file__),
-                                              'lib/common/porcupine_params.pv')
-        pvporcupine.LIBRARY_PATH = os.path.join(os.path.dirname(pvporcupine.__file__),
-                                                'lib/mac/x86_64/libpv_porcupine.dylib')
-        keyword_files = os.listdir(os.path.join(os.path.dirname(pvporcupine.__file__),
-                                                'resources/keyword_files/mac/'))
+        base_path = os.path.dirname(pvporcupine.__file__)
+        pvporcupine.MODEL_PATH = os.path.join(base_path, 'lib/common/porcupine_params.pv')
+        pvporcupine.LIBRARY_PATH = os.path.join(base_path, 'lib/mac/x86_64/libpv_porcupine.dylib')
 
-        for x in keyword_files:  # Iterates over the available flash files, to override the class
-            pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(os.path.dirname(pvporcupine.__file__),
-                                                                      f'resources/keyword_files/mac/{x}')
+        # Iterates over the available flash files, to override the object reference
+        for x in os.listdir(os.path.join(base_path, 'resources/keyword_files/mac/')):
+            pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(base_path, f'resources/keyword_files/mac/{x}')
 
     for keyword in env.wake_words:
         if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
@@ -122,16 +114,15 @@ def _main_process_validations() -> None:
     db = database.Database(database=fileio.base_db)
     for table, column in TABLES.items():
         db.create_table(table_name=table, columns=column)
-    # Create required directory for alarms
-    if not os.path.isdir(fileio.alarm_root):
-        os.mkdir(fileio.alarm_root)
+    # Create required file for alarms
     if not os.path.isfile(fileio.alarms):
         pathlib.Path(fileio.alarms).touch()
-    # Create required directory for reminders
-    if not os.path.isdir(fileio.reminder_root):
-        os.mkdir(fileio.reminder_root)
+    # Create required file for reminders
     if not os.path.isfile(fileio.reminders):
         pathlib.Path(fileio.reminders).touch()
+    # Create required directory for uploads
+    if not os.path.isdir(fileio.uploads):
+        os.mkdir(fileio.uploads)
 
 
 def _global_validations() -> None:
