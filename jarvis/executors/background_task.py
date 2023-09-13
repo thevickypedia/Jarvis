@@ -5,7 +5,7 @@ from collections.abc import Generator
 from typing import Union
 
 import yaml
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger

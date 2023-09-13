@@ -102,7 +102,11 @@ async def stock_monitor_api(request: Request, input_data: modals.StockMonitorMod
     logger.debug("Connection received from %s via %s using %s" %
                  (request.client.host, request.headers.get('host'), request.headers.get('user-agent')))
 
-    input_data.request = input_data.request.upper()
+    try:
+        input_data.request = input_data.request.upper()
+    except AttributeError as error:
+        logger.error(error)
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=error.__str__())
     if input_data.request not in ("GET", "PUT", "DELETE"):
         logger.warning("'%s' is not in the allowed request list.", input_data.request)
         raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real,

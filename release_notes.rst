@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+3.7.1 (09/11/2023)
+------------------
+- Includes a feature to upload any file to the server via Jarvis API or Telegram bot
+- Unrecognized functions now have an offline option with stored GPT history
+- Improved stability in speech recognition
+- Fixes minor inconsistencies specific to volume controls on RokuTV
+- Improves overall file structure
+
 3.7 (08/29/2023)
 ----------------
 - Includes a new feature to setup daily alerts for ``stock-monitor``

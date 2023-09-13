@@ -84,6 +84,7 @@ def function_mapping() -> OrderedDict[str, Callable]:
         restart_control=controls.restart_control,
         shutdown=controls.shutdown,
         kill=controls.kill,
+        hi=static_responses.hi,
         greeting=static_responses.greeting,
         capabilities=static_responses.capabilities,
         languages=static_responses.languages,

@@ -1,13 +1,10 @@
-import os
-import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-sys.path.insert(0, os.path.abspath('..'))
-
-from jarvis.modules.audio import speaker  # noqa: E402
-from jarvis.modules.utils import shared  # noqa: E402
-from tests.constant import SAMPLE_PHRASE  # noqa: E402
+from jarvis.modules.audio import speaker
+from jarvis.modules.models import models
+from jarvis.modules.utils import shared
+from tests.constant import SAMPLE_PHRASE
 
 
 class TestSpeak(unittest.TestCase):
@@ -26,6 +23,7 @@ class TestSpeak(unittest.TestCase):
             mock_playsound: Mock object for playsound module.
             mock_speech_synthesizer: Mock object for speaker.speech_synthesizer function.
         """
+        models.env.speech_synthesis_timeout = 10
         speaker.speak(text=SAMPLE_PHRASE, run=False, block=True)
         mock_speech_synthesizer.assert_called_once_with(text=SAMPLE_PHRASE)
         mock_playsound.assert_not_called()

@@ -64,6 +64,7 @@ def speech_synthesizer(text: str,
         if response.ok:
             with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
+                file.flush()
             return True
         logger.error("{code}::http://{host}:{port}/api/tts".format(code=response.status_code,
                                                                    host=models.env.speech_synthesis_host,

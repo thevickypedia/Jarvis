@@ -11,15 +11,18 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 import os
+import pathlib
 import sys
 
-sys.path.insert(0, os.path.abspath('..'))
+# Since pytest and docs run parallely, change the current dir and insert it to sys.path at index 0
+os.chdir(pathlib.Path(__file__).parent.parent)
+sys.path.insert(0, os.getcwd())
 
 # -- Project information -----------------------------------------------------
 
 project = 'Jarvis'
-copyright = '2021, Vignesh Sivanandha Rao'
-author = 'Vignesh Sivanandha Rao'
+copyright = '2021, Vignesh Rao'
+author = 'Vignesh Rao'
 
 # -- General configuration ---------------------------------------------------
 
@@ -58,7 +61,6 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
 
 # Add docstrings from __init__ method
 # Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content

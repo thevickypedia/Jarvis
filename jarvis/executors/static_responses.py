@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.models import models
+from jarvis.modules.utils import util
 
 
 def form(*args) -> None:
@@ -41,6 +42,13 @@ def whats_up(*args) -> None:
 def what(*args) -> None:
     """Response for what."""
     speaker.speak(text="The name is Jarvis. I'm just a pre-programmed virtual assistant.")
+
+
+def hi(*args) -> None:
+    """Response for hi and hello."""
+    speaker.speak(text="Hello there! My name is Jarvis" +
+                       random.choice((f", good {util.part_of_day()}! How can I be of service today?",
+                                      ", and I'm ready to assist you. How can I help you today?")))
 
 
 def who(*args) -> None:

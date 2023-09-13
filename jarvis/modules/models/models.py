@@ -149,16 +149,13 @@ def _global_validations() -> None:
                     f"{env.voice_name!r} is not available. Defaulting to {env.voice_name!r}"
                 )
 
-    if env.website and env.website.startswith("http"):
-        env.website = env.website.lstrip(f"{env.website.scheme}://")
-
     if not all((env.open_gmail_user, env.open_gmail_pass)):
         env.open_gmail_user = env.gmail_user
         env.open_gmail_pass = env.gmail_pass
 
     # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
     # However it will NOT work in this use case, since the type hint is HttpUrl
-    if env.ics_url and not env.ics_url.endswith('.ics'):
+    if env.ics_url and not env.ics_url.path.endswith('.ics'):
         if main:
             raise InvalidEnvVars("'ICS_URL' should end with .ics")
         else:

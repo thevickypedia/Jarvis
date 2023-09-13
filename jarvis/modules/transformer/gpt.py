@@ -72,7 +72,7 @@ def existing_response(request: str) -> Union[str, None]:
 
     # no identical requests found in history, and reuse threshold was not set
     if not models.env.openai_reuse_threshold:
-        logger.warning("No identical requests found in history, and reuse threshold was not set. Querying OpenAI.")
+        logger.warning("No identical requests found in history, and reuse threshold was not set.")
         return
 
     # sort the new dict in reverse order so the closest match gets returned first
@@ -82,7 +82,7 @@ def existing_response(request: str) -> Union[str, None]:
     for existing_request, response_ratio in ratios.items():
         if response_ratio[1] >= models.env.openai_reuse_threshold and \
                 not any(word.isdigit() for word in existing_request):
-            logger.info("Closest historical request: '%s'", existing_request)
+            logger.info("Closest historical request [%s]: '%s'", response_ratio[1], existing_request)
             return response_ratio[0]
 
 
@@ -163,7 +163,7 @@ class ChatGPT:
             static_responses.un_processable()
 
 
-if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
+if models.settings.pname in ('JARVIS', 'telegram_api', 'jarvis_api'):
     if models.env.openai_reuse_threshold:
         logger.info("Initiating GPT instance for '%s' with a reuse threshold of '%.2f'",
                     models.settings.pname, models.env.openai_reuse_threshold)

@@ -133,7 +133,7 @@ async def monitor(token: str = None):
                           detail='Requires authentication since endpoint uses single-use token.')
 
 
-@router.get('/video-feed')
+@router.get('/video-feed', include_in_schema=False)
 async def video_feed(request: Request, token: str = None):
     """Authenticates the request, and returns the frames generated as a StreamingResponse.
 

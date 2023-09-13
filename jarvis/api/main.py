@@ -2,6 +2,7 @@ from threading import Thread
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRoute
 
 from jarvis import version
 from jarvis.api import routers
@@ -9,11 +10,27 @@ from jarvis.api.logger import logger
 from jarvis.api.squire import discover, stockanalysis_squire
 from jarvis.modules.models import models
 
+data = {}
+for router in discover.routes(routers=routers.__path__[0]):
+    for route in router.routes:
+        if isinstance(route, APIRoute) and route.include_in_schema:
+            data[route.path] = next(iter(route.methods))
+
+# Find the maximum lengths of URL and Method for proper alignment
+max_url_length = max(len(url) for url in data.keys())
+max_method_length = max(len(method) for method in data.values())
+
+long_description = f"| {'URL'.ljust(max_url_length)} | {'Method'.ljust(max_method_length)} |\n" \
+                   f"| {'-' * max_url_length} | {'-' * max_method_length} |\n"
+for url, method in data.items():
+    long_description += f"| {url.ljust(max_url_length)} | {method.ljust(max_method_length)} |\n"
+
 # Initiate API
 app = FastAPI(
     title="Jarvis API",
-    description="Acts as a gateway to communicate with **Jarvis**, and an entry point for the natural language UI.\n\n"
-                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
+    description="#### Gateway to communicate with Jarvis, and an entry point for the UI.\n\n"
+                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)\n\n\n"
+                f"{long_description}",
     version=version
 )
 
@@ -24,8 +41,8 @@ def enable_cors() -> None:
     origins = [
         "http://localhost.com",
         "https://localhost.com",
-        f"http://{models.env.website}",
-        f"https://{models.env.website}",
+        f"http://{models.env.website.host}",
+        f"https://{models.env.website.host}",
     ]
 
     app.add_middleware(
@@ -42,7 +59,7 @@ def enable_cors() -> None:
 
 # Include all the routers
 # WATCH OUT: for changes in function name
-if models.settings.pname == "fast_api":  # Avoid looping when called by subprocesses
+if models.settings.pname == "jarvis_api":  # Avoid looping when called by subprocesses
     enable_cors()
     for route in discover.routes(routers=routers.__path__[0]):
         app.include_router(router=route)

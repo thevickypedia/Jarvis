@@ -21,6 +21,7 @@ def conversation_mapping() -> OrderedDict[str, List[str]]:
     return OrderedDict(
         greeting=["how are you", "how are you doing", "how have you been", "how do you do", "how's it going",
                   "hows it going"],
+        hi=["hey", "hola", "hello", "hi", "howdy", "hey", "chao", "hiya", "aloha"],
         capabilities=["what can you do", "what all can you do", "what are your capabilities", "what's your capacity",
                       "what are you capable of", "whats your capacity"],
         languages=["what languages do you speak", "what are all the languages you can speak",

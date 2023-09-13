@@ -24,9 +24,9 @@ class StockMonitorModal(BaseModel):
 
     """
 
-    email: EmailStr
-    token: Any
-    request: Any
+    email: Union[EmailStr, None] = None
+    token: Union[Any, None] = None
+    request: Union[Any, None] = None
     plaintext: bool = False
 
 

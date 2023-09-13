@@ -40,7 +40,7 @@ from jarvis.modules.utils import shared, support, util
 db = database.Database(database=models.fileio.base_db)
 # set to be accessible only via offline communicators
 # WATCH OUT: for changes in function name
-if models.settings.pname in ("fast_api", "telegram_api"):
+if models.settings.pname in ("jarvis_api", "telegram_api"):
     SECRET_STORAGE = {'aws': [], 'local': []}
     SESSION = boto3.Session()
     SECRET_CLIENT = SESSION.client(service_name="secretsmanager")

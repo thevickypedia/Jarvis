@@ -52,7 +52,7 @@ def create_connection() -> None:
 
 # Initiate connection only for main and offline communicators
 # WATCH OUT: for changes in function name
-if models.settings.pname in ('JARVIS', 'telegram_api', 'fast_api'):
+if models.settings.pname in ('JARVIS', 'telegram_api', 'jarvis_api'):
     if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
         logger.info("Creating a new vehicle authorization connection for '%s'", models.settings.pname)
         Thread(target=create_connection).start()

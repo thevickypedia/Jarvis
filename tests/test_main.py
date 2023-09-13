@@ -1,15 +1,11 @@
-import os
-import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
 import pvporcupine
 import pyaudio
 
-sys.path.insert(0, os.path.abspath('..'))
-
-from jarvis.main import Activator, models  # noqa: E402
-from tests.constant import SAMPLE_PHRASE  # noqa: E402
+from jarvis.main import Activator, models
+from tests.constant import SAMPLE_PHRASE
 
 
 class TestActivator(unittest.TestCase):

@@ -10,7 +10,7 @@ from jarvis.modules.logger import APIConfig, logger, multiprocessing_logger
 from jarvis.modules.models import models
 
 
-def fast_api() -> None:
+def jarvis_api() -> None:
     """Initiates the fast API in a dedicated process using uvicorn server.
 
     See Also:
@@ -36,11 +36,11 @@ def fast_api() -> None:
             logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
     # Uvicorn config supports the module as a value for the arg 'app' which can be from relative imports
-    # However, in this case, using relative imports will mess up the logger since the variable is being reused widely
-    assert os.path.exists(os.path.join(os.path.dirname(__file__), "fast.py")), \
+    # However, in this case, using relative imports will mess with the logger since it is shared across multiple process
+    assert os.path.exists(os.path.join(os.path.dirname(__file__), "main.py")), \
         "API path has either been modified or unreachable."
     argument_dict = {
-        "app": "jarvis.api.fast:app",
+        "app": "jarvis.api.main:app",
         "host": models.env.offline_host,
         "port": models.env.offline_port,
         "ws_ping_interval": 20.0,

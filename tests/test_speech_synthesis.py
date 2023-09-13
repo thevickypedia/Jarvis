@@ -1,13 +1,9 @@
-import os
-import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-sys.path.insert(0, os.path.abspath('..'))
-
-from jarvis.modules.audio import speaker  # noqa: E402
-from jarvis.modules.exceptions import EgressErrors  # noqa: E402
-from tests.constant import SAMPLE_PHRASE  # noqa: E402
+from jarvis.modules.audio import speaker
+from jarvis.modules.exceptions import EgressErrors
+from tests.constant import SAMPLE_PHRASE
 
 
 # noinspection PyUnusedLocal

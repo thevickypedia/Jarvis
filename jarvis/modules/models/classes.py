@@ -25,9 +25,10 @@ from uuid import UUID
 import psutil
 import pyttsx3
 from packaging.version import Version
-from pydantic import (BaseModel, BaseSettings, DirectoryPath, EmailStr, Field,
-                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
-                      validator)
+from pydantic import (BaseModel, DirectoryPath, EmailStr, Field, FilePath,
+                      HttpUrl, PositiveFloat, PositiveInt, constr,
+                      field_validator)
+from pydantic_settings import BaseSettings
 
 from jarvis import indicators, scripts
 from jarvis.modules.crontab import expression
@@ -62,9 +63,9 @@ class Settings(BaseModel):
     """
 
     if sys.stdin.isatty():
-        interactive = True
+        interactive: bool = True
     else:
-        interactive = False
+        interactive: bool = False
     pid: PositiveInt = os.getpid()
     pname: str = current_process().name
     ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
@@ -80,7 +81,10 @@ class Settings(BaseModel):
             "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
-    legacy = True if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14') else False
+    if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14'):
+        legacy: bool = True
+    else:
+        legacy: bool = False
 
 
 settings = Settings()
@@ -156,16 +160,6 @@ except (SegmentationError, Exception):  # resolve to speech-synthesis
     audio_driver = None
 
 
-class Sensitivity(float or PositiveInt, Enum):
-    """Allowed values for sensitivity.
-
-    >>> Sensitivity
-
-    """
-
-    sensitivity: Union[float, PositiveInt]
-
-
 class RecognizerSettings(BaseModel):
     """Settings for speech recognition.
 
@@ -232,21 +226,21 @@ class BackgroundTask(BaseModel):
     task: constr(strip_whitespace=True)
     ignore_hours: Union[Optional[List[int]], Optional[str], Optional[int]] = []
 
-    @validator('task', allow_reuse=True)
+    @field_validator('task', mode='before', check_fields=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
         """Validate task field in tasks."""
         if v:
             return v
         raise ValueError('bad value')
 
-    @validator('ignore_hours', allow_reuse=True)
+    @field_validator('ignore_hours', check_fields=True)
     def check_hours_format(cls, v, values, **kwargs):  # noqa
         """Validate each entry in ignore hours list."""
         if not v:
             return []
         if isinstance(v, int):
             if v < 0 or v > 24:
-                raise ValueError
+                raise ValueError('24h format cannot be less than 0 or greater than 24')
             v = [v]
         elif isinstance(v, str):
             form_list = v.split('-')
@@ -256,18 +250,18 @@ class BackgroundTask(BaseModel):
                 else:
                     raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
             elif len(form_list) == 2:
+                form_list[0] = form_list[0].strip()
+                form_list[1] = form_list[1].strip()
                 assert form_list[0].isdigit()
                 assert form_list[1].isdigit()
-                start = int(form_list[0])
-                end = int(form_list[1])
-                if end < 24:
-                    end += 1
-                if start < end:
-                    v = [i for i in range(start, end)]
+                start_hour = int(form_list[0])
+                end_hour = int(form_list[1])
+                if start_hour <= end_hour:
+                    # Handle the case where the range is not wrapped around midnight
+                    v = list(range(start_hour, end_hour + 1))
                 else:
-                    v = [i for i in range(start, 24)] + [i for i in range(0, end)]
-                if int(form_list[1]) == 24:
-                    v.append(0)
+                    # Handle the case where the range wraps around midnight
+                    v = list(range(start_hour, 24)) + list(range(0, end_hour + 1))
             else:
                 raise ValueError
         for hour in v:
@@ -286,153 +280,154 @@ class EnvConfig(BaseSettings):
     """
 
     # Custom units
-    distance_unit: DistanceUnits = Field(default=None)
-    temperature_unit: TemperatureUnits = Field(default=None)
+    distance_unit: Union[DistanceUnits, None] = None
+    temperature_unit: Union[TemperatureUnits, None] = None
 
     # System config
-    home: DirectoryPath = Field(default=os.path.expanduser('~'))
-    volume: PositiveInt = Field(default=50)
-    limited: bool = Field(default=None)
-    root_user: str = Field(default=getpass.getuser())
-    root_password: str = Field(default=None)
+    home: DirectoryPath = os.path.expanduser('~')
+    volume: PositiveInt = 50
+    limited: bool = False
+    root_user: str = getpass.getuser()
+    root_password: Union[str, None] = None
 
     # Mute during meetings
-    mute_for_meetings: bool = Field(default=False)
+    mute_for_meetings: bool = False
 
     # Built-in speaker config
-    voice_name: str = Field(default=None)
+    voice_name: Union[str, None] = None
     _rate = audio_driver.getProperty("rate") if audio_driver else dynamic_rate()
-    speech_rate: Union[PositiveInt, PositiveFloat] = Field(default=_rate)
+    speech_rate: Union[PositiveInt, PositiveFloat] = _rate
 
     # Peripheral config
-    camera_index: Union[int, PositiveInt] = Field(default=None, ge=0)
-    speaker_index: Union[int, PositiveInt] = Field(default=None, ge=0)
-    microphone_index: Union[int, PositiveInt] = Field(default=None, ge=0)
+    camera_index: Union[int, PositiveInt, None] = None
+    speaker_index: Union[int, PositiveInt, None] = None
+    microphone_index: Union[int, PositiveInt, None] = None
 
     # Log config
-    debug: bool = Field(default=False)
-    log_retention: Union[int, PositiveInt] = Field(default=10, lt=90, gt=0)
+    debug: bool = False
+    log_retention: Union[int, PositiveInt] = Field(10, lt=90, gt=0)
 
     # User add-ons
-    birthday: str = Field(default=None)
-    title: str = Field(default='sir')
-    name: str = Field(default='Vignesh')
-    website: HttpUrl = Field(default='https://vigneshrao.com')
-    plot_mic: bool = Field(default=True)
+    birthday: Union[str, None] = None
+    title: str = 'sir'
+    name: str = 'Vignesh'
+    website: HttpUrl = 'https://vigneshrao.com'
+    plot_mic: bool = True
 
     # Author specific
-    author_mode: bool = Field(default=False)
+    author_mode: bool = False
 
     # Third party api config
-    weather_api: str = Field(default=None)
-    maps_api: str = Field(default=None)
-    news_api: str = Field(default=None)
-    openai_api: str = Field(default=None)
-    openai_model: str = Field(default='gpt-3.5-turbo')
-    openai_timeout: int = Field(default=5, le=10, ge=1)
-    openai_reuse_threshold: float = Field(default=None, ge=0.5, le=0.9)
+    weather_api: Union[str, None] = None
+    maps_api: Union[str, None] = None
+    news_api: Union[str, None] = None
+    openai_api: Union[str, None] = None
+    openai_model: str = 'gpt-3.5-turbo'
+    openai_timeout: int = Field(5, le=10, ge=1)
+    openai_reuse_threshold: Union[float, None] = Field(None, ge=0.5, le=0.9)
 
     # Communication config
-    gmail_user: EmailStr = Field(default=None)
-    gmail_pass: str = Field(default=None)
-    open_gmail_user: EmailStr = Field(default=None)
-    open_gmail_pass: str = Field(default=None)
-    recipient: EmailStr = Field(default=None)
-    phone_number: str = Field(default=None, regex="\\d{10}$")
+    gmail_user: Union[EmailStr, None] = None
+    gmail_pass: Union[str, None] = None
+    open_gmail_user: Union[EmailStr, None] = None
+    open_gmail_pass: Union[str, None] = None
+    recipient: Union[EmailStr, None] = None
+    phone_number: Union[str, None] = Field(None, pattern="\\d{10}$")
 
     # Offline communicator config
-    offline_host: str = Field(default=socket.gethostbyname('localhost'))
-    offline_port: PositiveInt = Field(default=4483)
-    offline_pass: str = Field(default='OfflineComm')
-    workers: PositiveInt = Field(default=1)
+    offline_host: str = socket.gethostbyname('localhost')
+    offline_port: PositiveInt = 4483
+    offline_pass: str = 'OfflineComm'
+    workers: PositiveInt = 1
 
     # Calendar events and meetings config
-    event_app: EventApp = Field(default=EventApp.CALENDAR)
-    ics_url: HttpUrl = Field(default=None)
+    event_app: EventApp = EventApp.CALENDAR
+    ics_url: Union[HttpUrl, None] = None
     # Set background sync limits to range: 15 minutes to 12 hours
-    sync_meetings: int = Field(default=None, ge=900, le=43_200)
-    sync_events: int = Field(default=None, ge=900, le=43_200)
+    sync_meetings: Union[int, None] = Field(None, ge=900, le=43_200)
+    sync_events: Union[int, None] = Field(None, ge=900, le=43_200)
 
     # Stock monitor apikey
-    stock_monitor_api: Dict[EmailStr, str] = Field(default={})
+    stock_monitor_api: Dict[EmailStr, str] = {}
 
     # Surveillance config
-    surveillance_endpoint_auth: str = Field(default=None)
-    surveillance_session_timeout: PositiveInt = Field(default=300)
+    surveillance_endpoint_auth: Union[str, None] = None
+    surveillance_session_timeout: PositiveInt = 300
 
     # Apple devices' config
-    icloud_user: EmailStr = Field(default=None)
-    icloud_pass: str = Field(default=None)
-    icloud_recovery: str = Field(default=None, regex="\\d{10}$")
+    icloud_user: Union[EmailStr, None] = None
+    icloud_pass: Union[str, None] = None
+    icloud_recovery: Union[str, None] = Field(None, pattern="\\d{10}$")
 
     # Robinhood config
-    robinhood_user: EmailStr = Field(default=None)
-    robinhood_pass: str = Field(default=None)
-    robinhood_qr: str = Field(default=None)
-    robinhood_endpoint_auth: str = Field(default=None)
+    robinhood_user: Union[EmailStr, None] = None
+    robinhood_pass: Union[str, None] = None
+    robinhood_qr: Union[str, None] = None
+    robinhood_endpoint_auth: Union[str, None] = None
 
     # GitHub config
-    git_user: str = Field(default=None)
-    git_pass: str = Field(default=None)
+    git_user: Union[str, None] = None
+    git_pass: Union[str, None] = None
 
     # VPN Server config
-    vpn_username: str = Field(default=None)
-    vpn_password: str = Field(default=None)
-    vpn_domain: str = Field(default=None)
-    vpn_record_name: str = Field(default=None)
+    vpn_username: Union[str, None] = None
+    vpn_password: Union[str, None] = None
+    vpn_domain: Union[str, None] = None
+    vpn_record_name: Union[str, None] = None
 
     # Vehicle config
-    car_email: EmailStr = Field(default=None)
-    car_pass: str = Field(default=None)
-    car_pin: str = Field(default=None, regex="\\d{4}$")
+    car_email: Union[EmailStr, None] = None
+    car_pass: Union[str, None] = None
+    car_pin: Union[str, None] = Field(None, pattern="\\d{4}$")
 
     # Garage door config
-    myq_username: EmailStr = Field(default=None)
-    myq_password: str = Field(default=None)
+    myq_username: Union[EmailStr, None] = None
+    myq_password: Union[str, None] = None
 
     # Listener config
-    sensitivity: Union[Sensitivity, List[Sensitivity]] = Field(default=0.5, le=1, ge=0)
-    listener_timeout: Union[PositiveFloat, PositiveInt] = Field(default=2)
-    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = Field(default=3)
-    recognizer_settings: RecognizerSettings = Field(default=RecognizerSettings())
+    sensitivity: Union[float, PositiveInt, List[float], List[PositiveInt]] = Field(0.5, le=1, ge=0)
+    listener_timeout: Union[PositiveFloat, PositiveInt] = 2
+    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 3
+    recognizer_settings: RecognizerSettings = RecognizerSettings()
 
     # Telegram config
-    bot_token: str = Field(default=None)
-    bot_chat_ids: List[int] = Field(default=[])
-    bot_users: List[str] = Field(default=[])
+    bot_token: Union[str, None] = None
+    bot_chat_ids: List[int] = []
+    bot_users: List[str] = []
 
     # Speech synthesis config
-    speech_synthesis_timeout: int = Field(default=3)
-    speech_synthesis_voice: str = Field(default='en-us_northern_english_male-glow_tts')
-    speech_synthesis_quality: SSQuality = Field(default=SSQuality.Medium_Quality)
-    speech_synthesis_host: str = Field(default=socket.gethostbyname('localhost'))
-    speech_synthesis_port: PositiveInt = Field(default=5002)
+    speech_synthesis_timeout: int = 3
+    speech_synthesis_voice: str = 'en-us_northern_english_male-glow_tts'
+    speech_synthesis_quality: SSQuality = SSQuality.Medium_Quality
+    speech_synthesis_host: str = socket.gethostbyname('localhost')
+    speech_synthesis_port: PositiveInt = 5002
 
     # Background tasks
-    crontab: List[expression.CronExpression] = Field(default=[])
-    weather_alert: Union[str, datetime] = Field(default=None)
-    weather_alert_min: Union[int, PositiveInt] = Field(default=36)
-    weather_alert_max: Union[int, PositiveInt] = Field(default=104)
+    crontab: List[expression.CronExpression] = []
+    weather_alert: Union[str, datetime, None] = None
+    weather_alert_min: Union[int, PositiveInt] = 36
+    weather_alert_max: Union[int, PositiveInt] = 104
 
     # WiFi config
-    wifi_ssid: str = Field(default=None)
-    wifi_password: str = Field(default=None)
-    connection_retry: Union[PositiveInt, PositiveFloat] = Field(default=10)
+    wifi_ssid: Union[str, None] = None
+    wifi_password: Union[str, None] = None
+    connection_retry: Union[PositiveInt, PositiveFloat] = 10
 
     # Legacy macOS config
     if settings.legacy:
-        wake_words: List[str] = Field(default=['alexa'])
+        wake_words: List[str] = ['alexa']
     else:
-        wake_words: List[str] = Field(default=['jarvis'])
+        wake_words: List[str] = ['jarvis']
 
     class Config:
         """Environment variables configuration."""
 
         env_prefix = ""
-        env_file = ".env"
+        env_file = os.environ.get("env_file", os.environ.get("ENV_FILE", ".env"))
+        extra = "allow"
 
     # noinspection PyMethodParameters
-    @validator("microphone_index", pre=True, allow_reuse=True)
+    @field_validator("microphone_index", mode='before', check_fields=True)
     def parse_microphone_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
         """Validates microphone index."""
         if not value:
@@ -445,7 +440,7 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars(f"value should be one of {complicated}")
 
     # noinspection PyMethodParameters
-    @validator("speaker_index", pre=True, allow_reuse=True)
+    @field_validator("speaker_index", mode='before', check_fields=True)
     def parse_speaker_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage
@@ -459,7 +454,7 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars(f"value should be one of {complicated}")
 
     # noinspection PyMethodParameters
-    @validator("birthday", pre=True, allow_reuse=True)
+    @field_validator("birthday", mode='before', check_fields=True)
     def parse_birthday(cls, value: str) -> Union[str, None]:
         """Validates date value to be in DD-MM format."""
         if not value:
@@ -471,7 +466,7 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be 'DD-MM'")
 
     # noinspection PyMethodParameters
-    @validator("weather_alert", pre=True, allow_reuse=True)
+    @field_validator("weather_alert", mode='before', check_fields=True)
     def parse_weather_alert(cls, value: str) -> Union[str, None, datetime]:
         """Validates date value to be in DD-MM format."""
         if not value:

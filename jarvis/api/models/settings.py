@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 from typing import Dict, Hashable, List, Optional, Tuple
 
 from fastapi import WebSocket
-from pydantic import BaseConfig, BaseModel, EmailStr, HttpUrl
+from pydantic import BaseConfig, BaseModel, EmailStr
 
 
 class Robinhood(BaseModel):
@@ -40,7 +40,6 @@ class Surveillance(BaseConfig):
     """
 
     token: Hashable = None
-    public_url: HttpUrl = None
     camera_index: str = None
     client_id: int = None
     available_cameras: List[str] = []

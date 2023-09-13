@@ -68,7 +68,7 @@ def conditions(phrase: str) -> bool:
             if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes', 'faces',
                                                          'music', 'voice_changer', 'restart_control', 'shutdown'):
                 # WATCH OUT: for changes in function name
-                if models.settings.pname in ("background_tasks", "telegram_api", "fast_api") and \
+                if models.settings.pname in ("background_tasks", "telegram_api", "jarvis_api") and \
                         category == "restart_control":
                     logger.info("Allowing '%s' through the category '%s', for the process: '%s'",
                                 phrase, category, models.settings.pname)
@@ -85,7 +85,7 @@ def conditions(phrase: str) -> bool:
                 warnings.warn("Condition matched for '%s' but there is not function to call." % category)
             return False
     # GPT instance available only for communicable processes
-    if models.settings.pname not in ('JARVIS', 'telegram_api', 'fast_api'):
+    if models.settings.pname not in ('JARVIS', 'telegram_api', 'jarvis_api'):
         logger.warning("%s reached unrecognized category", models.settings.pname)
         return False
     logger.info("Received unrecognized lookup parameter: %s", phrase)

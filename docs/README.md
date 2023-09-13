@@ -592,6 +592,6 @@ pre-commit run --all-files
 
 ## License & copyright
 
-&copy; Vignesh Sivanandha Rao
+&copy; Vignesh Rao
 
 Licensed under the [MIT License](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)

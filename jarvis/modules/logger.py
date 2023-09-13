@@ -64,15 +64,15 @@ class APIConfig(BaseModel):
 
     """
 
-    DEFAULT_LOG_LEVEL = "INFO"
+    DEFAULT_LOG_LEVEL: str = "INFO"
 
-    ACCESS_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'fast_api_access_%d-%m-%Y.log'))
-    DEFAULT_LOG_FILENAME = datetime.now().strftime(os.path.join('logs', 'fast_api_%d-%m-%Y.log'))
+    ACCESS_LOG_FILENAME: str = datetime.now().strftime(os.path.join('logs', 'jarvis_api_access_%d-%m-%Y.log'))
+    DEFAULT_LOG_FILENAME: str = datetime.now().strftime(os.path.join('logs', 'jarvis_api_%d-%m-%Y.log'))
 
-    ACCESS_LOG_FORMAT = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
-    ERROR_LOG_FORMAT = '%(levelname)s\t %(message)s'
+    ACCESS_LOG_FORMAT: str = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
+    ERROR_LOG_FORMAT: str = '%(levelname)s\t %(message)s'
 
-    LOG_CONFIG = {
+    LOG_CONFIG: dict = {
         "version": 1,
         "disable_existing_loggers": True,
         "formatters": {

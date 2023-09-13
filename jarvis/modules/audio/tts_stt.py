@@ -7,9 +7,6 @@
 
 import os
 import time
-from multiprocessing.context import \
-    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
-from multiprocessing.pool import ThreadPool
 from typing import Union
 
 import soundfile
@@ -23,18 +20,6 @@ from jarvis.modules.utils import shared
 recognizer = Recognizer()
 
 audio_driver = voices.voice_default()
-
-
-def generate_audio_file(filename: Union[FilePath, str], text: str) -> None:
-    """Generates an audio file from text.
-
-    Args:
-        filename: Filename to be generated.
-        text: Text that has to be converted into audio.
-    """
-    logger.info("Generating audio into %s from the text: %s", filename, text)
-    audio_driver.save_to_file(filename=filename, text=text)
-    audio_driver.runAndWait()
 
 
 def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[FilePath, str, None]:
@@ -53,14 +38,8 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
             shared.offline_caller = None  # Reset caller after using it
         else:
             filename = f"{int(time.time())}.wav"
-    dynamic_timeout = len(text.split())
-    logger.info("Timeout for text to speech conversion: %ds", dynamic_timeout)
-    process = ThreadPool(processes=1).apply_async(func=generate_audio_file, kwds={'filename': filename, 'text': text})
-    try:
-        process.get(timeout=dynamic_timeout)
-    except ThreadTimeoutError as error:
-        logger.error(error)
-        return
+    audio_driver.save_to_file(filename=filename, text=text)
+    audio_driver.runAndWait()
     if os.path.isfile(filename) and os.stat(filename).st_size:
         logger.info("Generated %s", filename)
         data, samplerate = soundfile.read(file=filename)

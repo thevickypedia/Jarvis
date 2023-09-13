@@ -1,12 +1,8 @@
-import os
-import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-sys.path.insert(0, os.path.abspath('..'))
-
-from jarvis.main import listener  # noqa: E402
-from tests.constant import SAMPLE_PHRASE  # noqa: E402
+from jarvis.main import listener
+from tests.constant import SAMPLE_PHRASE
 
 
 class TestListener(unittest.TestCase):

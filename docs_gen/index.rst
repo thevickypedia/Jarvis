@@ -71,7 +71,7 @@ Keywords Classifier
 API - Application
 =================
 
-.. automodule:: jarvis.api.fast
+.. automodule:: jarvis.api.main
    :members:
    :undoc-members:
 
@@ -679,7 +679,7 @@ Classes
 
 .. automodule:: jarvis.modules.models.classes
    :members:
-   :exclude-members: SupportedPlatforms, Settings, VehicleAuthorization, VehicleConnection, Sensitivity, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
+   :exclude-members: SupportedPlatforms, Settings, VehicleAuthorization, VehicleConnection, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
 
 ====
 
@@ -704,12 +704,6 @@ Classes
 .. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
    :members:
    :exclude-members: _abc_impl
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.Sensitivity(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 ====
 

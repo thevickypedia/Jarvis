@@ -9,7 +9,7 @@ from typing import Dict, List, Union
 import psutil
 import yaml
 
-from jarvis.api.server import fast_api
+from jarvis.api.server import jarvis_api
 from jarvis.executors.connection import wifi_connector
 from jarvis.executors.crontab import crontab_executor
 from jarvis.executors.offline import background_tasks, tunneling
@@ -63,7 +63,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     Handles:
         - speech_synthesizer: Speech Synthesis
         - telegram_api: Telegram Bot
-        - fast_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance
+        - jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance
         - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks
         - tunneling: Reverse Proxy
         - wifi_connector: Wi-Fi Re-connector
@@ -109,7 +109,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     See Also:
         - speech_synthesizer: Initiates docker container for speech synthesis.
         - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
-        - fast_api: Initiates uvicorn server to process offline commands, stock monitor and robinhood report generation.
+        - jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
         - tunneling: Initiates ngrok tunnel to host Jarvis API through a public endpoint.
         - wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.
@@ -118,7 +118,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     process_dict = {
         speech_synthesizer.__name__: Process(target=speech_synthesizer),
         telegram_api.__name__: Process(target=telegram_api),
-        fast_api.__name__: Process(target=fast_api),
+        jarvis_api.__name__: Process(target=jarvis_api),
         background_tasks.__name__: Process(target=background_tasks)
     }
     if models.env.plot_mic:

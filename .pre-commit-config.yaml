@@ -20,23 +20,13 @@ repos:
       -
         id: isort
 
-  - repo: local
-    hooks:
-      -
-        id: pytest
-        name: pytest
-        entry: bash -c 'cd tests && pytest && rm -rf logs fileio .pytest_cache && cd ..'
-        language: system
-        pass_filenames: false
-        always_run: true
-
   -
     repo: local
     hooks:
       -
-        id: docs
-        name: docs
-        entry: /bin/bash gen_docs.sh
+        id: pytest_docs
+        name: pytest_docs
+        entry: /bin/bash pre_commit.sh
         language: system
         pass_filenames: false
         always_run: true
