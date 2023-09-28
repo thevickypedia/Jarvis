@@ -64,13 +64,14 @@ async def startup_func() -> None:
         startup_script = pathlib.Path(startup_script)
         logger.info("Executing startup script: '%s'", startup_script)
         if startup_script.suffix in ('.py', '.sh', '.zsh') and not startup_script.stem.startswith('_'):
+            starter = None
             if startup_script.suffix == ".py":
                 starter = shutil.which(cmd='python')
-            elif startup_script.suffix == ".sh":
+            if startup_script.suffix == ".sh":
                 starter = shutil.which(cmd='bash')
-            elif startup_script.suffix == ".zsh":
+            if startup_script.suffix == ".zsh":
                 starter = shutil.which(cmd='zsh')
-            else:
+            if not starter:
                 continue
             script = starter + " " + os.path.join(models.fileio.startup_dir, startup_script)
             logger.debug("Running %s", script)
