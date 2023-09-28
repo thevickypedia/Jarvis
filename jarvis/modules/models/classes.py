@@ -372,8 +372,11 @@ class EnvConfig(BaseSettings):
     # VPN Server config
     vpn_username: Union[str, None] = None
     vpn_password: Union[str, None] = None
-    vpn_domain: Union[str, None] = None
-    vpn_record_name: Union[str, None] = None
+    vpn_key_pair: Union[str, None] = None
+    vpn_subdomain: Union[str, None] = None
+    vpn_info_file: Union[str, None] = Field(None, pattern=r".+\.json$")
+    vpn_hosted_zone: Union[str, None] = None
+    vpn_security_group: Union[str, None] = None
 
     # Vehicle config
     car_email: Union[EmailStr, None] = None
@@ -527,6 +530,7 @@ class FileIO(BaseModel):
     gpt_data: FilePath = os.path.join(root, 'gpt_history.yaml')
 
     # Jarvis internal
+    startup_dir: DirectoryPath = os.path.join(root, 'startup')
     location: FilePath = os.path.join(root, 'location.yaml')
     notes: FilePath = os.path.join(root, 'notes.txt')
     processes: FilePath = os.path.join(root, 'processes.yaml')

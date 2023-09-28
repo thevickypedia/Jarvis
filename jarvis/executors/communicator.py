@@ -78,7 +78,8 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
 
 
 def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, sender: str = None,
-               gmail_user: Union[EmailStr, str] = None, gmail_pass: str = None, title: str = None) -> Union[bool, str]:
+               gmail_user: Union[EmailStr, str] = None, gmail_pass: str = None, title: str = None,
+               attachment: str = None) -> Union[bool, str]:
     """Sends an email using an email template formatted as html.
 
     Args:
@@ -89,6 +90,7 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         gmail_user: Username for email.
         gmail_pass: Password for email.
         title: Sender name on template.
+        attachment: Attachment to include in notification.
 
     References:
         Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the Email.
@@ -105,7 +107,7 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
     email_object = gmailconnector.SendEmail(gmail_user=gmail_user or models.env.gmail_user,
                                             gmail_pass=gmail_pass or models.env.gmail_pass)
     mail_stat = email_object.send_email(recipient=recipient, sender=sender or 'Jarvis Communicator',
-                                        subject=subject, html_body=rendered)
+                                        subject=subject, html_body=rendered, attachment=attachment)
     if mail_stat.ok:
         logger.info('Email notification has been sent')
         return True

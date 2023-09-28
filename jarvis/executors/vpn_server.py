@@ -3,9 +3,9 @@ from collections.abc import Generator
 from multiprocessing import Process
 from threading import Thread
 
-from botocore.exceptions import (BotoCoreError, ClientError,
-                                 EndpointConnectionError, SSLError)
+import vpn
 
+from jarvis.executors import communicator
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger, multiprocessing_logger
@@ -13,14 +13,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
 db = database.Database(database=models.fileio.base_db)
-
-try:
-    import vpn
-
-    VPN_PRE_CHECK = True
-except (EndpointConnectionError, ClientError, SSLError, BotoCoreError) as error:
-    VPN_PRE_CHECK = False
-    logger.error(error)
+available_regions = {'regions': []}
 
 
 def regional_phrase(phrase: str) -> Generator[str]:
@@ -51,7 +44,9 @@ def extract_custom_region(phrase: str) -> str:
         Region name if a match is found.
     """
     phrase = " ".join(regional_phrase(phrase=phrase))
-    for region in vpn.settings.available_regions:
+    if not available_regions['regions']:
+        available_regions['regions'] = list(vpn.util.available_regions())
+    for region in available_regions['regions']:
         if region.replace('-', ' ') in phrase:
             logger.info("Custom region chosen: %s", region)
             return region
@@ -63,12 +58,10 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not VPN_PRE_CHECK:
-        speaker.speak("VPN server requires an active A.W.S configuration. Please check the logs for more information.")
-        logger.error("Please refer to the following URLs to configure AWS CLI, to use VPN features.")
-        logger.error("AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html")
-        logger.error("AWS configure: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html")
+    if not all((models.env.vpn_username, models.env.vpn_password)):
+        speaker.speak(text="VPN username and password are required for any VPN server related operations.")
         return
+
     with db.connection:
         cursor = db.connection.cursor()
         state = cursor.execute("SELECT state FROM vpn").fetchone()
@@ -88,7 +81,7 @@ def vpn_server(phrase: str) -> None:
             text = f'VPN Server has been initiated {models.env.title}! Login details will be sent to you shortly.'
         speaker.speak(text=text)
     elif 'stop' in phrase or 'shut' in phrase or 'close' in phrase or 'disable' in phrase:
-        if not os.path.isfile(vpn.INFO_FILE):
+        if not os.path.isfile(models.env.vpn_info_file):
             speaker.speak(text=f'Input file for VPN Server is missing {models.env.title}! '
                                'The VPN Server might have been shut down already.')
             return
@@ -113,22 +106,34 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    multiprocessing_logger(filename=os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log'))
-    kwargs = dict(vpn_username=models.env.vpn_username or models.env.root_user,
-                  vpn_password=models.env.vpn_password or models.env.root_password,
-                  domain=models.env.vpn_domain, record_name=models.env.vpn_record_name,
-                  gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
-                  recipient=models.env.recipient or models.env.gmail_user,
-                  phone=models.env.phone_number, logger=logger)
+    log_file = os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log')
+    multiprocessing_logger(filename=log_file)
+    kwargs = dict(vpn_username=models.env.vpn_username, vpn_password=models.env.vpn_password,
+                  hosted_zone=models.env.vpn_hosted_zone, subdomain=models.env.vpn_subdomain,
+                  key_pair=models.env.vpn_key_pair, security_group=models.env.vpn_security_group,
+                  vpn_info=models.env.vpn_info_file, logger=logger)
     if custom_region:
         kwargs['aws_region_name'] = custom_region
+        successful_subject = f"VPN Server on {custom_region} has been configured successfully!"
+        failed_subject = f"Failed to create VPN Server on {custom_region}!"
+    else:
+        successful_subject = "VPN Server has been configured successfully!"
+        failed_subject = "Failed to create VPN Server!"
     vpn_object = vpn.VPNServer(**kwargs)
     with db.connection:
         cursor = db.connection.cursor()
         cursor.execute("INSERT or REPLACE INTO vpn (state) VALUES (?);", (operation,))
         db.connection.commit()
     if operation == 'enabled':
-        vpn_object.create_vpn_server()
+        if vpn_data := vpn_object.create_vpn_server():
+            entrypoint = vpn_data.get('entrypoint') or vpn_data.get('public_dns')
+            communicator.send_email(subject=successful_subject, body=f"Server Entrypoint: {entrypoint}",
+                                    recipient=models.env.recipient, title="VPN Server")
+        else:
+            communicator.send_email(subject=failed_subject, recipient=models.env.recipient, title="VPN Server",
+                                    attachment=log_file,
+                                    body="Failed to initiate VPN server. "
+                                         "Please check the logs (attached) for more information.")
     elif operation == 'disabled':
         vpn_object.delete_vpn_server()
     with db.connection:

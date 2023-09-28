@@ -1,36 +1,25 @@
+import os
+import pathlib
+import shutil
+from datetime import datetime
+from multiprocessing import Process
 from threading import Thread
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.routing import APIRoute
 
 from jarvis import version
 from jarvis.api import routers
 from jarvis.api.logger import logger
 from jarvis.api.squire import discover, stockanalysis_squire
+from jarvis.executors import crontab
 from jarvis.modules.models import models
-
-data = {}
-for router in discover.routes(routers=routers.__path__[0]):
-    for route in router.routes:
-        if isinstance(route, APIRoute) and route.include_in_schema:
-            data[route.path] = next(iter(route.methods))
-
-# Find the maximum lengths of URL and Method for proper alignment
-max_url_length = max(len(url) for url in data.keys())
-max_method_length = max(len(method) for method in data.values())
-
-long_description = f"| {'URL'.ljust(max_url_length)} | {'Method'.ljust(max_method_length)} |\n" \
-                   f"| {'-' * max_url_length} | {'-' * max_method_length} |\n"
-for url, method in data.items():
-    long_description += f"| {url.ljust(max_url_length)} | {method.ljust(max_method_length)} |\n"
 
 # Initiate API
 app = FastAPI(
     title="Jarvis API",
     description="#### Gateway to communicate with Jarvis, and an entry point for the UI.\n\n"
-                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)\n\n\n"
-                f"{long_description}",
+                "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version=version
 )
 
@@ -61,8 +50,8 @@ def enable_cors() -> None:
 # WATCH OUT: for changes in function name
 if models.settings.pname == "jarvis_api":  # Avoid looping when called by subprocesses
     enable_cors()
-    for route in discover.routes(routers=routers.__path__[0]):
-        app.include_router(router=route)
+    for router in discover.routes(routers.__path__[0]):
+        app.include_router(router)
 
 
 @app.on_event(event_type='startup')
@@ -71,3 +60,21 @@ async def startup_func() -> None:
     logger.info("Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:
         Thread(target=stockanalysis_squire.nasdaq).start()
+    for startup_script in os.listdir(models.fileio.startup_dir):
+        startup_script = pathlib.Path(startup_script)
+        logger.info("Executing startup script: '%s'", startup_script)
+        if startup_script.suffix in ('.py', '.sh', '.zsh') and not startup_script.stem.startswith('_'):
+            if startup_script.suffix == ".py":
+                starter = shutil.which(cmd='python')
+            elif startup_script.suffix == ".sh":
+                starter = shutil.which(cmd='bash')
+            elif startup_script.suffix == ".zsh":
+                starter = shutil.which(cmd='zsh')
+            else:
+                continue
+            script = starter + " " + os.path.join(models.fileio.startup_dir, startup_script)
+            logger.debug("Running %s", script)
+            log_file = datetime.now().strftime(os.path.join('logs', 'startup_script_%d-%m-%Y.log'))
+            Process(target=crontab.executor, args=(script, log_file)).start()
+        else:
+            logger.warning("Unsupported file format for startup script: %s", startup_script)

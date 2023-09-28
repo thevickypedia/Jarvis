@@ -71,7 +71,7 @@ def background_task_runner() -> None:
             for job in models.env.crontab:
                 if job.check_trigger():
                     logger.debug("Executing cron job: '%s'", job.comment)
-                    cron_process = Process(target=crontab.crontab_executor, args=(job.comment,))
+                    cron_process = Process(target=crontab.executor, args=(job.comment,))
                     cron_process.start()
                     with db.connection:
                         cursor = db.connection.cursor()
@@ -209,35 +209,6 @@ def get_tunnel() -> HttpUrl:
                         return tunnel.get('public_url')
     except EgressErrors + (requests.JSONDecodeError,) as error:
         logger.error(error)
-
-
-def tunneling() -> None:
-    """Initiates Ngrok to tunnel requests from external sources if they aren't running already.
-
-    Notes:
-        - ``forever_ngrok.py`` is a simple script that triggers ngrok connection in the given offline port.
-        - The connection is tunneled through a public facing URL used to make ``POST`` requests to Jarvis API.
-    """
-    # processName filter is not added since process runs on a single function that is covered by funcName
-    multiprocessing_logger(filename=os.path.join('logs', 'tunnel_%d-%m-%Y.log'))
-    if models.settings.os != models.supported_platforms.macOS:
-        return
-
-    if get_tunnel():
-        logger.info('An instance of ngrok tunnel for offline communicator is running already.')
-        return
-
-    if os.path.exists(f"{models.env.home}/JarvisHelper/venv/bin/activate"):
-        logger.info("Initiating ngrok connection for offline communicator.")
-        initiate = f'cd {models.env.home}/JarvisHelper && ' \
-                   f'source venv/bin/activate && export HOST={models.env.offline_host} ' \
-                   f'export PORT={models.env.offline_port} && python forever_ngrok.py'
-        os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
-    else:
-        logger.info("JarvisHelper is not available to trigger an ngrok tunneling through %d", models.env.offline_port)
-        endpoint = rf'http://{models.env.offline_host}:{models.env.offline_port}'
-        logger.info('However offline communicator can still be accessed via '
-                    '%s/offline-communicator for API calls and %s/docs for docs.', endpoint, endpoint)
 
 
 def ondemand_offline_automation(task: str) -> Union[str, None]:

@@ -282,8 +282,11 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 **[VPNServer](https://github.com/thevickypedia/vpn-server) integration**
 - **VPN_USERNAME** - Username to create vpn-server. Defaults to profile username.
 - **VPN_PASSWORD** - Password to authenticate vpn-server. Defaults to profile password.
-- **VPN_DOMAIN** - Domain name for the hosted zone.
-- **VPN_RECORD_NAME** - Alias record name to access VPN server.
+- **VPN_KEY_PAIR** - Name of the PEM file and key pair to spin up the ec2 instance.
+- **VPN_HOSTED_ZONE** - Domain name for the hosted zone.
+- **VPN_SUBDOMAIN** - Alias record name to access VPN server.
+- **VPN_INFO_FILE** - JSON file for VPN information to be stored.
+- **VPN_SECURITY_GROUP** - Name of the security group to be created in AWS.
 
 **[Car Controls](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/car)** - Applies only for JLR vehicles subscribed to `InControl` application.
 - **CAR_EMAIL** - Email address to log in to InControl API.
@@ -413,6 +416,30 @@ TV:
     hostname: 'RokuTV'
     mac_address: 'MAC_ADDRESS'
 ```
+</details>
+
+### Startup Scripts [Optional]
+Jarvis can execute any python or shell script during startup without any user interaction.
+> This feature requires a directory called `scripts` within the `fileio` directory.
+
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary>
+
+Simply place the startup script within the `fileio/scripts`. Jarvis will only trigger the scripts those names that 
+end with `.py` or `.sh` or `.zsh` without having an `_` at the begining.
+
+**Example:**
+
+In the example below, only the scripts `ngrok.py` and `stack.sh` will be triggered.
+
+```markdown
+fileio/
+|-- scripts/
+|   |-- ngrok.py
+|   |-- stack.sh
+|   |-- _offline.py
+```
+
 </details>
 
 ### Automation [Optional]

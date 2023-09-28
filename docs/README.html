@@ -339,8 +339,11 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 <ul class="simple">
 <li><p><strong>VPN_USERNAME</strong> - Username to create vpn-server. Defaults to profile username.</p></li>
 <li><p><strong>VPN_PASSWORD</strong> - Password to authenticate vpn-server. Defaults to profile password.</p></li>
-<li><p><strong>VPN_DOMAIN</strong> - Domain name for the hosted zone.</p></li>
-<li><p><strong>VPN_RECORD_NAME</strong> - Alias record name to access VPN server.</p></li>
+<li><p><strong>VPN_KEY_PAIR</strong> - Name of the PEM file and key pair to spin up the ec2 instance.</p></li>
+<li><p><strong>VPN_HOSTED_ZONE</strong> - Domain name for the hosted zone.</p></li>
+<li><p><strong>VPN_SUBDOMAIN</strong> - Alias record name to access VPN server.</p></li>
+<li><p><strong>VPN_INFO_FILE</strong> - JSON file for VPN information to be stored.</p></li>
+<li><p><strong>VPN_SECURITY_GROUP</strong> - Name of the security group to be created in AWS.</p></li>
 </ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/car">Car Controls</a></strong> - Applies only for JLR vehicles subscribed to <code class="docutils literal notranslate"><span class="pre">InControl</span></code> application.</p>
 <ul class="simple">
@@ -477,6 +480,25 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 <span class="w">  </span><span class="nt">bedroom tv</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;RokuTV&#39;</span>
 <span class="w">    </span><span class="nt">mac_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;MAC_ADDRESS&#39;</span>
+</pre></div>
+</div>
+</details></section>
+<section id="startup-scripts-optional">
+<h2>Startup Scripts [Optional]<a class="headerlink" href="#startup-scripts-optional" title="Permalink to this heading">¶</a></h2>
+<p>Jarvis can execute any python or shell script during startup without any user interaction.</p>
+<blockquote>
+<div><p>This feature requires a directory called <code class="docutils literal notranslate"><span class="pre">scripts</span></code> within the <code class="docutils literal notranslate"><span class="pre">fileio</span></code> directory.</p>
+</div></blockquote>
+<details>
+<summary><strong><i>Setup Instructions</i></strong></summary><p>Simply place the startup script within the <code class="docutils literal notranslate"><span class="pre">fileio/scripts</span></code>. Jarvis will only trigger the scripts those names that
+end with <code class="docutils literal notranslate"><span class="pre">.py</span></code> or <code class="docutils literal notranslate"><span class="pre">.sh</span></code> or <code class="docutils literal notranslate"><span class="pre">.zsh</span></code> without having an <code class="docutils literal notranslate"><span class="pre">_</span></code> at the begining.</p>
+<p><strong>Example:</strong></p>
+<p>In the example below, only the scripts <code class="docutils literal notranslate"><span class="pre">ngrok.py</span></code> and <code class="docutils literal notranslate"><span class="pre">stack.sh</span></code> will be triggered.</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>fileio/
+|-- scripts/
+|   |-- ngrok.py
+|   |-- stack.sh
+|   |-- _offline.py
 </pre></div>
 </div>
 </details></section>
@@ -673,6 +695,7 @@ Clean code with pre-commit hooks: <a class="reference external" href="https://fl
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#contacts-optional">Contacts [Optional]</a></li>
 <li><a class="reference internal" href="#smart-devices-optional">Smart Devices [Optional]</a></li>
+<li><a class="reference internal" href="#startup-scripts-optional">Startup Scripts [Optional]</a></li>
 <li><a class="reference internal" href="#automation-optional">Automation [Optional]</a></li>
 <li><a class="reference internal" href="#background-tasks-optional">Background Tasks [Optional]</a></li>
 <li><a class="reference internal" href="#restrictions-optional">Restrictions [Optional]</a></li>
