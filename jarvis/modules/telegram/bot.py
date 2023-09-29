@@ -31,6 +31,9 @@ from jarvis.modules.utils import support, util
 db = database.Database(database=models.fileio.base_db)
 
 USER_TITLE = {}
+# todo: Move to a BaseModel object TelegramSettings
+BASE_URL = f'https://api.telegram.org/bot{models.env.bot_token}'
+FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{models.env.bot_token}/' + '{file_path}'
 
 
 def username_is_valid(username: str) -> bool:
@@ -48,7 +51,7 @@ def greeting() -> str:
         Random greeting.
     """
     return random.choice(
-        ["Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "What's up", "Yo", "Cheers"]
+        ("Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "What's up", "Yo", "Cheers")
     )
 
 
@@ -116,497 +119,498 @@ def intro() -> str:
            "flip a coin for me\n"
 
 
-class TelegramBot:
-    """Initiates a ``requests`` session to interact with Telegram API.
+def _get_file(payload: dict) -> Union[bytes, None]:
+    """Makes a request to get the file and file path.
 
-    >>> TelegramBot
+    Args:
+        payload: Payload received, to extract information from.
 
+    Returns:
+        bytes:
+        Returns the file content as bytes.
     """
+    response = _make_request(url=BASE_URL + '/getFile',
+                             payload={'file_id': payload['file_id']})
+    try:
+        json_response = json.loads(response.content)
+    except json.JSONDecodeError as error:
+        logger.error(error)
+        return
+    if not response.ok or not json_response.get('ok'):
+        logger.error(response.content)
+        return
+    response = requests.get(url=FILE_CONTENT_URL.format(file_path=json_response['result']['file_path']))
+    if not response.ok:
+        logger.error(response.content)
+        return
+    return response.content
 
-    BASE_URL = 'https://api.telegram.org/bot'
-    FILE_CONTENT_URL = f'https://api.telegram.org/file/bot{models.env.bot_token}/' + '{file_path}'
 
-    def __init__(self):
-        """Initiates a session."""
-        self.session = requests.Session()
-        self.session.verify = True
+def _make_request(url: str, payload: dict, files: dict = None) -> requests.Response:
+    """Makes a post request with a ``connect timeout`` of 5 seconds and ``read timeout`` of 60.
 
-    def _get_file(self, payload: dict) -> Union[bytes, None]:
-        """Makes a request to get the file and file path.
+    Args:
+        url: URL to submit the request.
+        payload: Payload received, to extract information from.
+        files: Take filename as an optional argument.
 
-        Args:
-            payload: Payload received, to extract information from.
+    Returns:
+        Response:
+        Response class.
+    """
+    response = requests.post(url=url, data=payload, files=files, timeout=(5, 60))
+    if not response.ok:
+        logger.debug(payload)
+        logger.debug(files)
+        logger.warning("Called by: '%s'", sys._getframe(1).f_code.co_name)  # noqa
+        logger.error(response.json())
+    return response
 
-        Returns:
-            bytes:
-            Returns the file content as bytes.
-        """
-        response = self._make_request(url=self.BASE_URL + models.env.bot_token + '/getFile',
-                                      payload={'file_id': payload['file_id']})
-        try:
-            json_response = json.loads(response.content)
-        except json.JSONDecodeError as error:
-            logger.error(error)
-            return
-        if not response.ok or not json_response.get('ok'):
-            logger.error(response.content)
-            return
-        response = self.session.get(url=self.FILE_CONTENT_URL.format(file_path=json_response['result']['file_path']))
-        if not response.ok:
-            logger.error(response.content)
-            return
-        return response.content
 
-    def _make_request(self, url: str, payload: dict, files: dict = None) -> requests.Response:
-        """Makes a post request with a ``connect timeout`` of 5 seconds and ``read timeout`` of 60.
+def send_audio(chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> requests.Response:
+    """Sends an audio file to the user.
 
-        Args:
-            url: URL to submit the request.
-            payload: Payload received, to extract information from.
-            files: Take filename as an optional argument.
+    Args:
+        chat_id: Chat ID.
+        filename: Name of the audio file that has to be sent.
+        parse_mode: Parse mode. Defaults to ``HTML``
 
-        Returns:
-            Response:
-            Response class.
-        """
-        response = self.session.post(url=url, data=payload, files=files, timeout=(5, 60))
-        if not response.ok:
-            logger.debug(payload)
-            logger.debug(files)
-            logger.warning("Called by: '%s'", sys._getframe(1).f_code.co_name)  # noqa
-            logger.error(response.json())
-        return response
+    Returns:
+        Response:
+        Response class.
+    """
+    with open(filename, 'rb') as audio:
+        files = {'audio': audio.read()}
+    return _make_request(url=BASE_URL + '/sendAudio', files=files,
+                         payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
 
-    def send_audio(self, chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> requests.Response:
-        """Sends an audio file to the user.
 
-        Args:
-            chat_id: Chat ID.
-            filename: Name of the audio file that has to be sent.
-            parse_mode: Parse mode. Defaults to ``HTML``
+def send_document(chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> \
+        requests.Response:
+    """Sends a document to the user.
 
-        Returns:
-            Response:
-            Response class.
-        """
-        with open(filename, 'rb') as audio:
-            files = {'audio': audio.read()}
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendAudio', files=files,
-                                  payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
+    Args:
+        chat_id: Chat ID.
+        filename: Name of the audio file that has to be sent.
+        parse_mode: Parse mode. Defaults to ``HTML``
 
-    def send_document(self, chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> \
-            requests.Response:
-        """Sends a document to the user.
+    Returns:
+        Response:
+        Response class.
+    """
+    files = {'document': open(filename, 'rb')}
+    return _make_request(url=BASE_URL + '/sendDocument', files=files,
+                         payload={'chat_id': chat_id, 'caption': os.path.basename(filename),
+                                  'parse_mode': parse_mode})
 
-        Args:
-            chat_id: Chat ID.
-            filename: Name of the audio file that has to be sent.
-            parse_mode: Parse mode. Defaults to ``HTML``
 
-        Returns:
-            Response:
-            Response class.
-        """
-        files = {'document': open(filename, 'rb')}
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendDocument', files=files,
-                                  payload={'chat_id': chat_id, 'caption': os.path.basename(filename),
-                                           'parse_mode': parse_mode})
+def send_photo(chat_id: int, filename: Union[str, FilePath]) -> requests.Response:
+    """Sends an image file to the user.
 
-    def send_photo(self, chat_id: int, filename: Union[str, FilePath]) -> requests.Response:
-        """Sends an image file to the user.
+    Args:
+        chat_id: Chat ID.
+        filename: Name of the image file that has to be sent.
 
-        Args:
-            chat_id: Chat ID.
-            filename: Name of the image file that has to be sent.
+    Returns:
+        Response:
+        Response class.
+    """
+    with open(filename, 'rb') as image:
+        files = {'photo': image.read()}
+    return _make_request(url=BASE_URL + '/sendPhoto', files=files,
+                         payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
-        Returns:
-            Response:
-            Response class.
-        """
-        with open(filename, 'rb') as image:
-            files = {'photo': image.read()}
-        return self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendPhoto', files=files,
-                                  payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
-    def reply_to(self, payload: dict, response: str, parse_mode: Union[str, None] = 'markdown',
+def reply_to(payload: dict, response: str, parse_mode: Union[str, None] = 'markdown',
+             retry: bool = False) -> requests.Response:
+    """Generates a payload to reply to a message received.
+
+    Args:
+        payload: Payload received, to extract information from.
+        response: Message to be sent to the user.
+        parse_mode: Parse mode. Defaults to ``markdown``
+        retry: Retry reply in case reply failed because of parsing.
+
+    Returns:
+        Response:
+        Response class.
+    """
+    result = _make_request(url=BASE_URL + '/sendMessage',
+                           payload={'chat_id': payload['from']['id'],
+                                    'reply_to_message_id': payload['message_id'],
+                                    'text': response, 'parse_mode': parse_mode})
+    if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
+        logger.warning("Retrying response as plain text with no parsing")
+        reply_to(payload=payload, response=response, parse_mode=None, retry=True)
+    return result
+
+
+def send_message(chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown',
                  retry: bool = False) -> requests.Response:
-        """Generates a payload to reply to a message received.
+    """Generates a payload to reply to a message received.
 
-        Args:
-            payload: Payload received, to extract information from.
-            response: Message to be sent to the user.
-            parse_mode: Parse mode. Defaults to ``markdown``
-            retry: Retry reply in case reply failed because of parsing.
+    Args:
+        chat_id: Chat ID.
+        response: Message to be sent to the user.
+        parse_mode: Parse mode. Defaults to ``markdown``
+        retry: Retry reply in case reply failed because of parsing.
 
-        Returns:
-            Response:
-            Response class.
-        """
-        result = self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
-                                    payload={'chat_id': payload['from']['id'],
-                                             'reply_to_message_id': payload['message_id'],
-                                             'text': response, 'parse_mode': parse_mode})
-        if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
-            logger.warning("Retrying response as plain text with no parsing")
-            self.reply_to(payload=payload, response=response, parse_mode=None, retry=True)
-        return result
+    Returns:
+        Response:
+        Response class.
+    """
+    result = _make_request(url=BASE_URL + '/sendMessage',
+                           payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
+    if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
+        logger.warning("Retrying response as plain text with no parsing")
+        send_message(chat_id=chat_id, response=response, parse_mode=None, retry=True)
+    return result
 
-    def send_message(self, chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown',
-                     retry: bool = False) -> requests.Response:
-        """Generates a payload to reply to a message received.
 
-        Args:
-            chat_id: Chat ID.
-            response: Message to be sent to the user.
-            parse_mode: Parse mode. Defaults to ``markdown``
-            retry: Retry reply in case reply failed because of parsing.
+def poll_for_messages() -> None:
+    """Polls ``api.telegram.org`` for new messages.
 
-        Returns:
-            Response:
-            Response class.
-        """
-        result = self._make_request(url=self.BASE_URL + models.env.bot_token + '/sendMessage',
-                                    payload={'chat_id': chat_id, 'text': response, 'parse_mode': parse_mode})
-        if result.status_code == 400 and parse_mode and not retry:  # Retry with response as plain text
-            logger.warning("Retrying response as plain text with no parsing")
-            self.send_message(chat_id=chat_id, response=response, parse_mode=None, retry=True)
-        return result
+    Raises:
+        BotInUse:
+            - When a new polling is initiated using the same token.
+        ConnectionError:
+            - If unable to connect to the endpoint.
 
-    def poll_for_messages(self) -> None:
-        """Polls ``api.telegram.org`` for new messages.
-
-        Raises:
-            BotInUse:
-                - When a new polling is initiated using the same token.
-            ConnectionError:
-                - If unable to connect to the endpoint.
-
-        See Also:
-            Swaps ``offset`` value during every iteration to avoid reprocessing messages.
-        """
-        offset = 0
-        logger.info("Polling for incoming messages..")
-        while True:
-            response = self._make_request(url=self.BASE_URL + models.env.bot_token + '/getUpdates',
-                                          payload={'offset': offset, 'timeout': 60})
-            if response.ok:
-                response = response.json()
-            else:
-                if response.status_code == 409:
-                    raise BotInUse(
-                        response.json().get('description')
-                    )
-                raise ConnectionError(
-                    response.json()
+    See Also:
+        Swaps ``offset`` value during every iteration to avoid reprocessing messages.
+    """
+    offset = 0
+    logger.info("Polling for incoming messages..")
+    while True:
+        response = _make_request(url=BASE_URL + '/getUpdates',
+                                 payload={'offset': offset, 'timeout': 60})
+        if response.ok:
+            response = response.json()
+        else:
+            if response.status_code == 409:
+                raise BotInUse(
+                    response.json().get('description')
                 )
-            if not response.get('result'):
-                continue
-            for result in response['result']:
-                message = result.get('message', {})
-                if message.get('text'):
-                    self.process_text(payload=message)
-                elif message.get('voice'):
-                    self.process_voice(payload=message)
-                else:  # consider everything else as document and try to store it in fileio/uploads
-                    self.process_document(payload=message)
-                offset = result['update_id'] + 1
-
-    def authenticate(self, payload: dict) -> bool:
-        """Authenticates the user with ``userId`` and ``userName``.
-
-        Args:
-            payload: Payload received, to extract information from.
-
-        Returns:
-            bool:
-            Returns a boolean to indicate whether the user is authenticated.
-        """
-        chat = payload['from']
-        if chat['is_bot']:
-            logger.error("Bot %s accessed %s", chat['username'], payload['text'])
-            self.send_message(chat_id=chat['id'],
-                              response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
-            return False
-        if chat['id'] not in models.env.bot_chat_ids or not username_is_valid(username=chat['username']):
-            logger.info("%s: %s", chat['username'], payload['text']) if payload['text'] else None
-            logger.error("Unauthorized chatID [%d] or userName [%s]", chat['id'], chat['username'])
-            self.send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
-            return False
-        if not USER_TITLE.get(payload['from']['username']):
-            USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
-        return True
-
-    def verify_timeout(self, payload: dict) -> bool:
-        """Verifies whether the message was received in the past 60 seconds.
-
-        Args:
-            payload: Payload received, to extract information from.
-
-        Returns:
-            bool:
-            True or False flag to indicate if the request timed out.
-        """
-        if int(time.time()) - payload['date'] < 60:
-            return True
-        request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
-        logger.warning("Request timed out when %s requested %s", payload['from']['username'], payload['text'])
-        logger.warning("Request time: %s", request_time)
-        if "override" in payload['text'].lower() and not \
-                word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['kill']):
-            logger.info("%s requested a timeout override.", payload['from']['username'])
-            return True
-        else:
-            self.reply_to(payload=payload,
-                          response=f"Request timed out\nRequested: {request_time}\n"
-                                   f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
-
-    def verify_stop(self, payload: dict) -> bool:
-        """Stops Jarvis by setting stop flag in ``base_db`` if stop is requested by the user with an override flag.
-
-        Args:
-            payload: Payload received, to extract information from.
-
-        Returns:
-            bool:
-            Boolean flag to indicate whether to proceed.
-        """
-        if not word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['kill']):
-            return True
-        if "override" in payload['text'].lower():
-            logger.info("%s requested a STOP override.", payload['from']['username'])
-            self.reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
-            with db.connection:
-                cursor = db.connection.cursor()
-                cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
-                cursor.connection.commit()
-        else:
-            self.reply_to(payload=payload,
-                          response="Jarvis cannot be stopped via offline communication without a 'override' flag.")
-
-    def process_voice(self, payload: dict) -> None:
-        """Processes the audio file in payload received after checking for authentication.
-
-        Args:
-            payload: Payload received, to extract information from.
-        """
-        if not self.authenticate(payload=payload):
-            return
-        if not self.verify_timeout(payload=payload):
-            return
-        if bytes_obj := self._get_file(payload=payload['voice']):
-            if payload['voice']['mime_type'] == 'audio/ogg':
-                filename = f"{payload['voice']['file_unique_id']}.ogg"
-            else:
-                logger.error("Unknown FileType received.")
-                logger.error(payload)
-                self.reply_to(payload=payload,
-                              response=f"Your voice command was received as an unknown file type: "
-                                       f"{payload['voice']['mime_type']}\nPlease try the command as a text.")
-                return
-            with open(filename, 'wb') as file:
-                file.write(bytes_obj)
-            converted = False
-            if models.settings.os == models.supported_platforms.macOS:
-                transcode = audio_handler.audio_converter_mac()
-                if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
-                    converted = True
-            elif models.settings.os == models.supported_platforms.windows:
-                if audio_handler.audio_converter_win(input_filename=filename, output_audio_format="flac"):
-                    converted = True
-            if converted:
-                os.remove(filename)
-                filename = filename.replace(".ogg", ".flac")
-                audio_to_text = tts_stt.audio_to_text(filename=filename)
-                if audio_to_text:
-                    payload['text'] = audio_to_text
-                    self.jarvis(payload=payload)
-                    return
-            else:
-                logger.error("Failed to transcode OPUS to Native FLAC")
-        else:
-            logger.error("Unable to get file for the file id in the payload received.")
-            logger.error(payload)
-        # Catches both unconverted source ogg and unconverted audio to text
-        title = USER_TITLE.get(payload['from']['username'], models.env.title)
-        if filename := tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
-                                                  "Please try again!"):
-            self.send_audio(filename=filename, chat_id=payload['from']['id'])
-            os.remove(filename)
-        else:
-            self.reply_to(payload=payload, response="Failed to convert audio. Please try text input.")
-
-    def process_document(self, payload: dict) -> None:
-        """Processes the document in payload received after checking for authentication.
-
-        Args:
-            payload: Payload received, to extract information from.
-        """
-        if not self.authenticate(payload=payload):
-            return
-        if not self.verify_timeout(payload=payload):
-            return
-        if bytes_obj := self._get_file(payload=payload['document']):
-            filename = payload['document']['file_name']
-            response = file_handler.put_file(filename=filename, file_content=bytes_obj)
-            self.send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)
-        else:
-            title = USER_TITLE.get(payload['from']['username'], models.env.title)
-            self.reply_to(payload=payload, response=f"I'm sorry {title}! I was unable to process your document. "
-                                                    "Please try again!", parse_mode=None)
-
-    def process_text(self, payload: dict) -> None:
-        """Processes the text in payload received after checking for authentication.
-
-        Args:
-            payload: Payload received, to extract information from.
-
-        See Also:
-            - | Requesting files and secrets are considered as special requests, so they cannot be combined with
-              | other requests using 'and' or 'also'
-        """
-        if payload.get('text'):
-            payload['text'] = payload['text'].strip()
-        else:
-            self.send_message(chat_id=payload['from']['id'], response="Un-processable payload")
-            return
-        if payload['text'].lower() == 'help':
-            self.send_message(chat_id=payload['from']['id'],
-                              response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                       f"Good {util.part_of_day()}! {intro()}\n\n"
-                                       "Please reach out at https://vigneshrao.com/contact for more info.")
-            return
-        if not self.authenticate(payload=payload):
-            return
-        if not self.verify_timeout(payload=payload):
-            return
-        if not self.verify_stop(payload=payload):
-            return
-        payload['text'] = payload['text'].replace('override', '').replace('OVERRIDE', '')
-        if match_word := word_match.word_match(phrase=payload['text'].lower(),
-                                               match_list=("hey", "hola", "what's up", "ssup", "whats up", "hello",
-                                                           "hi", "howdy", "hey", "chao", "hiya", "aloha"), strict=True):
-            rest_of_msg = payload['text'].replace(match_word, '')
-            if not rest_of_msg or 'jarvis' in rest_of_msg.strip().lower():
-                self.reply_to(payload=payload,
-                              response=f"{greeting()} {payload['from']['first_name']}!\n"
-                                       f"Good {util.part_of_day()}! How can I be of service today?")
-                return
-        if payload['text'] == '/start':
-            self.send_message(chat_id=payload['from']['id'],
-                              response=f"{greeting()} {payload['from']['first_name']}! {intro()}")
-            return
-        if payload['text'].startswith('/'):
-            if '_' not in payload['text']:  # Auto-complete can be setup using "/" commands so ignore if "_" is present
-                self.reply_to(payload=payload,
-                              response="*Deprecation Notice*\n\nSlash commands ('/') have been deprecated. Please use "
-                                       "commands directly instead.")
-            payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').replace('_', ' ').strip()
-        if not payload['text']:
-            return
-        split_text = payload['text'].lower().split()
-        if ('file' in split_text or 'files' in split_text) and \
-                ('send' in split_text or 'get' in split_text or 'list' in split_text):
-            if 'list' in split_text and ('files' in split_text or 'file' in split_text):
-                # Set parse_mode to an explicit None, so the API doesn't try to parse as HTML or Markdown
-                # since the result has file names and paths
-                self.send_message(chat_id=payload['from']['id'], response=file_handler.list_files(), parse_mode=None)
-                return
-            _, _, filename = payload['text'].partition(' file ')
-            if filename:
-                response = file_handler.get_file(filename=filename.strip())
-                if response['ok']:
-                    self.send_document(filename=response['msg'], chat_id=payload['from']['id'])
-                else:
-                    self.reply_to(payload=payload, response=response['msg'], parse_mode=None)
-            else:
-                self.reply_to(payload=payload, response="No filename was received. "
-                                                        "Please include only the filename after the keyword 'file'.")
-            return
-        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['restrictions']):
-            try:
-                response = restrictions.handle_restrictions(phrase=payload['text'])
-            except InvalidArgument as error:
-                response = error.__str__()
-            self.send_message(chat_id=payload['from']['id'], response=response)
-            return
-        # this feature for telegram bot relies on Jarvis API to function
-        if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['secrets']) and \
-                word_match.word_match(phrase=payload['text'], match_list=('list', 'get', 'send', 'create', 'share')):
-            res = others.secrets(phrase=payload['text'])
-            if len(res.split()) == 1:
-                res = "The secret requested can be accessed from '_secure-send_' endpoint using the token below.\n\n" \
-                      "*Note* that the secret cannot be retrieved again using the same token and the token will " \
-                      f"expire in 5 minutes.\n\n{res}"
-                self.send_message(chat_id=payload['from']['id'], response=res)
-            else:
-                self.send_message(chat_id=payload['from']['id'], response=res, parse_mode=None)
-            return
-        self.jarvis(payload=payload)
-
-    def jarvis(self, payload: dict) -> None:
-        """Uses the table ``offline`` in the database to process a response.
-
-        Args:
-            payload: Payload received, to extract information from.
-        """
-        command = payload['text']
-        command_lower = command.lower()
-        if 'alarm' in command_lower or 'remind' in command_lower:
-            command = command_lower
-        if command_lower == 'test':
-            self.send_message(chat_id=payload['from']['id'], response="Test message received.")
-            return
-
-        if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
-            and_phrases = command.split(' and ')
-            logger.info("Looping through %s in iterations.", and_phrases)
-            for each in and_phrases:
-                self.executor(command=each, payload=payload)
-            return
-
-        if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
-            if delay_info := commander.timed_delay(phrase=command):
-                logger.info("Request: %s", delay_info[0])
-                self.process_response(payload=payload,
-                                      response="I will execute it after "
-                                               f"{support.time_converter(second=delay_info[1])} {models.env.title}!")
-                logger.info("Response: Task will be executed after %d seconds", delay_info[1])
-                return
-        self.executor(command=command, payload=payload)
-
-    def executor(self, command: str, payload: dict) -> None:
-        """Executes the command via offline communicator.
-
-        Args:
-            command: Command to be executed.
-            payload: Payload received, to extract information from.
-        """
-        logger.info("Request: %s", command)
-        try:
-            response = offline.offline_communicator(command=command).replace(
-                models.env.title, USER_TITLE.get(payload['from']['username'])
+            raise ConnectionError(
+                response.json()
             )
-        except Exception as error:
-            logger.error(error)
-            logger.error(traceback.format_exc())
-            response = f"Jarvis failed to process the request.\n\n`{error}`"
-        logger.info("Response: %s", response)
-        self.process_response(payload=payload, response=response)
+        if not response.get('result'):
+            continue
+        for result in response['result']:
+            if payload := result.get('message'):
+                process_request(payload)
+            else:
+                logger.error("Received empty payload!!")
+            offset = result['update_id'] + 1
 
-    def process_response(self, response: str, payload: dict) -> None:
-        """Processes the response via Telegram API.
 
-        Args:
-            response: Response from Jarvis.
-            payload: Payload received, to extract information from.
-        """
-        if os.path.isfile(response) and response.endswith('jpg'):
-            self.send_photo(chat_id=payload['from']['id'], filename=response)
-            os.remove(response)
+def process_request(payload: dict) -> None:
+    """Processes the request via Telegram messages.
+
+    Args:
+        payload: Payload as received.
+    """
+    # todo: Convert payload into object type
+    if not authenticate(payload=payload):
+        return
+    if not verify_timeout(payload=payload):
+        return
+    if payload.get('text'):
+        process_text(payload)
+    elif payload.get('voice'):
+        process_voice(payload)
+    else:  # consider everything else as document and try to store it in fileio/uploads
+        process_document(payload)
+
+
+def authenticate(payload: dict) -> bool:
+    """Authenticates the user with ``userId`` and ``userName``.
+
+    Args:
+        payload: Payload received, to extract information from.
+
+    Returns:
+        bool:
+        Returns a boolean to indicate whether the user is authenticated.
+    """
+    chat = payload['from']
+    if chat['is_bot']:
+        logger.error("Bot %s accessed %s", chat['username'], payload.get('text', 'non-text-input'))
+        send_message(chat_id=chat['id'],
+                     response=f"Sorry {chat['first_name']}! I can't process requests from bots.")
+        return False
+    if chat['id'] not in models.env.bot_chat_ids or not username_is_valid(username=chat['username']):
+        logger.error("Unauthorized chatID [%d] or userName [%s]", chat['id'], chat['username'])
+        logger.error("%s accessed %s", chat['username'], payload.get('text', 'non-text-input'))
+        send_message(chat_id=chat['id'], response=f"401 Unauthorized user: ({chat['username']})")
+        return False
+    if not USER_TITLE.get(payload['from']['username']):
+        USER_TITLE[payload['from']['username']] = get_title_by_name(name=payload['from']['first_name'])
+    return True
+
+
+def verify_timeout(payload: dict) -> bool:
+    """Verifies whether the message was received in the past 60 seconds.
+
+    Args:
+        payload: Payload received, to extract information from.
+
+    Returns:
+        bool:
+        True or False flag to indicate if the request timed out.
+    """
+    if int(time.time()) - payload['date'] < 60:
+        return True
+    request_time = time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(payload['date']))
+    logger.warning("Request timed out [%s] when %s requested %s",
+                   request_time, payload['from']['username'], payload.get('text', 'non-text-input'))
+    reply_to(payload=payload,
+             response=f"Request timed out\nRequested: {request_time}\n"
+                      f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}")
+
+
+def verify_stop(payload: dict) -> bool:
+    """Stops Jarvis by setting stop flag in ``base_db`` if stop is requested by the user with an override flag.
+
+    Args:
+        payload: Payload received, to extract information from.
+
+    Returns:
+        bool:
+        Boolean flag to indicate whether to proceed.
+    """
+    if not word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['kill']):
+        return True
+    if "override" in payload['text'].lower():
+        logger.info("%s requested a STOP override.", payload['from']['username'])
+        reply_to(payload=payload, response=f"Shutting down now {models.env.title}!\n{support.exit_message()}")
+        with db.connection:
+            cursor = db.connection.cursor()
+            cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'TelegramAPI'))
+            cursor.connection.commit()
+    else:
+        reply_to(payload=payload,
+                 response="Jarvis cannot be stopped via offline communication without an 'override' flag.")
+
+
+def process_voice(payload: dict) -> None:
+    """Processes the audio file in payload received after checking for authentication.
+
+    Args:
+        payload: Payload received, to extract information from.
+    """
+    if bytes_obj := _get_file(payload=payload['voice']):
+        if payload['voice']['mime_type'] == 'audio/ogg':
+            filename = f"{payload['voice']['file_unique_id']}.ogg"
+        else:
+            logger.error("Unknown FileType received.")
+            logger.error(payload)
+            reply_to(payload=payload,
+                     response=f"Your voice command was received as an unknown file type: "
+                              f"{payload['voice']['mime_type']}\nPlease try the command as a text.")
             return
-        if payload.get('voice'):
-            filename = tts_stt.text_to_audio(text=response)
-            self.send_audio(chat_id=payload['from']['id'], filename=filename)
+        with open(filename, 'wb') as file:
+            file.write(bytes_obj)
+        converted = False
+        if models.settings.os == models.supported_platforms.macOS:
+            transcode = audio_handler.audio_converter_mac()
+            if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
+                converted = True
+        elif models.settings.os == models.supported_platforms.windows:
+            if audio_handler.audio_converter_win(input_filename=filename, output_audio_format="flac"):
+                converted = True
+        if converted:
             os.remove(filename)
+            filename = filename.replace(".ogg", ".flac")
+            audio_to_text = tts_stt.audio_to_text(filename=filename)
+            if audio_to_text:
+                payload['text'] = audio_to_text
+                jarvis(payload=payload)
+                return
+        else:
+            logger.error("Failed to transcode OPUS to Native FLAC")
+    else:
+        logger.error("Unable to get file for the file id in the payload received.")
+        logger.error(payload)
+    # Catches both unconverted source ogg and unconverted audio to text
+    title = USER_TITLE.get(payload['from']['username'], models.env.title)
+    if filename := tts_stt.text_to_audio(text=f"I'm sorry {title}! I was unable to process your voice command. "
+                                              "Please try again!"):
+        send_audio(filename=filename, chat_id=payload['from']['id'])
+        os.remove(filename)
+    else:
+        reply_to(payload=payload, response="Failed to convert audio. Please try text input.")
+
+
+def process_document(payload: dict) -> None:
+    """Processes the document in payload received after checking for authentication.
+
+    Args:
+        payload: Payload received, to extract information from.
+    """
+    # Skip timeout verification for documents since it's going to be a plain upload
+    if bytes_obj := _get_file(payload=payload['document']):
+        filename = payload['document']['file_name']
+        response = file_handler.put_file(filename=filename, file_content=bytes_obj)
+        send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)
+    else:
+        title = USER_TITLE.get(payload['from']['username'], models.env.title)
+        reply_to(payload=payload, response=f"I'm sorry {title}! I was unable to process your document. "
+                                           "Please try again!", parse_mode=None)
+
+
+def process_text(payload: dict) -> None:
+    """Processes the text in payload received after checking for authentication.
+
+    Args:
+        payload: Payload received, to extract information from.
+
+    See Also:
+        - | Requesting files and secrets are considered as special requests, so they cannot be combined with
+          | other requests using 'and' or 'also'
+    """
+    if payload.get('text'):
+        payload['text'] = payload['text'].strip()
+    else:
+        send_message(chat_id=payload['from']['id'], response="Un-processable payload")
+        return
+    if payload['text'].lower() == 'help':
+        send_message(chat_id=payload['from']['id'],
+                     response=f"{greeting()} {payload['from']['first_name']}!\n"
+                              f"Good {util.part_of_day()}! {intro()}\n\n"
+                              "Please reach out at https://vigneshrao.com/contact for more info.")
+        return
+    if not verify_stop(payload=payload):
+        return
+    payload['text'] = payload['text'].replace('override', '').replace('OVERRIDE', '')
+    if match_word := word_match.word_match(phrase=payload['text'].lower(),
+                                           match_list=("hey", "hola", "what's up", "ssup", "whats up", "hello",
+                                                       "hi", "howdy", "hey", "chao", "hiya", "aloha"), strict=True):
+        rest_of_msg = payload['text'].replace(match_word, '')
+        if not rest_of_msg or 'jarvis' in rest_of_msg.strip().lower():
+            reply_to(payload=payload,
+                     response=f"{greeting()} {payload['from']['first_name']}!\n"
+                              f"Good {util.part_of_day()}! How can I be of service today?")
             return
-        self.send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)
+    if payload['text'] == '/start':
+        send_message(chat_id=payload['from']['id'],
+                     response=f"{greeting()} {payload['from']['first_name']}! {intro()}")
+        return
+    if payload['text'].startswith('/'):
+        if '_' not in payload['text']:  # Auto-complete can be setup using "/" commands so ignore if "_" is present
+            reply_to(payload=payload,
+                     response="*Deprecation Notice*\n\nSlash commands ('/') have been deprecated. Please use "
+                              "commands directly instead.")
+        payload['text'] = payload['text'].lstrip('/').replace('jarvis', '').replace('_', ' ').strip()
+    if not payload['text']:
+        return
+    split_text = payload['text'].lower().split()
+    if ('file' in split_text or 'files' in split_text) and \
+            ('send' in split_text or 'get' in split_text or 'list' in split_text):
+        if 'list' in split_text and ('files' in split_text or 'file' in split_text):
+            # Set parse_mode to an explicit None, so the API doesn't try to parse as HTML or Markdown
+            # since the result has file names and paths
+            send_message(chat_id=payload['from']['id'], response=file_handler.list_files(), parse_mode=None)
+            return
+        _, _, filename = payload['text'].partition(' file ')
+        if filename:
+            response = file_handler.get_file(filename=filename.strip())
+            if response['ok']:
+                send_document(filename=response['msg'], chat_id=payload['from']['id'])
+            else:
+                reply_to(payload=payload, response=response['msg'], parse_mode=None)
+        else:
+            reply_to(payload=payload, response="No filename was received. "
+                                               "Please include only the filename after the keyword 'file'.")
+        return
+    if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['restrictions']):
+        try:
+            response = restrictions.handle_restrictions(phrase=payload['text'])
+        except InvalidArgument as error:
+            response = error.__str__()
+        send_message(chat_id=payload['from']['id'], response=response)
+        return
+    # this feature for telegram bot relies on Jarvis API to function
+    if word_match.word_match(phrase=payload['text'], match_list=keywords.keywords['secrets']) and \
+            word_match.word_match(phrase=payload['text'], match_list=('list', 'get', 'send', 'create', 'share')):
+        res = others.secrets(phrase=payload['text'])
+        if len(res.split()) == 1:
+            res = "The secret requested can be accessed from '_secure-send_' endpoint using the token below.\n\n" \
+                  "*Note* that the secret cannot be retrieved again using the same token and the token will " \
+                  f"expire in 5 minutes.\n\n{res}"
+            send_message(chat_id=payload['from']['id'], response=res)
+        else:
+            send_message(chat_id=payload['from']['id'], response=res, parse_mode=None)
+        return
+    jarvis(payload=payload)
+
+
+def jarvis(payload: dict) -> None:
+    """Uses the table ``offline`` in the database to process a response.
+
+    Args:
+        payload: Payload received, to extract information from.
+    """
+    command = payload['text']
+    command_lower = command.lower()
+    if 'alarm' in command_lower or 'remind' in command_lower:
+        command = command_lower
+    if command_lower == 'test':
+        send_message(chat_id=payload['from']['id'], response="Test message received.")
+        return
+
+    if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
+        and_phrases = command.split(' and ')
+        logger.info("Looping through %s in iterations.", and_phrases)
+        for each in and_phrases:
+            executor(command=each, payload=payload)
+        return
+
+    if ' after ' in command_lower and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
+        if delay_info := commander.timed_delay(phrase=command):
+            logger.info("Request: %s", delay_info[0])
+            process_response(payload=payload,
+                             response="I will execute it after "
+                                      f"{support.time_converter(second=delay_info[1])} {models.env.title}!")
+            logger.info("Response: Task will be executed after %d seconds", delay_info[1])
+            return
+    executor(command=command, payload=payload)
+
+
+def executor(command: str, payload: dict) -> None:
+    """Executes the command via offline communicator.
+
+    Args:
+        command: Command to be executed.
+        payload: Payload received, to extract information from.
+    """
+    logger.info("Request: %s", command)
+    try:
+        response = offline.offline_communicator(command=command).replace(
+            models.env.title, USER_TITLE.get(payload['from']['username'])
+        )
+    except Exception as error:
+        logger.error(error)
+        logger.error(traceback.format_exc())
+        response = f"Jarvis failed to process the request.\n\n`{error}`"
+    logger.info("Response: %s", response)
+    process_response(payload=payload, response=response)
+
+
+def process_response(response: str, payload: dict) -> None:
+    """Processes the response via Telegram API.
+
+    Args:
+        response: Response from Jarvis.
+        payload: Payload received, to extract information from.
+    """
+    if os.path.isfile(response) and response.endswith('jpg'):
+        send_photo(chat_id=payload['from']['id'], filename=response)
+        os.remove(response)
+        return
+    if payload.get('voice'):
+        filename = tts_stt.text_to_audio(text=response)
+        send_audio(chat_id=payload['from']['id'], filename=filename)
+        os.remove(filename)
+        return
+    send_message(chat_id=payload['from']['id'], response=response, parse_mode=None)

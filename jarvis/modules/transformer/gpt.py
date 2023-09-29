@@ -163,6 +163,7 @@ class ChatGPT:
             static_responses.un_processable()
 
 
+# WATCH OUT: for changes in function name
 if models.settings.pname in ('JARVIS', 'telegram_api', 'jarvis_api'):
     if models.env.openai_reuse_threshold:
         logger.info("Initiating GPT instance for '%s' with a reuse threshold of '%.2f'",

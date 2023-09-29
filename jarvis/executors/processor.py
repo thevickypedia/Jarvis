@@ -10,11 +10,8 @@ import psutil
 import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors.connection import wifi_connector
-from jarvis.executors.crontab import executor
-from jarvis.executors.offline import background_tasks
-from jarvis.executors.telegram import telegram_api
-from jarvis.modules.audio.speech_synthesis import speech_synthesizer
+from jarvis.executors import connection, crontab, offline, telegram
+from jarvis.modules.audio import speech_synthesis
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.microphone import graph_mic
@@ -63,17 +60,21 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     Handles:
         - speech_synthesizer: Speech Synthesis
         - telegram_api: Telegram Bot
-        - jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance
+        - jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance, Telegram
         - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks
         - wifi_connector: Wi-Fi Re-connector
         - plot_mic: Plot microphone usage in real time
     """
-    impact_lib = {doc.strip().split(':')[0].lstrip('- '): doc.strip().split(':')[1].strip().split(', ')
-                  for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines() if doc.strip()}
-    if not models.env.plot_mic:
-        impact_lib.pop(graph_mic.plot_mic.__name__)
-    if not all((models.env.wifi_ssid, models.env.wifi_password)):
-        impact_lib.pop(wifi_connector.__name__)
+    impact_lib = {}
+    for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines():
+        if doc.strip():
+            element = doc.strip().split(':')
+            func = element[0].lstrip('- ')
+            desc = element[1].strip().split(', ')
+            if processes.get(func):
+                impact_lib[func] = desc
+            else:
+                logger.warning("'%s' not found in list of processes initiated", func)
     if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
@@ -110,20 +111,20 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         - plot_mic: Initiates plotting microphone usage using matplotlib.
     """
     process_dict = {
-        speech_synthesizer.__name__: Process(target=speech_synthesizer),
-        telegram_api.__name__: Process(target=telegram_api),
-        jarvis_api.__name__: Process(target=jarvis_api),
-        background_tasks.__name__: Process(target=background_tasks)
+        jarvis_api.__name__: Process(target=jarvis_api),  # no process map removal
+        offline.background_tasks.__name__: Process(target=offline.background_tasks),  # no process map removal
+        connection.wifi_connector.__name__: Process(target=connection.wifi_connector),
+        speech_synthesis.speech_synthesizer.__name__: Process(target=speech_synthesis.speech_synthesizer),
+        telegram.telegram_api.__name__: Process(target=telegram.telegram_api)
     }
     if models.env.plot_mic:
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
         process_dict[graph_mic.plot_mic.__name__] = Process(
-            target=executor,
+            target=crontab.executor,
             kwargs={'statement': statement,
                     'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))}
         )
-    if all((models.env.wifi_ssid, models.env.wifi_password)):
-        process_dict[wifi_connector.__name__] = Process(target=wifi_connector)
+    # Used when a single process is requested to be triggered
     processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict
     for func, process in processes.items():
         process.name = func

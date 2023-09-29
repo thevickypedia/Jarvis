@@ -2,16 +2,37 @@ import importlib
 import logging
 import os
 import time
+from urllib.parse import urljoin
 
-from jarvis.executors import controls
+from jarvis.executors import controls, internet, process_map
 from jarvis.modules.exceptions import BotInUse, EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
-from jarvis.modules.telegram.bot import TelegramBot
+from jarvis.modules.telegram import bot, webhook
+from jarvis.modules.utils import support
 
 importlib.reload(module=logging)
 
 FAILED_CONNECTIONS = {'count': 0}
+
+
+def get_webhook_origin(retry: int = 20) -> str:
+    """Get the telegram bot webhook origin.
+
+    Args:
+        retry: Number of retry attempts to get public URL.
+
+    Returns:
+        str:
+        Public URL where the telegram webhook is hosted.
+    """
+    if models.env.bot_webhook:
+        return str(models.env.bot_webhook)
+    for i in range(retry):
+        if url := internet.get_tunnel():
+            logger.info("Public URL was fetched on %s attempt", support.ENGINE.ordinal(i + 1))
+            return url
+        time.sleep(3)
 
 
 def telegram_api() -> None:
@@ -25,8 +46,15 @@ def telegram_api() -> None:
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return
+    if (public_url := get_webhook_origin()) and (response := webhook.set_webhook(
+            base_url=bot.BASE_URL, webhook=urljoin(public_url, models.env.bot_endpoint), logger=logger)
+    ):
+        logger.info("Telegram API will be hosted via webhook.")
+        logger.info(response)
+        process_map.remove(telegram_api.__name__)
+        return
     try:
-        TelegramBot().poll_for_messages()
+        bot.poll_for_messages()
     except BotInUse as error:
         logger.error(error)
         logger.info("Restarting message poll to take over..")

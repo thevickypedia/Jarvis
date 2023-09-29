@@ -209,6 +209,13 @@ Routers - Surveillance
    :members:
    :undoc-members:
 
+Routers - TelegramAPI
+=====================
+
+.. automodule:: jarvis.api.routers.telegram
+   :members:
+   :undoc-members:
+
 Squire - Discover Routers
 =========================
 
@@ -474,6 +481,13 @@ Processor
 =========
 
 .. automodule:: jarvis.executors.processor
+   :members:
+   :undoc-members:
+
+Process Map
+===========
+
+.. automodule:: jarvis.executors.process_map
    :members:
    :undoc-members:
 
@@ -901,6 +915,12 @@ Telegram
 ====
 
 .. automodule:: jarvis.modules.telegram.file_handler
+   :members:
+   :undoc-members:
+
+====
+
+.. automodule:: jarvis.modules.telegram.webhook
    :members:
    :undoc-members:
 

@@ -11,8 +11,9 @@ from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from jarvis.executors import (alarm, automation, background_task, conditions,
-                              controls, crontab, files, listener_controls,
-                              others, remind, weather_monitor, word_match)
+                              controls, crontab, files, internet,
+                              listener_controls, others, remind,
+                              weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -189,28 +190,6 @@ def background_task_runner() -> None:
         time.sleep(0.5)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
 
-def get_tunnel() -> HttpUrl:
-    """Checks for any active public URL tunneled using Ngrok.
-
-    Returns:
-        HttpUrl:
-        Ngrok public URL.
-    """
-    try:
-        response = requests.get(url="http://localhost:4040/api/tunnels")
-        if response.ok:
-            tunnels = response.json().get('tunnels', [])
-            protocols = list(filter(None, [tunnel.get('proto') for tunnel in tunnels]))
-            for tunnel in tunnels:
-                if 'https' in protocols and tunnel.get('proto') != 'https':
-                    continue
-                if hosted := tunnel.get('config', {}).get('addr'):
-                    if int(hosted.split(':')[-1]) == models.env.offline_port:
-                        return tunnel.get('public_url')
-    except EgressErrors + (requests.JSONDecodeError,) as error:
-        logger.error(error)
-
-
 def ondemand_offline_automation(task: str) -> Union[str, None]:
     """Makes a ``POST`` call to offline-communicator to execute a said task.
 
@@ -243,7 +222,7 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     shared.called_by_offline = True
     # Specific for offline communication and not needed for live conversations
     if word_match.word_match(phrase=command, match_list=keywords.keywords['ngrok']):
-        if public_url := get_tunnel():
+        if public_url := internet.get_tunnel():
             return public_url
         else:
             raise LookupError("Failed to retrieve the public URL")

@@ -36,6 +36,7 @@ class RokuECP:
         Args:
             ip_address: IP address of the TV.
         """
+        # todo: Move to a BaseModel object RokuSettings
         self.BASE_URL = f'http://{ip_address}:{self.PORT}'
         try:
             response = requests.get(url=self.BASE_URL)

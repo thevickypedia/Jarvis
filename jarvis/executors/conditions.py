@@ -85,6 +85,7 @@ def conditions(phrase: str) -> bool:
                 warnings.warn("Condition matched for '%s' but there is not function to call." % category)
             return False
     # GPT instance available only for communicable processes
+    # WATCH OUT: for changes in function name
     if models.settings.pname not in ('JARVIS', 'telegram_api', 'jarvis_api'):
         logger.warning("%s reached unrecognized category", models.settings.pname)
         return False

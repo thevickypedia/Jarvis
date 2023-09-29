@@ -12,7 +12,7 @@ import traceback
 import docker
 import requests
 
-from jarvis.executors import controls, port_handler
+from jarvis.executors import controls, port_handler, process_map
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
@@ -73,6 +73,7 @@ def speech_synthesis_runner() -> None:
     """
     multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
     if check_existing():
+        process_map.remove(speech_synthesizer.__name__)
         return
 
     log_file = open(file=models.fileio.speech_synthesis_log, mode="a", buffering=1)  # 1 line buffer on file

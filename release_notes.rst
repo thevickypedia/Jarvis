@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+3.7.2 (09/28/2023)
+------------------
+- Includes a new feature to run start up scripts
+- Includes dependent module updates for startup validations
+
 3.7.1 (09/11/2023)
 ------------------
 - Includes a feature to upload any file to the server via Jarvis API or Telegram bot

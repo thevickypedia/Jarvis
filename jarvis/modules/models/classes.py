@@ -17,6 +17,7 @@ import sys
 from collections import ChainMap
 from datetime import datetime
 from enum import Enum
+from ipaddress import IPv4Address
 from multiprocessing import current_process
 from threading import Thread
 from typing import Callable, Dict, List, Optional, Union
@@ -397,6 +398,11 @@ class EnvConfig(BaseSettings):
     bot_token: Union[str, None] = None
     bot_chat_ids: List[int] = []
     bot_users: List[str] = []
+    bot_webhook: Union[HttpUrl, None] = None
+    bot_webhook_ip: Union[IPv4Address, None] = None
+    bot_endpoint: str = "/telegram-webhook"
+    bot_secret: Union[str, None] = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
+    bot_certificate: Union[FilePath, None] = None
 
     # Speech synthesis config
     speech_synthesis_timeout: int = 3

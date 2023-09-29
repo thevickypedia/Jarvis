@@ -7,10 +7,13 @@ from multiprocessing import Process
 from typing import Dict, Union
 
 import psutil
+import requests
+from pydantic import HttpUrl
 from speedtest import ConfigRetrievalError, Speedtest
 
 from jarvis.executors import location
 from jarvis.modules.audio import speaker
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
@@ -174,3 +177,25 @@ def speed_test(*args) -> None:
     speaker.speak(text=f"Ping rate: {ping} milli seconds. "
                        f"Download speed: {download} per second. "
                        f"Upload speed: {upload} per second.")
+
+
+def get_tunnel() -> HttpUrl:
+    """Checks for any active public URL tunneled using Ngrok.
+
+    Returns:
+        HttpUrl:
+        Ngrok public URL.
+    """
+    try:
+        response = requests.get(url="http://localhost:4040/api/tunnels")
+        if response.ok:
+            tunnels = response.json().get('tunnels', [])
+            protocols = list(filter(None, [tunnel.get('proto') for tunnel in tunnels]))
+            for tunnel in tunnels:
+                if 'https' in protocols and tunnel.get('proto') != 'https':
+                    continue
+                if hosted := tunnel.get('config', {}).get('addr'):
+                    if int(hosted.split(':')[-1]) == models.env.offline_port:
+                        return tunnel.get('public_url')
+    except EgressErrors + (requests.JSONDecodeError,) as error:
+        logger.error(error)

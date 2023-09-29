@@ -49,6 +49,7 @@ def enable_cors() -> None:
 # Include all the routers
 # WATCH OUT: for changes in function name
 if models.settings.pname == "jarvis_api":  # Avoid looping when called by subprocesses
+    # Cannot add middleware after an application has started
     enable_cors()
     for router in discover.routes(routers.__path__[0]):
         app.include_router(router)

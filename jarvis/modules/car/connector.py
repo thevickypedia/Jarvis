@@ -27,6 +27,7 @@ class Connect:
     """
 
     SESSION = requests.Session()
+    # todo: Move to a BaseModel object VehicleSettings
     IFAS_BASE_URL = "https://ifas.prod-row.jlrmotor.com/ifas/jlr"
     IFOP_BASE_URL = "https://ifop.prod-row.jlrmotor.com/ifop/jlr"
     IF9_BASE_URL = "https://if9.prod-row.jlrmotor.com/if9/jlr"
