@@ -101,44 +101,44 @@ Models - Modals
 
 .. autoclass:: jarvis.api.models.modals.OfflineCommunicatorModal(pydantic.BaseModel)
    :members:
-   :exclude-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.api.models.modals.StockMonitorModal(pydantic.BaseModel)
    :members:
-   :exclude-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.api.models.modals.CameraIndexModal(pydantic.BaseModel)
    :members:
-   :exclude-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.api.models.modals.SpeechSynthesisModal(pydantic.BaseModel)
    :members:
-   :exclude-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 Models - Settings
 =================
 
 .. autoclass:: jarvis.api.models.settings.Robinhood(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.api.models.settings.Surveillance(pydantic.BaseConfig)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.api.models.settings.StockMonitor(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
@@ -705,25 +705,25 @@ Classes
 
 .. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.VehicleAuthorization(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.RecognizerSettings(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
@@ -753,25 +753,25 @@ Classes
 
 .. autoclass:: jarvis.modules.models.classes.BackgroundTask(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.EnvConfig(pydantic.BaseSettings)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.FileIO(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.Indicators(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 Database
 ========
@@ -813,7 +813,7 @@ Logger
 
 .. autoclass:: jarvis.modules.logger.APIConfig(pydantic.BaseModel)
    :members:
-   :exclude-members: _abc_impl
+   :exclude-members: _abc_impl, model_config, model_fields
 
 .. autoclass:: jarvis.modules.logger.AddProcessName(logging.Filter)
    :members:
@@ -917,6 +917,12 @@ Telegram
 .. automodule:: jarvis.modules.telegram.file_handler
    :members:
    :undoc-members:
+
+====
+
+.. automodule:: jarvis.modules.telegram.settings
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 ====
 

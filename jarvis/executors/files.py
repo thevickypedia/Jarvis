@@ -12,12 +12,12 @@ from jarvis.modules.models import models
 
 def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
     """Reads the contact file and returns the data."""
-    with open(models.fileio.contacts) as file:
-        try:
+    try:
+        with open(models.fileio.contacts) as file:
             if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
                 return contacts
-        except (yaml.YAMLError, FileNotFoundError) as error:
-            logger.error(error)
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return collections.defaultdict(lambda: {}, phone={}, email={})
 
 
@@ -106,11 +106,11 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
         Dict[str, Dict[str, str]]:
         A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
     """
-    with open(models.fileio.conditions) as file:
-        try:
+    try:
+        with open(models.fileio.conditions) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader)
-        except (yaml.YAMLError, FileNotFoundError) as error:
-            logger.error(error)
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
 
 
 def get_restrictions() -> List[str]:
@@ -120,11 +120,11 @@ def get_restrictions() -> List[str]:
         List[str]:
         A list of function names that has to be restricted.
     """
-    with open(models.fileio.restrictions) as file:
-        try:
+    try:
+        with open(models.fileio.restrictions) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader)
-        except (yaml.YAMLError, FileNotFoundError) as error:
-            logger.error(error)
+    except (yaml.YAMLError, FileNotFoundError) as error:
+        logger.error(error)
     return []
 
 

@@ -7,16 +7,13 @@ from pydantic import HttpUrl
 from jarvis.modules.models import models
 
 
-def get_webhook(base_url: str, logger: logging.Logger, dry_run: bool = False):
+def get_webhook(base_url: str, logger: logging.Logger):
     """Get webhook information.
 
     References:
         https://core.telegram.org/bots/api#getwebhookinfo
     """
     get_info = f"{base_url}/getWebhookInfo"
-    if dry_run:
-        logger.info("URL to check webhook details: %s", get_info)
-        return
     response = requests.get(url=get_info)
     if response.ok:
         logger.info(response.json())
@@ -62,7 +59,6 @@ def set_webhook(base_url: Union[HttpUrl, str], webhook: Union[HttpUrl, str], log
         response = requests.post(url=put_info, params=payload)
     if response.ok:
         logger.info("Webhook has been set to: %s", webhook)
-        get_webhook(base_url, logger, True)
         return response.json()
     else:
         logger.error(response.text)

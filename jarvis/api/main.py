@@ -61,6 +61,8 @@ async def startup_func() -> None:
     logger.info("Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:
         Thread(target=stockanalysis_squire.nasdaq).start()
+    if not os.path.isdir(models.fileio.startup_dir):
+        return
     for startup_script in os.listdir(models.fileio.startup_dir):
         startup_script = pathlib.Path(startup_script)
         logger.info("Executing startup script: '%s'", startup_script)
