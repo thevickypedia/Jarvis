@@ -14,8 +14,8 @@ import queue
 from struct import Struct
 from typing import List, Optional, Tuple, Union, cast
 
-import matplotlib.pyplot
-import numpy
+import matplotlib.pyplot as plt
+import numpy as np
 import sounddevice
 import yaml
 from matplotlib.animation import FuncAnimation
@@ -47,7 +47,7 @@ class Settings:
     # System config
     mapping: Optional[List[int]]
     lines: Optional[List[Line2D]]
-    plot_data: Optional[numpy.ndarray]
+    plot_data: Optional[np.ndarray]
 
 
 settings = Settings()
@@ -59,7 +59,7 @@ def list_devices() -> sounddevice.DeviceList:
 
 
 # noinspection PyUnusedLocal
-def audio_callback(indata: numpy.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> None:
+def audio_callback(indata: np.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> None:
     """This is called (from a separate thread) for each audio block."""
     if status:
         logger.info(status)
@@ -81,7 +81,7 @@ def update_plot(frame: int) -> List[Line2D]:
         except queue.Empty:
             break
         shift = len(data)
-        settings.plot_data = numpy.roll(settings.plot_data, -shift, axis=0)
+        settings.plot_data = np.roll(settings.plot_data, -shift, axis=0)
         settings.plot_data[-shift:, :] = data
     for column, line in enumerate(settings.lines):
         line.set_ydata(settings.plot_data[:, column])
@@ -157,10 +157,10 @@ def _kick_off() -> None:
         settings.samplerate = device_info['default_samplerate']
 
     length = int(settings.window * settings.samplerate / (settings.rate * settings.down_sample))
-    settings.plot_data = numpy.zeros((length, len(settings.channels)))
+    settings.plot_data = np.zeros((length, len(settings.channels)))
 
     # Add type hint when unpacking a tuple (lazy way to avoid variables)
-    fig, ax = cast(Tuple[Figure, Subplot], matplotlib.pyplot.subplots())
+    fig, ax = cast(Tuple[Figure, Subplot], plt.subplots())
     fig.set_size_inches(settings.window_size)
     settings.lines = ax.plot(settings.plot_data)
     if len(settings.channels) > 1:
@@ -175,7 +175,7 @@ def _kick_off() -> None:
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Frequency')
     fig.tight_layout(pad=0)  # no padding
-    matplotlib.pyplot.legend(["Microphone Amplitude"])
+    plt.legend(["Microphone Amplitude"])
     fig.canvas.manager.set_window_title("Realtime Spectrum Display")
     if settings.dark_mode:
         ax.set_facecolor('xkcd:almost black')  # https://xkcd.com/color/rgb/
@@ -188,7 +188,8 @@ def _kick_off() -> None:
     )
     ani = FuncAnimation(fig=fig, func=update_plot, interval=settings.interval, blit=True, cache_frame_data=False)  # noqa
     with stream:
-        matplotlib.pyplot.show()
+        plt.show()
+    process_map.remove(plot_mic.__name__)
 
 
 if __name__ == '__main__':
@@ -198,6 +199,7 @@ if __name__ == '__main__':
     from multiprocessing import current_process
 
     current_process().name = "PlotMic"
+    from jarvis.executors import process_map
     from jarvis.modules.database import database
     from jarvis.modules.logger import logger, multiprocessing_logger
     from jarvis.modules.models import models

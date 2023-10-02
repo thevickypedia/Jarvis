@@ -11,6 +11,14 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
 db = database.Database(database=models.fileio.base_db)
+word_map = {
+    'turn_on': ['turn on', 'cool', 'white'],
+    'turn_off': ['turn off'],
+    'party_mode': ['party mode'],
+    'simple': ['just', 'simply'],
+    'warm': ['warm', 'yellow'],
+    'set': ['set', 'percentage', 'percent', '%', 'dim', 'bright']
+}
 
 
 def turn_off(host: IPv4Address) -> None:

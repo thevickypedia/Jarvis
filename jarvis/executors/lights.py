@@ -120,7 +120,11 @@ def lights(phrase: str) -> None:
             input_=util.matrix_to_flat_list(input_=[v for k, v in lights_map.items()])
         )
     else:
-        light_location = util.get_closest_match(text=phrase, match_list=list(lights_map.keys()))
+        remove = util.matrix_to_flat_list(input_=squire.word_map.values()) + ['lights', 'light']
+        phrase_location = phrase
+        for word in remove:
+            phrase_location = phrase_location.replace(word, '')
+        light_location = util.get_closest_match(text=phrase_location.strip(), match_list=list(lights_map.keys()))
         logger.info("Lights location: %s", light_location)
         host_names: List[str] = lights_map[light_location]
     host_names = util.remove_none(input_=host_names)
@@ -151,7 +155,7 @@ def lights(phrase: str) -> None:
     executor = ThreadExecutor(host_ip=host_ip, mapping=lights_map)
 
     plural = 'lights' if len(host_ip) > 1 else 'light'
-    if 'turn on' in phrase or 'cool' in phrase or 'white' in phrase:
+    if word_match.word_match(phrase, squire.word_map['turn_on']):
         tone = 'white' if 'white' in phrase else 'cool'
         if 'turn on' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning on {len(host_ip)} {plural}')
@@ -160,21 +164,21 @@ def lights(phrase: str) -> None:
                 text=f'{random.choice(conversation.acknowledgement)}! Setting {len(host_ip)} {plural} to {tone}!'
             )
         executor.avail_check(function_to_call=squire.cool)
-    elif 'turn off' in phrase:
+    elif word_match.word_match(phrase, squire.word_map['turn_off']):
         speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! Turning off {len(host_ip)} {plural}')
         if state := squire.check_status():
             support.stop_process(pid=int(state[0]))
-        if 'just' in phrase or 'simply' in phrase:
+        if word_match.word_match(phrase, squire.word_map['simple']):
             executor.avail_check(function_to_call=squire.turn_off)
         else:
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             executor.avail_check(function_to_call=squire.turn_off)
-    elif 'party mode' in phrase:
+    elif word_match.word_match(phrase, squire.word_map['party_mode']):
         if squire.party_mode(host=host_ip, phrase=phrase):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             time.sleep(1)
             Thread(target=executor.thread_worker, args=[squire.turn_off]).start()
-    elif 'warm' in phrase or 'yellow' in phrase:
+    elif word_match.word_match(phrase, squire.word_map['warm']):
         if 'yellow' in phrase:
             speaker.speak(text=f'{random.choice(conversation.acknowledgement)}! '
                                f'Setting {len(host_ip)} {plural} to yellow!')
@@ -188,8 +192,7 @@ def lights(phrase: str) -> None:
             squire.preset(host=light_ip, speed=50,
                           color=[preset_values.PRESET_VALUES[_type] for _type in
                                  list(preset_values.PRESET_VALUES.keys()) if _type in phrase][0])
-    elif 'set' in phrase or 'percentage' in phrase or '%' in phrase or 'dim' in phrase \
-            or 'bright' in phrase:
+    elif word_match.word_match(phrase, squire.word_map['set']):
         if 'bright' in phrase:
             level = 100
         elif 'dim' in phrase:
