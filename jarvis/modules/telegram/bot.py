@@ -308,6 +308,7 @@ def process_request(payload: Dict[str, Union[int, dict]]) -> None:
     Args:
         payload: Payload as received.
     """
+    logger.debug(payload)
     chat = settings.Chat(**{**payload, **payload['chat'], **payload['from']})
     if not authenticate(chat):
         logger.warning(payload)
@@ -412,7 +413,8 @@ def process_photo(chat: settings.Chat, data_class: List[settings.PhotoFragment])
         data_class: Required section of the payload as Voice object.
     """
     logger.info(data_class)
-    reply_to(chat, "Compressed images are currently not supported. Please send it without compression.")
+    reply_to(chat, "Image fragments are not supported. If you're sending a compressed image, "
+                   "please try sending it without compression.")
 
 
 def process_audio(chat: settings.Chat, data_class: settings.Audio) -> None:
@@ -422,8 +424,7 @@ def process_audio(chat: settings.Chat, data_class: settings.Audio) -> None:
         chat: Required section of the payload as Chat object.
         data_class: Required section of the payload as Voice object.
     """
-    logger.info(data_class)
-    reply_to(chat, "Audio files are currently not supported. Please send it as a document instead.")
+    process_document(chat, data_class)
 
 
 def process_video(chat: settings.Chat, data_class: settings.Video) -> None:
@@ -433,8 +434,7 @@ def process_video(chat: settings.Chat, data_class: settings.Video) -> None:
         chat: Required section of the payload as Chat object.
         data_class: Required section of the payload as Voice object.
     """
-    logger.info(data_class)
-    reply_to(chat, "Video files are currently not supported. Please send it as a document instead.")
+    process_document(chat, data_class)
 
 
 def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
@@ -485,14 +485,13 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
         reply_to(chat, "Failed to convert audio. Please try text input.")
 
 
-def process_document(chat: settings.Chat, data_class: settings.Document) -> None:
+def process_document(chat: settings.Chat, data_class: Union[settings.Document, settings.Audio, settings.Video]) -> None:
     """Processes the document in payload received after checking for authentication.
 
     Args:
         chat: Required section of the payload as Chat object.
         data_class: Required section of the payload as Document object.
     """
-    # Skip timeout verification for documents since it's going to be a plain upload
     if bytes_obj := _get_file(data_class):
         response = file_handler.put_file(filename=data_class.file_name, file_content=bytes_obj)
         send_message(chat_id=chat.id, response=response, parse_mode=None)
