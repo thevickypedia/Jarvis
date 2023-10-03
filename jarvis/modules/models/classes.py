@@ -6,20 +6,16 @@
 """
 
 import getpass
-import importlib
 import os
 import pathlib
 import platform
-import shutil
 import socket
-import subprocess
 import sys
 from collections import ChainMap
 from datetime import datetime
 from enum import Enum
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from threading import Thread
 from typing import Callable, Dict, List, Optional, Union
 from uuid import UUID
 
@@ -33,13 +29,10 @@ from pydantic_settings import BaseSettings
 
 from jarvis import indicators, scripts
 from jarvis.modules.crontab import expression
-from jarvis.modules.exceptions import (InvalidEnvVars, SegmentationError,
-                                       UnsupportedOS)
+from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
-module: Dict[str, pyttsx3.Engine] = {}
-if not os.environ.get('AWS_DEFAULT_REGION'):
-    os.environ['AWS_DEFAULT_REGION'] = 'us-east-2'  # Required when vpn-server is imported
+AUDIO_DRIVER = pyttsx3.init()
 
 
 class SupportedPlatforms(str, Enum):
@@ -107,58 +100,6 @@ class VehicleConnection(BaseModel):
 
     vin: Optional[str] = None
     connection: Optional[Callable] = None
-
-
-def import_module() -> None:
-    """Instantiates pyttsx3 after importing ``nsss`` drivers beforehand."""
-    if settings.os == "Darwin":
-        importlib.import_module("pyttsx3.drivers.nsss")
-    module['pyttsx3'] = pyttsx3.init()
-
-
-def dynamic_rate() -> int:
-    """Speech rate based on the Operating System."""
-    if settings.os == "Linux":
-        return 1
-    return 200
-
-
-def test_and_load_audio_driver() -> pyttsx3.Engine:
-    """Get audio driver by instantiating pyttsx3.
-
-    Returns:
-        pyttsx3.Engine:
-        Audio driver.
-    """
-    try:
-        subprocess.run([shutil.which(cmd="python"), "-c", "import pyttsx3; pyttsx3.init()"], check=True)
-    except subprocess.CalledProcessError as error:
-        if error.returncode == -11:  # Segmentation fault error code
-            if settings.pname == "JARVIS":
-                print(f"\033[91mERROR:{'':<6}Segmentation fault when loading audio driver "
-                      "(interrupted by signal 11: SIGSEGV)\033[0m")
-                print(f"\033[93mWARNING:{'':<4}Trying alternate solution...\033[0m")
-            thread = Thread(target=import_module)
-            thread.start()
-            thread.join(timeout=10)
-            if module.get('pyttsx3'):
-                if settings.pname == "JARVIS":
-                    print(f"\033[92mINFO:{'':<7}Instantiated audio driver successfully\033[0m")
-                return module['pyttsx3']
-            else:
-                raise SegmentationError(
-                    "Segmentation fault when loading audio driver (interrupted by signal 11: SIGSEGV)"
-                )
-        else:
-            return pyttsx3.init()
-    else:
-        return pyttsx3.init()
-
-
-try:
-    audio_driver = test_and_load_audio_driver()
-except (SegmentationError, Exception):  # resolve to speech-synthesis
-    audio_driver = None
 
 
 class RecognizerSettings(BaseModel):
@@ -296,8 +237,7 @@ class EnvConfig(BaseSettings):
 
     # Built-in speaker config
     voice_name: Union[str, None] = None
-    _rate = audio_driver.getProperty("rate") if audio_driver else dynamic_rate()
-    speech_rate: Union[PositiveInt, PositiveFloat] = _rate
+    speech_rate: Union[PositiveInt, PositiveFloat] = AUDIO_DRIVER.getProperty("rate")
 
     # Peripheral config
     camera_index: Union[int, PositiveInt, None] = None

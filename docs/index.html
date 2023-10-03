@@ -5244,12 +5244,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.speaker.speak">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speaker.speak" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">audio_driver.say</span></code> to speak a statement from the received text.</p>
+<dd><p>Speaks a statement from the received text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
-<li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the <code class="docutils literal notranslate"><span class="pre">audio_driver.say</span></code> loop.</p></li>
+<li><p><strong>run</strong> – Takes a boolean flag to choose whether to run the loop.</p></li>
 <li><p><strong>block</strong> – Takes a boolean flag to await other tasks while speaking. [Applies only for speech-synthesis on docker]</p></li>
 </ul>
 </dd>
@@ -6846,32 +6846,6 @@ Pass 155 for LO and 285 for HI.</p>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.models.classes.SupportedPlatforms" title="jarvis.modules.models.classes.SupportedPlatforms"><code class="xref py py-class docutils literal notranslate"><span class="pre">SupportedPlatforms</span></code></a></p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.import_module">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">import_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.import_module" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiates pyttsx3 after importing <code class="docutils literal notranslate"><span class="pre">nsss</span></code> drivers beforehand.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.dynamic_rate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">dynamic_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.dynamic_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Speech rate based on the Operating System.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.test_and_load_audio_driver">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">test_and_load_audio_driver</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Engine</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.test_and_load_audio_driver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get audio driver by instantiating pyttsx3.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Audio driver.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>pyttsx3.Engine</p>
-</dd>
-</dl>
-</dd></dl>
-
 <hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.SupportedPlatforms">
@@ -7693,21 +7667,6 @@ allow <cite>self</cite> as a field name.</p>
 <dd><p>Validates date value to be in DD-MM format.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.model_post_init">
-<span class="sig-name descname"><span class="pre">model_post_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">__context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.model_post_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is meant to behave like a BaseModel method to initialise private attributes.</p>
-<p>It takes context as an argument since that’s what pydantic-core passes when calling it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> – The BaseModel instance.</p></li>
-<li><p><strong>__context</strong> – The context.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -8139,15 +8098,6 @@ allow <cite>self</cite> as a field name.</p>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="jarvis.modules.exceptions.SegmentationError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">SegmentationError</span></span><a class="headerlink" href="#jarvis.modules.exceptions.SegmentationError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">SegmentationError</span></code> raised when the code exits with SIGSEGV.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SegmentationError</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>

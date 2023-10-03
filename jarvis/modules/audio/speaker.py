@@ -81,14 +81,14 @@ def speech_synthesizer(text: str,
 
 
 def speak(text: str = None, run: bool = False, block: bool = True) -> None:
-    """Calls ``audio_driver.say`` to speak a statement from the received text.
+    """Speaks a statement from the received text.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
-        run: Takes a boolean flag to choose whether to run the ``audio_driver.say`` loop.
+        run: Takes a boolean flag to choose whether to run the loop.
         block: Takes a boolean flag to await other tasks while speaking. [Applies only for speech-synthesis on docker]
     """
-    if not models.audio_driver:
+    if not models.AUDIO_DRIVER:
         models.env.speech_synthesis_timeout = 10
     caller = sys._getframe(1).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
     if caller not in ('conditions', 'custom_conditions'):  # function where all the magic happens
@@ -107,16 +107,16 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
                 os.path.isfile(models.fileio.speech_synthesis_wav):
             playsound(sound=models.fileio.speech_synthesis_wav, block=block)
             os.remove(models.fileio.speech_synthesis_wav)
-        elif models.audio_driver:
-            models.audio_driver.say(text=text)
+        elif models.AUDIO_DRIVER:
+            models.AUDIO_DRIVER.say(text=text)
         else:
             support.flush_screen()
             pynotification.pynotifier(message="speech-synthesis became unavailable when audio driver was faulty\n"
                                               "resolving to on-screen response", title="AUDIO ERROR", dialog=True)
             print(text)
-    if run and models.audio_driver and not shared.called_by_offline:
+    if run and models.AUDIO_DRIVER and not shared.called_by_offline:
         logger.debug("Speaker called by: '%s'", caller)
-        models.audio_driver.runAndWait()
+        models.AUDIO_DRIVER.runAndWait()
 
 
 def frequently_used(function_name: str) -> None:

@@ -18,16 +18,15 @@ from jarvis.api.squire import scheduler
 from jarvis.modules.camera import camera
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (CameraError, EgressErrors,
-                                       InvalidEnvVars, MissingEnvVars,
-                                       SegmentationError)
-from jarvis.modules.models.classes import (DistanceUnits, Indicators,
-                                           TemperatureUnits, audio_driver, env,
+                                       InvalidEnvVars, MissingEnvVars)
+from jarvis.modules.models.classes import (AUDIO_DRIVER, DistanceUnits,
+                                           Indicators, TemperatureUnits, env,
                                            fileio, settings,
                                            supported_platforms)
 from jarvis.modules.utils import util
 
 # Shared across other modules
-voices = audio_driver.getProperty("voices") if audio_driver else []
+voices = AUDIO_DRIVER.getProperty("voices")
 indicators = Indicators()
 # TABLES to be created in `fileio.base_db`
 TABLES = {
@@ -250,16 +249,7 @@ def _global_validations() -> None:
                         f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
                     )
     except EgressErrors:
-        if not audio_driver:
-            raise SegmentationError(
-                "\n\nEither an audio driver OR speech-synthesis running in Docker container is required\n"
-                "Normally Jarvis will try to launch the Docker container to run speech-synthesis.\n"
-                "However if audio driver is unavailable, the docker container should be launched manually or "
-                "the audio driver should be fixed.\n"
-                "Refer:\n"
-                "   https://github.com/thevickypedia/Jarvis/wiki#os-agnostic-voice-model\n"
-                "   https://stackoverflow.com/a/76050539/13691532"
-            )
+        pass
     _distance_temperature_brute_force()
 
 

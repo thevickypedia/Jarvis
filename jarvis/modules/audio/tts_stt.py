@@ -19,7 +19,7 @@ from jarvis.modules.utils import shared
 
 recognizer = Recognizer()
 
-audio_driver = voices.voice_default()
+AUDIO_DRIVER = voices.voice_default()
 
 
 def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[FilePath, str, None]:
@@ -38,8 +38,8 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
             shared.offline_caller = None  # Reset caller after using it
         else:
             filename = f"{int(time.time())}.wav"
-    audio_driver.save_to_file(filename=filename, text=text)
-    audio_driver.runAndWait()
+    AUDIO_DRIVER.save_to_file(filename=filename, text=text)
+    AUDIO_DRIVER.runAndWait()
     if os.path.isfile(filename) and os.stat(filename).st_size:
         logger.info("Generated %s", filename)
         data, samplerate = soundfile.read(file=filename)

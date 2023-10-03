@@ -29,10 +29,10 @@ def voice_default() -> Engine:
             if voice.name == models.env.voice_name or models.env.voice_name in voice.name:
                 if models.settings.pname == 'JARVIS':
                     logger.debug(voice.__dict__)
-                models.audio_driver.setProperty("voice", voice.id)
-                models.audio_driver.setProperty("rate", models.env.speech_rate)
+                models.AUDIO_DRIVER.setProperty("voice", voice.id)
+                models.AUDIO_DRIVER.setProperty("rate", models.env.speech_rate)
                 break
-    return models.audio_driver
+    return models.AUDIO_DRIVER
 
 
 def voice_changer(phrase: str = None) -> None:
@@ -50,7 +50,7 @@ def voice_changer(phrase: str = None) -> None:
                       "How about this one?"]
 
     for ind, voice in enumerate(models.voices):
-        models.audio_driver.setProperty("voice", models.voices[ind].id)
+        models.AUDIO_DRIVER.setProperty("voice", models.voices[ind].id)
         speaker.speak(text=f"I am {voice.name} {models.env.title}!")
         support.write_screen(f"Voice module has been re-configured to {ind}::{voice.name}")
         if ind < len(choices_to_say):

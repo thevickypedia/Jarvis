@@ -162,14 +162,6 @@ class CoverNotOnline(SystemError):
         return repr(self.msg)
 
 
-class SegmentationError(EnvironmentError):
-    """Custom ``SegmentationError`` raised when the code exits with SIGSEGV.
-
-    >>> SegmentationError
-
-    """
-
-
 CONDITIONAL_ENDPOINT_RESTRICTION = APIResponse(
     status_code=HTTPStatus.NOT_IMPLEMENTED.real,
     detail="Required environment variables have not been setup.\nPlease refer: "
