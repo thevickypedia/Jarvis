@@ -338,6 +338,7 @@ class EnvConfig(BaseSettings):
     bot_token: Union[str, None] = None
     bot_chat_ids: List[int] = []
     bot_users: List[str] = []
+    # Telegram Webhook specific
     bot_webhook: Union[HttpUrl, None] = None
     bot_webhook_ip: Union[IPv4Address, None] = None
     bot_endpoint: str = "/telegram-webhook"

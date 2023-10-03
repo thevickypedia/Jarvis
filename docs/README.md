@@ -302,6 +302,14 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **BOT_CHAT_IDS** - List of userID/chatID to authorize.
 - **BOT_USERS** - List of usernames to authorize.
 
+**Specific to [telegram-webhook](https://github.com/thevickypedia/telegram-webhook)**
+
+- **BOT_WEBHOOK** - Webhook URL. _Tries to get `public_url` if using `ngrok`_
+- **BOT_WEBHOOK_IP** - Webhook IP address. _(Not necessary, unless there is an alias record in front of the reverse proxy)_
+- **BOT_ENDPOINT** - Endpoint to use for telegram bot interaction. Defaults to `/telegram-webhook`
+- **BOT_SECRET** - Secret to be set in the webhook to make sure the messages are only coming from the webhook set by the user.
+- **BOT_CERTIFICATE** - File path for the public certificate in `PEM` format. _(Not required if webhook behind an SSL signed by a well known CA)_
+
 **[OS Agnostic Voice Model](https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py)**
 - **SPEECH_SYNTHESIS_TIMEOUT** - Timeout to connect to the docker container that processes text to speech requests.
 - **SPEECH_SYNTHESIS_VOICE** - Voice for the speech synthesis model. Defaults to author's favorite.
@@ -439,6 +447,9 @@ fileio/
 |   |-- stack.sh
 |   |-- _offline.py
 ```
+
+:warning: Please note, that the startup scripts trigger everytime the API/Jarvis is restarted. So, be mindful about
+long-running scripts. Long-running scripts without a breakpoint or redundancy check logic, might lead to memory leaks.
 
 </details>
 

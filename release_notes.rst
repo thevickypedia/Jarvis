@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+3.9 (10/02/2023)
+----------------
+- Includes a new feature to host telegram API via webhooks
+- This feature avoid long polling telegram API (pull model) and uses webhooks (push model) instead
+- Improved accuracy in figuring out the light location
+- Minor bug fixes when interacting with FileIO
+- Improved startup time
+
 3.7.2 (09/28/2023)
 ------------------
 - Includes a new feature to run start up scripts

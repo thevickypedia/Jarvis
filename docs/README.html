@@ -362,6 +362,14 @@ This feature can also be enabled from <code class="docutils literal notranslate"
 <li><p><strong>BOT_CHAT_IDS</strong> - List of userID/chatID to authorize.</p></li>
 <li><p><strong>BOT_USERS</strong> - List of usernames to authorize.</p></li>
 </ul>
+<p><strong>Specific to <a class="reference external" href="https://github.com/thevickypedia/telegram-webhook">telegram-webhook</a></strong></p>
+<ul class="simple">
+<li><p><strong>BOT_WEBHOOK</strong> - Webhook URL. <em>Tries to get <code class="docutils literal notranslate"><span class="pre">public_url</span></code> if using <code class="docutils literal notranslate"><span class="pre">ngrok</span></code></em></p></li>
+<li><p><strong>BOT_WEBHOOK_IP</strong> - Webhook IP address. <em>(Not necessary, unless there is an alias record in front of the reverse proxy)</em></p></li>
+<li><p><strong>BOT_ENDPOINT</strong> - Endpoint to use for telegram bot interaction. Defaults to <code class="docutils literal notranslate"><span class="pre">/telegram-webhook</span></code></p></li>
+<li><p><strong>BOT_SECRET</strong> - Secret to be set in the webhook to make sure the messages are only coming from the webhook set by the user.</p></li>
+<li><p><strong>BOT_CERTIFICATE</strong> - File path for the public certificate in <code class="docutils literal notranslate"><span class="pre">PEM</span></code> format. <em>(Not required if webhook behind an SSL signed by a well known CA)</em></p></li>
+</ul>
 <p><strong><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/audio/speech_synthesis.py">OS Agnostic Voice Model</a></strong></p>
 <ul>
 <li><p><strong>SPEECH_SYNTHESIS_TIMEOUT</strong> - Timeout to connect to the docker container that processes text to speech requests.</p></li>
@@ -501,6 +509,8 @@ end with <code class="docutils literal notranslate"><span class="pre">.py</span>
 |   |-- _offline.py
 </pre></div>
 </div>
+<p>:warning: Please note, that the startup scripts trigger everytime the API/Jarvis is restarted. So, be mindful about
+long-running scripts. Long-running scripts without a breakpoint or redundancy check logic, might lead to memory leaks.</p>
 </details></section>
 <section id="automation-optional">
 <h2>Automation [Optional]<a class="headerlink" href="#automation-optional" title="Permalink to this heading">¶</a></h2>
