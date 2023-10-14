@@ -11,6 +11,7 @@ from typing import Dict
 
 import pymyq
 from aiohttp import ClientSession
+from pymyq.errors import AuthenticationError, InvalidCredentialsError, MyQError
 from pymyq.garagedoor import MyQGaragedoor
 
 from jarvis.modules.exceptions import CoverNotOnline, NoCoversFound
@@ -58,8 +59,19 @@ async def garage_controller(phrase: str) -> str:
     """
     dictConfig({'version': 1, 'disable_existing_loggers': True})
     async with ClientSession() as web_session:
-        myq = await pymyq.login(username=models.env.myq_username, password=models.env.myq_password,
-                                websession=web_session)
+        try:
+            myq = await pymyq.login(username=models.env.myq_username, password=models.env.myq_password,
+                                    websession=web_session)
+        except InvalidCredentialsError as error:
+            logger.error(error)
+            return f"I'm sorry {models.env.title}! Your credentials do not match."
+        except AuthenticationError as error:
+            logger.error(error)
+            return f"I'm sorry {models.env.title}! There was an authentication error."
+        except MyQError as error:
+            logger.error(error)
+            return (f"I wasn't able to connect to the module {models.env.title}! "
+                    f"Please check the logs for more information.")
 
         if not myq.covers:
             raise NoCoversFound("No covers found.")

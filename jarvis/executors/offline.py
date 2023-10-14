@@ -42,8 +42,6 @@ def background_task_runner() -> None:
     automation.validate_weather_alert()
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     meeting_muter = []
-    if models.settings.os == models.supported_platforms.macOS:
-        events.event_app_launcher()
     start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True

@@ -180,6 +180,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 - **SENSITIVITY** - Hot word detection sensitivity. Allowed range: [0-1] Defaults to `0.5`
 - **LISTENER_TIMEOUT** - Timeout in seconds until which the listener should wait for speech. Defaults to `3`
 - **LISTENER_PHRASE_LIMIT** - Timeout in seconds until which the listener will remain active. Defaults to `None`
+- **RECOGNIZER_CONFIDENCE** - Confidence level to check before prompting for a confirmation. Defaults to `0` _(no confirmation)_
 - **RECOGNIZER_SETTINGS** - A JSON object with customized speech recognition settings.
 
     <details>
@@ -249,7 +250,7 @@ Environment variables are loaded from a `.env` file and validated using `pydanti
 **Calendar/Meeting integrations**
 - **ICS_URL** - Shared calendar URL to get meetings information from. Should end with `.ics`
 - **MUTE_FOR_MEETINGS** - Boolean value to disable the listener during meetings. Defaults to `False`
-- **EVENT_APP** - To read events from `outlook` or `calendar` application in `macOS`. Defaults to `calendar` <br>
+- **EVENT_APP** - To read events from `outlook` or `calendar` application in `macOS`. Defaults to `None` <br>
 :bulb: &nbsp; When `calender` is used, the name of the _calendar_ within the `Calendar.app` should be **Jarvis** <br>
 
 **Background scans [Defaults to 1 hour]**
@@ -502,13 +503,18 @@ Jarvis supports both internal and external background tasks to be scheduled.
 
 ```yaml
 - seconds: 1_800
-  task: just turn off all lights  # Runs every 30 minutes - 'just' flag retains the lights' last setting (eg: brightness or color)
-  ignore_hours:  # Ignore the schedule at 5 AM and 10 PM
+  task: turn off all lights except bedroom  # Runs every 30 minutes
+  ignore_hours:  # Ignore the schedule from 5-6 AM and 7-8 PM
     - 5
-    - 22
+    - 19
 - seconds: 10_800
   task: remind me to drink water  # Runs every 3 hours ignoring the hours specified
   ignore_hours: "21-6"  # Ignore the schedule between 9 PM and 6 AM
+- seconds: 1_800
+  task: lock screen  # Runs every 30 minutes
+  ignore_hours:  # Ignore the schedule from 5-6 AM and 7-10 PM
+    - 5
+    - 19-22
 ```
 </details>
 

@@ -6,7 +6,7 @@ import yaml
 
 from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
 from jarvis.modules.conditions import conversation, keywords
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 from jarvis.modules.utils import support
 
 
@@ -22,7 +22,10 @@ def rewrite_keywords() -> None:
     """Loads keywords.yaml file if available, else loads the base keywords module as an object."""
     keywords_src = OrderedDict(**keywords.keyword_mapping(), **conversation.conversation_mapping())
     # WATCH OUT: for changes in keyword/function name
-    keywords_src['events'] = [models.env.event_app.lower(), support.ENGINE.plural(models.env.event_app)]
+    if models.env.event_app:
+        keywords_src['events'] = [models.env.event_app.lower(), support.ENGINE.plural(models.env.event_app)]
+    else:
+        keywords_src['events'] = [classes.EventApp.CALENDAR.value, classes.EventApp.OUTLOOK.value]
     if os.path.isfile(models.fileio.keywords):
         with open(models.fileio.keywords) as dst_file:
             try:

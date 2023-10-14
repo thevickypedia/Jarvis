@@ -31,7 +31,7 @@ def two_factor(request: Request) -> bool:
         return True
 
 
-@router.post(models.env.bot_endpoint)
+@router.post(path=models.env.bot_endpoint)
 async def telegram_webhook(request: Request):
     """Invoked when a new message is received from Telegram API.
 

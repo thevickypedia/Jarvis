@@ -18,12 +18,13 @@ echo -e '\n*********************************************************************
 echo "                               $OSName running python $echo_ver"
 echo -e '***************************************************************************************************\n'
 
-os_independent_packages() {
-    # Upgrades pip module
-    python -m pip install --upgrade pip
+# Upgrades pip module
+python -m pip install --upgrade pip
 
+os_agnostic() {
     # Get to the current directory and install the module specific packages
     current_dir="$(dirname "$(realpath "$0")")"
+    python -m pip install --no-cache-dir -r "$current_dir"/version_pinned_requirements.txt
     python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
     python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
 }
@@ -79,8 +80,8 @@ if [[ "$OSName" == "Darwin" ]]; then
     # Packages installed using homebrew
     brew install portaudio coreutils ffmpeg lame
 
-    # Installs the OS independent packages
-    os_independent_packages
+    # Installs the OS agnostic packages
+    os_agnostic
 
     # Mac specifics
     python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==9.0.1 cmake==3.25.0
@@ -128,8 +129,8 @@ elif [[ "$OSName" == "Windows" ]]; then
 
     conda install portaudio=19.6.0
 
-    # Installs the OS independent packages
-    os_independent_packages
+    # Installs the OS agnostic packages
+    os_agnostic
 
     # Install Windows specifics
     python -m pip install pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
@@ -152,7 +153,8 @@ elif [[ "$OSName" == "Linux" ]]; then
 
     sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
-    os_independent_packages
+    # Installs the OS agnostic packages
+    os_agnostic
 
     python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
 

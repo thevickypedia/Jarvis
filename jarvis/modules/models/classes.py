@@ -161,12 +161,44 @@ class SSQuality(str, Enum):
     Low_Quality = 'low'
 
 
+def handle_multiform(form_list: List[str]) -> List[int]:
+    """Handles ignore_hours in the format 7-10.
+
+    Args:
+        form_list: Takes the split string as an argument.
+
+    Returns:
+        List[int]:
+        List of hours as integers.
+
+    Raises:
+        ValueError:
+        In case of validation errors.
+    """
+    form_list[0] = form_list[0].strip()
+    form_list[1] = form_list[1].strip()
+    try:
+        assert form_list[0].isdigit()
+        assert form_list[1].isdigit()
+    except AssertionError:
+        raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+    start_hour = int(form_list[0])
+    end_hour = int(form_list[1])
+    if start_hour <= end_hour:
+        # Handle the case where the range is not wrapped around midnight
+        v = list(range(start_hour, end_hour + 1))
+    else:
+        # Handle the case where the range wraps around midnight
+        v = list(range(start_hour, 24)) + list(range(0, end_hour + 1))
+    return v
+
+
 class BackgroundTask(BaseModel):
     """Custom links model."""
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: Union[Optional[List[int]], Optional[str], Optional[int]] = []
+    ignore_hours: Union[List[int], List[str], str, int, List[Union[int, str]]] = []
 
     @field_validator('task', mode='before', check_fields=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
@@ -187,25 +219,24 @@ class BackgroundTask(BaseModel):
         elif isinstance(v, str):
             form_list = v.split('-')
             if len(form_list) == 1:
-                if form_list[0].isdigit():
-                    v = [int(form_list[0])]
-                else:
+                try:
+                    assert form_list[0].isdigit()
+                except AssertionError:
                     raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
-            elif len(form_list) == 2:
-                form_list[0] = form_list[0].strip()
-                form_list[1] = form_list[1].strip()
-                assert form_list[0].isdigit()
-                assert form_list[1].isdigit()
-                start_hour = int(form_list[0])
-                end_hour = int(form_list[1])
-                if start_hour <= end_hour:
-                    # Handle the case where the range is not wrapped around midnight
-                    v = list(range(start_hour, end_hour + 1))
                 else:
-                    # Handle the case where the range wraps around midnight
-                    v = list(range(start_hour, 24)) + list(range(0, end_hour + 1))
+                    v = [int(form_list[0])]
+            elif len(form_list) == 2:
+                v = handle_multiform(form_list)
             else:
-                raise ValueError
+                raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+        refined = []
+        for multiple in v:
+            if isinstance(multiple, str):
+                refined.extend(handle_multiform(multiple.split('-')))  # comes back as a list of string
+            else:
+                refined.append(multiple)
+        if refined:
+            v = refined
         for hour in v:
             try:
                 datetime.strptime(str(hour), '%H')
@@ -282,7 +313,7 @@ class EnvConfig(BaseSettings):
     workers: PositiveInt = 1
 
     # Calendar events and meetings config
-    event_app: EventApp = EventApp.CALENDAR
+    event_app: Union[EventApp, None] = None
     ics_url: Union[HttpUrl, None] = None
     # Set background sync limits to range: 15 minutes to 12 hours
     sync_meetings: Union[int, None] = Field(None, ge=900, le=43_200)
@@ -330,8 +361,9 @@ class EnvConfig(BaseSettings):
 
     # Listener config
     sensitivity: Union[float, PositiveInt, List[float], List[PositiveInt]] = Field(0.5, le=1, ge=0)
-    listener_timeout: Union[PositiveFloat, PositiveInt] = 2
-    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 3
+    listener_timeout: Union[PositiveFloat, PositiveInt] = 3
+    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 5
+    recognizer_confidence: Union[float, PositiveInt] = Field(0, le=1, ge=0)
     recognizer_settings: RecognizerSettings = RecognizerSettings()
 
     # Telegram config

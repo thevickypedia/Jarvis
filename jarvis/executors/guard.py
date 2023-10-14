@@ -131,7 +131,7 @@ def security_runner(offline: bool = True) -> None:
     while True:
         # Listens for any recognizable speech and saves it to a notes file
         support.write_screen(text="SECURITY MODE")
-        converted = listener.listen(sound=False)
+        converted = listener.listen(sound=False, no_conf=True)
         face_detected = datetime.now().strftime('%B_%d_%Y_%I_%M_%S_%p.jpg')
         if not get_state(log=False) or word_match.word_match(phrase=converted,
                                                              match_list=keywords.keywords['guard_disable']):

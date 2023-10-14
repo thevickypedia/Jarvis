@@ -218,6 +218,7 @@
 <li><p><strong>SENSITIVITY</strong> - Hot word detection sensitivity. Allowed range: [0-1] Defaults to <code class="docutils literal notranslate"><span class="pre">0.5</span></code></p></li>
 <li><p><strong>LISTENER_TIMEOUT</strong> - Timeout in seconds until which the listener should wait for speech. Defaults to <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
 <li><p><strong>LISTENER_PHRASE_LIMIT</strong> - Timeout in seconds until which the listener will remain active. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>RECOGNIZER_CONFIDENCE</strong> - Confidence level to check before prompting for a confirmation. Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code> <em>(no confirmation)</em></p></li>
 <li><p><strong>RECOGNIZER_SETTINGS</strong> - A JSON object with customized speech recognition settings.</p>
   <details>
   <summary><strong><i>Custom settings for speech recognition</i></strong></summary><p>These are customized according to the author’s voice pitch.
@@ -299,7 +300,7 @@ historically identical request.</p>
 <ul class="simple">
 <li><p><strong>ICS_URL</strong> - Shared calendar URL to get meetings information from. Should end with <code class="docutils literal notranslate"><span class="pre">.ics</span></code></p></li>
 <li><p><strong>MUTE_FOR_MEETINGS</strong> - Boolean value to disable the listener during meetings. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code> application in <code class="docutils literal notranslate"><span class="pre">macOS</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">calendar</span></code> <br>
+<li><p><strong>EVENT_APP</strong> - To read events from <code class="docutils literal notranslate"><span class="pre">outlook</span></code> or <code class="docutils literal notranslate"><span class="pre">calendar</span></code> application in <code class="docutils literal notranslate"><span class="pre">macOS</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> <br>
 :bulb:   When <code class="docutils literal notranslate"><span class="pre">calender</span></code> is used, the name of the <em>calendar</em> within the <code class="docutils literal notranslate"><span class="pre">Calendar.app</span></code> should be <strong>Jarvis</strong> <br></p></li>
 </ul>
 <p><strong>Background scans [Defaults to 1 hour]</strong></p>
@@ -559,13 +560,18 @@ Date format should match exactly as described below.</p>
 </div></blockquote>
 <details>
 <summary><strong><i>Setup Instructions</i></strong></summary><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">just turn off all lights</span><span class="w">  </span><span class="c1"># Runs every 30 minutes - &#39;just&#39; flag retains the lights&#39; last setting (eg: brightness or color)</span>
-<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule at 5 AM and 10 PM</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">turn off all lights except bedroom</span><span class="w">  </span><span class="c1"># Runs every 30 minutes</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule from 5-6 AM and 7-8 PM</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10_800</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remind me to drink water</span><span class="w">  </span><span class="c1"># Runs every 3 hours ignoring the hours specified</span>
 <span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;21-6&quot;</span><span class="w">  </span><span class="c1"># Ignore the schedule between 9 PM and 6 AM</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1_800</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lock screen</span><span class="w">  </span><span class="c1"># Runs every 30 minutes</span>
+<span class="w">  </span><span class="nt">ignore_hours</span><span class="p">:</span><span class="w">  </span><span class="c1"># Ignore the schedule from 5-6 AM and 7-10 PM</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">19-22</span>
 </pre></div>
 </div>
 </details></section>

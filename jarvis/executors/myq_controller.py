@@ -2,8 +2,7 @@ import asyncio
 from threading import Thread
 from typing import Any, Callable
 
-from pymyq.errors import (AuthenticationError, InvalidCredentialsError,
-                          MyQError, RequestError)
+from pymyq.errors import AuthenticationError, RequestError
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import CoverNotOnline, NoCoversFound
@@ -77,16 +76,6 @@ def garage(phrase: str) -> None:
     logger.info("Getting status of the garage door.")
     try:
         response = run_async(func=myq.garage_controller, phrase=phrase)
-    except InvalidCredentialsError as error:
-        logger.error(error)
-        response = f"I'm sorry {models.env.title}! Your credentials do not match."
-    except AuthenticationError as error:
-        logger.error(error)
-        response = f"I'm sorry {models.env.title}! There was an authentication error."
-    except MyQError as error:
-        logger.error(error)
-        response = f"I wasn't able to connect to the module {models.env.title}! " \
-                   "Please check the logs for more information."
     except NoCoversFound as error:
         logger.error(error)
         response = f"No garage doors were found in your MyQ account {models.env.title}! " \

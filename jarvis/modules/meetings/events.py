@@ -66,6 +66,10 @@ def events_gatherer() -> str:
         - If no events, returns a message saying there are no events in the next 12 hours.
         - On failure, returns a message saying Jarvis was unable to read calendar/outlook.
     """
+    if not models.env.event_app:
+        return ("No event application was chosen to scan for events. "
+                f"Please specify either {classes.EventApp.CALENDAR.value} or {classes.EventApp.OUTLOOK.value} "
+                "in the environment variables.")
     if models.settings.os != models.supported_platforms.macOS:
         return f"Reading events from {models.env.event_app} is currently possible only on macOS, " \
                f"but the host machine is currently running {models.settings.os}."

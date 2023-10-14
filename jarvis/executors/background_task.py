@@ -11,7 +11,7 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.models.classes import BackgroundTask
-from jarvis.modules.utils import support
+from jarvis.modules.utils import support, util
 
 
 def background_task_handler(phrase: str) -> None:
@@ -116,6 +116,8 @@ def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 warnings.warn("Unsupervised restarts are not allowed via background tasks. Use automation instead.")
                 continue
             if log:
-                logger.info("'%s' will be executed every %s",
-                            task.task, support.time_converter(second=task.seconds))
+                msg = f"{task.task!r} will be executed every {support.time_converter(second=task.seconds)!r}"
+                if task.ignore_hours:
+                    msg += f" except for the hours {util.comma_separator(list(map(str, task.ignore_hours)))}"
+                logger.info(msg)
             yield task

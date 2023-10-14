@@ -26,7 +26,14 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, str, None]:
     contacts = files.get_contacts()
     if contacts.get(key):
         logger.info("Looking for '%s' in contacts file.", name)
-        identifier = util.get_closest_match(text=name, match_list=list(contacts[key].keys()))
+        result = util.get_closest_match(text=name, match_list=list(contacts[key].keys()), get_ratio=True)
+        logger.info(result)
+        # Setting a higher threshold as the name is user given and can be easily adjusted
+        # Also, better to re-configure the name to match the recognized value, than sending messages to wrong recipient
+        if result['ratio'] < 0.9:
+            logger.error("%.2f didn't meet the threshold for any name in contacts.", result['ratio'])
+            return
+        identifier = result['text']
         return contacts[key][identifier]
 
 
@@ -105,9 +112,13 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
     """
     number = None
     if not to[0].isdigit():
-        number = str(extract_contacts(name=to, key='phone'))
+        # condition to avoid None type becoming a string
+        if numb := extract_contacts(name=to, key='phone'):
+            number = str(numb)
     if not number:
-        number = str(util.extract_nos(input_=to, method=int))
+        # condition to avoid None type becoming a string
+        if numb := util.extract_nos(input_=to, method=int):
+            number = str(numb)
 
     if number and len(number) != 10:
         speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits.")
@@ -124,7 +135,7 @@ def initiate_sms(body: str, to: Union[str, int]) -> None:
                                f"{sms_response}")
         return
     elif shared.called_by_offline:  # Number is not present but called by offline
-        speaker.speak(text="SMS format should be::send some message to some number or name.")
+        speaker.speak(text="SMS format should be::send some message to some number or name using sms or email.")
         return
     if not number:  # Number is not present
         speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)

@@ -15,7 +15,7 @@ word_map = {
     'turn_on': ['turn on', 'cool', 'white'],
     'turn_off': ['turn off'],
     'party_mode': ['party mode'],
-    'simple': ['just', 'simply'],
+    'reset': ['reset'],
     'warm': ['warm', 'yellow'],
     'set': ['set', 'percentage', 'percent', '%', 'dim', 'bright']
 }
