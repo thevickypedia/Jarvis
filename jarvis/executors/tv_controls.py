@@ -100,17 +100,22 @@ def tv_controller(phrase: str, tv_ip: IPv4Address, identifier: str, nickname: st
             speaker.speak(text=f'App list on your screen {models.env.title}!', run=True)
             time.sleep(5)
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
-            cleaned = ' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'tv', 'on', 'my', 'the']])
-            app_name = util.get_closest_match(text=cleaned, match_list=list(shared.tv[nickname].get_apps()))
+            app_name = util.get_closest_match(
+                text=' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'on', 'my', 'the',
+                                                                      'tv'] + nickname.split() + identifier.split()]),
+                match_list=list(shared.tv[nickname].get_apps())
+            )
             logger.info("%s -> %s", phrase, app_name)
             shared.tv[nickname].launch_app(app_name=app_name)
             speaker.speak(text=f"I've launched {app_name} on your {nickname} {models.env.title}!")
         elif "what's" in phrase_lower or 'currently' in phrase_lower:
             speaker.speak(text=f'{shared.tv[nickname].current_app()} is running on your {nickname}.')
         elif 'change' in phrase_lower or 'source' in phrase_lower:
-            cleaned = ' '.join([word for word in phrase.split() if word not in ('set', 'the', 'source', 'on', 'my',
-                                                                                'of', 'to', 'tv')])
-            source = util.get_closest_match(text=cleaned, match_list=list(shared.tv[nickname].get_sources()))
+            source = util.get_closest_match(
+                text=' '.join([w for w in phrase.split() if w not in ['set', 'the', 'source', 'on', 'my', 'of', 'to',
+                                                                      'tv'] + nickname.split() + identifier.split()]),
+                match_list=list(shared.tv[nickname].get_sources())
+            )
             logger.info("%s -> %s", phrase, source)
             shared.tv[nickname].set_source(val=source)
             speaker.speak(text=f"I've changed the source to {source}.")
