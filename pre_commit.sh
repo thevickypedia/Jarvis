@@ -17,19 +17,12 @@ update_release_notes() {
   gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 }
 
-md_validation() {
-  python pre_commit.py || {
-    echo "Failed to process hyperlink checker"
-    exit 125
-  }
-}
-
 gen_docs() {
   # Generate sphinx docs
   mkdir -p docs_gen/_static  # Create a _static directory if unavailable
   cp README.md docs_gen  # Copy readme file to docs_gen
   cd docs_gen && make clean html  # cd into doc_gen and create the runbook
-  mv _build/html/* ../docs && mv README.md ../docs  # Move the runbook, readme
+  mv _build/html/* ../docs && mv README.md ../docs && rm -rf logs  # Move the runbook, readme and cleanup
   cp static.css ../docs/_static
 }
 
@@ -38,24 +31,12 @@ run_pytest() {
   python -m pytest
 }
 
-md_validation &
-md_validation_pid=$!
 gen_docs &
-gen_docs_pid=$!
 clean_docs &
-clean_docs=$!
 update_release_notes &
-update_release_notes=$!
 run_pytest &
-run_pytest=$!
 
-wait $md_validation_pid
-wait $gen_docs_pid
-wait $clean_docs
-wait $update_release_notes
-wait $run_pytest
-
-trap - ERR
+wait
 
 # The existence of this file tells GitHub Pages not to run the published files through Jekyll.
 # This is important since Jekyll will discard any files that begin with _

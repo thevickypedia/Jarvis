@@ -1,6 +1,6 @@
 # This workflow will run validations against all hyperlinks in markdown files (include Wiki pages)
 
-name: pypi-publish
+name: markdown-hyperlink-auditor
 
 # Controls when the workflow will run
 on:

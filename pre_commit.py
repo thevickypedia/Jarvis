@@ -1,8 +1,16 @@
+# noinspection PyUnresolvedReferences
+"""Module to validate all the hyperlinks present in markdown files including the ones in Wiki pages.
+
+>>> LinkSync
+
+"""
+
 import logging
 import os
 import pathlib
 import re
 import shutil
+import socket
 import subprocess
 from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -48,7 +56,8 @@ def verify_url(hyperlink: Tuple[str, HttpUrl], timeout: Tuple[int, int] = (3, 3)
         timeout: A tuple of connect timeout and read timeout.
 
     See Also:
-        Retries once with a longer connect and read timeout in case of a timeout error.
+        - Ignores amazon and localhost URLs
+        - Retries once with a longer connect and read timeout in case of a timeout error.
 
     Raises:
         ValueError: When a particular hyperlink breaks.
@@ -63,7 +72,7 @@ def verify_url(hyperlink: Tuple[str, HttpUrl], timeout: Tuple[int, int] = (3, 3)
         return verify_url(hyperlink, (10, 10))
     except requests.RequestException:
         pass
-    if "amazon" in url:
+    if any(map(lambda keyword: keyword in url, ("amazon", "localhost", socket.gethostbyname('localhost')))):
         logger.warning(f"[{current_process().name}] - {text!r} - {url!r} is broken")
     else:
         raise ValueError(f"[{current_process().name}] - {text!r} - {url!r} is broken")
@@ -74,9 +83,6 @@ def verify_hyperlinks_in_md(filename: str):
 
     Args:
         filename: Name of the markdown file to be validated.
-
-    Raises:
-        ValueError: When a particular thread fails.
     """
     current_process().name = pathlib.Path(filename).name
     with open(filename) as file:
@@ -94,7 +100,8 @@ def verify_hyperlinks_in_md(filename: str):
     logger.info("Hyperlinks validated in '%s': %d", file, len(futures))
     for future in as_completed(futures):
         if future.exception():
-            raise ValueError(future.exception())
+            logger.error(future.exception())
+            exit(1)  # For GH actions to fail
 
 
 def run_git_cmd(cmd: str) -> Union[str, List[str]]:
