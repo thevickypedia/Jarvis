@@ -11410,7 +11410,7 @@ mac address given as a parameter.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pre_commit.find_md_links">
 <span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">find_md_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pre_commit.find_md_links" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return list of dict with links in markdown.</p>
+<dd><p>Return list of tuples with hyperlinks in the markdown content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>markdown</strong> – Data from markdown file.</p>
@@ -11460,14 +11460,14 @@ mac address given as a parameter.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pre_commit.run_git_cmd">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">run_git_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pre_commit.run_git_cmd" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">run_git_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pre_commit.run_git_cmd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the git command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the output of the git command split by lines.</p>
+<dd class="field-odd"><p>Returns the decoded output of the git command.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list</p>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>

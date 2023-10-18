@@ -12,6 +12,7 @@ import re
 import shutil
 import socket
 import subprocess
+import sys
 from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing import Process, current_process
@@ -105,7 +106,7 @@ def verify_hyperlinks_in_md(filename: str):
     for future in as_completed(futures):
         if future.exception():
             LOGGER.error(future.exception())
-            exit(1)  # For GH actions to fail
+            sys.exit(5)  # For GH actions to fail
 
 
 def run_git_cmd(cmd: str) -> str:
