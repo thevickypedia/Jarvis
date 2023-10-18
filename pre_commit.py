@@ -15,14 +15,18 @@ import subprocess
 from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing import Process, current_process
-from typing import List, Tuple, Union
+from typing import Tuple
 
 import requests
 from pydantic import HttpUrl
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.INFO)
+LOGGER = logging.getLogger(__name__)
+DEFAULT_LOG_FORM = '%(levelname)-8s %(message)s'
+DEFAULT_FORMATTER = logging.Formatter(datefmt='%b-%d-%Y %I:%M:%S %p', fmt=DEFAULT_LOG_FORM)
+HANDLER = logging.StreamHandler()
+HANDLER.setFormatter(fmt=DEFAULT_FORMATTER)
+LOGGER.addHandler(hdlr=HANDLER)
+LOGGER.setLevel(level=logging.INFO)
 
 INLINE_LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')  # noqa: RegExpRedundantEscape
 FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')  # noqa: RegExpRedundantEscape
@@ -32,7 +36,7 @@ SESSION = requests.Session()
 
 
 def find_md_links(markdown: str) -> Generator[Tuple[str, HttpUrl]]:
-    """Return list of dict with links in markdown.
+    """Return list of tuples with hyperlinks in the markdown content.
 
     Args:
         markdown: Data from markdown file.
@@ -67,13 +71,13 @@ def verify_url(hyperlink: Tuple[str, HttpUrl], timeout: Tuple[int, int] = (3, 3)
         if SESSION.get(url, timeout=timeout).ok:
             return
     except requests.Timeout as error:
-        logger.warning(error)
+        LOGGER.warning(error)
         # Retry with a longer timeout if URL times out with 3 second timeout
         return verify_url(hyperlink, (10, 10))
     except requests.RequestException:
         pass
     if any(map(lambda keyword: keyword in url, ("amazon", "localhost", socket.gethostbyname('localhost')))):
-        logger.warning(f"[{current_process().name}] - {text!r} - {url!r} is broken")
+        LOGGER.warning(f"[{current_process().name}] - {text!r} - {url!r} is broken")
     else:
         raise ValueError(f"[{current_process().name}] - {text!r} - {url!r} is broken")
 
@@ -97,28 +101,28 @@ def verify_hyperlinks_in_md(filename: str):
         file = current_process().name.split('.-')[1]
     except IndexError:
         file = current_process().name
-    logger.info("Hyperlinks validated in '%s': %d", file, len(futures))
+    LOGGER.info("Hyperlinks validated in '%s': %d", file, len(futures))
     for future in as_completed(futures):
         if future.exception():
-            logger.error(future.exception())
+            LOGGER.error(future.exception())
             exit(1)  # For GH actions to fail
 
 
-def run_git_cmd(cmd: str) -> Union[str, List[str]]:
+def run_git_cmd(cmd: str) -> str:
     """Run the git command.
 
     Returns:
-        list:
-        Returns the output of the git command split by lines.
+        str:
+        Returns the decoded output of the git command.
     """
     try:
         return subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode(encoding='UTF-8').strip()
     except (subprocess.CalledProcessError, subprocess.SubprocessError, Exception) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
-            logger.error(f"[{error.returncode}]: {result}")
+            LOGGER.error(f"[{error.returncode}]: {result}")
         else:
-            logger.error(error)
+            LOGGER.error(error)
 
 
 def check_all_md_files():
