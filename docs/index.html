@@ -11419,14 +11419,23 @@ mac address given as a parameter.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pre_commit.verify_url">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">verify_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyperlink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pre_commit.verify_url" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">verify_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyperlink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(3,</span> <span class="pre">3)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pre_commit.verify_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a GET request the hyperlink for validation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>hyperlink</strong> – Takes a tuple of the name and URL.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hyperlink</strong> – Takes a tuple of the name and URL.</p></li>
+<li><p><strong>timeout</strong> – A tuple of connect timeout and read timeout.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – When a particular hyperlink breaks.</p>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Retries once with a longer connect and read timeout in case of a timeout error.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – When a particular hyperlink breaks.</p>
 </dd>
 </dl>
 </dd></dl>
