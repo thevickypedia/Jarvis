@@ -12,6 +12,7 @@ class TestListener(unittest.TestCase):
 
     """
 
+    # noinspection PyUnusedLocal
     @patch("jarvis.modules.audio.listener.microphone")
     @patch("jarvis.modules.audio.listener.recognizer")
     @patch("jarvis.modules.audio.listener.playsound")
@@ -36,7 +37,7 @@ class TestListener(unittest.TestCase):
         # Mock the return values and setup necessary mocks
         mock_listened = MagicMock()
         mock_recognizer.listen.return_value = mock_listened
-        mock_recognizer.recognize_google.return_value = SAMPLE_PHRASE
+        mock_recognizer.recognize_google.return_value = (SAMPLE_PHRASE, "some_confidence")
 
         result = listener.listen(sound=False, timeout=5, phrase_time_limit=10, no_conf=True)
 
@@ -44,8 +45,7 @@ class TestListener(unittest.TestCase):
         self.assertEqual(result, SAMPLE_PHRASE)
         mock_recognizer.listen.assert_called_once_with(source=mock_microphone.__enter__(),
                                                        timeout=5, phrase_time_limit=10)
-        mock_recognizer.recognize_google.assert_called_once_with(audio_data=mock_listened)
-        mock_support.flush_screen.assert_called_once()
+        mock_recognizer.recognize_google.assert_called_once_with(audio_data=mock_listened, with_confidence=True)
 
         # Check that playsound function was not called
         mock_playsound.assert_not_called()

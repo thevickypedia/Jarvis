@@ -75,7 +75,7 @@ class TestActivator(unittest.TestCase):
 
         # Assertions
         self.assertTrue(mock_audio_close.called)  # audio_engine.close should be called
-        mock_listen.assert_called_once_with(sound=False)  # listener.listen should be called with sound=False
+        mock_listen.assert_called_once_with(sound=False, no_conf=True)  # listener.listen should be called
         mock_initiator.assert_called_once_with(
             phrase=SAMPLE_PHRASE
         )  # commander.initiator should be called with the correct phrase

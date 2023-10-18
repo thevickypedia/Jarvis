@@ -107,7 +107,8 @@ class Activator:
         if listener_controls.get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
-        if phrase := listener.listen(sound=False):
+        # No confidence during initiation since this will interrupt with listener state
+        if phrase := listener.listen(sound=False, no_conf=True):
             try:
                 commander.initiator(phrase=phrase)
             except Exception as error:

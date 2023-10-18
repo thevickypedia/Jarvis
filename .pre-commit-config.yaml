@@ -1,30 +1,25 @@
+fail_fast: true
 repos:
-  -
-    repo: https://github.com/PyCQA/flake8
+  - repo: https://github.com/PyCQA/flake8
     rev: '6.1.0'
     hooks:
-      -
-        id: flake8
+      - id: flake8
         additional_dependencies:
           - flake8-docstrings
           - flake8-sfs
         # SFS101: String literal formatting using percent operator.
         # SFS201: String literal formatting using .format method.
         # SFS301: String literal formatting using f-string.
-        args: [--max-line-length=120, --extend-ignore=SFS3 D107 D100 D104 D401 D412 SFS101 SFS201]
+        args: [ --max-line-length=120, --extend-ignore=SFS3 D107 D100 D104 D401 D412 SFS101 SFS201 ]
 
-  -
-    repo: https://github.com/PyCQA/isort
+  - repo: https://github.com/PyCQA/isort
     rev: '5.12.0'
     hooks:
-      -
-        id: isort
+      - id: isort
 
-  -
-    repo: local
+  - repo: local
     hooks:
-      -
-        id: pytest_docs
+      - id: pytest_docs
         name: pytest_docs
         entry: /bin/bash pre_commit.sh
         language: system
