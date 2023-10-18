@@ -5,7 +5,7 @@ import pvporcupine
 import pyaudio
 
 from jarvis.main import Activator, models
-from tests.constant import SAMPLE_PHRASE
+from tests.constant_test import SAMPLE_PHRASE
 
 
 class TestActivator(unittest.TestCase):

@@ -29,7 +29,7 @@ gen_docs() {
   mkdir -p docs_gen/_static  # Create a _static directory if unavailable
   cp README.md docs_gen  # Copy readme file to docs_gen
   cd docs_gen && make clean html  # cd into doc_gen and create the runbook
-  mv _build/html/* ../docs && mv README.md ../docs && rm -rf logs  # Move the runbook, readme and cleanup
+  mv _build/html/* ../docs && mv README.md ../docs  # Move the runbook, readme
   cp static.css ../docs/_static
 }
 

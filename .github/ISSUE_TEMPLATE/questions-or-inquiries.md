@@ -11,6 +11,6 @@ Did you find the [README](https://github.com/thevickypedia/Jarvis/blob/master/RE
 Did you check out the [wiki](https://github.com/thevickypedia/Jarvis/wiki) page?
 
 ## Questions?
-1. 
-2. 
+1.
+2.
 3.

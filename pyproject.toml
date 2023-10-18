@@ -28,7 +28,6 @@ classifiers = [
     "Topic :: System :: Hardware :: Symmetric Multi-processing",
     "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Human Interface Device (HID)",
     "Framework :: FastAPI",
-    "Framework :: Flake8",
     "Framework :: AsyncIO",
     "Framework :: Sphinx",
     "Framework :: aiohttp",

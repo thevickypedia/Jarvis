@@ -978,41 +978,51 @@ WakeOnLAN
    :members:
    :undoc-members:
 
+----------Hyperlink Validator----------
+=======================================
+
+MarkDown Validator
+==================
+
+.. automodule:: pre_commit
+   :members:
+   :undoc-members:
+
 ----------Test Cases----------
 ==============================
 
 TestAPI
 =======
 
-.. automodule:: tests.test_api
+.. automodule:: tests.api_test
    :members:
    :undoc-members:
 
 TestListener
 ============
 
-.. automodule:: tests.test_listener
+.. automodule:: tests.listener_test
    :members:
    :undoc-members:
 
 TestMain
 ========
 
-.. automodule:: tests.test_main
+.. automodule:: tests.main_test
    :members:
    :undoc-members:
 
 TestSpeaker
 ===========
 
-.. automodule:: tests.test_speaker
+.. automodule:: tests.speaker_test
    :members:
    :undoc-members:
 
 TestSpeechSynthesis
 ===================
 
-.. automodule:: tests.test_speech_synthesis
+.. automodule:: tests.speech_synthesis_test
    :members:
    :undoc-members:
 

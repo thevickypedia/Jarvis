@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from jarvis.main import listener
-from tests.constant import SAMPLE_PHRASE
+from tests.constant_test import SAMPLE_PHRASE
 
 
 class TestListener(unittest.TestCase):

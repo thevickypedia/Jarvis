@@ -1,19 +1,19 @@
 # third party pypi modules tested and version locked
-SpeechRecognition==3.10.0
-wikipedia==1.4.0
-newsapi-python==0.2.7
-pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
-timezonefinder==6.2.0
-pyicloud==1.0.0
 axju-jokes==1.0.3
-pywebostv==0.8.9
-speedtest-cli==2.1.3
-holidays==0.34
-randfacts==0.20.2
-icalendar==5.0.10
 googlehomepush==0.1.0
-PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
+holidays==0.34
+icalendar==5.0.10
+newsapi-python==0.2.7
 packaging==23.2
+PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
+pyicloud==1.0.0
 pymyq==3.1.6
-webull==0.6.1
+pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
+pywebostv==0.8.9
+randfacts==0.20.2
 sounddevice==0.4.6
+SpeechRecognition==3.10.0
+speedtest-cli==2.1.3
+timezonefinder==6.2.0
+webull==0.6.1
+wikipedia==1.4.0

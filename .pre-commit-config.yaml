@@ -1,27 +1,51 @@
 fail_fast: true
+exclude: ^docs/
 repos:
-  - repo: https://github.com/PyCQA/flake8
-    rev: '6.1.0'
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
     hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-docstrings
-          - flake8-sfs
-        # SFS101: String literal formatting using percent operator.
-        # SFS201: String literal formatting using .format method.
-        # SFS301: String literal formatting using f-string.
-        args: [ --max-line-length=120, --extend-ignore=SFS3 D107 D100 D104 D401 D412 SFS101 SFS201 ]
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-byte-order-marker
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-aws-credentials
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: name-tests-test
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
 
   - repo: https://github.com/PyCQA/isort
-    rev: '5.12.0'
+    rev: 5.12.0
     hooks:
       - id: isort
 
   - repo: local
     hooks:
       - id: pytest_docs
-        name: pytest_docs
+        name: run pytest and generate runbook
         entry: /bin/bash pre_commit.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  - repo: local
+    hooks:
+      - id: cleanup
+        name: cleanup
+        entry: bash -c 'rm -rf .pytest_cache && rm -rf tests/.pytest_cache && rm -rf tests/alarm && rm -rf tests/fileio && rm -rf tests/logs && rm -rf tests/reminder && rm -rf docs_gen/fileio && rm -rf docs_gen/logs'
         language: system
         pass_filenames: false
         always_run: true

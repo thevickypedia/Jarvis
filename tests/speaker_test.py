@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 from jarvis.modules.audio import speaker
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared
-from tests.constant import SAMPLE_PHRASE
+from tests.constant_test import SAMPLE_PHRASE
 
 
 class TestSpeak(unittest.TestCase):

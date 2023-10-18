@@ -3,10 +3,10 @@
 </p>
 <h2 align="center">Voice-Activated Natural Language UI</h2>
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python)](https://python.org)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python)][python]
 
 ![Python](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-orange)
-[![Pypi-downloads](https://img.shields.io/pypi/dm/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
+![Pypi-downloads](https://img.shields.io/pypi/dm/jarvis-ironman)
 
 **Platform Supported**
 
@@ -17,20 +17,21 @@
 ![Language count](https://img.shields.io/github/languages/count/thevickypedia/Jarvis)
 ![Code coverage](https://img.shields.io/github/languages/top/thevickypedia/Jarvis)
 
-**Repo Stats**
+**[Repo Stats][repo]**
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub Repo forks](https://img.shields.io/github/forks/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub Repo watchers](https://img.shields.io/github/watchers/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+[![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)][license]
 
-[![GitHub](https://img.shields.io/github/license/thevickypedia/Jarvis)](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)
-[![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub code size](https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+![GitHub Repo stars](https://img.shields.io/github/stars/thevickypedia/Jarvis)
+![GitHub Repo forks](https://img.shields.io/github/forks/thevickypedia/Jarvis)
+![GitHub Repo watchers](https://img.shields.io/github/watchers/thevickypedia/Jarvis)
 
-[![GitHub Repo issues](https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub Repo issues](https://img.shields.io/github/issues-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub Repo pr](https://img.shields.io/github/issues-pr-closed-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub Repo pr](https://img.shields.io/github/issues-pr-raw/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+![GitHub repo size](https://img.shields.io/github/repo-size/thevickypedia/Jarvis)
+![GitHub code size](https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis)
+
+![GitHub Repo issues](https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis)
+![GitHub Repo issues](https://img.shields.io/github/issues-raw/thevickypedia/Jarvis)
+![GitHub Repo pr](https://img.shields.io/github/issues-pr-closed-raw/thevickypedia/Jarvis)
+![GitHub Repo pr](https://img.shields.io/github/issues-pr-raw/thevickypedia/Jarvis)
 
 **Code Stats**
 
@@ -45,35 +46,33 @@
 
 **Deployments**
 
-[![pages-build-deployment](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment)
-[![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml)
+[![pages](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg)][gha_pages]
+[![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)][gha_pypi]
 
-[![PyPI version shields.io](https://img.shields.io/pypi/v/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/jarvis-ironman)][pypi]
 [![Pypi-format](https://img.shields.io/pypi/format/jarvis-ironman)](https://pypi.org/project/jarvis-ironman/#files)
-[![Pypi-status](https://img.shields.io/pypi/status/jarvis-ironman)](https://pypi.org/project/jarvis-ironman)
+[![Pypi-status](https://img.shields.io/pypi/status/jarvis-ironman)][pypi]
 
 **Activity**
 
-[![GitHub Repo created](https://img.shields.io/date/1599432310)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
-[![GitHub last release](https://img.shields.io/github/release-date/thevickypedia/Jarvis)](https://api.github.com/repos/thevickypedia/Jarvis)
+![GitHub Repo created](https://img.shields.io/date/1599432310)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/thevickypedia/Jarvis)
+![GitHub last commit](https://img.shields.io/github/last-commit/thevickypedia/Jarvis)
+![GitHub last release](https://img.shields.io/github/release-date/thevickypedia/Jarvis)
 
 **Development and Maintenance**
 
-[![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)](https://github.com/thevickypedia/Jarvis)
-[![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)](https://github.com/thevickypedia/Jarvis)
-[![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)](https://vigneshrao.com/)
+![Active Development](https://img.shields.io/badge/Development%20Level-Actively%20Developed-success.svg)
+![Actively Maintained](https://img.shields.io/badge/Maintenance%20Level-Actively%20Maintained-success.svg)
+[![Maintainer](https://img.shields.io/badge/Maintained%20By-Vignesh%20Sivanandha%20Rao-blue.svg)][webpage]
 
 **Reach Out**
 
-[//]: # ([![StackOverflow]&#40;https://img.shields.io/stackexchange/stackoverflow/r/13691532&#41;]&#40;https://stackoverflow.com/users/13691532/vignesh-rao&#41;)
-[![ askme ](https://img.shields.io/badge/SELECT%20*%20FROM-questions-1abc9c.svg)](https://vigneshrao.com/contact)
+[![ askme ](https://img.shields.io/badge/SELECT%20*%20FROM-questions-1abc9c.svg)][webpage_contact]
 
 ## Kick off
 
-> :bulb: Using a dedicated [virtual environment](https://docs.python.org/3/tutorial/venv.html) and an IDE like 
-> [PyCharm](https://www.jetbrains.com/pycharm/) is highly recommended.
+> :bulb: Using a dedicated [virtual environment][venv] and an IDE like [PyCharm][pycharm] is highly recommended.
 
 **Install**
 ```shell
@@ -108,20 +107,18 @@ if __name__ == '__main__':
        - `Microphone` - **Required** to listen and respond.
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - Unlike `macOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
-     - Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html#windows-installers), [VisualStudio C++ BuildTools](https://visualstudio.microsoft.com/visual-cpp-build-tools/), and [Git](https://git-scm.com/download/win/)
+     - Install [Anaconda][conda] or [Miniconda][miniconda], [VisualStudio C++ BuildTools][vcpp], and [Git][git-cli]
      - Make sure C++ build tools are installed completely and restart
      - Add anaconda/miniconda scripts location to `PATH` in Environment Variables
 
 ## Enchiridion
-Handbook - [GitHub Wiki](https://github.com/thevickypedia/Jarvis/wiki)
+Handbook - [GitHub Wiki][wiki]
 
 ## Coding Standards
-Docstring format: [`Google`](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) <br>
-Styling conventions: [`PEP 8`](https://www.python.org/dev/peps/pep-0008/) <br>
-Clean code with pre-commit hooks: [`flake8`](https://flake8.pycqa.org/en/latest/) and 
-[`isort`](https://pycqa.github.io/isort/)
+Docstring format: [`Google`][google-docs] <br>
+Styling conventions: [`PEP 8`][pep8] and [`isort`][isort]
 
-## [Release Notes](https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst)
+## [Release Notes][release-notes]
 **Requirement**
 ```shell
 python -m pip install gitverse
@@ -133,7 +130,8 @@ gitverse-release reverse -f release_notes.rst -t 'Release Notes'
 ```
 
 ## Linting
-`PreCommit` will ensure linting, and the doc creation are run on every commit.
+`pre-commit` will ensure linting, run pytest, generate runbook & release notes, and validate hyperlinks in ALL
+markdown files (including Wiki pages)
 
 **Requirement**
 ```shell
@@ -146,17 +144,40 @@ pre-commit run --all-files
 ```
 
 ## Pypi Package
-[![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)](https://packaging.python.org/tutorials/packaging-projects/)
+[![pypi-module](https://img.shields.io/badge/Software%20Repository-pypi-1f425f.svg)][pypi-repo]
 
-[https://pypi.org/project/jarvis-ironman/](https://pypi.org/project/jarvis-ironman/)
+[https://pypi.org/project/jarvis-ironman/][pypi]
 
 ## Runbook
-[![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html)
+[![made-with-sphinx-doc](https://img.shields.io/badge/Code%20Docs-Sphinx-1f425f.svg)][sphinx]
 
-[https://jarvis-docs.vigneshrao.com/](https://jarvis-docs.vigneshrao.com/)
+[https://jarvis-docs.vigneshrao.com/][runbook]
 
 ## License & copyright
 
 &copy; Vignesh Rao
 
-Licensed under the [MIT License](https://github.com/thevickypedia/Jarvis/blob/master/LICENSE)
+Licensed under the [MIT License][license]
+
+[python]: https://python.org
+[venv]: https://docs.python.org/3/tutorial/venv.html
+[pycharm]: https://www.jetbrains.com/pycharm/
+[repo]: https://api.github.com/repos/thevickypedia/Jarvis
+[license]: https://github.com/thevickypedia/Jarvis/blob/master/LICENSE
+[pypi]: https://pypi.org/project/jarvis-ironman
+[pypi-repo]: https://packaging.python.org/tutorials/packaging-projects/
+[wiki]: https://github.com/thevickypedia/Jarvis/wiki
+[release-notes]: https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst
+[gha_pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment
+[gha_pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml
+[webpage]: https://vigneshrao.com/
+[webpage_contact]: https://vigneshrao.com/contact
+[conda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
+[miniconda]: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+[vcpp]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+[git-cli]: https://git-scm.com/download/win/
+[google-docs]: https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings
+[pep8]: https://www.python.org/dev/peps/pep-0008/
+[isort]: https://pycqa.github.io/isort/
+[sphinx]: https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html
+[runbook]: https://jarvis-docs.vigneshrao.com/

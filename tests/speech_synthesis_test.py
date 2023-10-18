@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import EgressErrors
-from tests.constant import SAMPLE_PHRASE
+from tests.constant_test import SAMPLE_PHRASE
 
 
 # noinspection PyUnusedLocal

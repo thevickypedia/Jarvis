@@ -13,9 +13,6 @@ class APIServer(uvicorn.Server):
 
     >>> APIServer
 
-    See Also:
-        Overrides `uvicorn.server.Server <https://github.com/encode/uvicorn/blob/master/uvicorn/server.py#L48>`__
-
     References:
         https://github.com/encode/uvicorn/issues/742#issuecomment-674411676
     """
