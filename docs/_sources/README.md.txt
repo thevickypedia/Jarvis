@@ -48,6 +48,7 @@
 
 [![pages](https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg)][gha_pages]
 [![pypi](https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg)][gha_pypi]
+[![markdown](https://github.com/thevickypedia/Jarvis/actions/workflows/markdown-validation.yml/badge.svg)][gha_md_valid]
 
 [![PyPI version shields.io](https://img.shields.io/pypi/v/jarvis-ironman)][pypi]
 [![Pypi-format](https://img.shields.io/pypi/format/jarvis-ironman)](https://pypi.org/project/jarvis-ironman/#files)
@@ -170,6 +171,7 @@ Licensed under the [MIT License][license]
 [release-notes]: https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst
 [gha_pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment
 [gha_pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml
+[gha_md_valid]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown-validation.yml
 [webpage]: https://vigneshrao.com/
 [webpage_contact]: https://vigneshrao.com/contact
 [conda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/

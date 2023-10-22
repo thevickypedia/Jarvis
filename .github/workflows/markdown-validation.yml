@@ -4,23 +4,29 @@ name: markdown-hyperlink-auditor
 
 # Controls when the workflow will run
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: { }
   push:
 
 jobs:
-  deploy:
-
+  validate-markdown:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests pydantic
-    - name: Run checker
-      run: python pre_commit.py
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pydantic
+          echo "FAILED=0" >> $GITHUB_ENV
+      - name: Run validation
+        run: |
+          echo "Exit Code: ${{ env.FAILED }}"
+          python pre_commit.py
+      - name: Check exit code
+        if: ${{ env.FAILED != '0' }}
+        run: |
+          echo "Non zero exit code: ${{ env.FAILED }}"
+          exit 1

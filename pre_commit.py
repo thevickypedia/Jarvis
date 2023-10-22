@@ -12,7 +12,6 @@ import re
 import shutil
 import socket
 import subprocess
-import sys
 from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing import Process, current_process
@@ -34,6 +33,7 @@ FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')  # noqa: RegExpRedu
 FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')  # noqa: RegExpRedundantEscape
 ANCHORED_LINK_RE = re.compile(r'\[([^\]]+)\]:\s+(\S+)')  # noqa: RegExpRedundantEscape
 SESSION = requests.Session()
+GIT_ENV = os.getenv("GITHUB_ENV")
 
 
 def find_md_links(markdown: str) -> Generator[Tuple[str, HttpUrl]]:
@@ -106,7 +106,15 @@ def verify_hyperlinks_in_md(filename: str):
     for future in as_completed(futures):
         if future.exception():
             LOGGER.error(future.exception())
-            sys.exit(5)  # For GH actions to fail
+            if os.getenv("FAILED") == "1":
+                LOGGER.info("Failed flag has been set already.")
+            else:
+                LOGGER.info("Setting FAILED flag to 1")
+                env_vars = {k: v for k, v in os.environ.items()}
+                env_vars['FAILED'] = 1
+                with open(GIT_ENV, 'w') as env_file:
+                    for k, v in env_vars.items():
+                        env_file.write(f"{k}={v}\n")
 
 
 def run_git_cmd(cmd: str) -> str:
