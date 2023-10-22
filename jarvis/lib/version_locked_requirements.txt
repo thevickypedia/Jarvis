@@ -1,13 +1,15 @@
 # third party pypi modules tested and version locked
 axju-jokes==1.0.3
 googlehomepush==0.1.0
-holidays==0.34
+holidays==0.35
 icalendar==5.0.10
 newsapi-python==0.2.7
 packaging==23.2
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyicloud==1.0.0
-pymyq==3.1.6
+# pymyq==3.1.6  # Fix (PR raised) for 401 in pymyq
+# todo: remove the following and replace with a new version when PR for 'pymyq' is merged
+git+https://github.com/arraylabs/pymyq.git@refs/pull/188/head
 pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
 pywebostv==0.8.9
 randfacts==0.20.2
