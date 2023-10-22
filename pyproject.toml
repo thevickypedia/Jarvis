@@ -43,7 +43,11 @@ script-files = ["jarvis/lib/install.sh"]
 
 [tool.setuptools.dynamic]
 version      = {attr = "jarvis.version"}
-dependencies = {file = ["jarvis/lib/version_locked_requirements.txt", "jarvis/lib/version_upgrade_requirements.txt"]}
+dependencies = {file = [
+    "jarvis/lib/version_locked_requirements.txt",
+    "jarvis/lib/version_pinned_requirements.txt",
+    "jarvis/lib/version_upgrade_requirements.txt"
+]}
 
 [build-system]
 requires      = ["setuptools", "wheel"]
