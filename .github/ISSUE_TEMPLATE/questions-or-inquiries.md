@@ -7,10 +7,13 @@ assignees: thevickypedia
 
 ---
 
-Did you find the [README](https://github.com/thevickypedia/Jarvis/blob/master/README.md) useful?
-Did you check out the [wiki](https://github.com/thevickypedia/Jarvis/wiki) page?
+Did you find the [README][readme] useful?
+Did you check out the [wiki][wiki] page?
 
 ## Questions?
 1.
 2.
 3.
+
+[readme]: https://github.com/thevickypedia/Jarvis/blob/master/README.md
+[wiki]: https://github.com/thevickypedia/Jarvis/wiki
