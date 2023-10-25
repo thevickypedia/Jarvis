@@ -978,16 +978,6 @@ WakeOnLAN
    :members:
    :undoc-members:
 
-----------Hyperlink Validator----------
-=======================================
-
-MarkDown Validator
-==================
-
-.. automodule:: pre_commit
-   :members:
-   :undoc-members:
-
 ----------Test Cases----------
 ==============================
 

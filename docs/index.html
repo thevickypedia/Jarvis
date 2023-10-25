@@ -11398,87 +11398,6 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 </section>
-<section id="hyperlink-validator">
-<h1>———-Hyperlink Validator———-<a class="headerlink" href="#hyperlink-validator" title="Permalink to this heading">¶</a></h1>
-</section>
-<section id="module-pre_commit">
-<span id="markdown-validator"></span><h1>MarkDown Validator<a class="headerlink" href="#module-pre_commit" title="Permalink to this heading">¶</a></h1>
-<p>Module to validate all the hyperlinks present in markdown files including the ones in Wiki pages.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LinkSync</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="pre_commit.find_md_links">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">find_md_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pre_commit.find_md_links" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return list of tuples with hyperlinks in the markdown content.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>markdown</strong> – Data from markdown file.</p>
-</dd>
-<dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of the string and the associated URL.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pre_commit.verify_url">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">verify_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hyperlink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(3,</span> <span class="pre">3)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pre_commit.verify_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a GET request the hyperlink for validation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>hyperlink</strong> – Takes a tuple of the name and URL.</p></li>
-<li><p><strong>timeout</strong> – A tuple of connect timeout and read timeout.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Ignores amazon and localhost URLs</p></li>
-<li><p>Retries once with a longer connect and read timeout in case of a timeout error.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – When a particular hyperlink breaks.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pre_commit.verify_hyperlinks_in_md">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">verify_hyperlinks_in_md</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pre_commit.verify_hyperlinks_in_md" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all hyperlinks in a markdown file and validate them in a pool of threads.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – Name of the markdown file to be validated.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pre_commit.run_git_cmd">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">run_git_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pre_commit.run_git_cmd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the git command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the decoded output of the git command.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pre_commit.check_all_md_files">
-<span class="sig-prename descclassname"><span class="pre">pre_commit.</span></span><span class="sig-name descname"><span class="pre">check_all_md_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pre_commit.check_all_md_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads all the markdown files from wiki and initiates individual validation process for each markdown file.</p>
-</dd></dl>
-
-</section>
 <section id="test-cases">
 <h1>———-Test Cases———-<a class="headerlink" href="#test-cases" title="Permalink to this heading">¶</a></h1>
 </section>
@@ -11849,8 +11768,6 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.transformer.gpt">Transformer</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.tv.lg">TV Connector</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
-<li><a class="reference internal" href="#hyperlink-validator">———-Hyperlink Validator———-</a></li>
-<li><a class="reference internal" href="#module-pre_commit">MarkDown Validator</a></li>
 <li><a class="reference internal" href="#test-cases">———-Test Cases———-</a></li>
 <li><a class="reference internal" href="#module-tests.api_test">TestAPI</a></li>
 <li><a class="reference internal" href="#module-tests.listener_test">TestListener</a></li>
