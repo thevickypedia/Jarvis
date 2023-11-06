@@ -123,12 +123,12 @@ def lights(phrase: str) -> None:
             host_names: List[List[str]] = util.remove_duplicates(
                 input_=util.matrix_to_flat_list([lights_map[light] for light in lights_map if light != exclusion])
             )
-            logger.info("%d lights' excluding %s", len(host_names), exclusion)
+            logger.debug("%d lights' excluding %s", len(host_names), exclusion)
         else:
             host_names: List[str] = util.remove_duplicates(
                 input_=util.matrix_to_flat_list(input_=[v for k, v in lights_map.items()])
             )
-            logger.info("All lights: %d", len(host_names))
+            logger.debug("All lights: %d", len(host_names))
     else:
         remove = util.matrix_to_flat_list(input_=squire.word_map.values()) + ['lights', 'light']
         phrase_location = phrase

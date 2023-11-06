@@ -47,7 +47,7 @@ def conditions(phrase: str) -> bool:
 
     for category, identifiers in keywords.keywords.items():
         if matched := word_match.word_match(phrase=phrase, match_list=identifiers):
-            logger.info("'%s' matched the category '%s'", matched, category)
+            logger.debug("'%s' matched the category '%s'", matched, category)
 
             # custom rules for additional keyword matching
             if category == "send_notification":

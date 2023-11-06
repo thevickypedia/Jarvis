@@ -198,7 +198,7 @@ class BackgroundTask(BaseModel):
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: Union[List[int], List[str], str, int, List[Union[int, str]]] = []
+    ignore_hours: Union[List[int], List[str], str, int, List[Union[int, str]], None] = []
 
     @field_validator('task', mode='before', check_fields=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
