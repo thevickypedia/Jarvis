@@ -4812,7 +4812,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-jarvis.executors.telegram" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.telegram.get_webhook_origin">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the telegram bot webhook origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4829,12 +4829,24 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.telegram.telegram_api">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.telegram_api" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">webhook_trials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.telegram_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates polling for new messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>webhook_trials</strong> – Number of retry attempts to get the public URL for Jarvis (if hosted via Ngrok)</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">webhook_trials</span></code> is set to 3 when polling fails (which is already a fallback for webhook retries)</p></li>
+</ul>
+</div>
 <dl class="simple">
 <dt>Handles:</dt><dd><ul class="simple">
+<li><p>BotWebhookConflict: When there’s a broken webhook set already.</p></li>
 <li><p>BotInUse: Restarts polling to take control over.</p></li>
-<li><p>ConnectionError: Initiates after 10, 20 or 30 seconds. Depends on retry count. Restarts after 3 attempts.</p></li>
+<li><p>EgressErrors: Initiates after 10, 20 or 30 seconds. Depends on retry count. Restarts after 3 attempts.</p></li>
 </ul>
 </dd>
 </dl>
@@ -8039,9 +8051,27 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 <dl class="py exception">
+<dt class="sig sig-object py" id="jarvis.modules.exceptions.BotError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotError</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom base exception for Telegram Bot</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotError</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="jarvis.modules.exceptions.BotWebhookConflict">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotWebhookConflict</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotWebhookConflict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error for conflict with webhook and getUpdates API call.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotWebhookConflict</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="jarvis.modules.exceptions.BotInUse">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotInUse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">OverflowError</span></code> to indicate bot token is being used else where.</p>
+<dd><p>Error indicate bot token is being used else where.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotInUse</span>
 </pre></div>
 </div>

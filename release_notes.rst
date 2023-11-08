@@ -40,9 +40,12 @@ v3.7 (08/29/2023)
 
 v3.6 (08/22/2023)
 -----------------
-- Redefines the way how alarms and reminders work
-- Includes a new feature to get existing alarms
-- Provides an option to choose between GPT models for OpenAI
+- Implement a feature to check for overlap in alarms
+- Add a feature to get existing alarms
+- Handle deletion of more than one alarms
+- Remove env var for pre-commit
+- Remove filtering process name for pre-commit
+- Fix broken docs
 
 v3.5.1 (08/18/2023)
 -------------------

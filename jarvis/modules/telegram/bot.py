@@ -22,7 +22,8 @@ from jarvis.executors import (commander, offline, others, restrictions,
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import BotInUse, EgressErrors, InvalidArgument
+from jarvis.modules.exceptions import (BotInUse, BotWebhookConflict,
+                                       EgressErrors, InvalidArgument)
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import audio_handler, file_handler, settings
@@ -286,12 +287,13 @@ def poll_for_messages() -> None:
             response = response.json()
         else:
             if response.status_code == 409:
-                raise BotInUse(
-                    response.json().get('description')
-                )
-            raise ConnectionError(
-                response.json()
-            )
+                err_desc = response.json().get('description')
+                # If it has come to this, then webhook has already failed
+                if err_desc == ("Conflict: can't use getUpdates method while webhook is active; "
+                                "use deleteWebhook to delete the webhook first"):
+                    raise BotWebhookConflict(err_desc)
+                raise BotInUse(err_desc)
+            raise ConnectionError(response.json())
         if not response.get('result'):
             continue
         for result in response['result']:

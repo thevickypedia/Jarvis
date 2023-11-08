@@ -76,8 +76,24 @@ class CameraError(BlockingIOError):
     """
 
 
-class BotInUse(OverflowError):
-    """Custom ``OverflowError`` to indicate bot token is being used else where.
+class BotError(Exception):
+    """Custom base exception for Telegram Bot
+
+    >>> BotError
+
+    """
+
+
+class BotWebhookConflict(BotError):
+    """Error for conflict with webhook and getUpdates API call.
+
+    >>> BotWebhookConflict
+
+    """
+
+
+class BotInUse(BotError):
+    """Error indicate bot token is being used else where.
 
     >>> BotInUse
 
