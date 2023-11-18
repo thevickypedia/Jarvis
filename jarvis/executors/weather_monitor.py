@@ -10,7 +10,11 @@ from jarvis.modules.models import models
 def monitor() -> None:
     """Weather monitoring system to trigger notifications for high, low weather and severe weather alert."""
     multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
-    condition, high, low, temp_f, alert = weather.weather(monitor=True)
+    if weather_resp := weather.weather(monitor=True):
+        condition, high, low, temp_f, alert = weather_resp
+    else:
+        logger.error("Failed to get weather alerts")
+        return
     if not any((high >= models.env.weather_alert_max, low <= models.env.weather_alert_min, alert)):
         logger.debug(dict(condition=condition, high=high, low=low, temperature=temp_f, alert=alert))
         logger.info("No alerts to report")
