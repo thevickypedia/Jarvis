@@ -9,6 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: thevickypedia/none-shall-pass@v2.0
-        with:
-          excludeHostnames: "amazon"
+      - uses: thevickypedia/none-shall-pass@v3
