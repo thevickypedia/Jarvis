@@ -540,6 +540,13 @@ Telegram
    :members:
    :undoc-members:
 
+Thermostat
+==========
+
+.. automodule:: jarvis.executors.thermostat
+   :members:
+   :undoc-members:
+
 To Do
 =====
 

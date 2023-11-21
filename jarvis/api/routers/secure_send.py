@@ -30,11 +30,11 @@ async def secure_send_api(request: Request, access_token: Optional[str] = Header
     logger.info("Connection received from %s via %s using %s",
                 request.client.host, request.headers.get('host'), request.headers.get('user-agent'))
     key = access_token or request.headers.get('access-token')
-    if key.startswith('\\'):
-        key = bytes(key, "utf-8").decode(encoding="unicode_escape")
     if not key:
         logger.warning("'access-token' not received in headers")
         raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
+    if key.startswith('\\'):
+        key = bytes(key, "utf-8").decode(encoding="unicode_escape")
     if os.path.isfile(models.fileio.secure_send):
         secure_strings = files.get_secure_send()
         if secret := secure_strings.get(key):

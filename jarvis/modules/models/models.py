@@ -176,7 +176,7 @@ def _global_validations() -> None:
             )
 
     if env.author_mode:
-        if all([env.robinhood_user, env.robinhood_pass, env.robinhood_pass]):
+        if all((env.robinhood_user, env.robinhood_pass, env.robinhood_pass)):
             env.crontab.append(scheduler.rh_cron_schedule(extended=True))
         env.crontab.append(scheduler.sm_cron_schedule())
 

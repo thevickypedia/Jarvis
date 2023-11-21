@@ -4853,6 +4853,67 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.executors.thermostat">
+<span id="thermostat"></span><h1>Thermostat<a class="headerlink" href="#module-jarvis.executors.thermostat" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">Thermostat</span></span><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controller object for device object and expiration time.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thermostat</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.device">
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.expiration">
+<span class="sig-name descname"><span class="pre">expiration</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1700696254.079347</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.expiration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.create_connection">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.create_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new connection and stores the device object and expiration time in a dedicated object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.get_thermostat">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">get_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.get_thermostat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get operations to be performed on the thermostat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.set_thermostat">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">set_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.set_thermostat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update operations to be performed on the thermostat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.thermostat_controls">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">thermostat_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.thermostat_controls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directs to the target function based on user requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.executors.todo_list">
 <span id="to-do"></span><h1>To Do<a class="headerlink" href="#module-jarvis.executors.todo_list" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -7508,13 +7569,13 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_email">
-<span class="sig-name descname"><span class="pre">car_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_email" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_username">
+<span class="sig-name descname"><span class="pre">car_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_pass">
-<span class="sig-name descname"><span class="pre">car_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_pass" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_password">
+<span class="sig-name descname"><span class="pre">car_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_password" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7530,6 +7591,21 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.myq_password">
 <span class="sig-name descname"><span class="pre">myq_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.myq_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.tcc_username">
+<span class="sig-name descname"><span class="pre">tcc_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.tcc_username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.tcc_password">
+<span class="sig-name descname"><span class="pre">tcc_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.tcc_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.tcc_device_name">
+<span class="sig-name descname"><span class="pre">tcc_device_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.tcc_device_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -11762,6 +11838,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.static_responses">StaticResponses</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.system">System</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.telegram">Telegram</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.thermostat">Thermostat</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.todo_list">To Do</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.tv">TV</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.unconditional">Unconditional</a></li>

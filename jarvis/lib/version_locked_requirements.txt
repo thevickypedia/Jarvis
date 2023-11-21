@@ -1,15 +1,16 @@
 # third party pypi modules tested and version locked
 axju-jokes==1.0.3
 googlehomepush==0.1.0
-holidays==0.35
-icalendar==5.0.10
+holidays==0.37
+icalendar==5.0.11
 newsapi-python==0.2.7
 packaging==23.2
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
+pyhtcc==0.1.55
 pyicloud==1.0.0
 pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
 pywebostv==0.8.9
-randfacts==0.20.2
+randfacts==0.21.0
 sounddevice==0.4.6
 SpeechRecognition==3.10.0
 speedtest-cli==2.1.3

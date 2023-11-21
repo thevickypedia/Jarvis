@@ -26,11 +26,11 @@ def create_connection() -> None:
     """Creates a new connection and stores the refresh token and device ID in a dedicated object."""
     if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
         # this might never happen, as the connection and vin are reused until auth expiry anyway
-        connection = connector.Connect(username=models.env.car_email, refresh_token=AUTHORIZATION.refresh_token,
+        connection = connector.Connect(username=models.env.car_username, refresh_token=AUTHORIZATION.refresh_token,
                                        device_id=AUTHORIZATION.device_id)
         logger.info("Using refresh token to create a connection with JLR API")
     else:
-        connection = connector.Connect(username=models.env.car_email, password=models.env.car_pass,
+        connection = connector.Connect(username=models.env.car_username, password=models.env.car_password,
                                        auth_expiry=time.time() + 86_400)  # local epoch time
         logger.info("Using password to create a connection with JLR API")
     try:
@@ -53,7 +53,7 @@ def create_connection() -> None:
 # Initiate connection only for main and offline communicators
 # WATCH OUT: for changes in function name
 if models.settings.pname in ('JARVIS', 'telegram_api', 'jarvis_api'):
-    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+    if all((models.env.car_username, models.env.car_password, models.env.car_pin)):
         logger.info("Creating a new vehicle authorization connection for '%s'", models.settings.pname)
         Thread(target=create_connection).start()
 
@@ -252,7 +252,7 @@ def car(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if all([models.env.car_email, models.env.car_pass, models.env.car_pin]):
+    if all((models.env.car_username, models.env.car_password, models.env.car_pin)):
         phrase = phrase.lower()
     else:
         logger.warning("InControl email or password or PIN not found.")
@@ -468,7 +468,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
                 position['city'] = city
                 position['state'] = state
                 return position
-            if all([street, state, city, country]):
+            if all((street, state, city, country)):
                 address = f"{number} {street}, {city} {state}, {country}".strip()
             elif data.get('formattedAddress'):
                 address = data['formattedAddress']

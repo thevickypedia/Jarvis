@@ -67,7 +67,7 @@ def garage(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if all([models.env.myq_username, models.env.myq_password]):
+    if all((models.env.myq_username, models.env.myq_password)):
         phrase = phrase.lower()
     else:
         support.no_env_vars()

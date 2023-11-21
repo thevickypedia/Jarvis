@@ -351,13 +351,18 @@ class EnvConfig(BaseSettings):
     vpn_security_group: Union[str, None] = None
 
     # Vehicle config
-    car_email: Union[EmailStr, None] = None
-    car_pass: Union[str, None] = None
+    car_username: Union[EmailStr, None] = None
+    car_password: Union[str, None] = None
     car_pin: Union[str, None] = Field(None, pattern="\\d{4}$")
 
     # Garage door config
     myq_username: Union[EmailStr, None] = None
     myq_password: Union[str, None] = None
+
+    # Thermostat config
+    tcc_username: Union[EmailStr, None] = None
+    tcc_password: Union[str, None] = None
+    tcc_device_name: Union[str, None] = None
 
     # Listener config
     sensitivity: Union[float, PositiveInt, List[float], List[PositiveInt]] = Field(0.5, le=1, ge=0)
@@ -425,7 +430,7 @@ class EnvConfig(BaseSettings):
     @field_validator("speaker_index", mode='before', check_fields=True)
     def parse_speaker_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
         """Validates speaker index."""
-        # TODO: Create an OS agnostic model for usage
+        # TODO: Create an OS agnostic model for usage (currently the index value is unused)
         if not value:
             return
         if int(value) in list(map(lambda tag: tag['index'], get_audio_devices(channels=channel_type.output_channels))):
