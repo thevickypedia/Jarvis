@@ -1,12 +1,9 @@
-# This workflow will upload a Python Package using Twine when a release is created
-
 name: pypi-publish
 
-# Controls when the workflow will run
 on:
-  workflow_dispatch: {}
   release:
     types: [ published ]
+  workflow_dispatch:
 
 jobs:
   deploy:
