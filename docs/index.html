@@ -4864,12 +4864,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.device">
-<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.device" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.device" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.expiration">
-<span class="sig-name descname"><span class="pre">expiration</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1700696254.079347</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.expiration" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">expiration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.expiration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4882,22 +4882,28 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.get_thermostat">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">get_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.get_thermostat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">get_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Zone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.get_thermostat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get operations to be performed on the thermostat.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – Authenticated device object.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.set_thermostat">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">set_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.set_thermostat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">set_thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Zone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.set_thermostat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update operations to be performed on the thermostat.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – Authenticated device object.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
