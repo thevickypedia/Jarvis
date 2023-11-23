@@ -393,13 +393,6 @@ Functions
    :members:
    :undoc-members:
 
-Garage Door
-===========
-
-.. automodule:: jarvis.executors.myq_controller
-   :members:
-   :undoc-members:
-
 GitHub
 ======
 
@@ -435,8 +428,7 @@ Lights
    :members:
    :undoc-members:
 
-Lights Squire
-=============
+====
 
 .. automodule:: jarvis.executors.lights_squire
    :members:
@@ -453,6 +445,20 @@ Location
 ========
 
 .. automodule:: jarvis.executors.location
+   :members:
+   :undoc-members:
+
+Method Executor
+===============
+
+.. automodule:: jarvis.executors.method
+   :members:
+   :undoc-members:
+
+MyQ Controller
+==============
+
+.. automodule:: jarvis.executors.myq_controller
    :members:
    :undoc-members:
 

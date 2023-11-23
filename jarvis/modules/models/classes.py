@@ -378,7 +378,7 @@ class EnvConfig(BaseSettings):
     # Telegram Webhook specific
     bot_webhook: Union[HttpUrl, None] = None
     bot_webhook_ip: Union[IPv4Address, None] = None
-    bot_endpoint: str = "/telegram-webhook"  # todo: use pattern to validate
+    bot_endpoint: str = Field("/telegram-webhook", pattern=r"^\/")
     bot_secret: Union[str, None] = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
     bot_certificate: Union[FilePath, None] = None
 
@@ -480,6 +480,7 @@ class FileIO(BaseModel):
     root: DirectoryPath = os.path.realpath('fileio')
 
     # Home automation
+    crontab: FilePath = os.path.join(root, 'crontab.yaml')
     automation: FilePath = os.path.join(root, 'automation.yaml')
     tmp_automation: FilePath = os.path.join(root, 'tmp_automation.yaml')
     background_tasks: FilePath = os.path.join(root, 'background_tasks.yaml')
@@ -526,6 +527,7 @@ class FileIO(BaseModel):
     # Speech Synthesis
     speech_synthesis_wav: FilePath = os.path.join(root, 'speech_synthesis.wav')
     # Store log file name in a variable as it is used in multiple modules with file IO
+    # todo: remove datetime from id and create log files in dedicated functions
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
     speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join(root, 'speech_synthesis_%d-%m-%Y.cid'))
 

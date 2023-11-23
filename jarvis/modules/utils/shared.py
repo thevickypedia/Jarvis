@@ -10,6 +10,7 @@ import time
 start_time = time.time()
 greeting = False
 called_by_offline = False
+called_by_bg_tasks = False
 
 text_spoken = None
 offline_caller = None

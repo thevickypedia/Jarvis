@@ -41,6 +41,7 @@ def background_task_runner() -> None:
     # Since env vars are loaded only during startup, validate weather alert only then
     automation.validate_weather_alert()
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
+    cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
     meeting_muter = []
     start_events = start_meetings = start_cron = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
@@ -57,7 +58,7 @@ def background_task_runner() -> None:
                 else:
                     logger.debug("Executing: '%s'", task.task)
                     try:
-                        response = offline_communicator(command=task.task) or "No response for background task"
+                        response = offline_communicator(task.task, True) or "No response for background task"
                         logger.debug("Response: '%s'", response)
                     except Exception as error:
                         logger.error(error)
@@ -67,7 +68,7 @@ def background_task_runner() -> None:
         # Trigger cron jobs once during start up (regardless of schedule) and follow schedule after that
         if start_cron + 60 <= time.time():  # Condition passes every minute
             start_cron = time.time()
-            for job in models.env.crontab:
+            for job in cron_jobs:
                 if job.check_trigger():
                     logger.debug("Executing cron job: '%s'", job.comment)
                     cron_process = Process(target=crontab.executor, args=(job.comment,))
@@ -184,6 +185,11 @@ def background_task_runner() -> None:
             tasks = new_tasks
             task_dict = {i: time.time() for i in range(len(tasks))}  # Re-create start time for each task
 
+        # Re-check for any newly added cron_jobs with logger disabled
+        new_cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs(log=False))
+        if new_cron_jobs != cron_jobs:
+            # Don't log updated jobs since there will always be a difference when run on author mode
+            cron_jobs = new_cron_jobs
         dry_run = False
         time.sleep(0.5)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
@@ -207,17 +213,19 @@ def ondemand_offline_automation(task: str) -> Union[str, None]:
         return response.json()['detail'].split('\n')[-1]
 
 
-def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
+def offline_communicator(command: str, bg_flag: bool = False) -> Union[AnyStr, HttpUrl]:
     """Initiates conditions after flipping ``status`` flag in ``called_by_offline`` dict which suppresses the speaker.
 
     Args:
         command: Takes the command that has to be executed as an argument.
+        bg_flag: Takes the background flag caller as an argument.
 
     Returns:
         AnyStr:
         Response from Jarvis.
     """
     shared.called_by_offline = True
+    shared.called_by_bg_tasks = bg_flag
     # Specific for offline communication and not needed for live conversations
     if word_match.word_match(phrase=command, match_list=keywords.keywords['ngrok']):
         if public_url := internet.get_tunnel():
@@ -229,6 +237,7 @@ def offline_communicator(command: str) -> Union[AnyStr, HttpUrl]:
     # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response
     conditions.conditions(phrase=command)
     shared.called_by_offline = False
+    shared.called_by_bg_tasks = False
     if response := shared.text_spoken:
         shared.text_spoken = None
         return response

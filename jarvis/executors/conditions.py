@@ -2,7 +2,7 @@ import warnings
 from threading import Thread
 
 from jarvis.executors import (custom_conditions, functions, listener_controls,
-                              others, restrictions, static_responses,
+                              method, others, restrictions, static_responses,
                               unconditional, word_match)
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
@@ -77,7 +77,7 @@ def conditions(phrase: str) -> bool:
                     return False
 
             if function_map.get(category):  # keyword category matches function name
-                function_map[category](phrase)  # call function with phrase as arg by default
+                method.executor(function_map[category], phrase)  # call function with phrase as arg by default
                 if category in ("sleep_control", "sentry"):
                     return True  # repeat listeners are ended and wake word detection is activated
             else:

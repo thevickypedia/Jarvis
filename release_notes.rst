@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+v4.2 (11/23/2023)
+-----------------
+- Includes a new feature to control `HoneyWell` thermostat
+- Includes a bug fix to handle conflict with broken webhook for `TelegramAPI`
+- Includes a bug fix for failed weather monitoring in background tasks
+
 v4.0 (10/22/2023)
 -----------------
 - Includes a new feature to check confidence score on speech recognition

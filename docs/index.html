@@ -1645,17 +1645,21 @@ allow <cite>self</cite> as a field name.</p>
 </section>
 <section id="module-jarvis.api.squire.scheduler">
 <span id="squire-scheduler"></span><h1>Squire - Scheduler<a class="headerlink" href="#module-jarvis.api.squire.scheduler" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.squire.scheduler.MarketHours">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">MarketHours</span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.MarketHours" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates MarketHours object to store the market hours for each timezone in USA.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MarketHours</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Class member <code class="docutils literal notranslate"><span class="pre">hours</span></code> contains key-value pairs for both <code class="docutils literal notranslate"><span class="pre">EXTENDED</span></code> and <code class="docutils literal notranslate"><span class="pre">REGULAR</span></code> market hours.</p>
-</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.squire.scheduler.market_hours">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">market_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.market_hours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the market hours for each timezone in the US.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>extended</strong> – Boolean flag to use extended hours.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of timezone and the market open and close hours.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Dict[str, int]]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1664,7 +1668,7 @@ allow <cite>self</cite> as a field name.</p>
 <dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">stock_report.py</span></code>. Determines cron schedule based on current timezone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>extended</strong> – Uses extended hours.</p>
+<dd class="field-odd"><p><strong>extended</strong> – Boolean flag to use extended hours.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1686,7 +1690,7 @@ allow <cite>self</cite> as a field name.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.squire.scheduler.sm_cron_schedule">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">sm_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_weekends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.sm_cron_schedule" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.squire.scheduler.</span></span><span class="sig-name descname"><span class="pre">sm_cron_schedule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_weekends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a></span></span><a class="headerlink" href="#jarvis.api.squire.scheduler.sm_cron_schedule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a cron expression for <code class="docutils literal notranslate"><span class="pre">stock_monitor.py</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3060,6 +3064,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.crontab.validate_jobs">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.crontab.</span></span><span class="sig-name descname"><span class="pre">validate_jobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.crontab.validate_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates each of the cron job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>log</strong> – Takes a boolean flag to suppress info level logging.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>CronExpression</em> – CronExpression object.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.custom_conditions">
 <span id="custom-conditions"></span><h1>Custom Conditions<a class="headerlink" href="#module-jarvis.executors.custom_conditions" title="Permalink to this heading">¶</a></h1>
@@ -3382,60 +3400,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>OrderedDict</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-jarvis.executors.myq_controller">
-<span id="garage-door"></span><h1>Garage Door<a class="headerlink" href="#module-jarvis.executors.myq_controller" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs asynchronosly using threading.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AsyncThread</span>
-</pre></div>
-</div>
-<p>Initiates <code class="docutils literal notranslate"><span class="pre">AsyncThread</span></code> object as a super class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
-<li><p><strong>args</strong> – Arguments.</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">asyncio.run</span></code> with arguments passed.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.run_async">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.run_async" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
-<li><p><strong>args</strong> – Arguments.</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.garage">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">garage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.garage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for the garage door controller.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3771,10 +3735,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
-</section>
-<section id="module-jarvis.executors.lights_squire">
-<span id="lights-squire"></span><h1>Lights Squire<a class="headerlink" href="#module-jarvis.executors.lights_squire" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
+<hr class="docutils" />
+<span class="target" id="module-jarvis.executors.lights_squire"></span><dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.lights_squire.turn_off">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.lights_squire.</span></span><span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IPv4Address</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.lights_squire.turn_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turns off the device.</p>
@@ -4040,6 +4002,77 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.executors.method">
+<span id="method-executor"></span><h1>Method Executor<a class="headerlink" href="#module-jarvis.executors.method" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.method.executor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.method.</span></span><span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.method.executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function to be called.</p></li>
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.myq_controller">
+<span id="myq-controller"></span><h1>MyQ Controller<a class="headerlink" href="#module-jarvis.executors.myq_controller" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs asynchronosly using threading.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AsyncThread</span>
+</pre></div>
+</div>
+<p>Initiates <code class="docutils literal notranslate"><span class="pre">AsyncThread</span></code> object as a super class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
+<li><p><strong>args</strong> – Arguments.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">asyncio.run</span></code> with arguments passed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.myq_controller.run_async">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.run_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
+<li><p><strong>args</strong> – Arguments.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.myq_controller.garage">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">garage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.garage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for the garage door controller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.executors.offline">
 <span id="offline"></span><h1>Offline<a class="headerlink" href="#module-jarvis.executors.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -4073,11 +4106,14 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.offline.offline_communicator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">AnyStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">offline_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">AnyStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.offline.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiates conditions after flipping <code class="docutils literal notranslate"><span class="pre">status</span></code> flag in <code class="docutils literal notranslate"><span class="pre">called_by_offline</span></code> dict which suppresses the speaker.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – Takes the command that has to be executed as an argument.</p></li>
+<li><p><strong>bg_flag</strong> – Takes the background flag caller as an argument.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Response from Jarvis.</p>
@@ -7807,6 +7843,11 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.root">
 <span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.crontab">
+<span class="sig-name descname"><span class="pre">crontab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.crontab" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -11823,15 +11864,15 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.face">Face</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.files">Files</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.functions">Functions</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.myq_controller">Garage Door</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.github">GitHub</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.guard">Guard</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.internet">Internet</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.ios_functions">iOS Functions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.lights">Lights</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.lights_squire">Lights Squire</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.listener_controls">Listener Controls</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.location">Location</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.method">Method Executor</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.myq_controller">MyQ Controller</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.others">Others</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.port_handler">Port Handler</a></li>

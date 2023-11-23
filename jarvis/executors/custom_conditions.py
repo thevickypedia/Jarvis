@@ -2,7 +2,7 @@ import warnings
 from collections import OrderedDict
 from typing import Callable
 
-from jarvis.executors import files
+from jarvis.executors import files, method
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
 from jarvis.modules.utils import shared, util
@@ -26,7 +26,7 @@ def custom_conditions(phrase: str, function_map: OrderedDict[str, Callable]) -> 
         for function_, task_ in task_map.items():
             if function_map.get(function_):
                 executed = True
-                function_map[function_](task_)
+                method.executor(function_map[function_], task_)
                 response += shared.text_spoken + "\n"
             else:
                 warnings.warn("Custom condition map was found with incorrect function name: '%s'" % function_)
@@ -36,7 +36,7 @@ def custom_conditions(phrase: str, function_map: OrderedDict[str, Callable]) -> 
         for function_, task_ in task_map.items():
             if function_map.get(function_):
                 executed = True
-                function_map[function_](task_)
+                method.executor(function_map[function_], task_)
             else:
                 warnings.warn("Custom condition map was found with incorrect function name: '%s'" % function_)
     if executed:
