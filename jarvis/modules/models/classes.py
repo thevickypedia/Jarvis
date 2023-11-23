@@ -369,7 +369,7 @@ class EnvConfig(BaseSettings):
     listener_timeout: Union[PositiveFloat, PositiveInt] = 3
     listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 5
     recognizer_confidence: Union[float, PositiveInt] = Field(0, le=1, ge=0)
-    recognizer_settings: RecognizerSettings = RecognizerSettings()
+    recognizer_settings: RecognizerSettings = RecognizerSettings()  # todo: move to yaml file in config dir
 
     # Telegram config
     bot_token: Union[str, None] = None
@@ -378,7 +378,7 @@ class EnvConfig(BaseSettings):
     # Telegram Webhook specific
     bot_webhook: Union[HttpUrl, None] = None
     bot_webhook_ip: Union[IPv4Address, None] = None
-    bot_endpoint: str = "/telegram-webhook"
+    bot_endpoint: str = "/telegram-webhook"  # todo: use pattern to validate
     bot_secret: Union[str, None] = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
     bot_certificate: Union[FilePath, None] = None
 
@@ -390,7 +390,7 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: PositiveInt = 5002
 
     # Background tasks
-    crontab: List[expression.CronExpression] = []
+    crontab: List[expression.CronExpression] = []  # todo: move to yaml file in config dir
     weather_alert: Union[str, datetime, None] = None
     weather_alert_min: Union[int, PositiveInt] = 36
     weather_alert_max: Union[int, PositiveInt] = 104

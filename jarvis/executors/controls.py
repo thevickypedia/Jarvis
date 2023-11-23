@@ -89,8 +89,8 @@ def exit_process() -> None:
 
 def sleep_control(*args) -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
-    Thread(target=pybrightness.decrease).start()
-    pywslocker.lock()
+    Thread(target=pybrightness.decrease, args=(logger,)).start()
+    pywslocker.lock(logger)
     if not shared.called['report']:
         speaker.speak(text=random.choice(conversation.acknowledgement))
     return True

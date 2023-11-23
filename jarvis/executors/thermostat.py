@@ -86,18 +86,21 @@ def set_thermostat(device: Zone, phrase: str) -> None:
         device: Authenticated device object.
         phrase: Takes the phrase spoken as an argument.
     """
-    if "cool" in phrase:
+    if "cool" in phrase or "cold" in phrase:
         if value := util.extract_nos(phrase, method=int):
             device.set_temp_cool_setpoint(value)
             speaker.speak(text=f"I've set the thermostat to cool, {value}\N{DEGREE SIGN}F {models.env.title}!")
         else:
             speaker.speak(text=f"Please specify a value for the cool point {models.env.title}!")
-    if "heat" in phrase:
+        return
+    if "heat" in phrase or "hot" in phrase or "warm" in phrase:
         if value := util.extract_nos(phrase, method=int):
             device.set_temp_heat_setpoint(value)
             speaker.speak(text=f"I've set the thermostat to heat, {value}\N{DEGREE SIGN}F {models.env.title}!")
         else:
             speaker.speak(text=f"Please specify a value for the heat point {models.env.title}!")
+        return
+    speaker.speak(text=f"I'm sorry {models.env.title}! Please specify if you want to set it as heat or cool.")
 
 
 def thermostat_controls(phrase: str) -> None:
