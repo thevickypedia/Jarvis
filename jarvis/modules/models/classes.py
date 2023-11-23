@@ -369,7 +369,6 @@ class EnvConfig(BaseSettings):
     listener_timeout: Union[PositiveFloat, PositiveInt] = 3
     listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 5
     recognizer_confidence: Union[float, PositiveInt] = Field(0, le=1, ge=0)
-    recognizer_settings: RecognizerSettings = RecognizerSettings()  # todo: move to yaml file in config dir
 
     # Telegram config
     bot_token: Union[str, None] = None
@@ -479,6 +478,9 @@ class FileIO(BaseModel):
     # Directories
     root: DirectoryPath = os.path.realpath('fileio')
 
+    # Speech Recognition config
+    recognizer: FilePath = os.path.join(root, 'recognizer.yaml')
+
     # Home automation
     crontab: FilePath = os.path.join(root, 'crontab.yaml')
     automation: FilePath = os.path.join(root, 'automation.yaml')
@@ -528,6 +530,7 @@ class FileIO(BaseModel):
     speech_synthesis_wav: FilePath = os.path.join(root, 'speech_synthesis.wav')
     # Store log file name in a variable as it is used in multiple modules with file IO
     # todo: remove datetime from id and create log files in dedicated functions
+    # todo: check if there are any specific use cases for cid file to have datetime
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
     speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join(root, 'speech_synthesis_%d-%m-%Y.cid'))
 

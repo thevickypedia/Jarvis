@@ -5,9 +5,10 @@ from threading import Timer
 from typing import Any, DefaultDict, Dict, List, Union
 
 import yaml
+from pydantic import ValidationError
 
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 
 
 def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
@@ -288,3 +289,19 @@ def put_alarms(data: List[Dict[str, Union[str, bool]]]):
     with open(models.fileio.alarms, 'w') as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
+
+
+def get_recognizer() -> classes.RecognizerSettings:
+    """Get the stored settings for speech recognition.
+
+    Returns:
+        RecognizerSettings:
+        Returns the parsed recognizer settings or default.
+    """
+    try:
+        with open(models.fileio.recognizer) as file:
+            rec_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        return classes.RecognizerSettings(**rec_data)
+    except (yaml.YAMLError, FileNotFoundError, TypeError, ValidationError) as error:
+        logger.error(error)
+    return classes.RecognizerSettings()

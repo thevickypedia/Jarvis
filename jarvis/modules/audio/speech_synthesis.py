@@ -86,6 +86,7 @@ def speech_synthesis_runner() -> None:
 
     try:
         # linux requires docker to run as admin and linux is better with commandline
+        # todo: try this by adding linux user to docker group
         if models.settings.os == models.supported_platforms.linux:
             cmd = DOCKER_CMD.format(PORT=models.env.speech_synthesis_port, PASSWORD=models.env.root_password,
                                     HOME=models.env.home, CWD=os.getcwd(), UID=os.getuid(), GID=os.getgid(),

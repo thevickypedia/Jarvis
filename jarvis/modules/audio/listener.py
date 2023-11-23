@@ -11,7 +11,7 @@ from pydantic import PositiveFloat, PositiveInt
 from speech_recognition import (Microphone, Recognizer, RequestError,
                                 UnknownValueError, WaitTimeoutError)
 
-from jarvis.executors import word_match
+from jarvis.executors import files, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
@@ -22,11 +22,12 @@ recognizer = Recognizer()
 microphone = Microphone(device_index=models.env.microphone_index)
 
 if models.settings.pname == "JARVIS":
-    recognizer.energy_threshold = models.env.recognizer_settings.energy_threshold
-    recognizer.pause_threshold = models.env.recognizer_settings.pause_threshold
-    recognizer.phrase_threshold = models.env.recognizer_settings.phrase_threshold
-    recognizer.dynamic_energy_threshold = models.env.recognizer_settings.dynamic_energy_threshold
-    recognizer.non_speaking_duration = models.env.recognizer_settings.non_speaking_duration
+    recognizer_settings = files.get_recognizer()
+    recognizer.energy_threshold = recognizer_settings.energy_threshold
+    recognizer.pause_threshold = recognizer_settings.pause_threshold
+    recognizer.phrase_threshold = recognizer_settings.phrase_threshold
+    recognizer.dynamic_energy_threshold = recognizer_settings.dynamic_energy_threshold
+    recognizer.non_speaking_duration = recognizer_settings.non_speaking_duration
 
 
 def listen(sound: bool = True, no_conf: bool = False,
