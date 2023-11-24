@@ -531,8 +531,8 @@ class FileIO(BaseModel):
     # Store log file name in a variable as it is used in multiple modules with file IO
     # todo: remove datetime from id and create log files in dedicated functions
     # todo: check if there are any specific use cases for cid file to have datetime
+    speech_synthesis_cid: FilePath = os.path.join(root, 'speech_synthesis.cid')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
-    speech_synthesis_id: FilePath = datetime.now().strftime(os.path.join(root, 'speech_synthesis_%d-%m-%Y.cid'))
 
     # Secure Send
     secure_send: FilePath = os.path.join(root, 'secure_send.yaml')

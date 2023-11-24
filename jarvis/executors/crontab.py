@@ -72,7 +72,7 @@ def validate_jobs(log: bool = True) -> Generator[expression.CronExpression]:
                           dst=datetime.now().strftime(os.path.join(models.fileio.root, 'crontab_%d-%m-%Y.yaml')))
                 continue
             if log:
-                msg = f"{cron.expression!r} will be executed at {cron.comment!r}"
+                msg = f"{cron.comment!r} will be executed as per the schedule {cron.expression!r}"
                 logger.info(msg)
             yield cron
     if models.env.author_mode:

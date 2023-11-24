@@ -187,9 +187,9 @@ def delete_docker_container() -> None:
         - | If the intention is to keep docker running forever, start the
           | docker container with the command in README before starting Jarvis.
     """
-    if not os.path.isfile(models.fileio.speech_synthesis_id):
+    if not os.path.isfile(models.fileio.speech_synthesis_cid):
         return
-    with open(models.fileio.speech_synthesis_id) as file:
+    with open(models.fileio.speech_synthesis_cid) as file:
         container_id = file.read()
     with open(models.fileio.speech_synthesis_log, "a") as log_file:
         if models.settings.os == models.supported_platforms.linux:
@@ -227,8 +227,8 @@ def delete_docker_container() -> None:
                 client.api.remove_container(container_id)
             except ContainerError as error:
                 log_file.write(error.__str__() + "\n")
-        log_file.write(f"Removing cid file {models.fileio.speech_synthesis_id!r}\n")
-        os.remove(models.fileio.speech_synthesis_id)
+        log_file.write(f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n")
+        os.remove(models.fileio.speech_synthesis_cid)
 
 
 def terminator() -> NoReturn:

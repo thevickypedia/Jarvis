@@ -85,17 +85,16 @@ def speech_synthesis_runner() -> None:
             os.remove(os.path.join(models.fileio.root, file))
 
     try:
-        # linux requires docker to run as admin and linux is better with commandline
-        # todo: try this by adding linux user to docker group
         if models.settings.os == models.supported_platforms.linux:
             cmd = DOCKER_CMD.format(PORT=models.env.speech_synthesis_port, PASSWORD=models.env.root_password,
                                     HOME=models.env.home, CWD=os.getcwd(), UID=os.getuid(), GID=os.getgid(),
-                                    DOCKER_CID=models.fileio.speech_synthesis_id)
+                                    DOCKER_CID=models.fileio.speech_synthesis_cid)
             log_file.write("Starting speech synthesis in docker container\n")
             subprocess.Popen([cmd], shell=True, bufsize=0, stdout=log_file, stderr=log_file)
         else:
             models.env.home = str(models.env.home)
             client = docker.from_env()
+            # todo: doesn't honor custom port number (verified in linux, yet to be tested in others)
             result = client.containers.run(
                 image="thevickypedia/speech-synthesis",
                 ports={f"{models.env.speech_synthesis_port}/tcp": models.env.speech_synthesis_port},
@@ -106,7 +105,7 @@ def speech_synthesis_runner() -> None:
             )
             log_file.write(f"Started speech synthesis in docker container {result.id!r}\n")
             # Due to lack of a "cidfile" flag, create one manually
-            with open(models.fileio.speech_synthesis_id, 'w') as file:
+            with open(models.fileio.speech_synthesis_cid, 'w') as file:
                 file.write(result.id)
             logs = client.api.logs(container=result.id, stdout=True, stderr=True, stream=True, timestamps=True,
                                    tail='all', since=None, follow=None, until=None)
