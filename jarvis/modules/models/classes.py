@@ -391,10 +391,6 @@ class EnvConfig(BaseSettings):
     car_password: Union[str, None] = None
     car_pin: Union[str, None] = Field(None, pattern="\\d{4}$")
 
-    # Garage door config
-    myq_username: Union[EmailStr, None] = None
-    myq_password: Union[str, None] = None
-
     # Thermostat config
     tcc_username: Union[EmailStr, None] = None
     tcc_password: Union[str, None] = None

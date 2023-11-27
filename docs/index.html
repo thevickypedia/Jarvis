@@ -4038,60 +4038,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.myq_controller">
-<span id="myq-controller"></span><h1>MyQ Controller<a class="headerlink" href="#module-jarvis.executors.myq_controller" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">AsyncThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs asynchronosly using threading.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AsyncThread</span>
-</pre></div>
-</div>
-<p>Initiates <code class="docutils literal notranslate"><span class="pre">AsyncThread</span></code> object as a super class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
-<li><p><strong>args</strong> – Arguments.</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.AsyncThread.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.AsyncThread.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">asyncio.run</span></code> with arguments passed.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.run_async">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">run_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.run_async" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if an existing loop is running in asyncio and triggers the loop with or without a thread accordingly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> – Function that has to be triggered.</p></li>
-<li><p><strong>args</strong> – Arguments.</p></li>
-<li><p><strong>kwargs</strong> – Keyword arguments.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.myq_controller.garage">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.myq_controller.</span></span><span class="sig-name descname"><span class="pre">garage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.myq_controller.garage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for the garage door controller.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-jarvis.executors.offline">
 <span id="offline"></span><h1>Offline<a class="headerlink" href="#module-jarvis.executors.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -7730,16 +7676,6 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.myq_username">
-<span class="sig-name descname"><span class="pre">myq_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.myq_username" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.myq_password">
-<span class="sig-name descname"><span class="pre">myq_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.myq_password" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.tcc_username">
 <span class="sig-name descname"><span class="pre">tcc_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.tcc_username" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -8356,33 +8292,6 @@ allow <cite>self</cite> as a field name.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TVError</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="jarvis.modules.exceptions.NoCoversFound">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoCoversFound</span></span><a class="headerlink" href="#jarvis.modules.exceptions.NoCoversFound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> to indicate that no garage doors were found.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">NoCoversFound</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="jarvis.modules.exceptions.CoverNotOnline">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">CoverNotOnline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.exceptions.CoverNotOnline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">SystemError</span></code> to indicate that the garage door connector is offline.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CoverNotOnline</span>
-</pre></div>
-</div>
-<p>Instantiates device and msg attributes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>device</strong> – Name of the device.</p></li>
-<li><p><strong>msg</strong> – Error message.</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -9088,84 +8997,6 @@ allow <cite>self</cite> as a field name.</p>
 <dt class="sig sig-object py" id="jarvis.modules.models.models._global_validations">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.models.</span></span><span class="sig-name descname"><span class="pre">_global_validations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.models.models._global_validations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validations that should happen for all processes including parent and child.</p>
-</dd></dl>
-
-</section>
-<section id="module-jarvis.modules.myq.myq">
-<span id="myq"></span><h1>MyQ<a class="headerlink" href="#module-jarvis.modules.myq.myq" title="Permalink to this heading">¶</a></h1>
-<p>Module to control MyQ garage control devices.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MyQ</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.operation">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">operation</span></span><a class="headerlink" href="#jarvis.modules.myq.myq.operation" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#jarvis.modules.myq.myq.Operation" title="jarvis.modules.myq.myq.Operation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operation</span></code></a></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.garage_controller">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">garage_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.myq.myq.garage_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an aiohttp session and run an operation on garage door.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#jarvis.modules.exceptions.NoCoversFound" title="jarvis.modules.exceptions.NoCoversFound"><strong>NoCoversFound</strong></a> – </p></li>
-<li><p><strong>- If there were no garage doors found in the MyQ account.</strong> – </p></li>
-<li><p><a class="reference internal" href="#jarvis.modules.exceptions.CoverNotOnline" title="jarvis.modules.exceptions.CoverNotOnline"><strong>CoverNotOnline</strong></a> – </p></li>
-<li><p><strong>- If the requested garage door is not online.</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response back to the user.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<hr class="docutils" />
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.myq.myq.</span></span><span class="sig-name descname"><span class="pre">Operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.myq.myq.Operation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Operations allowed on garage door.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Operation</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.OPENING">
-<span class="sig-name descname"><span class="pre">OPENING</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'opening'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.OPENING" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.CLOSED">
-<span class="sig-name descname"><span class="pre">CLOSED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'closed'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.CLOSED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.CLOSING">
-<span class="sig-name descname"><span class="pre">CLOSING</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'closing'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.CLOSING" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.OPEN">
-<span class="sig-name descname"><span class="pre">OPEN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'open'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.OPEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.CLOSE">
-<span class="sig-name descname"><span class="pre">CLOSE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'close'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.CLOSE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.myq.myq.Operation.STATE">
-<span class="sig-name descname"><span class="pre">STATE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'state'</span></em><a class="headerlink" href="#jarvis.modules.myq.myq.Operation.STATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>
@@ -11987,7 +11818,6 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.listener_controls">Listener Controls</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.location">Location</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.method">Method Executor</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.myq_controller">MyQ Controller</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.offline">Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.others">Others</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.port_handler">Port Handler</a></li>
@@ -12025,7 +11855,6 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.meetings.ics">Meetings</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.models">Models</a></li>
-<li><a class="reference internal" href="#module-jarvis.modules.myq.myq">MyQ</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.retry.retry">Retry Handler</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.support">Support</a></li>

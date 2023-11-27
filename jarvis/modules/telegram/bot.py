@@ -102,10 +102,6 @@ def intro() -> str:
            "get me the status of my thermostat\n" \
            "what's the indoor temperature\n" \
            "set my thermostat to heat 70 degrees\n\n" \
-           "*Garage Controls*\n" \
-           "get me the status of my garage\n" \
-           "close my garage\n" \
-           "open my garage\n\n" \
            "*TV*\n" \
            "launch Netflix on my tv\n" \
            "increase the volume on my tv\n" \

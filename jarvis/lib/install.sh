@@ -27,8 +27,6 @@ os_agnostic() {
     python -m pip install --no-cache-dir -r "$current_dir"/version_pinned_requirements.txt
     python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
     python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
-    # todo: remove the following and replace with a new version when PR for 'pymyq' is merged
-    python -m pip install git+https://github.com/arraylabs/pymyq.git@refs/pull/188/head
 }
 
 download_from_ext_sources_windows() {

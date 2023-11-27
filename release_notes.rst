@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+v4.3 (11/27/2023)
+-----------------
+- Includes bug fixes and performance improvements
+- ``wifi_connector`` now runs along side background tasks to reduce resource consumption
+- ``crontab`` schedule and ``recognizer_settings`` have been moved from env vars to YAML file mapping
+- More efficient logging and less unwanted information at info level logging
+
 v4.2 (11/23/2023)
 -----------------
 - Includes a new feature to control `HoneyWell` thermostat

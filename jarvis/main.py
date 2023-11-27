@@ -134,7 +134,6 @@ class Activator:
                         )
                     )
                 )
-                # todo: remove legacy support
                 if models.settings.legacy:
                     if wake_len == 1 and result:
                         self.executor()
@@ -185,13 +184,15 @@ def start() -> None:
     if internet.ip_address() and internet.public_ip_info():
         support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
+        support.write_screen("Trying to toggle WiFi")
         pywifi.ControlPeripheral(logger=logger).enable()
-        support.write_screen("Trying to enable WiFi")
-        time.sleep(5)
         if models.env.wifi_ssid and models.env.wifi_password:
+            time.sleep(5)
             support.write_screen(f"Trying to connect to {models.env.wifi_ssid!r}")
-            if not pywifi.ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
-                                            logger=logger).wifi_connector():
+            if pywifi.ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
+                                        logger=logger).wifi_connector():
+                support.write_screen(f"Connected to {models.env.wifi_ssid!r}")
+            else:
                 support.write_screen(text="BUMMER::Unable to connect to the Internet")
                 speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
                                    "Please check your connection.", run=True)

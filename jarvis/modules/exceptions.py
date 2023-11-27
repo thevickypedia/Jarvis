@@ -148,36 +148,6 @@ class TVError(ConnectionResetError):
     """
 
 
-class NoCoversFound(NotImplementedError):
-    """Custom ``NotImplementedError`` to indicate that no garage doors were found.
-
-    >>> NoCoversFound
-
-    """
-
-
-class CoverNotOnline(SystemError):
-    """Custom ``SystemError`` to indicate that the garage door connector is offline.
-
-    >>> CoverNotOnline
-
-    """
-
-    def __init__(self, device: str, msg: str):
-        """Instantiates device and msg attributes.
-
-        Args:
-            device: Name of the device.
-            msg: Error message.
-        """
-        self.device = device
-        self.msg = msg
-
-    def __str__(self) -> str:
-        """Returns a printable representational of the error message."""
-        return repr(self.msg)
-
-
 CONDITIONAL_ENDPOINT_RESTRICTION = APIResponse(
     status_code=HTTPStatus.NOT_IMPLEMENTED.real,
     detail="Required environment variables have not been setup.\nPlease refer: "

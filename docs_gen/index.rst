@@ -455,13 +455,6 @@ Method Executor
    :members:
    :undoc-members:
 
-MyQ Controller
-==============
-
-.. automodule:: jarvis.executors.myq_controller
-   :members:
-   :undoc-members:
-
 Offline
 =======
 
@@ -870,19 +863,6 @@ Models
 .. automodule:: jarvis.modules.models.models
    :members:
    :undoc-members:
-
-MyQ
-===
-
-.. automodule:: jarvis.modules.myq.myq
-   :members:
-   :exclude-members: Operation
-
-====
-
-.. autoclass:: jarvis.modules.myq.myq.Operation(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 Retry Handler
 =============

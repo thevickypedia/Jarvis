@@ -12,10 +12,9 @@ from jarvis.executors import (alarm, automation, background_task, car,
                               comm_squire, communicator, controls, date_time,
                               display_functions, face, github, guard, internet,
                               ios_functions, lights, listener_controls,
-                              location, myq_controller, others, remind,
-                              robinhood, simulator, static_responses, system,
-                              thermostat, todo_list, tv, volume, vpn_server,
-                              weather, wiki)
+                              location, others, remind, robinhood, simulator,
+                              static_responses, system, thermostat, todo_list,
+                              tv, volume, vpn_server, weather, wiki)
 from jarvis.modules.audio import voices
 from jarvis.modules.meetings import events, ics_meetings
 
@@ -34,7 +33,6 @@ def function_mapping() -> OrderedDict[str, Callable]:
         television=tv.television,
         volume=volume.volume,
         car=car.car,
-        garage=myq_controller.garage,
         thermostat=thermostat.thermostat_controls,
         weather=weather.weather,
         meetings=ics_meetings.meetings,
