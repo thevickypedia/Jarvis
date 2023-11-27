@@ -1,5 +1,4 @@
 import os
-import warnings
 from datetime import datetime, timedelta
 from typing import Union
 
@@ -77,21 +76,14 @@ def auto_helper() -> Union[str, None]:
         Task to be executed.
     """
     automation_data = files.get_automation()
-    if automation_data is None:
-        warnings.warn(
-            "AUTOMATION FILE :: Invalid file format."
-        )
-        logger.error("Invalid file format. Logging automation data and renaming the file to avoid repeated errors in a "
-                     "loop.\n%s\n\n%s\n\n%s" %
-                     (''.join(['*' for _ in range(120)]),
-                      open(models.fileio.automation).read(),
-                      ''.join(['*' for _ in range(120)])))
-        os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
-        return
-
     for automation_time, automation_schedule in automation_data.items():
-        if not automation_schedule:
-            del automation_data[automation_time]
+        try:
+            datetime.strptime(automation_time, "%I:%M %p")
+            assert automation_schedule, "Following entry does not have the task information."
+        except (ValueError, AssertionError) as error:
+            logger.error(error)
+            logger.error("%s - %s", automation_time, automation_schedule)
+            automation_data.pop(automation_time)
             rewrite_automator(write_data=automation_data)
             # Use return as python doesn't like dict size change between a loop
             # Since this function is called every second, there is no need for recursion
@@ -100,20 +92,18 @@ def auto_helper() -> Union[str, None]:
             automation_schedule = [automation_schedule]
             automation_data[automation_time] = automation_schedule
         for index, automation_info in enumerate(automation_schedule):
-            if not (exec_task := automation_info.get("task")):
-                logger.error("Following entry doesn't have a task.")
+            if not isinstance(automation_info, dict):
+                logger.error("Following entry is not a valid dictionary.")
                 logger.error("%s - %s", automation_time, automation_schedule)
                 del automation_data[automation_time][index]
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion
                 return
-            try:
-                datetime.strptime(automation_time, "%I:%M %p")
-            except ValueError:
-                logger.error("Following entry has an incorrect datetime format.")
+            if not (exec_task := automation_info.get("task")):
+                logger.error("Following entry doesn't have a task.")
                 logger.error("%s - %s", automation_time, automation_schedule)
-                automation_data.pop(automation_time)
+                del automation_data[automation_time][index]
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion

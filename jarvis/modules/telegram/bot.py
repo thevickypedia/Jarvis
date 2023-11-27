@@ -51,7 +51,7 @@ def greeting() -> str:
         Random greeting.
     """
     return random.choice(
-        ("Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "What's up", "Yo", "Cheers")
+        ("Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "Cheers")
     )
 
 
@@ -65,16 +65,20 @@ def get_title_by_name(name: str) -> str:
         str:
         ``mam`` if predicted to be female, ``sir`` if gender is predicted to be male or unpredicted.
     """
-    logger.info("Identifying gender for %s", name)
+    if name.lower() == models.env.name.lower():
+        return models.env.title
+    logger.info("Identifying gender for '%s'", name)
     try:
         response = requests.get(url=f"https://api.genderize.io/?name={name}", timeout=(3, 3))
     except EgressErrors as error:
         logger.critical(error)
         return models.env.title
     if not response.ok:
+        logger.critical("%d: %s", response.status_code, response.text)
         return models.env.title
-    if response.json().get('gender', 'Unidentified').lower() == 'female':
-        logger.info("%s has been identified as female.", name)
+    response_json = response.json()
+    logger.info(response_json)
+    if response_json.get('gender', 'unidentified').lower() == 'female':
         return 'mam'
     return 'sir'
 
@@ -94,10 +98,14 @@ def intro() -> str:
            "turn off my car\n" \
            "lock my car\n" \
            "unlock my car\n\n" \
+           "*Thermostat Controls*\n" \
+           "get me the status of my thermostat\n" \
+           "what's the indoor temperature\n" \
+           "set my thermostat to heat 70 degrees\n\n" \
            "*Garage Controls*\n" \
            "get me the status of my garage\n" \
            "close my garage\n" \
-           "open my garage\n" \
+           "open my garage\n\n" \
            "*TV*\n" \
            "launch Netflix on my tv\n" \
            "increase the volume on my tv\n" \

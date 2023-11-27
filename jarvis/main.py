@@ -1,13 +1,14 @@
 import string
 import struct
+import time
 import traceback
 from datetime import datetime
 
 import pvporcupine
 import pyaudio
+import pywifi
 import yaml
 from playsound import playsound
-from pywifi import ControlConnection, ControlPeripheral
 
 from jarvis.executors import (commander, controls, internet, listener_controls,
                               location, processor)
@@ -133,6 +134,7 @@ class Activator:
                         )
                     )
                 )
+                # todo: remove legacy support
                 if models.settings.legacy:
                     if wake_len == 1 and result:
                         self.executor()
@@ -183,13 +185,16 @@ def start() -> None:
     if internet.ip_address() and internet.public_ip_info():
         support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
-        ControlPeripheral(logger=logger).enable()
-        if models.env.wifi_ssid and models.env.wifi_password and not \
-                ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
-                                  logger=logger).wifi_connector():
-            support.write_screen(text="BUMMER::Unable to connect to the Internet")
-            speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
-                               "Please check your connection.", run=True)
+        pywifi.ControlPeripheral(logger=logger).enable()
+        support.write_screen("Trying to enable WiFi")
+        time.sleep(5)
+        if models.env.wifi_ssid and models.env.wifi_password:
+            support.write_screen(f"Trying to connect to {models.env.wifi_ssid!r}")
+            if not pywifi.ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
+                                            logger=logger).wifi_connector():
+                support.write_screen(text="BUMMER::Unable to connect to the Internet")
+                speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
+                                   "Please check your connection.", run=True)
     support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,

@@ -82,7 +82,7 @@ class ThreadExecutor:
                     else:
                         failed_msg.append(
                             f'{support.pluralize(count=len(v), word="light", to_words=True, cap_word=True)} from {k}')
-            if len(failed_msg) == 1:  # Failed only on a single lamp
+            if len(failed_msg) == 1 and failed_msg[0].startswith('One'):  # Failed only on a single lamp
                 response = "".join(failed_msg) + " isn't available right now!"
             else:
                 response = util.comma_separator(list_=failed_msg) + " aren't available right now!"

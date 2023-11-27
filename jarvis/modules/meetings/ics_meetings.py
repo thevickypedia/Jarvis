@@ -69,7 +69,7 @@ def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", q
         response = requests.get(url=models.env.ics_url)
     except EgressErrors as error:
         logger.error(error)
-        return f"I was unable to connect to the internet {models.env.title}! Please check your connection."
+        return f"I'm sorry {models.env.title}! I was unable to connect to the shared calendar!"
     if not response.ok:
         logger.error("[%d]: [%s]", response.status_code, response.text)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."

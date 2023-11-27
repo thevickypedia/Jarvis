@@ -26,6 +26,7 @@ from pydantic import (BaseModel, DirectoryPath, EmailStr, Field, FilePath,
                       HttpUrl, PositiveFloat, PositiveInt, constr,
                       field_validator)
 from pydantic_settings import BaseSettings
+from pyhtcc import Zone
 
 from jarvis import indicators, scripts
 from jarvis.modules.crontab import expression
@@ -87,8 +88,39 @@ if settings.os.startswith('Windows'):
     settings.os = "Windows"
 
 
+class WiFiConnection(BaseModel):
+    """Wrapper to store Wi-Fi controls.
+
+    >>> WiFiConnection
+
+    """
+
+    unknown_errors: int = 0
+    os_errors: int = 0
+
+
+class Thermostat(BaseModel):
+    """Wrapper to store thermostat controls.
+
+    >>> Thermostat
+
+    """
+
+    device: Optional[Union[Zone, str]] = None
+    expiration: Optional[float] = None
+
+    class Config:
+        """Config to allow arbitrary types."""
+
+        arbitrary_types_allowed = True
+
+
 class VehicleAuthorization(BaseModel):
-    """Wrapper to store vehicle authorization."""
+    """Wrapper to store vehicle authorization.
+
+    >>> VehicleAuthorization
+
+    """
 
     device_id: Optional[str] = None
     expiration: Optional[float] = None
@@ -96,7 +128,11 @@ class VehicleAuthorization(BaseModel):
 
 
 class VehicleConnection(BaseModel):
-    """Module to create vehicle connection."""
+    """Wrapper to create and store vehicle connection.
+
+    >>> VehicleConnection
+
+    """
 
     vin: Optional[str] = None
     connection: Optional[Callable] = None

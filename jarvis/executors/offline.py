@@ -11,7 +11,7 @@ from deepdiff import DeepDiff
 from pydantic import HttpUrl
 
 from jarvis.executors import (alarm, automation, background_task, conditions,
-                              controls, crontab, files, internet,
+                              connection, controls, crontab, files, internet,
                               listener_controls, others, remind,
                               weather_monitor, word_match)
 from jarvis.modules.auth_bearer import BearerAuth
@@ -40,10 +40,14 @@ def background_task_runner() -> None:
     multiprocessing_logger(filename=os.path.join('logs', 'background_tasks_%d-%m-%Y.log'))
     # Since env vars are loaded only during startup, validate weather alert only then
     automation.validate_weather_alert()
+    if all((models.env.wifi_ssid, models.env.wifi_password)):
+        wifi_checker = classes.WiFiConnection()
+    else:
+        wifi_checker = None
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
     meeting_muter = []
-    start_events = start_meetings = start_cron = time.time()
+    start_events = start_meetings = start_cron = start_wifi = time.time()
     task_dict = {i: time.time() for i in range(len(tasks))}  # Creates a start time for each task
     dry_run = True
     smart_listener = Queue()
@@ -78,22 +82,27 @@ def background_task_runner() -> None:
                         cursor.execute("INSERT or REPLACE INTO children (crontab) VALUES (?);", (cron_process.pid,))
                         db.connection.commit()
 
+        # Trigger wifi checker
+        if (wifi_checker and start_wifi + models.env.connection_retry <= time.time()) or dry_run:
+            start_wifi = time.time()
+            logger.debug("Initiating WiFi connection checker")
+            wifi_checker = connection.wifi(wifi_checker)
+
         # Trigger automation
-        if os.path.isfile(models.fileio.automation):
-            if exec_task := automation.auto_helper():
-                # Check and trigger weather alert monitoring system
-                if "weather" in exec_task.lower():
-                    # run as daemon and not store in children table as this won't take long
-                    logger.debug("Initiating weather alert monitor")
-                    Process(target=weather_monitor.monitor, daemon=True).start()
-                else:
-                    logger.debug("Executing: '%s'", exec_task)
-                    try:
-                        response = offline_communicator(command=exec_task) or "No response for automated task"
-                        logger.debug("Response: '%s'", response)
-                    except Exception as error:
-                        logger.error(error)
-                        logger.error(traceback.format_exc())
+        if exec_task := automation.auto_helper():
+            # Check and trigger weather alert monitoring system
+            if "weather" in exec_task.lower():
+                # run as daemon and not store in children table as this won't take long
+                logger.debug("Initiating weather alert monitor")
+                Process(target=weather_monitor.monitor, daemon=True).start()
+            else:
+                logger.debug("Executing: '%s'", exec_task)
+                try:
+                    response = offline_communicator(command=exec_task) or "No response for automated task"
+                    logger.debug("Response: '%s'", response)
+                except Exception as error:
+                    logger.error(error)
+                    logger.error(traceback.format_exc())
 
         # Sync events from the event app specified (calendar/outlook)
         # Run either for macOS or during the initial run so the response gets stored in the DB

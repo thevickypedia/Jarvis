@@ -2728,15 +2728,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.connection">
 <span id="connection"></span><h1>Connection<a class="headerlink" href="#module-jarvis.executors.connection" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.connection.wifi_connector">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.connection.</span></span><span class="sig-name descname"><span class="pre">wifi_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.connection.wifi_connector" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.connection.wifi">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.connection.</span></span><span class="sig-name descname"><span class="pre">wifi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.modules.models.classes.WiFiConnection" title="jarvis.modules.models.classes.WiFiConnection"><span class="pre">WiFiConnection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.WiFiConnection" title="jarvis.modules.models.classes.WiFiConnection"><span class="pre">WiFiConnection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.connection.wifi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Logs up to 5 unknown errors before restarting process.</p></li>
-</ul>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>conn_object</strong> – Takes an object of unknown errors and OSError as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the connection object to keep alive, None to stop calling this function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.models.classes.WiFiConnection" title="jarvis.modules.models.classes.WiFiConnection">WiFiConnection</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -4475,7 +4480,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>telegram_api: Telegram Bot</p></li>
 <li><p>jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance, Telegram</p></li>
 <li><p>background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks</p></li>
-<li><p>wifi_connector: Wi-Fi Re-connector</p></li>
 <li><p>plot_mic: Plot microphone usage in real time</p></li>
 </ul>
 </dd>
@@ -4504,7 +4508,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
 <li><p>jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.</p></li>
 <li><p>background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.</p></li>
-<li><p>wifi_connector: Initiates Wi-Fi connection handler to lookout for Wi-Fi disconnections and reconnect.</p></li>
 <li><p>plot_mic: Initiates plotting microphone usage using matplotlib.</p></li>
 </ul>
 </div>
@@ -4905,25 +4908,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.executors.thermostat">
 <span id="thermostat"></span><h1>Thermostat<a class="headerlink" href="#module-jarvis.executors.thermostat" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">Thermostat</span></span><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controller object for device object and expiration time.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thermostat</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.device">
-<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.device" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.thermostat.Thermostat.expiration">
-<span class="sig-name descname"><span class="pre">expiration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.thermostat.Thermostat.expiration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.create_connection">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.create_connection" title="Permalink to this definition">¶</a></dt>
@@ -5126,17 +5110,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </section>
 <section id="module-jarvis.executors.volume">
 <span id="volume"></span><h1>Volume<a class="headerlink" href="#module-jarvis.executors.volume" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.volume.main_volume">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.volume.</span></span><span class="sig-name descname"><span class="pre">main_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.volume.main_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changes system volume.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>level</strong> – Takes the volume level as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.volume.speaker_volume">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.volume.</span></span><span class="sig-name descname"><span class="pre">speaker_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.volume.speaker_volume" title="Permalink to this definition">¶</a></dt>
@@ -6989,6 +6962,103 @@ Pass 155 for LO and 285 for HI.</p>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.models.classes.SupportedPlatforms" title="jarvis.modules.models.classes.SupportedPlatforms"><code class="xref py py-class docutils literal notranslate"><span class="pre">SupportedPlatforms</span></code></a></p>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">WiFiConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os_errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to store Wi-Fi controls.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WiFiConnection</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.unknown_errors">
+<span class="sig-name descname"><span class="pre">unknown_errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.unknown_errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.os_errors">
+<span class="sig-name descname"><span class="pre">os_errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.os_errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.model_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'os_errors':</span> <span class="pre">FieldInfo(annotation=int,</span> <span class="pre">required=False,</span> <span class="pre">default=0),</span> <span class="pre">'unknown_errors':</span> <span class="pre">FieldInfo(annotation=int,</span> <span class="pre">required=False,</span> <span class="pre">default=0)}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.model_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">Thermostat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expiration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to store thermostat controls.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Thermostat</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.device">
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.expiration">
+<span class="sig-name descname"><span class="pre">expiration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.expiration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Config to allow arbitrary types.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.Config.arbitrary_types_allowed">
+<span class="sig-name descname"><span class="pre">arbitrary_types_allowed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.Config.arbitrary_types_allowed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'arbitrary_types_allowed':</span> <span class="pre">True}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'device':</span> <span class="pre">FieldInfo(annotation=Union[Zone,</span> <span class="pre">str,</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'expiration':</span> <span class="pre">FieldInfo(annotation=Union[float,</span> <span class="pre">NoneType],</span> <span class="pre">required=False)}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.handle_multiform">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">handle_multiform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.handle_multiform" title="Permalink to this definition">¶</a></dt>
@@ -7112,6 +7182,9 @@ allow <cite>self</cite> as a field name.</p>
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.VehicleAuthorization">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">VehicleAuthorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.classes.VehicleAuthorization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to store vehicle authorization.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">VehicleAuthorization</span>
+</pre></div>
+</div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
@@ -7138,7 +7211,10 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.VehicleConnection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">VehicleConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.classes.VehicleConnection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Module to create vehicle connection.</p>
+<dd><p>Wrapper to create and store vehicle connection.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">VehicleConnection</span>
+</pre></div>
+</div>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>

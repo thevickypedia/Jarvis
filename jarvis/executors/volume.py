@@ -1,22 +1,13 @@
 import random
 import sys
 
-from pyvolume import pyvolume
+import pyvolume
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, util
-
-
-def main_volume(level: int) -> None:
-    """Changes system volume.
-
-    Args:
-        level: Takes the volume level as an argument.
-    """
-    pyvolume(level=level, debug=True, logger=logger)
 
 
 def speaker_volume(level: int) -> None:
@@ -56,11 +47,11 @@ def volume(phrase: str = None, level: int = None) -> None:
     phrase = phrase or ""
     caller = sys._getframe(1).f_code.co_name  # noqa
     if 'master' in phrase or 'main' in phrase or caller in ('executor', 'starter'):
-        main_volume(level=level)
+        pyvolume.custom(level, logger)
         speaker_volume(level=level)
     else:
         if shared.called_by_offline or 'system' in phrase:
-            main_volume(level=level)
+            pyvolume.custom(level, logger)
         else:
             speaker_volume(level=level)
     if response:

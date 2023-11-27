@@ -6,20 +6,10 @@ from pyhtcc import AuthenticationError, PyHTCC, UnauthorizedError, Zone
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 from jarvis.modules.utils import support, util
-
-
-class Thermostat:
-    """Controller object for device object and expiration time.
-
-    >>> Thermostat
-
-    """
-
-    device: Union[Zone, str] = None
-    expiration: Union[float] = None
 
 
 def create_connection() -> None:
@@ -28,17 +18,24 @@ def create_connection() -> None:
         tcc_object: PyHTCC = PyHTCC(models.env.tcc_username, models.env.tcc_password)
     except AuthenticationError as error:
         logger.error(error)
-        Thermostat.device = "AuthenticationError"
+        classes.Thermostat.device = "AuthenticationError"
+        return
+    except EgressErrors as error:
+        logger.error(error)
+        classes.Thermostat.device = "ConnectionError"
         return
     try:
-        Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
-        Thermostat.expiration = time.time() + 86_400
+        classes.Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
+        classes.Thermostat.expiration = time.time() + 86_400
     except UnauthorizedError as error:
         logger.error(error)
-        Thermostat.device = "AuthenticationError"
+        classes.Thermostat.device = "AuthenticationError"
     except NameError as error:
         logger.error(error)
-        Thermostat.device = "NameError"
+        classes.Thermostat.device = "NameError"
+    except EgressErrors as error:
+        logger.error(error)
+        classes.Thermostat.device = "ConnectionError"
 
 
 # Initiate connection only for main and offline communicators
@@ -113,23 +110,26 @@ def get_auth_object() -> Union[Zone, None]:
         Zone:
         Authenticated Zone object.
     """
-    if isinstance(Thermostat.device, str):  # retry in case there was an error previously
-        logger.warning("Previous error: '%s', retrying", Thermostat.device)
+    if isinstance(classes.Thermostat.device, str):  # retry in case there was an error previously
+        logger.warning("Previous error: '%s', retrying", classes.Thermostat.device)
         create_connection()
-    if Thermostat.device == "AuthenticationError":
+    if classes.Thermostat.device == "AuthenticationError":
         speaker.speak(f"I'm sorry {models.env.title}! I ran into an authentication error.")
         return
-    if Thermostat.device == "NameError":
+    if classes.Thermostat.device == "NameError":
         speaker.speak(f"I'm sorry {models.env.title}! "
                       f"I wasn't able to find the thermostat, {models.env.tcc_device_name} in your account.")
         return
-    expiry = util.epoch_to_datetime(seconds=Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
-    if time.time() - Thermostat.expiration >= 86_400:
+    if classes.Thermostat.device == "ConnectionError":
+        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to connect to your thermostat.")
+        return
+    expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
+    if time.time() - classes.Thermostat.expiration >= 86_400:
         logger.info("Creating a new connection since the current session expired at: %s", expiry)
         create_connection()
     else:
         logger.info("Current session is valid until: %s", expiry)
-    return Thermostat.device
+    return classes.Thermostat.device
 
 
 def thermostat_controls(phrase: str) -> None:

@@ -296,10 +296,10 @@ def kill_alarm(phrase: str) -> None:
 
 def executor() -> None:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
-    pyvolume.pyvolume(level=100, debug=models.env.debug, logger=logger)
+    pyvolume.increase(logger)
     if models.settings.os != models.supported_platforms.windows:
         subprocess.call(["open", models.indicators.alarm])
     else:
         os.system(f'start wmplayer {models.indicators.alarm}')
     time.sleep(200)
-    pyvolume.pyvolume(level=models.env.volume, debug=models.env.debug, logger=logger)
+    pyvolume.custom(models.env.volume, logger)
