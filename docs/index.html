@@ -4959,6 +4959,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.thermostat.get_auth_object">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">get_auth_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.get_auth_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the authenticated Zone object with a built-in retry logic and expiration check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Authenticated Zone object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Zone</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.thermostat.thermostat_controls">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.thermostat.</span></span><span class="sig-name descname"><span class="pre">thermostat_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.thermostat.thermostat_controls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directs to the target function based on user requirement.</p>
@@ -8434,6 +8448,11 @@ allow <cite>self</cite> as a field name.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SmartLights</span>
 </pre></div>
 </div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/adamkempenich/magichome-python/blob/master/magichome.py">https://github.com/adamkempenich/magichome-python/blob/master/magichome.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/SynTexDZN/homebridge-syntex-magichome/blob/master/src/flux_led.py">https://github.com/SynTexDZN/homebridge-syntex-magichome/blob/master/src/flux_led.py</a></p></li>
+</ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.lights.smart_lights.check_number_range">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.lights.smart_lights.</span></span><span class="sig-name descname"><span class="pre">check_number_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.lights.smart_lights.check_number_range" title="Permalink to this definition">¶</a></dt>
@@ -8526,15 +8545,21 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.lights.smart_lights.MagicHomeApi.byte_to_percent">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">byte_to_percent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byte</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.lights.smart_lights.MagicHomeApi.byte_to_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts byte integer into a percentile.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.lights.smart_lights.MagicHomeApi.get_status">
-<span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#jarvis.modules.lights.smart_lights.MagicHomeApi.get_status" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.lights.smart_lights.MagicHomeApi.get_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current status of a device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A signal to socket.</p>
+<dd class="field-odd"><p>Status of the light as string.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bytes</p>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>

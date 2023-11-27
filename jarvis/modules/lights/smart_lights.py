@@ -3,13 +3,20 @@
 
 >>> SmartLights
 
+References:
+    - https://github.com/adamkempenich/magichome-python/blob/master/magichome.py
+    - https://github.com/SynTexDZN/homebridge-syntex-magichome/blob/master/src/flux_led.py
 """
 
 import socket
 import struct
 import time
 from ipaddress import IPv4Address
+from typing import Union
 
+import webcolors
+
+from jarvis.modules.lights import preset_values
 from jarvis.modules.logger import logger
 from jarvis.modules.utils import support
 
@@ -99,19 +106,85 @@ class MagicHomeApi:
         """Turn a device off."""
         self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
-    def get_status(self) -> bytes:
+    @staticmethod
+    def byte_to_percent(byte: int) -> int:
+        """Converts byte integer into a percentile."""
+        if byte > 255:
+            byte = 255
+        if byte < 0:
+            byte = 0
+        return int((byte * 100) / 255)
+
+    def get_status(self) -> Union[str, None]:
         """Get the current status of a device.
 
         Returns:
-            bytes:
-            A signal to socket.
+            str:
+            Status of the light as string.
         """
-        if self.device_type == 2:
-            self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
-            return self.sock.recv(15)
+        msg = bytearray([0x81, 0x8a, 0x8b])
+        csum = sum(msg) & 0xFF
+        msg.append(csum)
+        try:
+            self.sock.send(msg)
+        except OSError as error:
+            logger.error(error)
+            return
+        remaining = 14
+        rx = bytearray()
+        while remaining > 0:
+            chunk = self.sock.recv(1024)
+            remaining -= len(chunk)
+            rx.extend(chunk)
+        if rx[2] == 0x23:
+            power_str = "ON"
+        elif rx[2] == 0x24:
+            power_str = "OFF"
         else:
-            self.send_bytes(0x81, 0x8A, 0x8B, 0x96)
-            return self.sock.recv(14)
+            power_str = "Unknown power state"
+        pattern = rx[3]
+        ww_level = rx[9]
+        if pattern in [0x61, 0x62]:
+            mode = "color"
+        elif pattern == 0x60:
+            mode = "custom"
+        elif pattern in preset_values.PRESET_VALUES.values():
+            mode = "preset"
+        else:
+            mode = "unknown"
+        delay = rx[5]
+        delay = delay - 1
+        if delay > 0x1f - 1:
+            delay = 0x1f - 1
+        if delay < 0:
+            delay = 0
+        inv_speed = int((delay * 100) / (0x1f - 1))
+        speed = 100 - inv_speed
+        if mode == "color":
+            red = rx[6]
+            green = rx[7]
+            blue = rx[8]
+            color_name = webcolors.rgb_to_name((red, green, blue))
+            mode_str = f"Color: {color_name}"
+        elif mode == "ww":
+            mode_str = f"Warm White: {self.byte_to_percent(ww_level)}%"
+        elif mode == "cw":
+            mode_str = f"Cold White: {self.byte_to_percent(ww_level)}%"
+        elif mode == "preset":
+            for key, value in preset_values.PRESET_VALUES.items():
+                if pattern == value:
+                    pat = key
+                    break
+            else:
+                pat = "unknown"
+            mode_str = f"Pattern: {pat} (Speed {speed}%)"
+        elif mode == "custom":
+            mode_str = f"Custom pattern (Speed {speed}%)"
+        else:
+            mode_str = "Unknown mode 0x{:x}".format(pattern)
+        if pattern == 0x62:
+            mode_str += " (tmp)"
+        return f"{power_str} [{mode_str}]"
 
     def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None) -> None:
         """Updates a device based upon what we're sending to it.

@@ -2,7 +2,7 @@ import time
 from threading import Thread
 from typing import Union
 
-from pyhtcc import AuthenticationError, PyHTCC, Zone
+from pyhtcc import AuthenticationError, PyHTCC, UnauthorizedError, Zone
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -33,6 +33,9 @@ def create_connection() -> None:
     try:
         Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
         Thermostat.expiration = time.time() + 86_400
+    except UnauthorizedError as error:
+        logger.error(error)
+        Thermostat.device = "AuthenticationError"
     except NameError as error:
         logger.error(error)
         Thermostat.device = "NameError"
@@ -103,6 +106,32 @@ def set_thermostat(device: Zone, phrase: str) -> None:
     speaker.speak(text=f"I'm sorry {models.env.title}! Please specify if you want to set it as heat or cool.")
 
 
+def get_auth_object() -> Union[Zone, None]:
+    """Loads the authenticated Zone object with a built-in retry logic and expiration check.
+
+    Returns:
+        Zone:
+        Authenticated Zone object.
+    """
+    if isinstance(Thermostat.device, str):  # retry in case there was an error previously
+        logger.warning("Previous error: '%s', retrying", Thermostat.device)
+        create_connection()
+    if Thermostat.device == "AuthenticationError":
+        speaker.speak(f"I'm sorry {models.env.title}! I ran into an authentication error.")
+        return
+    if Thermostat.device == "NameError":
+        speaker.speak(f"I'm sorry {models.env.title}! "
+                      f"I wasn't able to find the thermostat, {models.env.tcc_device_name} in your account.")
+        return
+    expiry = util.epoch_to_datetime(seconds=Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
+    if time.time() - Thermostat.expiration >= 86_400:
+        logger.info("Creating a new connection since the current session expired at: %s", expiry)
+        create_connection()
+    else:
+        logger.info("Current session is valid until: %s", expiry)
+    return Thermostat.device
+
+
 def thermostat_controls(phrase: str) -> None:
     """Directs to the target function based on user requirement.
 
@@ -115,27 +144,8 @@ def thermostat_controls(phrase: str) -> None:
         logger.warning("TCC email or password or device_name not found.")
         support.no_env_vars()
         return
-    thermostat = Thermostat()
-    device = thermostat.device
-    if device:  # this should be loaded with the create_connection thread during startup
-        if device == "AuthenticationError":
-            speaker.speak(f"I'm sorry {models.env.title}! I ran into an authentication error.")
-            return
-        if device == "NameError":
-            speaker.speak(f"I'm sorry {models.env.title}! "
-                          f"I wasn't able to find the thermostat, {models.env.tcc_device_name} in your account.")
-            return
-        expiry = util.epoch_to_datetime(seconds=thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
-        if time.time() - thermostat.expiration >= 86_400:
-            logger.info("Creating a new connection since the current session expired at: %s", expiry)
-            create_connection()
+    if device := get_auth_object():
+        if "set" in phrase.split():
+            set_thermostat(device, phrase)
         else:
-            logger.info("Current session is valid until: %s", expiry)
-    else:
-        logger.critical("Something went wrong")
-        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to connect to your thermostat.")
-        return
-    if "set" in phrase.split():
-        set_thermostat(device, phrase)
-    else:
-        get_thermostat(device, phrase)
+            get_thermostat(device, phrase)

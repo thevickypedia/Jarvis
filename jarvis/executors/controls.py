@@ -6,7 +6,7 @@ import subprocess
 import sys
 import time
 from datetime import timedelta
-from threading import Thread
+from threading import Thread, Timer
 from typing import NoReturn
 
 import docker
@@ -142,7 +142,9 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
         if phrase:
             if "all" in phrase.lower().split():
                 logger.info("Restarting all background processes!")
-                db_restart_entry(caller="OFFLINE")
+                # set as timer, so that process doesn't get restarted without returning response to user
+                # without timer, the process will keep getting restarted in a loop
+                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller="OFFLINE")).start()
                 speaker.speak(text="Restarting all background processes!")
                 return
             if avail := list(files.get_processes().keys()):
@@ -152,7 +154,9 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
                 return
             if func := word_match.word_match(phrase=phrase, match_list=avail, strict=True):
                 logger.info("Restarting %s", func)
-                db_restart_entry(caller=func)
+                # set as timer, so that process doesn't get restarted without returning response to user
+                # without timer, the process will keep getting restarted in a loop
+                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller=func)).start()
                 speaker.speak(text=f"Restarting the background process {func!r}")
             else:
                 speaker.speak(text=f"Please specify a function name. Available: {util.comma_separator(avail)}")

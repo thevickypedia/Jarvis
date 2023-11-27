@@ -44,7 +44,7 @@ def epoch_to_datetime(seconds: Union[int, float], format_: str = None, zone: tim
     else:
         datetime_obj = datetime.fromtimestamp(seconds)
     if format_:
-        datetime_obj.strftime(format_)
+        return datetime_obj.strftime(format_)
     return datetime_obj
 
 
