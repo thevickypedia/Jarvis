@@ -12,7 +12,6 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
-from ipaddress import IPv4Address
 from typing import Any, Dict, Iterable, List, Tuple, Union
 
 import dateutil.tz
@@ -36,7 +35,7 @@ days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturda
 db = database.Database(database=models.fileio.base_db)
 
 
-def hostname_to_ip(hostname: str, localhost: bool = True) -> List[IPv4Address]:
+def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
     """Uses ``socket.gethostbyname_ex`` to translate a host name to IPv4 address format, extended interface.
 
     See Also:
@@ -66,18 +65,18 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[IPv4Address]:
         logger.critical("ATTENTION::No interfaces found for %s", hostname)
     elif len(_ipaddr_list) > 1:
         logger.warning("Host %s has multiple interfaces. %s", hostname, _ipaddr_list) if localhost else None
-        return [IPv4Address(ip) for ip in _ipaddr_list]
+        return _ipaddr_list
     else:
         if localhost:
             ip_addr = internet.ip_address()
             if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
-                return [IPv4Address(ip) for ip in _ipaddr_list]
+                return _ipaddr_list
             else:
                 logger.error("NetworkID of the InterfaceIP [%s] of host '%s' does not match the network id of the "
                              "DeviceIP [%s].", ip_addr, hostname, ', '.join(_ipaddr_list))
                 return []
         else:
-            return [IPv4Address(ip) for ip in _ipaddr_list]
+            return _ipaddr_list
 
 
 def country_timezone() -> Dict[str, str]:

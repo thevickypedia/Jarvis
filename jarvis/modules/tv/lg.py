@@ -8,7 +8,6 @@
 import socket
 import time
 from collections.abc import Generator
-from ipaddress import IPv4Address
 from typing import List
 
 from pywebostv.connection import WebOSClient
@@ -33,7 +32,7 @@ class LGWebOS:
     _init_status = False
     _reconnect = False
 
-    def __init__(self, ip_address: IPv4Address, client_key: str, nickname: str, key: str):
+    def __init__(self, ip_address: str, client_key: str, nickname: str, key: str):
         """Instantiates the ``WebOSClient`` and connects to the TV.
 
         Using TV's ip makes the initial response much quicker, but it can also scan the network for the TV's ip.

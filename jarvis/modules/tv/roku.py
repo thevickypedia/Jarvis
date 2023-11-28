@@ -7,7 +7,6 @@
 
 import socket
 from collections.abc import Generator
-from ipaddress import IPv4Address
 from threading import Thread
 from typing import Dict, Union
 from xml.etree import ElementTree
@@ -30,7 +29,7 @@ class RokuECP:
     PORT: int = 8060
     SESSION: requests.Session = requests.Session()
 
-    def __init__(self, ip_address: IPv4Address):
+    def __init__(self, ip_address: str):
         """Instantiates the roku tv and makes a test call.
 
         Args:
@@ -42,18 +41,16 @@ class RokuECP:
         except EgressErrors as error:
             logger.error(error)
             raise TVError
-        else:
-            if response.ok:
-                try:
-                    resolved = socket.gethostbyaddr(str(ip_address))
-                except socket.error as error:
-                    logger.error(error)
-                    raise TVError
-                else:
-                    logger.info("Connected to '%s'", resolved[0].split('.')[0])
-            else:
-                logger.error("%d - %s", response.status_code, response.text)
+        if response.ok:
+            try:
+                resolved = socket.gethostbyaddr(str(ip_address))
+            except socket.error as error:
+                logger.error(error)
                 raise TVError
+            logger.info("Connected to '%s'", resolved[0].split('.')[0])
+        else:
+            logger.error("%d - %s", response.status_code, response.text)
+            raise TVError
 
     def make_call(self, path: str, method: str) -> requests.Response:
         """Makes a session call using the path and method provided.

@@ -1,7 +1,6 @@
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
-from ipaddress import IPv4Address
 from threading import Thread
 from typing import Dict, List, Tuple, Union
 
@@ -28,8 +27,8 @@ def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str
             return data[key], key
 
 
-def tv_status(tv_ip_list: List[IPv4Address], attempt: int = 0) -> IPv4Address:
-    """Pings the tv and returns the IPv4Address.
+def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str:
+    """Pings the tv and returns the IP address.
 
     Args:
         tv_ip_list: List of possible IP addresses for the Television.
@@ -40,7 +39,7 @@ def tv_status(tv_ip_list: List[IPv4Address], attempt: int = 0) -> IPv4Address:
             - 0 if able to ping, 256 if unable to ping.
 
     Returns:
-        IPv4Address:
+        str:
         Returns the reachable IP address from the list.
     """
     if models.settings.os == models.supported_platforms.windows:

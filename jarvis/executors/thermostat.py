@@ -30,7 +30,7 @@ def create_connection() -> None:
     except UnauthorizedError as error:
         logger.error(error)
         classes.Thermostat.device = "AuthenticationError"
-    except NameError as error:
+    except (NameError, IndexError) as error:
         logger.error(error)
         classes.Thermostat.device = "NameError"
     except EgressErrors as error:

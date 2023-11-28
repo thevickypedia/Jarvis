@@ -1,6 +1,5 @@
 import random
 from concurrent.futures import ThreadPoolExecutor
-from ipaddress import IPv4Address
 from multiprocessing import Process
 from typing import List, Union
 
@@ -21,37 +20,35 @@ word_map = {
 }
 
 
-def turn_off(host: IPv4Address) -> None:
+def turn_off(host: str) -> None:
     """Turns off the device.
 
     Args:
         host: Takes target device's IP address as an argument.
     """
-    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Turn Off').turn_off()
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1).turn_off()
 
 
-def warm(host: IPv4Address) -> None:
+def warm(host: str) -> None:
     """Sets lights to warm/yellow.
 
     Args:
         host: Takes target device's IP address as an argument.
     """
-    smart_lights.MagicHomeApi(device_ip=host, device_type=1,
-                              operation='Warm Lights').update_device(r=0, g=0, b=0, warm_white=255)
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1).update_device(r=0, g=0, b=0, warm_white=255)
 
 
-def cool(host: IPv4Address) -> None:
+def cool(host: str) -> None:
     """Sets lights to cool/white.
 
     Args:
         host: Takes target device's IP address as an argument.
     """
-    smart_lights.MagicHomeApi(device_ip=host, device_type=2,
-                              operation='Cool Lights').update_device(r=255, g=255, b=255, warm_white=255,
-                                                                     cool_white=255)
+    smart_lights.MagicHomeApi(device_ip=host,
+                              device_type=2).update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
 
 
-def lumen(host: IPv4Address, rgb: int = 255) -> None:
+def lumen(host: str, rgb: int = 255) -> None:
     """Sets lights to custom brightness.
 
     Args:
@@ -59,10 +56,10 @@ def lumen(host: IPv4Address, rgb: int = 255) -> None:
         rgb: Red, Green andBlue values to alter the brightness.
     """
     args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
-    smart_lights.MagicHomeApi(device_ip=host, device_type=1, operation='Custom Brightness').update_device(**args)
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1).update_device(**args)
 
 
-def preset(host: IPv4Address, color: int = None, speed: int = 100) -> None:
+def preset(host: str, color: int = None, speed: int = 100) -> None:
     """Changes light colors to preset values.
 
     Args:
@@ -70,12 +67,12 @@ def preset(host: IPv4Address, color: int = None, speed: int = 100) -> None:
         color: Preset value extracted from list of color codes. Defaults to a random color code.
         speed: Speed of color change. Defaults to 100.
     """
-    smart_lights.MagicHomeApi(device_ip=host, operation='Preset Values', device_type=2).send_preset_function(
+    smart_lights.MagicHomeApi(device_ip=host, device_type=2).send_preset_function(
         preset_number=color or random.choice(list(preset_values.PRESET_VALUES.values())), speed=speed
     )
 
 
-def runner(host: List[IPv4Address]) -> None:
+def runner(host: List[str]) -> None:
     """Runs a never ending loop setting random light IP addresses to random color preset values.
 
     Args:
@@ -121,7 +118,7 @@ def update_status(process: Process) -> None:
         db.connection.commit()
 
 
-def party_mode(host: List[IPv4Address], phrase: str) -> bool:
+def party_mode(host: List[str], phrase: str) -> bool:
     """Handles party mode by altering colors in given light hostnames with random color codes.
 
     Args:

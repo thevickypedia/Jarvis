@@ -11,7 +11,6 @@ References:
 import socket
 import struct
 import time
-from ipaddress import IPv4Address
 from typing import Union
 
 import webcolors
@@ -67,13 +66,12 @@ class MagicHomeApi:
 
     API_PORT = 5577
 
-    def __init__(self, device_ip: IPv4Address, device_type: int, operation: str):
+    def __init__(self, device_ip: str, device_type: int):
         """Initialize device setup via UDP.
 
         Args:
             device_ip: Takes device IP address as argument.
             device_type: Specific device type.
-            operation: Takes the operation that the calling function is trying to perform and logs it.
 
         See Also:
             Device types:
@@ -85,7 +83,6 @@ class MagicHomeApi:
         """
         self.device_ip = str(device_ip)
         self.device_type = device_type
-        self.operation = operation
         self.latest_connection = time.time()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(3)
@@ -94,8 +91,6 @@ class MagicHomeApi:
             self.sock.connect((self.device_ip, self.API_PORT))
         except socket.error as error:
             self.sock.close()
-            error_msg = f"Socket error on {device_ip}: {error}"
-            logger.error("%s while performing '%s'", error_msg, self.operation)
             raise socket.error(error)
 
     def turn_on(self) -> None:
@@ -291,6 +286,5 @@ class MagicHomeApi:
             message_length = len(bytes_)
             self.sock.send(struct.pack("B" * message_length, *bytes_))
         except socket.error as error:
-            error_msg = f"Socket error on {self.device_ip}: {error}"
-            logger.error("%s while performing '%s'", error_msg, self.operation)
+            logger.error("[%s]: %s", self.device_ip, error)
         self.sock.close()

@@ -1,6 +1,5 @@
 import random
 import time
-from ipaddress import IPv4Address
 from threading import Thread
 
 from jarvis.modules.audio import speaker
@@ -12,7 +11,7 @@ from jarvis.modules.tv import lg, roku
 from jarvis.modules.utils import shared, support, util
 
 
-def tv_controller(phrase: str, tv_ip: IPv4Address, identifier: str, nickname: str,
+def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
                   client_key: str = None, key: str = None) -> None:
     """Controller for Roku or LG tv actions.
 
