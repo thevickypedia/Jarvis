@@ -118,7 +118,7 @@ def get_connection_info(target: str = "SSID") -> Union[str, None]:
             process = subprocess.check_output("netsh wlan show interfaces", shell=True)
         else:
             process = subprocess.check_output("nmcli -t -f name connection show --active | head -n 1", shell=True)
-    except (subprocess.CalledProcessError, subprocess.CalledProcessError, FileNotFoundError) as error:
+    except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding='UTF-8').strip()
             logger.error("[%d]: %s", error.returncode, result)

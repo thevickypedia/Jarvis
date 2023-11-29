@@ -7,7 +7,7 @@ install_script = os.path.join(os.path.dirname(__file__), 'lib', 'install.sh')
 
 try:
     if current_process().name == 'MainProcess':
-        current_process().name = 'JARVIS'
+        current_process().name = os.environ.get('PROCESS_NAME', 'JARVIS')
     import pynotification  # noqa: F401
 
     from ._preexec import keywords_handler  # noqa: F401

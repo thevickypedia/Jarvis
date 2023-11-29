@@ -42,7 +42,7 @@ def audio_converter_win(input_filename: Union[FilePath, str], output_audio_forma
         str:
         Output filename if conversion is successful.
     """
-    ffmpeg_path = os.path.join(os.getcwd(), "ffmpeg", "bin")
+    ffmpeg_path = os.path.join("ffmpeg", "bin")
     if not os.path.exists(path=ffmpeg_path):
         logger.warning("ffmpeg codec is missing!")
         return

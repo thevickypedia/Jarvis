@@ -6,13 +6,12 @@ import math
 import os
 import time
 from datetime import datetime
-from typing import Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 import gmailconnector
 import jinja2
 import matplotlib.dates
 import matplotlib.pyplot as plt
-from pydantic import EmailStr
 from webull import webull
 
 
@@ -176,8 +175,7 @@ class StockMonitor:
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
 
-    def skip_signal(self, condition_list: Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str],
-                    hours: int = 12) -> bool:
+    def skip_signal(self, condition_list: Tuple[Any, Any, Any, Any, Any, Any], hours: int = 12) -> bool:
         """Generate a skip signal for a particular stock monitoring alert.
 
         Args:

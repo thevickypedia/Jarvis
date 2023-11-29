@@ -21,10 +21,6 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
-SS_HEADERS = {
-    "Content-Type": "text/plain"
-}
-
 
 def speech_synthesizer(text: str,
                        timeout: Union[int, float] = None,
@@ -58,7 +54,8 @@ def speech_synthesizer(text: str,
     try:
         response = requests.post(
             url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
-            headers=SS_HEADERS, params={"voice": voice, "vocoder": quality}, data=text, verify=False,
+            headers={"Content-Type": "text/plain"}, params={"voice": voice, "vocoder": quality},
+            data=text, verify=False,
             timeout=timeout or models.env.speech_synthesis_timeout  # set timeout here as speak() sets it on demand
         )
         if response.ok:

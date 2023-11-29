@@ -10,7 +10,7 @@ import psutil
 import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors import connection, crontab, offline, telegram
+from jarvis.executors import crontab, offline, telegram
 from jarvis.modules.audio import speech_synthesis
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
@@ -79,14 +79,11 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
         with open(models.fileio.processes) as file:
             dump = yaml.load(stream=file, Loader=yaml.FullLoader)
-        dump[func_name] = [processes[func_name].pid, impact_lib[func_name]]
+        dump[func_name] = {processes[func_name].pid: impact_lib[func_name]}
     else:
-        dump = {k: [v.pid, impact_lib[k]] for k, v in processes.items()}
-        dump["jarvis"] = [models.settings.pid, ["Main Process"]]
+        dump = {k: {v.pid: impact_lib[k]} for k, v in processes.items()}
+        dump["jarvis"] = {models.settings.pid: ["Main Process"]}
     logger.debug("Processes data: %s", dump)
-    # Remove temporary processes that doesn't need to be stored in mapping file
-    if dump.get("speech_synthesizer"):
-        del dump["speech_synthesizer"]
     with open(models.fileio.processes, 'w') as file:
         yaml.dump(stream=file, data=dump, indent=4)
 
@@ -119,7 +116,8 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         process_dict[graph_mic.plot_mic.__name__] = Process(
             target=crontab.executor,
             kwargs={'statement': statement,
-                    'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))}
+                    'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log')),
+                    'process_name': graph_mic.plot_mic.__name__}
         )
     # Used when a single process is requested to be triggered
     processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict

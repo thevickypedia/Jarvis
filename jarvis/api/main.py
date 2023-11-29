@@ -79,6 +79,6 @@ async def startup_func() -> None:
             script = starter + " " + os.path.join(models.fileio.startup_dir, startup_script)
             logger.debug("Running %s", script)
             log_file = datetime.now().strftime(os.path.join('logs', 'startup_script_%d-%m-%Y.log'))
-            Process(target=crontab.executor, args=(script, log_file)).start()
+            Process(target=crontab.executor, args=(script, log_file, 'startup_script')).start()
         else:
             logger.warning("Unsupported file format for startup script: %s", startup_script)

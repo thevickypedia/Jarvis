@@ -31,6 +31,7 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
                 shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname, key=key)
             elif identifier == 'ROKU':
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
+                # todo: launch a harmless app to actually startup the TV
         except TVError as error:
             logger.error("Failed to connect to the TV. %s", error)
             speaker.speak(text=f"I was unable to connect to the {nickname} {models.env.title}! "
@@ -95,9 +96,8 @@ def tv_controller(phrase: str, tv_ip: str, identifier: str, nickname: str,
         elif 'volume' in phrase_lower:
             speaker.speak(text=f"The current volume on your {nickname} is, {shared.tv[nickname].get_volume()}%")
         elif 'app' in phrase_lower or 'application' in phrase_lower:
-            support.write_screen(text=list(shared.tv[nickname].get_apps()))
-            speaker.speak(text=f'App list on your screen {models.env.title}!', run=True)
-            time.sleep(5)
+            speaker.speak(text=f'The applications on your {nickname} are, '
+                               f'{util.comma_separator(list(shared.tv[nickname].get_apps()))}!')
         elif 'open' in phrase_lower or 'launch' in phrase_lower:
             app_name = util.get_closest_match(
                 text=' '.join([w for w in phrase.split() if w not in ['launch', 'open', 'on', 'my', 'the',

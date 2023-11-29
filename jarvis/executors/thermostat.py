@@ -2,7 +2,8 @@ import time
 from threading import Thread
 from typing import Union
 
-from pyhtcc import AuthenticationError, PyHTCC, UnauthorizedError, Zone
+from pyhtcc import (AuthenticationError, NoZonesFoundError, PyHTCC,
+                    UnauthorizedError, Zone)
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -27,6 +28,9 @@ def create_connection() -> None:
     try:
         classes.Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
         classes.Thermostat.expiration = time.time() + 86_400
+    except NoZonesFoundError as error:
+        logger.error(error)
+        classes.Thermostat.device = "NoZonesFoundError"
     except UnauthorizedError as error:
         logger.error(error)
         classes.Thermostat.device = "AuthenticationError"
@@ -122,6 +126,9 @@ def get_auth_object() -> Union[Zone, None]:
         return
     if classes.Thermostat.device == "ConnectionError":
         speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to connect to your thermostat.")
+        return
+    if classes.Thermostat.device == "NoZonesFoundError":
+        speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
         return
     expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
     if time.time() - classes.Thermostat.expiration >= 86_400:

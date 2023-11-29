@@ -15,12 +15,13 @@ from jarvis.modules.models import models
 LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')  # Used by api functions that run on cron schedule
 
 
-def executor(statement: str, log_file: str = None) -> None:
+def executor(statement: str, log_file: str = None, process_name: str = None) -> None:
     """Executes a cron statement.
 
     Args:
         statement: Cron statement to be executed.
         log_file: Log file for crontab execution logs.
+        process_name: Process name for the execution.
 
     Warnings:
         - Executions done by crontab executor are not stopped when Jarvis is stopped.
@@ -28,16 +29,21 @@ def executor(statement: str, log_file: str = None) -> None:
     """
     if not log_file:
         log_file = multiprocessing_logger(filename=LOG_FILE)
+    if not process_name:
+        process_name = "crontab_executor"
+    process_name = '_'.join(process_name.split())
+    command = f"export PROCESS_NAME={process_name} && {statement}"
+    logger.debug("Executing '%s' as '%s'", statement, command)
     with open(log_file, 'a') as file:
         file.write('\n')
         try:
-            subprocess.call(statement, shell=True, stdout=file, stderr=file)
+            subprocess.call(command, shell=True, stdout=file, stderr=file)
         except Exception as error:
             if isinstance(error, subprocess.CalledProcessError):
                 result = error.output.decode(encoding='UTF-8').strip()
-                file.write(f"[{error.returncode}]: {result}\n")
+                file.write(f"[{error.returncode}]: {result}")
             else:
-                file.write(f"{error}\n")
+                file.write(error.__str__())
 
 
 def validate_jobs(log: bool = True) -> Generator[expression.CronExpression]:
