@@ -4492,6 +4492,21 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.process_map.update_map">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">update_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.update_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove process map for a function that has stopped running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func_name</strong> – Name of the function that has to be removed from the mapping.</p></li>
+<li><p><strong>old_pid</strong> – Old process ID that needs to be updating.</p></li>
+<li><p><strong>new_pid</strong> – New process ID that needs to be updated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.remind">
 <span id="remind"></span><h1>Remind<a class="headerlink" href="#module-jarvis.executors.remind" title="Permalink to this heading">¶</a></h1>
@@ -5381,6 +5396,23 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </pre></div>
 </div>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.find_pid_by_port">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">find_pid_by_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.find_pid_by_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the PID of the process using a specific port number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>port</strong> – Port number that the process is listening to.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ID of the process that’s listening to the port.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.check_existing">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">check_existing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.check_existing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks for existing connection.</p>
@@ -5395,23 +5427,70 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesizer">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate the runner function for speech-synthesis.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesis_runner">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesis_runner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates speech synthesizer using docker.</p>
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.run_existing_container">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">run_existing_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verified</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.run_existing_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to run the container if a container ID is present in the CID file in fileio directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – DockerClient object.</p></li>
+<li><p><strong>verified</strong> – Boolean flag to simply validate the container ID and return it.</p></li>
+</ul>
+</dd>
+</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Initiates docker container using <code class="docutils literal notranslate"><span class="pre">docker-py</span></code> module for Windows and macOS.</p></li>
-<li><p>Initiates container using traditional commandline for Linux.</p></li>
-<li><p>Stores the container ID in a .cid file, to later stop and remove the container.</p></li>
+<li><p>.cid file should exist with a valid container ID to tun speech synthesis</p></li>
+<li><p>Checks if the container state has been exited, not running and not dead.</p></li>
+<li><p>If at least one of the condition doesn’t match, removes the container.</p></li>
 </ul>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Container ID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.run_new_container">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">run_new_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.run_new_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spins up a new docker container for speech-synthesis. Pulls the image if not found locally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> – DockerClient object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Container ID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.stream_logs">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">stream_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.stream_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream logs into the log file specific for speech synthesis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – DockerClient object.</p></li>
+<li><p><strong>container_id</strong> – Container ID.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesizer">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates speech synthesis API using docker.</p>
 </dd></dl>
 
 <hr class="docutils" />

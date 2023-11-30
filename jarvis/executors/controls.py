@@ -13,6 +13,7 @@ import docker
 import psutil
 import pybrightness
 import pywslocker
+from docker.errors import ContainerError, DockerException
 
 from jarvis.executors import (alarm, files, listener_controls, remind, system,
                               volume, word_match)
@@ -196,41 +197,20 @@ def delete_docker_container() -> None:
     with open(models.fileio.speech_synthesis_cid) as file:
         container_id = file.read()
     with open(models.fileio.speech_synthesis_log, "a") as log_file:
-        if models.settings.os == models.supported_platforms.linux:
+        try:
+            client = docker.from_env()
+        except DockerException as error:
+            log_file.write(error.__str__() + "\n")
+            return
+        try:
             log_file.write(f"Stopping running container {container_id!r}\n")
-            try:
-                subprocess.Popen([f'echo {models.env.root_password} | sudo -S docker stop {container_id}'],
-                                 shell=True, bufsize=0, stdout=log_file, stderr=log_file)
-            except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
-                if isinstance(error, subprocess.CalledProcessError):
-                    result = error.output.decode(encoding='UTF-8').strip()
-                    log_file.write(f"[{error.returncode}]: {result}\n")
-                else:
-                    log_file.write(str(error) + "\n")
-
+            client.api.kill(container_id)
             log_file.write(f"Removing existing container {container_id!r}\n")
-            try:
-                subprocess.Popen([f'echo {models.env.root_password} | sudo -S docker rm -f {container_id}'],
-                                 shell=True, bufsize=0, stdout=log_file, stderr=log_file)
-            except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
-                if isinstance(error, subprocess.CalledProcessError):
-                    result = error.output.decode(encoding='UTF-8').strip()
-                    log_file.write(f"[{error.returncode}]: {result}\n")
-                else:
-                    log_file.write(str(error) + "\n")
-        else:
-            from docker.errors import ContainerError, DockerException
-            try:
-                client = docker.from_env()
-            except DockerException as error:
-                log_file.write(error.__str__() + "\n")
-            try:
-                log_file.write(f"Stopping running container {container_id!r}\n")
-                client.api.kill(container_id)
-                log_file.write(f"Removing existing container {container_id!r}\n")
-                client.api.remove_container(container_id)
-            except ContainerError as error:
-                log_file.write(error.__str__() + "\n")
+            client.api.remove_container(container_id)
+        except ContainerError as error:
+            err = f": {error.stderr}" if error.stderr else ""
+            log_file.write(f"Command '{error.command}' in image '{error.image}' "
+                           f"returned non-zero exit status {error.exit_status}{err}\n")
         log_file.write(f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n")
         os.remove(models.fileio.speech_synthesis_cid)
 
