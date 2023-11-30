@@ -203,7 +203,7 @@ def start() -> None:
         with open(models.fileio.processes, 'w') as file:
             yaml.dump(stream=file, data={"jarvis": {models.settings.pid: ["Main Process"]}})
         if models.settings.os != models.supported_platforms.macOS:
-            shared.processes = processor.start_processes(func_name="speech_synthesizer")
+            shared.processes = processor.start_processes(func_name="speech_synthesis_api")
     else:
         shared.processes = processor.start_processes()
     location.write_current_location()

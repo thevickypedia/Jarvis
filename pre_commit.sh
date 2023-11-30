@@ -3,6 +3,8 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
+export PROCESS_NAME="pre_commit"
+
 clean_docs() {
   # Clean up docs directory keeping the CNAME file if present
   directory="docs"

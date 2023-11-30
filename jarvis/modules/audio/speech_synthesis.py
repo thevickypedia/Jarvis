@@ -150,7 +150,7 @@ def run_new_container(client: DockerClient) -> str:
             volumes={models.env.home: {"bind": models.env.home, "mode": "rw"}},
             working_dir=os.getcwd(),
             user=f"{os.getuid()}:{os.getgid()}", detach=True,
-            restart_policy=dict(Name="on-failure", MaximumRetryCount=10)
+            restart_policy={"Name": "on-failure", "MaximumRetryCount": 10}
         )
         return result.id
     except ContainerError as error:
@@ -184,7 +184,7 @@ def stream_logs(client: DockerClient, container_id: str) -> NoReturn:
     log_file.close()
 
 
-def speech_synthesizer() -> None:
+def speech_synthesis_api() -> None:
     """Initiates speech synthesis API using docker."""
     multiprocessing_logger(filename=models.fileio.speech_synthesis_log)
     try:
@@ -199,10 +199,10 @@ def speech_synthesizer() -> None:
         logger.warning("Unable to stream container logs locally")
         # Container logs will not be available outside docker, so try to update the process map with docker's PID
         if pid := find_pid_by_port(models.env.speech_synthesis_port):  # Identified the PID to update in process map
-            process_map.update_map(speech_synthesizer.__name__, models.settings.pid, pid)
+            process_map.update_map(speech_synthesis_api.__name__, models.settings.pid, pid)
         else:
             # Failed to get the PID of the listening API, hence removing entry from process map
-            process_map.remove(speech_synthesizer.__name__)
+            process_map.remove(speech_synthesis_api.__name__)
         return
 
     container_id = run_existing_container(docker_client) or run_new_container(docker_client)

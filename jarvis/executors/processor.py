@@ -58,7 +58,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         - This is a special function, that uses doc strings to create a python dict.
 
     Handles:
-        - speech_synthesizer: Speech Synthesis
+        - speech_synthesis_api: Speech Synthesis
         - telegram_api: Telegram Bot
         - jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance, Telegram
         - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks
@@ -99,7 +99,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
 
     See Also:
-        - speech_synthesizer: Initiates docker container for speech synthesis.
+        - speech_synthesis_api: Initiates docker container for speech synthesis.
         - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
         - jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
@@ -108,7 +108,7 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
     process_dict = {
         jarvis_api.__name__: Process(target=jarvis_api),  # no process map removal
         offline.background_tasks.__name__: Process(target=offline.background_tasks),  # no process map removal
-        speech_synthesis.speech_synthesizer.__name__: Process(target=speech_synthesis.speech_synthesizer),
+        speech_synthesis.speech_synthesis_api.__name__: Process(target=speech_synthesis.speech_synthesis_api),
         telegram.telegram_api.__name__: Process(target=telegram.telegram_api)
     }
     if models.env.plot_mic:
