@@ -1,6 +1,14 @@
 Release Notes
 =============
 
+v4.4 (11/30/2023)
+-----------------
+- Removes garage feature due to `Chamberlain blockade <https://chamberlaingroup.com/press/a-message-about-our-decision-to-prevent-unauthorized-usage-of-myq>`_
+- Improved failure response for light controls
+- Fix bug on ``subprocess`` trigger interpreted as ``MainProcess``
+- Rework dockerized ``speech-synthesis`` and desperate attempt for container logging
+- Fix bug on port mapping between docker and localhost
+
 v4.3 (11/27/2023)
 -----------------
 - Includes bug fixes and performance improvements
