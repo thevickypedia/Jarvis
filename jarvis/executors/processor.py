@@ -7,10 +7,9 @@ from threading import Thread
 from typing import Dict, List, Union
 
 import psutil
-import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors import crontab, offline, telegram
+from jarvis.executors import crontab, offline, process_map, telegram
 from jarvis.modules.audio import speech_synthesis
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
@@ -47,6 +46,7 @@ def clear_db() -> None:
             cursor.execute(f"DELETE FROM {table}")
 
 
+# noinspection LongLine
 def create_process_mapping(processes: Dict[str, Process], func_name: str = None) -> None:
     """Creates or updates the processes mapping file.
 
@@ -60,8 +60,8 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     Handles:
         - speech_synthesis_api: Speech Synthesis
         - telegram_api: Telegram Bot
-        - jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance, Telegram
-        - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks
+        - jarvis_api: Offline communicator, Robinhood portfolio report, Jarvis UI, Stock monitor, Surveillance, Telegram
+        - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Wi-Fi connector, Cron jobs, Background tasks
         - plot_mic: Plot microphone usage in real time
     """
     impact_lib = {}
@@ -77,15 +77,13 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
         warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
     if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
-        with open(models.fileio.processes) as file:
-            dump = yaml.load(stream=file, Loader=yaml.FullLoader)
+        dump = process_map.get()
         dump[func_name] = {processes[func_name].pid: impact_lib[func_name]}
     else:
         dump = {k: {v.pid: impact_lib[k]} for k, v in processes.items()}
         dump["jarvis"] = {models.settings.pid: ["Main Process"]}
     logger.debug("Processes data: %s", dump)
-    with open(models.fileio.processes, 'w') as file:
-        yaml.dump(stream=file, data=dump, indent=4)
+    process_map.add(dump)
 
 
 def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
@@ -100,10 +98,10 @@ def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]
 
     See Also:
         - speech_synthesis_api: Initiates docker container for speech synthesis.
-        - telegram_api: Initiates message polling for Telegram bot to execute offline commands.
+        - telegram_api: Initiates polling Telegram API to execute offline commands (if no webhook config is available)
         - jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
-        - plot_mic: Initiates plotting microphone usage using matplotlib.
+        - plot_mic: Initiates plotting realtime microphone usage using matplotlib.
     """
     process_dict = {
         jarvis_api.__name__: Process(target=jarvis_api),  # no process map removal

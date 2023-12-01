@@ -199,7 +199,7 @@ def speech_synthesis_api() -> None:
         logger.warning("Unable to stream container logs locally")
         # Container logs will not be available outside docker, so try to update the process map with docker's PID
         if pid := find_pid_by_port(models.env.speech_synthesis_port):  # Identified the PID to update in process map
-            process_map.update_map(speech_synthesis_api.__name__, models.settings.pid, pid)
+            process_map.update(speech_synthesis_api.__name__, models.settings.pid, pid)
         else:
             # Failed to get the PID of the listening API, hence removing entry from process map
             process_map.remove(speech_synthesis_api.__name__)

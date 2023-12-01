@@ -7,11 +7,10 @@ from datetime import datetime
 import pvporcupine
 import pyaudio
 import pywifi
-import yaml
 from playsound import playsound
 
 from jarvis.executors import (commander, controls, internet, listener_controls,
-                              location, processor)
+                              location, process_map, processor)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger import custom_handler, logger
@@ -200,8 +199,7 @@ def start() -> None:
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
-        with open(models.fileio.processes, 'w') as file:
-            yaml.dump(stream=file, data={"jarvis": {models.settings.pid: ["Main Process"]}})
+        process_map.add({"jarvis": {models.settings.pid: ["Main Process"]}})
         if models.settings.os != models.supported_platforms.macOS:
             shared.processes = processor.start_processes(func_name="speech_synthesis_api")
     else:

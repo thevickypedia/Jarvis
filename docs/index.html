@@ -4431,8 +4431,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt>Handles:</dt><dd><ul class="simple">
 <li><p>speech_synthesis_api: Speech Synthesis</p></li>
 <li><p>telegram_api: Telegram Bot</p></li>
-<li><p>jarvis_api: Offline communicator, Robinhood report gatherer, Jarvis UI, Stock monitor, Surveillance, Telegram</p></li>
-<li><p>background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Cron jobs and Background tasks</p></li>
+<li><p>jarvis_api: Offline communicator, Robinhood portfolio report, Jarvis UI, Stock monitor, Surveillance, Telegram</p></li>
+<li><p>background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Wi-Fi connector, Cron jobs, Background tasks</p></li>
 <li><p>plot_mic: Plot microphone usage in real time</p></li>
 </ul>
 </dd>
@@ -4458,10 +4458,10 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>speech_synthesis_api: Initiates docker container for speech synthesis.</p></li>
-<li><p>telegram_api: Initiates message polling for Telegram bot to execute offline commands.</p></li>
+<li><p>telegram_api: Initiates polling Telegram API to execute offline commands (if no webhook config is available)</p></li>
 <li><p>jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.</p></li>
 <li><p>background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.</p></li>
-<li><p>plot_mic: Initiates plotting microphone usage using matplotlib.</p></li>
+<li><p>plot_mic: Initiates plotting realtime microphone usage using matplotlib.</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -4482,6 +4482,31 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.process_map">
 <span id="process-map"></span><h1>Process Map<a class="headerlink" href="#module-jarvis.executors.process_map" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.process_map.get">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.process_map.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the existing process map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the dictionary of process data and the impact information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Dict[int, List[str]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.process_map.add">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the process map data into the mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Dictionary of process data and the impact information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.process_map.remove">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove process map for a function that has stopped running.</p>
@@ -4493,8 +4518,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.process_map.update_map">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">update_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.update_map" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.process_map.update">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove process map for a function that has stopped running.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

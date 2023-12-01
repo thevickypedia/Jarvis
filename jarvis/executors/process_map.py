@@ -1,7 +1,30 @@
+from typing import Dict, List
+
 import yaml
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
+
+
+def get() -> Dict[str, Dict[int, List[str]]]:
+    """Get the existing process map.
+
+    Returns:
+        Dict[str, Dict[int, List[str]]]:
+        Returns the dictionary of process data and the impact information.
+    """
+    with open(models.fileio.processes) as file:
+        return yaml.load(stream=file, Loader=yaml.FullLoader)
+
+
+def add(data: Dict[str, Dict[int, List[str]]]) -> None:
+    """Dumps the process map data into the mapping file.
+
+    Args:
+        data: Dictionary of process data and the impact information.
+    """
+    with open(models.fileio.processes, 'w') as file:
+        yaml.dump(stream=file, data=data)
 
 
 def remove(func_name: str) -> None:
@@ -21,7 +44,7 @@ def remove(func_name: str) -> None:
         yaml.dump(data=process_map, stream=file)
 
 
-def update_map(func_name: str, old_pid: int, new_pid: int) -> None:
+def update(func_name: str, old_pid: int, new_pid: int) -> None:
     """Remove process map for a function that has stopped running.
 
     Args:
