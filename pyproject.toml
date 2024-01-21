@@ -58,7 +58,7 @@ dev = ["sphinx==5.1.1", "pre-commit", "recommonmark", "pytest"]
 
 [project.urls]
 API             = "https://jarvis.vigneshrao.com"
-Health          = "https://health.jarvis.services"
+Health          = "https://jarvis-health.vigneshrao.com"
 Homepage        = "https://github.com/thevickypedia/Jarvis"
 Docs            = "https://jarvis-docs.vigneshrao.com"
 Demo            = "https://vigneshrao.com/Jarvis/Jarvis_Demo.mp4"
