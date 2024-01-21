@@ -253,5 +253,5 @@ if env.temperature_unit == TemperatureUnits.IMPERIAL:
     temperature_symbol = "F"
 elif env.temperature_unit == TemperatureUnits.METRIC:
     temperature_symbol = "C"
-if settings.pname == "JARVIS":
+if settings.pname in ("JARVIS", "pre_commit"):
     _main_process_validations()
