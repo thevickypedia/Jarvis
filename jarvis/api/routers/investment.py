@@ -17,7 +17,7 @@ from jarvis.modules.exceptions import (CONDITIONAL_ENDPOINT_RESTRICTION,
                                        APIResponse)
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
-from jarvis.modules.utils import util
+from jarvis.modules.utils import support, util
 
 router = APIRouter()
 
@@ -43,22 +43,25 @@ async def authenticate_robinhood():
     if not all([models.env.robinhood_user, models.env.robinhood_pass,
                 models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
         raise CONDITIONAL_ENDPOINT_RESTRICTION
+    reset_timeout = 300
+    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
     mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
                                         gmail_pass=models.env.open_gmail_pass)
     auth_stat = mail_obj.authenticate
     if not auth_stat.ok:
         raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
     settings.robinhood.token = util.keygen_uuid(length=16)
-    rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'robinhood' endpoint",
-                                                                         TOKEN=settings.robinhood.token,
-                                                                         EMAIL=models.env.recipient)
+    rendered = jinja2.Template(templates.email.one_time_passcode).render(TIMEOUT=timeout_in,
+                                                                         ENDPOINT="robinhood",
+                                                                         EMAIL=models.env.recipient,
+                                                                         TOKEN=settings.robinhood.token)
     mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                     subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
                                     html_body=rendered)
     if mail_stat.ok:
         logger.debug(mail_stat.body)
-        logger.info("Token will be reset in 5 minutes.")
-        Timer(function=timeout_otp.reset_robinhood, interval=300).start()
+        logger.info("Token will be reset in %s", timeout_in)
+        Timer(function=timeout_otp.reset_robinhood, interval=reset_timeout).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Authentication success. Please enter the OTP sent via email:")
     else:
