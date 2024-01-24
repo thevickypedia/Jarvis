@@ -52,6 +52,8 @@ async def authenticate_surveillance(cam: modals.CameraIndexModal):
     """
     if not models.env.surveillance_endpoint_auth:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
+    reset_timeout = 300
+    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
     settings.surveillance.camera_index = cam.index
     try:
         surveillance_squire.test_camera()
@@ -66,16 +68,17 @@ async def authenticate_surveillance(cam: modals.CameraIndexModal):
         logger.error(auth_stat.json())
         raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
     settings.surveillance.token = util.keygen_uuid(length=16)
-    rendered = jinja2.Template(templates.email.one_time_passcode).render(ENDPOINT="'surveillance' endpoint",
-                                                                         TOKEN=settings.surveillance.token,
-                                                                         EMAIL=models.env.recipient)
+    rendered = jinja2.Template(templates.email.one_time_passcode).render(TIMEOUT=timeout_in,
+                                                                         ENDPOINT="surveillance",
+                                                                         EMAIL=models.env.recipient,
+                                                                         TOKEN=settings.surveillance.token)
     mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
                                     subject=f"Surveillance Token - {datetime.now().strftime('%c')}",
                                     html_body=rendered)
     if mail_stat.ok:
         logger.debug(mail_stat.body)
-        logger.info("Token will be reset in 5 minutes.")
-        Timer(function=timeout_otp.reset_surveillance, interval=300).start()
+        logger.info("Token will be reset in %s", timeout_in)
+        Timer(function=timeout_otp.reset_surveillance, interval=reset_timeout).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Authentication success. Please enter the OTP sent via email:")
     else:

@@ -36,21 +36,20 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
         - 200: If email delivery was successful.
         - 503: If failed to send an email.
     """
+    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
     mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     logger.info("Sending stock monitor token as OTP")
     settings.stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.one_time_passcode).render(
-        TIMEOUT=support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute"),
-        TOKEN=settings.stock_monitor_helper.otp_sent[email_address], EMAIL=email_address,
-        ENDPOINT="https://vigneshrao.com/stock-monitor"
+        TIMEOUT=timeout_in, ENDPOINT="stock-monitor", EMAIL=email_address,
+        TOKEN=settings.stock_monitor_helper.otp_sent[email_address]
     )
     mail_stat = mail_obj.send_email(recipient=email_address, sender='Jarvis API',
                                     subject=f"Stock Monitor - {datetime.now().strftime('%c')}",
                                     html_body=rendered)
     if mail_stat.ok:
         logger.debug(mail_stat.body)
-        logger.info("Token will be reset in %s." %
-                    support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word='minute'))
+        logger.info("Token will be reset in %s", timeout_in)
         Timer(function=timeout_otp.reset_stock_monitor, args=(email_address,), interval=reset_timeout).start()
         raise APIResponse(status_code=HTTPStatus.OK.real,
                           detail="Please enter the OTP sent via email to verify email address:")
