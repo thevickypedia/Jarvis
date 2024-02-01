@@ -106,19 +106,26 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
     See Also:
         - Check Read Me in `vpn-server <https://git.io/JzCbi>`__ for more information.
     """
-    log_file = os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log')
-    multiprocessing_logger(filename=log_file)
-    kwargs = dict(vpn_username=models.env.vpn_username, vpn_password=models.env.vpn_password,
-                  hosted_zone=models.env.vpn_hosted_zone, subdomain=models.env.vpn_subdomain,
-                  key_pair=models.env.vpn_key_pair, security_group=models.env.vpn_security_group,
-                  vpn_info=models.env.vpn_info_file, logger=logger)
+    log_file = multiprocessing_logger(filename=os.path.join('logs', 'vpn_server_%d_%m_%Y_%H_%M.log'))
+    kwargs = dict(vpn_username=models.env.vpn_username,
+                  vpn_password=models.env.vpn_password,
+                  vpn_info=models.env.vpn_info_file,
+                  subdomain=models.env.vpn_subdomain,
+                  logger=logger)
+    if models.env.vpn_hosted_zone:
+        kwargs["hosted_zone"] = models.env.vpn_hosted_zone
+    if models.env.vpn_key_pair:
+        kwargs["key_pair"] = models.env.vpn_key_pair
+    if models.env.vpn_security_group:
+        kwargs["security_group"] = models.env.vpn_security_group
+
     if custom_region:
         kwargs['aws_region_name'] = custom_region
-        successful_subject = f"VPN Server on {custom_region} has been configured successfully!"
-        failed_subject = f"Failed to create VPN Server on {custom_region}!"
+        success_subject = f"VPN Server on {custom_region!r} has been configured successfully!"
+        fail_subject = f"Failed to create VPN Server on {custom_region!r}!"
     else:
-        successful_subject = "VPN Server has been configured successfully!"
-        failed_subject = "Failed to create VPN Server!"
+        success_subject = "VPN Server has been configured successfully!"
+        fail_subject = "Failed to create VPN Server!"
     vpn_object = vpn.VPNServer(**kwargs)
     with db.connection:
         cursor = db.connection.cursor()
@@ -127,10 +134,10 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
     if operation == 'enabled':
         if vpn_data := vpn_object.create_vpn_server():
             entrypoint = vpn_data.get('entrypoint') or vpn_data.get('public_dns')
-            communicator.send_email(subject=successful_subject, body=f"Server Entrypoint: {entrypoint}",
-                                    recipient=models.env.recipient, title="VPN Server")
+            communicator.send_email(subject=success_subject, body=f"Entrypoint: {entrypoint}", title="VPN Server",
+                                    recipient=models.env.recipient, attachment=models.env.vpn_info_file)
         else:
-            communicator.send_email(subject=failed_subject, recipient=models.env.recipient, title="VPN Server",
+            communicator.send_email(subject=fail_subject, recipient=models.env.recipient, title="VPN Server",
                                     attachment=log_file,
                                     body="Failed to initiate VPN server. "
                                          "Please check the logs (attached) for more information.")

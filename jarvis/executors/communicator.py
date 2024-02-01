@@ -113,4 +113,5 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         return True
     else:
         logger.error('Unable to send email notification.')
+        logger.error(mail_stat.json())
         return mail_stat.body
