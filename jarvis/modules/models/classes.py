@@ -380,11 +380,11 @@ class EnvConfig(BaseSettings):
     # VPN Server config
     vpn_username: Union[str, None] = None
     vpn_password: Union[str, None] = None
-    vpn_key_pair: Union[str, None] = None
-    vpn_subdomain: Union[str, None] = None
-    vpn_info_file: Union[str, None] = Field(None, pattern=r".+\.json$")
+    vpn_subdomain: str = "vpn"
+    vpn_key_pair: str = "OpenVPN"
+    vpn_security_group: str = "OpenVPN Access Server"
+    vpn_info_file: str = Field("vpn_info.json", pattern=r".+\.json$")
     vpn_hosted_zone: Union[str, None] = None
-    vpn_security_group: Union[str, None] = None
 
     # Vehicle config
     car_username: Union[EmailStr, None] = None
