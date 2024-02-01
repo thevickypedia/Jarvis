@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v4.4.1 (02/01/2024)
+-------------------
+- Support upgraded VPN server configuration
+- Minor improvements to one-time passcode settings
+
 v4.4 (11/30/2023)
 -----------------
 - Removes garage feature due to `Chamberlain blockade <https://chamberlaingroup.com/press/a-message-about-our-decision-to-prevent-unauthorized-usage-of-myq>`_
