@@ -80,25 +80,25 @@ class ThreadExecutor:
         """
         status = ThreadPool(processes=1).apply_async(func=self.thread_worker, args=(function_to_call,))
         speaker.speak(run=True)  # Speak the initial response when the work is happening behind the scenes
-        failed_msg, failed = [], None
         try:
             failed = status.get(5)
         except ThreadTimeout as error:
             logger.error(error)
-            failed_msg.append(support.pluralize(count=len(self.mapping), word="light", to_words=True, cap_word=True))
+            return
         if failed:
+            failed_msg = []
             for light_location, ip_list in failed.items():
                 if failed_msg:
                     msg = f'{support.pluralize(count=len(ip_list), word="light", to_words=True)} '
                 else:
                     msg = f'{support.pluralize(count=len(ip_list), word="light", to_words=True, cap_word=True)} '
                 failed_msg.append(msg + f'from {light_location}')
-        if len(failed_msg) == 1 and failed_msg[0].startswith('One'):  # Failed only on a single lamp
-            response = "".join(failed_msg) + " isn't available right now!"
-        else:
-            response = util.comma_separator(list_=failed_msg) + " aren't available right now!"
-        logger.error(response)
-        speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
+            if len(failed_msg) == 1 and failed_msg[0].startswith('One'):  # Failed only on a single lamp
+                response = "".join(failed_msg) + " isn't available right now!"
+            else:
+                response = util.comma_separator(list_=failed_msg) + " aren't available right now!"
+            logger.error(response)
+            speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
 
 
 def lights(phrase: str) -> None:
