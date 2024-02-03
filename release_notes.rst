@@ -1,10 +1,14 @@
 Release Notes
 =============
 
+v4.4.2 (02/03/2024)
+-------------------
+- Bug fix on flaky response when all the lights fail to connect
+
 v4.4.1 (02/01/2024)
 -------------------
-- Support upgraded VPN server configuration
-- Minor improvements to one-time passcode settings
+- Crash fix VPN server config and adapt to new changes
+- Minor improvements in one-time passcode settings
 
 v4.4 (11/30/2023)
 -----------------
