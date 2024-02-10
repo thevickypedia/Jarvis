@@ -96,9 +96,9 @@ def reminder(phrase: str) -> None:
     if models.settings.limited:
         speaker.speak(text="Reminder features are currently unavailable, as you're running on restricted mode.")
         return
-    message = re.search(' to (.*) at ', phrase) or re.search(' about (.*) at ', phrase) or \
+    message = re.search(' to (.*) in ', phrase) or re.search(' about (.*) in ', phrase) or \
         re.search(' to (.*) after ', phrase) or re.search(' about (.*) after ', phrase) or \
-        re.search(' to (.*) in ', phrase) or re.search(' about (.*) in ', phrase) or \
+        re.search(' to (.*) at ', phrase) or re.search(' about (.*) at ', phrase) or \
         re.search(' to (.*)', phrase) or re.search(' about (.*)', phrase)
     if not message:
         if word_match.word_match(phrase=phrase,

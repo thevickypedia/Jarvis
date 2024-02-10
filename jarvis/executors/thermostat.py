@@ -2,8 +2,8 @@ import time
 from threading import Thread
 from typing import Union
 
-from pyhtcc import (AuthenticationError, NoZonesFoundError, PyHTCC,
-                    UnauthorizedError, Zone)
+from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError,
+                    NoZonesFoundError, PyHTCC, UnauthorizedError, Zone)
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -17,7 +17,7 @@ def create_connection() -> None:
     """Creates a new connection and stores the device object and expiration time in a dedicated object."""
     try:
         tcc_object: PyHTCC = PyHTCC(models.env.tcc_username, models.env.tcc_password)
-    except AuthenticationError as error:
+    except (AuthenticationError, LoginCredentialsInvalidError) as error:
         logger.error(error)
         classes.Thermostat.device = "AuthenticationError"
         return
