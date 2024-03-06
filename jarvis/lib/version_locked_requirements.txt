@@ -8,7 +8,7 @@ packaging==23.2
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyhtcc==0.1.55
 pyicloud==1.0.0
-pyrh==2.0  # Do not upgrade, as the new version doesn't have the option for QR
+pyrh==2.1.2
 pywebostv==0.8.9
 randfacts==0.21.0
 sounddevice==0.4.6
