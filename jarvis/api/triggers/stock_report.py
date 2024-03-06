@@ -8,7 +8,7 @@ from typing import Tuple
 import jinja2
 import requests
 from pyrh import Robinhood
-from pyrh.exceptions import InvalidTickerSymbol
+from pyrh.exceptions import PyrhException
 
 
 class Investment:
@@ -24,9 +24,9 @@ class Investment:
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
-        rh = Robinhood()
-        rh.login(username=models.env.robinhood_user, password=models.env.robinhood_pass,
-                 qr_code=models.env.robinhood_qr)
+        rh = Robinhood(username=models.env.robinhood_user, password=models.env.robinhood_pass,
+                       mfa=models.env.robinhood_qr)
+        rh.login()
         raw_result = rh.positions()
         self.logger = logger
         if result := raw_result.get('results'):
@@ -55,16 +55,11 @@ class Investment:
             share_id = str(data['instrument'].split('/')[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
-            except InvalidTickerSymbol as error:
-                if str(error).strip():
-                    self.logger.error(error)
-                continue
-            ticker = (raw_details['symbol'])
-            try:
                 stock_name = requests.get(url=raw_details['instrument']).json()['simple_name']
-            except EgressErrors as error:
+            except (PyrhException, EgressErrors) as error:
                 self.logger.error(error)
                 continue
+            ticker = (raw_details['symbol'])
             buy = round(float(data['average_buy_price']), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
@@ -96,33 +91,38 @@ class Investment:
             loss_output += value[1]
             loss_total.append(value[0])
 
+        portfolio = self.rh.portfolio()
         port_msg = f'\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n' \
                    f'Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n' \
                    'The above values might differ from overall profit/loss if multiple shares ' \
                    'of the stock were purchased at different prices.'
-        net_worth = round(float(self.rh.equity()), 2)
+        net_worth = round(float(portfolio.equity), 2)
+        withdrawable_amount = round(float(portfolio.withdrawable_amount))
         output = f'Total number of stocks purchased: {num_stocks:,}\n'
         output += f'Total number of shares owned: {num_shares:,}\n'
         output += f'\nCurrent value of your total investment is: ${net_worth:,}'
         total_buy = round(math.fsum(shares_total), 2)
         output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
         total_diff = round(float(net_worth - total_buy), 2)
-        rh_text = f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares sir. " \
-                  f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you " \
-                  f"purchased. Currently we are on an overall "
+        rh_text = \
+            f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares {models.env.title}. " \
+            f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you purchased. " \
+            f"Your current withdrawable amount is ${withdrawable_amount:,}. " \
+            f"Currently we are on an overall "
         if total_diff < 0:
             rh_text += f"loss of ${round(total_diff):,} {models.env.title}"
             output += f'\n\nOverall Loss: ${total_diff:,}'
         else:
             rh_text += f"profit of ${round(total_diff):,} {models.env.title}"
             output += f'\n\nOverall Profit: ${total_diff:,}'
-        yesterday_close = round(float(self.rh.equity_previous_close()), 2)
+        yesterday_close = round(float(portfolio.equity_previous_close), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
         output += f"\n\nYesterday's closing value: ${yesterday_close:,}"
         if two_day_diff < 0:
             output += f"\nCurrent Dip: ${two_day_diff:,}"
         else:
             output += f"\nCurrent Spike: ${two_day_diff:,}"
+        output += f"\n\nWithdrawable Amount: ${withdrawable_amount:,}"
         return port_msg, profit_output, loss_output, output, rh_text
 
     def watchlist(self, interval: str = 'hour', strict: bool = False) -> Tuple[str, str]:
@@ -158,13 +158,8 @@ class Investment:
                 return r1, r2
             try:
                 raw_details = self.rh.get_quote(stock)
-            except InvalidTickerSymbol as error:
-                if str(error).strip():
-                    self.logger.error(error)
-                continue
-            try:
                 stock_name = requests.get(raw_details['instrument']).json()['simple_name']
-            except EgressErrors as error:
+            except (PyrhException, EgressErrors) as error:
                 self.logger.error(error)
                 continue
             price = round(float(raw_details['last_trade_price']), 2)

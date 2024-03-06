@@ -76,7 +76,7 @@ def nasdaq() -> None:
                     settings.trader.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
             except yaml.YAMLError as error:
                 logger.error(error)
-            if len(settings.trader.stock_list) > 5_000:
+            if len(settings.trader.stock_list) > 2_000:  # Usually close to ~5K
                 logger.info("%s generated with %d tickers on %s looks re-usable." %
                             (models.fileio.stock_list_backup, len(settings.trader.stock_list),
                              datetime.fromtimestamp(modified).strftime('%c')))

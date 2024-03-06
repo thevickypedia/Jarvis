@@ -3,7 +3,8 @@ from threading import Thread
 from typing import Union
 
 from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError,
-                    NoZonesFoundError, PyHTCC, UnauthorizedError, Zone)
+                    NoZonesFoundError, PyHTCC, UnauthorizedError,
+                    UnexpectedError, Zone)
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -40,6 +41,9 @@ def create_connection() -> None:
     except EgressErrors as error:
         logger.error(error)
         classes.Thermostat.device = "ConnectionError"
+    except UnexpectedError as error:
+        logger.error(error)
+        classes.Thermostat.device = "UnexpectedError"
 
 
 # Initiate connection only for main and offline communicators
@@ -129,6 +133,9 @@ def get_auth_object() -> Union[Zone, None]:
         return
     if classes.Thermostat.device == "NoZonesFoundError":
         speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
+        return
+    if classes.Thermostat.device == "UnexpectedError":
+        speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")
         return
     expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
     if time.time() - classes.Thermostat.expiration >= 86_400:
