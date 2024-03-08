@@ -166,6 +166,8 @@ class Connect:
         self.head = {
             "Authorization": f"Bearer {access_token}",
             "X-Device-Id": self.device_id,
+            "X-App-Id": "ICR_JAGUAR",
+            "X-App-Secret": "018dd168-6271-707f-9fd4-aed2bf76905e",
             "Content-Type": "application/json"
         }
 

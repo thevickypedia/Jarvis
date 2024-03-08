@@ -256,7 +256,7 @@ class Control:
         """
         return self.post_data(
             command="lock", data=self._authenticate_service(pin=pin, service_name="RDL"),
-            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json"}
         )
 
     def unlock(self, pin: int) -> Dict:
@@ -267,7 +267,7 @@ class Control:
         """
         return self.post_data(
             command="unlock", data=self._authenticate_service(pin=pin, service_name="RDU"),
-            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json"}
+            headers={"Content-Type": "application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json"}
         )
 
     def reset_alarm(self, pin: int) -> None:

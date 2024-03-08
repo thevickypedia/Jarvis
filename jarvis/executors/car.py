@@ -22,22 +22,30 @@ CONNECTION = classes.VehicleConnection()
 AUTHORIZATION = classes.VehicleAuthorization()
 
 
-def create_connection() -> None:
-    """Creates a new connection and stores the refresh token and device ID in a dedicated object."""
+def create_connection(alt_cdn: bool = False) -> None:
+    """Creates a new connection and stores the refresh token and device ID in a dedicated object.
+
+    Args:
+        alt_cdn: Boolean flag to use alternate CDN.
+    """
     if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
         # this might never happen, as the connection and vin are reused until auth expiry anyway
         connection = connector.Connect(username=models.env.car_username, refresh_token=AUTHORIZATION.refresh_token,
-                                       device_id=AUTHORIZATION.device_id)
+                                       china_servers=alt_cdn, device_id=AUTHORIZATION.device_id)
         logger.info("Using refresh token to create a connection with JLR API")
     else:
         connection = connector.Connect(username=models.env.car_username, password=models.env.car_password,
-                                       auth_expiry=time.time() + 86_400)  # local epoch time
+                                       china_servers=alt_cdn, auth_expiry=time.time() + 86_400)  # local epoch time
         logger.info("Using password to create a connection with JLR API")
     try:
         connection.connect()
     except EgressErrors as error:
         logger.error(error)
-        connection.head = None
+        if alt_cdn:
+            connection.head = None
+        else:
+            logger.info("Retrying with China Servers")
+            create_connection(True)
     if connection.head:
         AUTHORIZATION.device_id = connection.device_id
         AUTHORIZATION.expiration = connection.expiration
@@ -415,6 +423,9 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
                 logger.info("Creating a new connection since refresh token expired at: %s",
                             util.epoch_to_datetime(seconds=AUTHORIZATION.expiration, format_="%B %d, %Y - %I:%M %p"))
             create_connection()
+        if not all((CONNECTION.connection, CONNECTION.vin)):
+            logger.error("Unable to create session.")
+            return
         control = controller.Control(connection=CONNECTION.connection, vin=CONNECTION.vin)
         attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)
         response = {}

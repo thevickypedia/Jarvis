@@ -56,7 +56,7 @@ class Investment:
             try:
                 raw_details = self.rh.get_quote(share_id)
                 stock_name = requests.get(url=raw_details['instrument']).json()['simple_name']
-            except (PyrhException, EgressErrors) as error:
+            except PyrhException as error:
                 self.logger.error(error)
                 continue
             ticker = (raw_details['symbol'])
@@ -103,7 +103,7 @@ class Investment:
         output += f'\nCurrent value of your total investment is: ${net_worth:,}'
         total_buy = round(math.fsum(shares_total), 2)
         output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
-        total_diff = round(float(net_worth - total_buy), 2)
+        total_diff = round(float(net_worth - total_buy), 2) - withdrawable_amount
         rh_text = \
             f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares {models.env.title}. " \
             f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you purchased. " \
@@ -159,7 +159,7 @@ class Investment:
             try:
                 raw_details = self.rh.get_quote(stock)
                 stock_name = requests.get(raw_details['instrument']).json()['simple_name']
-            except (PyrhException, EgressErrors) as error:
+            except PyrhException as error:
                 self.logger.error(error)
                 continue
             price = round(float(raw_details['last_trade_price']), 2)
