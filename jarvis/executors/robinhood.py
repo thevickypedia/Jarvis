@@ -56,9 +56,9 @@ def get_summary() -> str:
 
     portfolio = rh.portfolio()
     net_worth = round(float(portfolio.equity))
-    total_buy = round(math.fsum(shares_total))
-    total_diff = round(net_worth - total_buy)
     withdrawable_amount = round(float(portfolio.withdrawable_amount))
+    total_buy = round(math.fsum(shares_total))
+    total_diff = round(net_worth - total_buy) - withdrawable_amount
 
     output = f"You have purchased {n:,} stocks and currently own {n_:,} shares {models.env.title}. " \
              f"Your total investment is ${net_worth:,} now, and it was ${total_buy:,} when you purchased. " \
