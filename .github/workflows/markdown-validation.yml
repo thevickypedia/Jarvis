@@ -9,5 +9,5 @@ jobs:
   none-shall-pass:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: thevickypedia/none-shall-pass@v3
+      - uses: actions/checkout@v4
+      - uses: thevickypedia/none-shall-pass@v4
