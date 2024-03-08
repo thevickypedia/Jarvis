@@ -1,5 +1,5 @@
 <p align="center" style="text-align: center">
-  <img src="https://thevickypedia.github.io/open-source/images/jarvis_logo.png" width="371px" height="350px">
+  <img src="https://thevickypedia.github.io/open-source/images/logo/jarvis.png" width="371px" height="350px">
 </p>
 <h2 align="center">Voice-Activated Natural Language UI</h2>
 
