@@ -13,7 +13,7 @@ import docker
 import psutil
 import pybrightness
 import pywslocker
-from docker.errors import ContainerError, DockerException
+from docker.errors import ContainerError, DockerException, APIError
 
 from jarvis.executors import (alarm, files, listener_controls, remind, system,
                               volume, word_match)
@@ -211,8 +211,11 @@ def delete_docker_container() -> None:
             err = f": {error.stderr}" if error.stderr else ""
             log_file.write(f"Command '{error.command}' in image '{error.image}' "
                            f"returned non-zero exit status {error.exit_status}{err}\n")
-        log_file.write(f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n")
-        os.remove(models.fileio.speech_synthesis_cid)
+        except APIError as error:
+            log_file.write(f"{error.response.status_code} - {error.response.text}")
+        else:
+            log_file.write(f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n")
+            os.remove(models.fileio.speech_synthesis_cid)
 
 
 def terminator() -> NoReturn:
