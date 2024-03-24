@@ -19,6 +19,7 @@ from multiprocessing import current_process
 from typing import Callable, Dict, List, Optional, Union
 from uuid import UUID
 
+import jlrpy
 import psutil
 import pyttsx3
 from packaging.version import Version
@@ -115,18 +116,6 @@ class Thermostat(BaseModel):
         arbitrary_types_allowed = True
 
 
-class VehicleAuthorization(BaseModel):
-    """Wrapper to store vehicle authorization.
-
-    >>> VehicleAuthorization
-
-    """
-
-    device_id: Optional[str] = None
-    expiration: Optional[float] = None
-    refresh_token: Optional[Union[str, UUID]] = None
-
-
 class VehicleConnection(BaseModel):
     """Wrapper to create and store vehicle connection.
 
@@ -135,7 +124,15 @@ class VehicleConnection(BaseModel):
     """
 
     vin: Optional[str] = None
-    connection: Optional[Callable] = None
+    device_id: Optional[str] = None
+    expiration: Optional[float] = None
+    control: Optional[jlrpy.Vehicle] = None
+    refresh_token: Optional[Union[str, UUID]] = None
+
+    class Config:
+        """Config to allow arbitrary types."""
+
+        arbitrary_types_allowed = True
 
 
 class RecognizerSettings(BaseModel):
