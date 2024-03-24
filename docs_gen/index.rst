@@ -661,19 +661,6 @@ Built-In Overrides
    :members:
    :undoc-members:
 
-Car
-===
-
-.. automodule:: jarvis.modules.car.connector
-   :members:
-   :exclude-members: IFAS_BASE_URL, IFOP_BASE_URL, IF9_BASE_URL
-
-====
-
-.. automodule:: jarvis.modules.car.controller
-   :members:
-   :exclude-members: DEFAULT_CONTENT_TYPE
-
 Conditions
 ==========
 
@@ -699,7 +686,7 @@ Classes
 
 .. automodule:: jarvis.modules.models.classes
    :members:
-   :exclude-members: SupportedPlatforms, Settings, VehicleAuthorization, VehicleConnection, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
+   :exclude-members: SupportedPlatforms, Settings, VehicleConnection, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
 
 ====
 
@@ -710,12 +697,6 @@ Classes
 ====
 
 .. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.VehicleAuthorization(pydantic.BaseModel)
    :members:
    :exclude-members: _abc_impl, model_config, model_fields
 

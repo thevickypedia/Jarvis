@@ -13,7 +13,7 @@ import docker
 import psutil
 import pybrightness
 import pywslocker
-from docker.errors import ContainerError, DockerException, APIError
+from docker.errors import APIError, ContainerError, DockerException
 
 from jarvis.executors import (alarm, files, listener_controls, remind, system,
                               volume, word_match)

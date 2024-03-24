@@ -41,9 +41,6 @@ def create_connection() -> None:
     except EgressErrors as error:
         logger.error(error)
         classes.Thermostat.device = "ConnectionError"
-    except UnexpectedError as error:
-        logger.error(error)
-        classes.Thermostat.device = "UnexpectedError"
 
 
 # Initiate connection only for main and offline communicators
@@ -134,9 +131,7 @@ def get_auth_object() -> Union[Zone, None]:
     if classes.Thermostat.device == "NoZonesFoundError":
         speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
         return
-    if classes.Thermostat.device == "UnexpectedError":
-        speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")
-        return
+    # Check for expiry after informing about the error, since a retry logic is in place when device object is a string
     expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
     if time.time() - classes.Thermostat.expiration >= 86_400:
         logger.info("Creating a new connection since the current session expired at: %s", expiry)
@@ -158,8 +153,12 @@ def thermostat_controls(phrase: str) -> None:
         logger.warning("TCC email or password or device_name not found.")
         support.no_env_vars()
         return
-    if device := get_auth_object():
-        if "set" in phrase.split():
-            set_thermostat(device, phrase)
-        else:
-            get_thermostat(device, phrase)
+    try:
+        if device := get_auth_object():
+            if "set" in phrase.split():
+                set_thermostat(device, phrase)
+            else:
+                get_thermostat(device, phrase)
+    except UnexpectedError as error:
+        logger.critical(error)
+        speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")

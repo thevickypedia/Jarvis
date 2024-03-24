@@ -8,10 +8,10 @@ from typing import Dict, List, Tuple, Union
 
 import gmailconnector
 import jinja2
+import jlrpy
 
 from jarvis.executors import communicator, files, location, weather, word_match
 from jarvis.modules.audio import speaker
-from jarvis.modules.car import connector, controller
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
@@ -19,7 +19,6 @@ from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
 CONNECTION = classes.VehicleConnection()
-AUTHORIZATION = classes.VehicleAuthorization()
 
 
 def create_connection(alt_cdn: bool = False) -> None:
@@ -28,14 +27,14 @@ def create_connection(alt_cdn: bool = False) -> None:
     Args:
         alt_cdn: Boolean flag to use alternate CDN.
     """
-    if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400:
+    if CONNECTION.refresh_token and time.time() - CONNECTION.expiration <= 86_400:
         # this might never happen, as the connection and vin are reused until auth expiry anyway
-        connection = connector.Connect(username=models.env.car_username, refresh_token=AUTHORIZATION.refresh_token,
-                                       china_servers=alt_cdn, device_id=AUTHORIZATION.device_id)
+        connection = jlrpy.Connection(email=models.env.car_username, refresh_token=CONNECTION.refresh_token,
+                                      use_china_servers=alt_cdn, device_id=CONNECTION.device_id)
         logger.info("Using refresh token to create a connection with JLR API")
     else:
-        connection = connector.Connect(username=models.env.car_username, password=models.env.car_password,
-                                       china_servers=alt_cdn, auth_expiry=time.time() + 86_400)  # local epoch time
+        connection = jlrpy.Connection(email=models.env.car_username, password=models.env.car_password,
+                                      use_china_servers=alt_cdn)
         logger.info("Using password to create a connection with JLR API")
     try:
         connection.connect()
@@ -47,15 +46,17 @@ def create_connection(alt_cdn: bool = False) -> None:
             logger.info("Retrying with China Servers")
             create_connection(True)
     if connection.head:
-        AUTHORIZATION.device_id = connection.device_id
-        AUTHORIZATION.expiration = connection.expiration
-        AUTHORIZATION.refresh_token = connection.refresh_token
-        logger.debug(AUTHORIZATION.__dict__)
-        vehicles = connection.get_vehicles(headers=connection.head).get("vehicles")
-        if vin := [vehicle_.get('vin') for vehicle_ in vehicles if vehicle_.get('role', '') == 'Primary']:
-            logger.info("Created connection on VIN: %s", vin[0])
-            CONNECTION.connection = connection
-            CONNECTION.vin = vin[0]
+        if len(connection.vehicles) == 1:
+            primary_vehicle = connection.vehicles[0]
+        else:
+            primary_vehicle = [v for v in connection.vehicles if v['role'] == 'Primary'][0]
+        logger.info("Created connection on VIN: %s", primary_vehicle.vin)
+        CONNECTION.expiration = connection.expiration
+        CONNECTION.control = primary_vehicle
+        CONNECTION.vin = primary_vehicle.vin
+        CONNECTION.refresh_token = connection.refresh_token
+    else:
+        logger.error("Vehicle connection received no headers!!")
 
 
 # Initiate connection only for main and offline communicators
@@ -415,18 +416,18 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
     control = None
     try:
         # check for expiration as connection reset in connector module appears to be flaky
-        if AUTHORIZATION.refresh_token and time.time() - AUTHORIZATION.expiration <= 86_400 and CONNECTION.connection:
+        if CONNECTION.refresh_token and time.time() - CONNECTION.expiration <= 86_400 and CONNECTION.control:
             logger.info("Reusing refresh token, valid until: %s",
-                        util.epoch_to_datetime(seconds=AUTHORIZATION.expiration, format_="%B %d, %Y - %I:%M %p"))
+                        util.epoch_to_datetime(seconds=CONNECTION.expiration, format_="%B %d, %Y - %I:%M %p"))
         else:
-            if AUTHORIZATION.expiration and time.time() - AUTHORIZATION.expiration >= 86_400:
+            if CONNECTION.expiration and time.time() - CONNECTION.expiration >= 86_400:
                 logger.info("Creating a new connection since refresh token expired at: %s",
-                            util.epoch_to_datetime(seconds=AUTHORIZATION.expiration, format_="%B %d, %Y - %I:%M %p"))
+                            util.epoch_to_datetime(seconds=CONNECTION.expiration, format_="%B %d, %Y - %I:%M %p"))
             create_connection()
-        if not all((CONNECTION.connection, CONNECTION.vin)):
+        if not CONNECTION.control:
             logger.error("Unable to create session.")
             return
-        control = controller.Control(connection=CONNECTION.connection, vin=CONNECTION.vin)
+        control = CONNECTION.control
         attributes = ThreadPool(processes=1).apply_async(func=control.get_attributes)
         response = {}
         if operation == "LOCK":
@@ -447,7 +448,7 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
                     else:
                         logger.info("Vehicle has been locked!")
                         time.sleep(3)  # Wait before locking the car, so that there is no overlap in refresh token
-            response = control.remote_engine_start(pin=models.env.car_pin, target_temperature=temp)
+            response = control.remote_engine_start(pin=models.env.car_pin, target_value=temp)
         elif operation == "STOP":
             response = control.remote_engine_stop(pin=models.env.car_pin)
         elif operation == "SECURE":
@@ -492,7 +493,9 @@ def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool 
             attributes = attributes.get()
             status = status.get()
             subscriptions = subscriptions.get()
-            return report(status_data=status, subscription_data=subscriptions, attributes=attributes)
+            return report(status_data=status,
+                          subscription_data=subscriptions.get('subscriptionPackages', []),
+                          attributes=attributes)
         if response and response.get("failureDescription"):
             logger.critical(response)
             return
