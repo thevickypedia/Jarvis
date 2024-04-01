@@ -94,7 +94,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     else
       python -m pip install pvporcupine==1.9.5
       trap 'handle_dlib_error' ERR
-      python -m pip install dlib==19.24.0 || true  # this will bypass the set -e flag, and continue with rest of the script
+      python -m pip install dlib==19.24.2 || true  # this will bypass the set -e flag, and continue with rest of the script
       trap - ERR
       python -m pip install opencv-python==4.5.5.64
     fi

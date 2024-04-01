@@ -3,6 +3,7 @@ axju-jokes==1.0.3
 googlehomepush==0.1.0
 holidays==0.37
 icalendar==5.0.11
+jlrpy==1.7.0
 newsapi-python==0.2.7
 packaging==23.2
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version

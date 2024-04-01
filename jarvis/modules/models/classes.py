@@ -16,7 +16,7 @@ from datetime import datetime
 from enum import Enum
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from typing import Callable, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 from uuid import UUID
 
 import jlrpy
@@ -140,6 +140,12 @@ class RecognizerSettings(BaseModel):
 
     >>> RecognizerSettings
 
+    See Also:
+        - energy_threshold: Minimum energy to consider for recording. Greater the value, louder the voice should be.
+        - dynamic_energy_threshold: Change considerable audio energy threshold dynamically.
+        - pause_threshold: Seconds of non-speaking audio before a phrase is considered complete.
+        - phrase_threshold: Minimum seconds of speaking audio before it can be considered a phrase.
+        - non_speaking_duration: Seconds of non-speaking audio to keep on both sides of the recording.
     """
 
     energy_threshold: PositiveInt = 700

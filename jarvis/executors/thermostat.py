@@ -2,9 +2,8 @@ import time
 from threading import Thread
 from typing import Union
 
-from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError,
-                    NoZonesFoundError, PyHTCC, UnauthorizedError,
-                    UnexpectedError, Zone)
+from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError, PyHTCC,
+                    Zone)
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker
@@ -29,18 +28,9 @@ def create_connection() -> None:
     try:
         classes.Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
         classes.Thermostat.expiration = time.time() + 86_400
-    except NoZonesFoundError as error:
+    except (EnvironmentError, ValueError, NameError, KeyError) as error:
         logger.error(error)
-        classes.Thermostat.device = "NoZonesFoundError"
-    except UnauthorizedError as error:
-        logger.error(error)
-        classes.Thermostat.device = "AuthenticationError"
-    except (NameError, IndexError) as error:
-        logger.error(error)
-        classes.Thermostat.device = "NameError"
-    except EgressErrors as error:
-        logger.error(error)
-        classes.Thermostat.device = "ConnectionError"
+        classes.Thermostat.device = error.__class__.__name__
 
 
 # Initiate connection only for main and offline communicators
@@ -118,18 +108,19 @@ def get_auth_object() -> Union[Zone, None]:
     if isinstance(classes.Thermostat.device, str):  # retry in case there was an error previously
         logger.warning("Previous error: '%s', retrying", classes.Thermostat.device)
         create_connection()
-    if classes.Thermostat.device == "AuthenticationError":
-        speaker.speak(f"I'm sorry {models.env.title}! I ran into an authentication error.")
-        return
-    if classes.Thermostat.device == "NameError":
-        speaker.speak(f"I'm sorry {models.env.title}! "
-                      f"I wasn't able to find the thermostat, {models.env.tcc_device_name} in your account.")
-        return
-    if classes.Thermostat.device == "ConnectionError":
-        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to connect to your thermostat.")
-        return
-    if classes.Thermostat.device == "NoZonesFoundError":
-        speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
+    if isinstance(classes.Thermostat.device, str):  # failed even after retry:
+        match classes.Thermostat.device:
+            case "AuthenticationError":
+                speaker.speak(f"I'm sorry {models.env.title}! I ran into an authentication error.")
+            case "NameError":
+                speaker.speak(f"I'm sorry {models.env.title}! "
+                              f"I wasn't able to find the thermostat, {models.env.tcc_device_name} in your account.")
+            case "ConnectionError":
+                speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to connect to your thermostat.")
+            case "NoZonesFoundError":
+                speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
+            case _:
+                speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")
         return
     # Check for expiry after informing about the error, since a retry logic is in place when device object is a string
     expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
@@ -159,6 +150,6 @@ def thermostat_controls(phrase: str) -> None:
                 set_thermostat(device, phrase)
             else:
                 get_thermostat(device, phrase)
-    except UnexpectedError as error:
+    except Exception as error:
         logger.critical(error)
         speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")
