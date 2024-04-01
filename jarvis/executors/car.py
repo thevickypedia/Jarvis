@@ -174,6 +174,8 @@ class Operations:
             str:
             Response after enabling guardian mode on the vehicle.
         """
+        if "disable" in phrase:
+            return "Guardian mode cannot be disabled via offline communicator, due to security reasons."
         requested_expiry = util.extract_nos(input_=phrase, method=int) or util.words_to_number(input_=phrase) or 1
         if 'hour' in phrase:
             seconds = requested_expiry * 3_600  # Defaults to 1 hour if no numeric value in phrase
