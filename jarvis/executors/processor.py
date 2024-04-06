@@ -86,14 +86,14 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     process_map.add(dump)
 
 
-def start_processes(func_name: str = None) -> Union[Process, Dict[str, Process]]:
+def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
     """Initiates multiple background processes to achieve parallelization.
 
     Args:
         func_name: Name of the function that has to be started.
 
     Returns:
-        Union[Process, Dict[str, Process]]:
+        Process | Dict[str, Process]:
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
 
     See Also:

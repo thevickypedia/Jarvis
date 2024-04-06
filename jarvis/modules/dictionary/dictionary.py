@@ -15,7 +15,7 @@ from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 
 
-def meaning(term: str) -> Union[Dict, None]:
+def meaning(term: str) -> Dict | None:
     """Gets the meaning of a word from `wordnetweb.princeton.edu <http://wordnetweb.princeton.edu/perl/webwn?s=>`__.
 
     Args:

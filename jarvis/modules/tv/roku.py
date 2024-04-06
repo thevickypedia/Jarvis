@@ -172,7 +172,7 @@ class RokuECP:
         """
         Thread(target=self._set_vol_executor, args=(target,)).start()
 
-    def current_app(self) -> Union[str, None]:
+    def current_app(self) -> str | None:
         """Find current app running on the TV.
 
         Returns:
@@ -209,14 +209,14 @@ class RokuECP:
         else:
             logger.error("%s not found in tv", app_name)
 
-    def get_apps(self, raw: bool = False) -> Union[Generator[Dict[str, str]], Generator[str]]:
+    def get_apps(self, raw: bool = False) -> Generator[Dict[str, str]] | Generator[str]:
         """Get list of applications installed on the TV.
 
         Args:
             raw: Takes a boolean flag if the entire dictionary has to be returned.
 
         Yields:
-            Union[Dict[str, str], str]:
+            Generator[Dict[str, str]] | Generator[str]:
             Yields of app name or information dict if requested as raw.
         """
         response = self.make_call(path='/query/apps', method='GET')

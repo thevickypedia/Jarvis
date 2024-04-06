@@ -14,7 +14,7 @@ import socket
 import string
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, Hashable, List, Union
+from typing import Any, Dict, Hashable, List, Tuple, Union
 
 
 def get_timezone() -> str:
@@ -27,7 +27,7 @@ def get_timezone() -> str:
     return datetime.utcnow().astimezone().tzname()
 
 
-def epoch_to_datetime(seconds: Union[int, float], format_: str = None, zone: timezone = None) -> Union[datetime, str]:
+def epoch_to_datetime(seconds: int | float, format_: str = None, zone: timezone = None) -> datetime | str:
     """Convert epoch time to datetime.
 
     Args:
@@ -36,7 +36,7 @@ def epoch_to_datetime(seconds: Union[int, float], format_: str = None, zone: tim
         zone: Timezone of epoch.
 
     Returns:
-        Union[datetime, str]:
+        datetime | str:
         Returns either a datetime object or a string formatted datetime.
     """
     if zone:
@@ -48,12 +48,12 @@ def epoch_to_datetime(seconds: Union[int, float], format_: str = None, zone: tim
     return datetime_obj
 
 
-def miles_to_kms(miles: Union[int, float]) -> float:
+def miles_to_kms(miles: int | float) -> float:
     """Takes miles as an argument and returns it in kilometers."""
     return round(miles / 0.621371, 2)
 
 
-def kms_to_miles(kms: Union[int, float]) -> float:
+def kms_to_miles(kms: int | float) -> float:
     """Takes kilometers as an argument and returns it in miles."""
     return round(kms * 0.621371, 2)
 
@@ -75,7 +75,7 @@ def part_of_day() -> str:
     return "Night"
 
 
-def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Union[Dict[str, float], str]:
+def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Dict[str, float] | str:
     """Get the closest matching word from a list of words.
 
     Args:
@@ -84,7 +84,7 @@ def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> U
         get_ratio: Boolean flag to return the closest match along with the ratio, as a dict.
 
     Returns:
-        Union[Dict[str, float], str]:
+        Dict[str, float] | str:
         Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.
     """
     closest_match = [{"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
@@ -218,7 +218,7 @@ def extract_time(input_: str) -> List[str]:
     """Extracts 12-hour time value from a string.
 
     Args:
-        input_: Int if found, else returns the received float value.
+        input_: Takes the phrase spoken as an argument.
 
     Returns:
         List[str]:
@@ -231,14 +231,38 @@ def extract_time(input_: str) -> List[str]:
         re.findall(r'(\d+\s?(?:am|pm:?))', input_)
 
 
-def delay_calculator(phrase: str) -> Union[int, float]:
+def split_time(input_: str) -> Tuple[str, str, str]:
+    """Splits the 12-hour time value from a string into a tuple.
+
+    Args:
+        input_: Input string from the function ``extract_time``.
+
+    Returns:
+        Tuple[str, str, str]:
+        Hour, minute and am/pm as a tuple of strings.
+    """
+    assert len(input_.split()) == 2, "Invalid extraction passed"
+    splitter = input_.split()[0]
+    if ":" in input_:
+        hour = int(splitter.split(":")[0])
+        minute = int(splitter.split(":")[-1])
+    else:
+        hour = int(splitter.split()[0])
+        minute = 0
+    # makes sure hour and minutes are two digits
+    hour, minute = f"{hour:02}", f"{minute:02}"
+    am_pm = "AM" if "A" in input_.split()[-1].upper() else "PM"
+    return hour, minute, am_pm
+
+
+def delay_calculator(phrase: str) -> int | float:
     """Calculates the delay in phrase (if any).
 
     Args:
         phrase: Takes the phrase spoken as an argument.
 
     Returns:
-        Union[int, float]:
+        int | float:
         Seconds of delay.
     """
     if not (count := extract_nos(input_=phrase)):
@@ -252,7 +276,7 @@ def delay_calculator(phrase: str) -> Union[int, float]:
     return count * delay
 
 
-def extract_nos(input_: str, method: type = float) -> Union[int, float]:
+def extract_nos(input_: str, method: type = float) -> int | float:
     """Extracts number part from a string.
 
     Args:
@@ -260,7 +284,7 @@ def extract_nos(input_: str, method: type = float) -> Union[int, float]:
         method: Takes a type to return a float or int value.
 
     Returns:
-        Union[int, float]:
+        int | float:
         Float values.
     """
     if value := re.findall(r"\d+", input_):

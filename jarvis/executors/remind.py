@@ -10,7 +10,7 @@ from jarvis.executors import communicator, files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import classes, models
 from jarvis.modules.utils import shared, support, util
 
 
@@ -135,18 +135,7 @@ def reminder(phrase: str) -> None:
         if not (extracted_time := util.extract_time(input_=phrase)):
             return
     message = message.group(1).strip()
-    extracted_time = extracted_time[0]
-    am_pm = extracted_time.split()[-1]
-    am_pm = str(am_pm).replace('a.m.', 'AM').replace('p.m.', 'PM')
-    remind_time = extracted_time.split()[0]
-    if ":" in extracted_time:
-        hour = int(remind_time.split(":")[0])
-        minute = int(remind_time.split(":")[-1])
-    else:
-        hour = int(remind_time.split()[0])
-        minute = 0
-    # makes sure hour and minutes are two digits
-    hour, minute = f"{hour:02}", f"{minute:02}"
+    hour, minute, am_pm = util.split_time(extracted_time[0])
     if int(hour) <= 12 and int(minute) <= 59:
         reminder_time_ = f"{hour}:{minute} {am_pm}"
         try:
@@ -188,13 +177,15 @@ def executor(message: str, contact: str = None) -> None:
     See Also:
         - Personalized icons for `Linux OS <https://wiki.ubuntu.com/Artwork/BreatheIconSet/Icons>`__
     """
+    notify_phone = models.env.notify_reminders in (classes.ReminderOptions.phone, classes.ReminderOptions.all)
+    notify_email = models.env.notify_reminders in (classes.ReminderOptions.email, classes.ReminderOptions.all)
     title = f"REMINDER from Jarvis {datetime.now().strftime('%c')}"
     if contact:
         contacts = files.get_contacts()
-        if phone := contacts.get('phone', {}).get(contact):
+        if notify_phone and (phone := contacts.get('phone', {}).get(contact)):
             communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
                                   number=phone, body=message, subject=title)
-        if email := contacts.get('email', {}).get(contact):
+        if notify_email and (email := contacts.get('email', {}).get(contact)):
             communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
                                     recipient=email, subject=title, body=message)
         return

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from webull import webull
 
 
-def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> Union[str, None]:
+def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> str | None:
     """Generate historical graph for stock price.
 
     Args:
@@ -98,7 +98,7 @@ class StockMonitor:
             self.ticker_grouped[k].append(tuple(v))
             self.email_grouped[v[0]].append((k,) + tuple(v[1:]))
 
-    def get_prices(self) -> Dict[str, Dict[str, Union[float, str]]]:
+    def get_prices(self) -> Dict[str, Dict[str, float | str]]:
         """Get the price of each stock ticker along with the exchange code.
 
         Returns:
@@ -124,7 +124,7 @@ class StockMonitor:
         return prices
 
     @staticmethod
-    def closest_maximum(stock_price: Union[int, float], maximum: Union[int, float], correction: int) -> bool:
+    def closest_maximum(stock_price: int | float, maximum: int | float, correction: int) -> bool:
         """Determines if a stock price is close to the maximum value.
 
         Examples:
@@ -150,7 +150,7 @@ class StockMonitor:
         return stock_price >= max_corrected_amt
 
     @staticmethod
-    def closest_minimum(stock_price: Union[int, float], minimum: Union[int, float], correction: int) -> bool:
+    def closest_minimum(stock_price: int | float, minimum: int | float, correction: int) -> bool:
         """Determines if a stock price is close to the minimum value.
 
         Examples:

@@ -59,7 +59,7 @@ def compare_tasks(dict1: dict, dict2: dict) -> bool:
         return True
 
 
-def remove_corrupted(task: Union[BackgroundTask, dict]) -> None:
+def remove_corrupted(task: BackgroundTask | dict) -> None:
     """Removes a corrupted task from the background tasks feed file.
 
     Args:

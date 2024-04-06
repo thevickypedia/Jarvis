@@ -13,8 +13,8 @@ from typing import Callable, Dict, List, Tuple, Union
 from pydantic import PositiveFloat, PositiveInt
 
 
-def timeout(seconds: Union[PositiveInt, PositiveFloat], function: Callable,
-            args: Union[List, Tuple] = None, kwargs: Dict = None, logger: Logger = None) -> bool:
+def timeout(seconds: PositiveInt | PositiveFloat, function: Callable,
+            args: List | Tuple = None, kwargs: Dict = None, logger: Logger = None) -> bool:
     """Run the given function and kill it if exceeds the set timeout.
 
     Args:

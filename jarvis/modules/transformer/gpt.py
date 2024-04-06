@@ -29,7 +29,7 @@ def dump_history(request: str, response: str) -> None:
     files.put_gpt_data(data)
 
 
-def existing_response(request: str) -> Union[str, None]:
+def existing_response(request: str) -> str | None:
     """Return existing response if new request closely matches historical requests.
 
     Args:

@@ -68,7 +68,7 @@ def validate_weather_alert() -> None:
             files.put_automation(data=automation_data)
 
 
-def auto_helper() -> Union[str, None]:
+def auto_helper() -> str | None:
     """Runs in a thread to help the automator function in the main module.
 
     Returns:

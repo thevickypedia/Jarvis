@@ -89,7 +89,7 @@ def country_timezone() -> Dict[str, str]:
     return timezone_country
 
 
-def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> Union[str, None]:
+def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> str | None:
     """Looks for words starting with an upper-case letter.
 
     Args:
@@ -244,7 +244,7 @@ def detect_lookup_date(phrase: str) -> Tuple[datetime, str]:
     return datetime_obj, addon
 
 
-def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], None]:
+def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
     """Converts human date from general conversations into a datetime object.
 
     Args:
@@ -282,7 +282,7 @@ def humanized_day_to_datetime(phrase: str) -> Union[Tuple[datetime, str], None]:
     return datetime.today() + td, addon
 
 
-def extract_humanized_date(phrase: str, fail_past: bool = False) -> Union[Tuple[datetime.date, str, str], None]:
+def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[datetime.date, str, str] | None:
     """Converts most humanized date into datetime object.
 
     Args:
@@ -416,7 +416,7 @@ def flush_screen() -> None:
         sys.stdout.write("\r")
 
 
-def number_to_words(input_: Union[int, str], capitalize: bool = False) -> str:
+def number_to_words(input_: int | str, capitalize: bool = False) -> str:
     """Converts integer version of a number into words.
 
     Args:

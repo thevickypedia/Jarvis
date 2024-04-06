@@ -25,7 +25,7 @@ options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
 geo_locator = Nominatim(scheme="http", user_agent="test/1", timeout=3)
 
 
-def get_coordinates_from_ip() -> Union[Tuple[float, float], Tuple[float, ...]]:
+def get_coordinates_from_ip() -> Tuple[float, float] | Tuple[float, ...]:
     """Uses public IP to retrieve latitude and longitude. If fails, uses ``Speedtest`` module.
 
     Returns:

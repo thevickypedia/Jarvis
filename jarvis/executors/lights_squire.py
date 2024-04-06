@@ -83,7 +83,7 @@ def runner(host: List[str]) -> None:
             executor.map(preset, host)
 
 
-def check_status() -> Union[str, int, None]:
+def check_status() -> str | int | None:
     """Retrieve process ID from the ``party`` table.
 
     Returns:

@@ -123,7 +123,7 @@ def intro() -> str:
            "flip a coin for me\n"
 
 
-def _get_file(data_class: Union[settings.Voice, settings.Document]) -> Union[bytes, None]:
+def _get_file(data_class: settings.Voice | settings.Document) -> bytes | None:
     """Makes a request to get the file and file path.
 
     Args:
@@ -170,7 +170,7 @@ def _make_request(url: str, payload: dict, files: dict = None) -> requests.Respo
     return response
 
 
-def send_audio(chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> requests.Response:
+def send_audio(chat_id: int, filename: str | FilePath, parse_mode: str = 'HTML') -> requests.Response:
     """Sends an audio file to the user.
 
     Args:
@@ -188,7 +188,7 @@ def send_audio(chat_id: int, filename: Union[str, FilePath], parse_mode: str = '
                          payload={'chat_id': chat_id, 'title': filename, 'parse_mode': parse_mode})
 
 
-def send_document(chat_id: int, filename: Union[str, FilePath], parse_mode: str = 'HTML') -> \
+def send_document(chat_id: int, filename: str | FilePath, parse_mode: str = 'HTML') -> \
         requests.Response:
     """Sends a document to the user.
 
@@ -207,7 +207,7 @@ def send_document(chat_id: int, filename: Union[str, FilePath], parse_mode: str 
                                   'parse_mode': parse_mode})
 
 
-def send_photo(chat_id: int, filename: Union[str, FilePath]) -> requests.Response:
+def send_photo(chat_id: int, filename: str | FilePath) -> requests.Response:
     """Sends an image file to the user.
 
     Args:
@@ -224,7 +224,7 @@ def send_photo(chat_id: int, filename: Union[str, FilePath]) -> requests.Respons
                          payload={'chat_id': chat_id, 'title': os.path.split(filename)[-1]})
 
 
-def reply_to(chat: settings.Chat, response: str, parse_mode: Union[str, None] = 'markdown',
+def reply_to(chat: settings.Chat, response: str, parse_mode: str | None = 'markdown',
              retry: bool = False) -> requests.Response:
     """Generates a payload to reply to a message received.
 
@@ -248,7 +248,7 @@ def reply_to(chat: settings.Chat, response: str, parse_mode: Union[str, None] = 
     return result
 
 
-def send_message(chat_id: int, response: str, parse_mode: Union[str, None] = 'markdown',
+def send_message(chat_id: int, response: str, parse_mode: str | None = 'markdown',
                  retry: bool = False) -> requests.Response:
     """Generates a payload to reply to a message received.
 
@@ -308,7 +308,7 @@ def poll_for_messages() -> None:
             offset = result['update_id'] + 1
 
 
-def process_request(payload: Dict[str, Union[int, dict]]) -> None:
+def process_request(payload: Dict[str, int | dict]) -> None:
     """Processes the request via Telegram messages.
 
     Args:
@@ -491,7 +491,7 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
         reply_to(chat, "Failed to convert audio. Please try text input.")
 
 
-def process_document(chat: settings.Chat, data_class: Union[settings.Document, settings.Audio, settings.Video]) -> None:
+def process_document(chat: settings.Chat, data_class: settings.Document | settings.Audio | settings.Video) -> None:
     """Processes the document in payload received after checking for authentication.
 
     Args:

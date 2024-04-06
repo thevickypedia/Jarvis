@@ -24,7 +24,7 @@ def is_port_in_use(port: int) -> bool:
         return sock.connect_ex(('localhost', port)) == 0
 
 
-def kill_port_pid(port: int, protocol: str = 'tcp') -> Union[bool, None]:
+def kill_port_pid(port: int, protocol: str = 'tcp') -> bool | None:
     """Uses List all open files ``lsof`` to get the PID of the process that is listening on the given port and kills it.
 
     Args:

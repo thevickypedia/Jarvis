@@ -168,11 +168,11 @@ class Camera:
         for camera in self._get_camera_info_darwin():
             yield camera.get('Name')
 
-    def get_camera_info(self) -> List[Union[Dict[str, str], str]]:
+    def get_camera_info(self) -> List[Dict[str, str] | str]:
         """Gets the yielded camera information as a generator object and returns as a list.
 
         Returns:
-            List[Dict[str]]:
+            List[Dict[str, str] | str]:
             List of dictionaries.
         """
         if models.settings.os == models.supported_platforms.macOS:

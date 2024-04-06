@@ -131,7 +131,7 @@ class CronExpression:
         if self.string_tab[2] == "*" and self.string_tab[4] != "*":
             self.numerical_tab[2] = set()
 
-    def check_trigger(self, date_tuple: Union[Tuple[int, int, int, int, int], Tuple[int, ...]] = None,
+    def check_trigger(self, date_tuple: Tuple[int, int, int, int, int] | Tuple[int, ...] = None,
                       utc_offset: int = 0) -> bool:
         """Returns boolean indicating if the trigger is active at the given time.
 

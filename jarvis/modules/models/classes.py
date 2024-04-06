@@ -13,7 +13,7 @@ import socket
 import sys
 from collections import ChainMap
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from ipaddress import IPv4Address
 from multiprocessing import current_process
 from typing import Dict, List, Optional, Union
@@ -37,7 +37,7 @@ from jarvis.modules.peripherals import channel_type, get_audio_devices
 AUDIO_DRIVER = pyttsx3.init()
 
 
-class SupportedPlatforms(str, Enum):
+class SupportedPlatforms(StrEnum):
     """Supported operating systems."""
 
     windows: str = "Windows"
@@ -64,7 +64,7 @@ class Settings(BaseModel):
         interactive: bool = False
     pid: PositiveInt = os.getpid()
     pname: str = current_process().name
-    ram: Union[PositiveInt, PositiveFloat] = psutil.virtual_memory().total
+    ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
     limited: bool = True if physical_cores < 4 else False
@@ -107,7 +107,7 @@ class Thermostat(BaseModel):
 
     """
 
-    device: Optional[Union[Zone, str]] = None
+    device: Optional[Zone | str] = None
     expiration: Optional[float] = None
 
     class Config:
@@ -127,7 +127,7 @@ class VehicleConnection(BaseModel):
     device_id: Optional[str] = None
     expiration: Optional[float] = None
     control: Optional[jlrpy.Vehicle] = None
-    refresh_token: Optional[Union[str, UUID]] = None
+    refresh_token: Optional[str | UUID] = None
 
     class Config:
         """Config to allow arbitrary types."""
@@ -149,13 +149,13 @@ class RecognizerSettings(BaseModel):
     """
 
     energy_threshold: PositiveInt = 700
-    pause_threshold: Union[PositiveInt, float] = 2
-    phrase_threshold: Union[PositiveInt, float] = 0.1
+    pause_threshold: PositiveInt | float = 2
+    phrase_threshold: PositiveInt | float = 0.1
     dynamic_energy_threshold: bool = False
-    non_speaking_duration: Union[PositiveInt, float] = 2
+    non_speaking_duration: PositiveInt | float = 2
 
 
-class TemperatureUnits(str, Enum):
+class TemperatureUnits(StrEnum):
     """Types of temperature units supported by Jarvis.
 
     >>> TemperatureUnits
@@ -166,7 +166,7 @@ class TemperatureUnits(str, Enum):
     IMPERIAL: str = 'imperial'
 
 
-class DistanceUnits(str, Enum):
+class DistanceUnits(StrEnum):
     """Types of distance units supported by Jarvis.
 
     >>> DistanceUnits
@@ -177,7 +177,7 @@ class DistanceUnits(str, Enum):
     KILOMETERS: str = 'kilometers'
 
 
-class EventApp(str, Enum):
+class EventApp(StrEnum):
     """Types of event applications supported by Jarvis.
 
     >>> EventApp
@@ -188,7 +188,7 @@ class EventApp(str, Enum):
     OUTLOOK = 'outlook'
 
 
-class SSQuality(str, Enum):
+class SSQuality(StrEnum):
     """Quality modes available for speech synthesis.
 
     >>> SSQuality
@@ -237,7 +237,7 @@ class BackgroundTask(BaseModel):
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: Union[List[int], List[str], str, int, List[Union[int, str]], None] = []
+    ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = []
 
     @field_validator('task', mode='before', check_fields=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
@@ -284,6 +284,14 @@ class BackgroundTask(BaseModel):
         return v
 
 
+class ReminderOptions(StrEnum):
+    """Supported reminder options."""
+
+    phone: str = "phone"
+    email: str = "email"
+    all: str = "all"
+
+
 class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
@@ -292,58 +300,59 @@ class EnvConfig(BaseSettings):
     """
 
     # Custom units
-    distance_unit: Union[DistanceUnits, None] = None
-    temperature_unit: Union[TemperatureUnits, None] = None
+    distance_unit: DistanceUnits | None = None
+    temperature_unit: TemperatureUnits | None = None
 
     # System config
     home: DirectoryPath = os.path.expanduser('~')
     volume: PositiveInt = 50
     limited: bool = False
     root_user: str = getpass.getuser()
-    root_password: Union[str, None] = None
+    root_password: str | None = None
 
     # Mute during meetings
     mute_for_meetings: bool = False
 
     # Built-in speaker config
-    voice_name: Union[str, None] = None
-    speech_rate: Union[PositiveInt, PositiveFloat] = AUDIO_DRIVER.getProperty("rate")
+    voice_name: str | None = None
+    speech_rate: PositiveInt | PositiveFloat = AUDIO_DRIVER.getProperty("rate")
 
     # Peripheral config
-    camera_index: Union[int, PositiveInt, None] = None
-    speaker_index: Union[int, PositiveInt, None] = None
-    microphone_index: Union[int, PositiveInt, None] = None
+    camera_index: int | PositiveInt | None = None
+    speaker_index: int | PositiveInt | None = None
+    microphone_index: int | PositiveInt | None = None
 
     # Log config
     debug: bool = False
-    log_retention: Union[int, PositiveInt] = Field(10, lt=90, gt=0)
+    log_retention: int | PositiveInt = Field(10, lt=90, gt=0)
 
     # User add-ons
-    birthday: Union[str, None] = None
+    birthday: str | None = None
     title: str = 'sir'
     name: str = 'Vignesh'
     website: HttpUrl = 'https://vigneshrao.com'
     plot_mic: bool = True
+    notify_reminders: ReminderOptions = ReminderOptions.all
 
     # Author specific
     author_mode: bool = False
 
     # Third party api config
-    weather_api: Union[str, None] = None
-    maps_api: Union[str, None] = None
-    news_api: Union[str, None] = None
-    openai_api: Union[str, None] = None
+    weather_api: str | None = None
+    maps_api: str | None = None
+    news_api: str | None = None
+    openai_api: str | None = None
     openai_model: str = 'gpt-3.5-turbo'
     openai_timeout: int = Field(5, le=10, ge=1)
-    openai_reuse_threshold: Union[float, None] = Field(None, ge=0.5, le=0.9)
+    openai_reuse_threshold: float | None = Field(None, ge=0.5, le=0.9)
 
     # Communication config
-    gmail_user: Union[EmailStr, None] = None
-    gmail_pass: Union[str, None] = None
-    open_gmail_user: Union[EmailStr, None] = None
-    open_gmail_pass: Union[str, None] = None
-    recipient: Union[EmailStr, None] = None
-    phone_number: Union[str, None] = Field(None, pattern="\\d{10}$")
+    gmail_user: EmailStr | None = None
+    gmail_pass: str | None = None
+    open_gmail_user: EmailStr | None = None
+    open_gmail_pass: str | None = None
+    recipient: EmailStr | None = None
+    phone_number: str | None = Field(None, pattern="\\d{10}$")
 
     # Offline communicator config
     offline_host: str = socket.gethostbyname('localhost')
@@ -352,69 +361,69 @@ class EnvConfig(BaseSettings):
     workers: PositiveInt = 1
 
     # Calendar events and meetings config
-    event_app: Union[EventApp, None] = None
-    ics_url: Union[HttpUrl, None] = None
+    event_app: EventApp | None = None
+    ics_url: HttpUrl | None = None
     # Set background sync limits to range: 15 minutes to 12 hours
-    sync_meetings: Union[int, None] = Field(None, ge=900, le=43_200)
-    sync_events: Union[int, None] = Field(None, ge=900, le=43_200)
+    sync_meetings: int | None = Field(None, ge=900, le=43_200)
+    sync_events: int | None = Field(None, ge=900, le=43_200)
 
     # Stock monitor apikey
     stock_monitor_api: Dict[EmailStr, str] = {}
 
     # Surveillance config
-    surveillance_endpoint_auth: Union[str, None] = None
+    surveillance_endpoint_auth: str | None = None
     surveillance_session_timeout: PositiveInt = 300
 
     # Apple devices' config
-    icloud_user: Union[EmailStr, None] = None
-    icloud_pass: Union[str, None] = None
-    icloud_recovery: Union[str, None] = Field(None, pattern="\\d{10}$")
+    icloud_user: EmailStr | None = None
+    icloud_pass: str | None = None
+    icloud_recovery: str | None = Field(None, pattern="\\d{10}$")
 
     # Robinhood config
-    robinhood_user: Union[EmailStr, None] = None
-    robinhood_pass: Union[str, None] = None
-    robinhood_qr: Union[str, None] = None
-    robinhood_endpoint_auth: Union[str, None] = None
+    robinhood_user: EmailStr | None = None
+    robinhood_pass: str | None = None
+    robinhood_qr: str | None = None
+    robinhood_endpoint_auth: str | None = None
 
     # GitHub config
-    git_user: Union[str, None] = None
-    git_pass: Union[str, None] = None
+    git_user: str | None = None
+    git_pass: str | None = None
 
     # VPN Server config
-    vpn_username: Union[str, None] = None
-    vpn_password: Union[str, None] = None
+    vpn_username: str | None = None
+    vpn_password: str | None = None
     vpn_subdomain: str = "vpn"
     vpn_key_pair: str = "OpenVPN"
     vpn_security_group: str = "OpenVPN Access Server"
     vpn_info_file: str = Field("vpn_info.json", pattern=r".+\.json$")
-    vpn_hosted_zone: Union[str, None] = None
+    vpn_hosted_zone: str | None = None
 
     # Vehicle config
-    car_username: Union[EmailStr, None] = None
-    car_password: Union[str, None] = None
-    car_pin: Union[str, None] = Field(None, pattern="\\d{4}$")
+    car_username: EmailStr | None = None
+    car_password: str | None = None
+    car_pin: str | None = Field(None, pattern="\\d{4}$")
 
     # Thermostat config
-    tcc_username: Union[EmailStr, None] = None
-    tcc_password: Union[str, None] = None
-    tcc_device_name: Union[str, None] = None
+    tcc_username: EmailStr | None = None
+    tcc_password: str | None = None
+    tcc_device_name: str | None = None
 
     # Listener config
-    sensitivity: Union[float, PositiveInt, List[float], List[PositiveInt]] = Field(0.5, le=1, ge=0)
-    listener_timeout: Union[PositiveFloat, PositiveInt] = 3
-    listener_phrase_limit: Union[PositiveFloat, PositiveInt] = 5
-    recognizer_confidence: Union[float, PositiveInt] = Field(0, le=1, ge=0)
+    sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(0.5, le=1, ge=0)
+    listener_timeout: PositiveFloat | PositiveInt = 3
+    listener_phrase_limit: PositiveFloat | PositiveInt = 5
+    recognizer_confidence: float | PositiveInt = Field(0, le=1, ge=0)
 
     # Telegram config
-    bot_token: Union[str, None] = None
+    bot_token: str | None = None
     bot_chat_ids: List[int] = []
     bot_users: List[str] = []
     # Telegram Webhook specific
-    bot_webhook: Union[HttpUrl, None] = None
-    bot_webhook_ip: Union[IPv4Address, None] = None
+    bot_webhook: HttpUrl | None = None
+    bot_webhook_ip: IPv4Address | None = None
     bot_endpoint: str = Field("/telegram-webhook", pattern=r"^\/")
-    bot_secret: Union[str, None] = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
-    bot_certificate: Union[FilePath, None] = None
+    bot_secret: str | None = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
+    bot_certificate: FilePath | None = None
 
     # Speech synthesis config
     speech_synthesis_timeout: int = 3
@@ -425,14 +434,14 @@ class EnvConfig(BaseSettings):
 
     # Background tasks
     crontab: List[expression.CronExpression] = []  # todo: move to yaml file in config dir
-    weather_alert: Union[str, datetime, None] = None
-    weather_alert_min: Union[int, PositiveInt] = 36
-    weather_alert_max: Union[int, PositiveInt] = 104
+    weather_alert: str | datetime | None = None
+    weather_alert_min: int | PositiveInt = 36
+    weather_alert_max: int | PositiveInt = 104
 
     # WiFi config
-    wifi_ssid: Union[str, None] = None
-    wifi_password: Union[str, None] = None
-    connection_retry: Union[PositiveInt, PositiveFloat] = 10
+    wifi_ssid: str | None = None
+    wifi_password: str | None = None
+    connection_retry: PositiveInt | PositiveFloat = 10
 
     # Legacy macOS config
     if settings.legacy:
@@ -449,7 +458,7 @@ class EnvConfig(BaseSettings):
 
     # noinspection PyMethodParameters
     @field_validator("microphone_index", mode='before', check_fields=True)
-    def parse_microphone_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
+    def parse_microphone_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates microphone index."""
         if not value:
             return
@@ -462,7 +471,7 @@ class EnvConfig(BaseSettings):
 
     # noinspection PyMethodParameters
     @field_validator("speaker_index", mode='before', check_fields=True)
-    def parse_speaker_index(cls, value: Union[int, PositiveInt]) -> Union[int, PositiveInt, None]:
+    def parse_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage (currently the index value is unused)
         if not value:
@@ -476,7 +485,7 @@ class EnvConfig(BaseSettings):
 
     # noinspection PyMethodParameters
     @field_validator("birthday", mode='before', check_fields=True)
-    def parse_birthday(cls, value: str) -> Union[str, None]:
+    def parse_birthday(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
             return
@@ -488,7 +497,7 @@ class EnvConfig(BaseSettings):
 
     # noinspection PyMethodParameters
     @field_validator("weather_alert", mode='before', check_fields=True)
-    def parse_weather_alert(cls, value: str) -> Union[str, None, datetime]:
+    def parse_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
             return

@@ -11,7 +11,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
-def extract_contacts(name: str, key: str) -> Union[int, EmailStr, str, None]:
+def extract_contacts(name: str, key: str) -> int | EmailStr | str | None:
     """Extract contact destination for ``phone`` or ``email`` from the ``contacts.yaml`` file, if present.
 
     Args:
@@ -19,7 +19,7 @@ def extract_contacts(name: str, key: str) -> Union[int, EmailStr, str, None]:
         key: Takes either ``phone`` or ``email`` as an argument.
 
     Returns:
-        Union[int, EmailStr]:
+        int | EmailStr | str:
         - EmailStr: If email address is requested.
         - int: If phone number is requested.
     """
@@ -101,7 +101,7 @@ def send_notification(phrase: str) -> None:
         initiate_sms(body=body, to=to)
 
 
-def initiate_sms(body: str, to: Union[str, int]) -> None:
+def initiate_sms(body: str, to: str | int) -> None:
     """Sends a message to the number received.
 
     If no number was received, it will ask for a number, looks if it is 10 digits and then sends a message.

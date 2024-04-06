@@ -196,7 +196,7 @@ def guard_enable(*args) -> None:
     security_runner(offline=False)
 
 
-def threat_notify(converted: str, face_detected: Union[str, None]) -> None:
+def threat_notify(converted: str, face_detected: str | None) -> None:
     """Sends an SMS and email notification in case of a threat.
 
     References:

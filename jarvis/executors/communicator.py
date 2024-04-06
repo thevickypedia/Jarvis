@@ -43,7 +43,7 @@ def read_gmail(*args) -> None:
         speaker.speak(text=f"I was unable to read your email {models.env.title}!")
 
 
-def send_sms(user: str, password: str, number: Union[str, int], body: str, subject: str = None) -> Union[bool, str]:
+def send_sms(user: str, password: str, number: str | int, body: str, subject: str = None) -> bool | str:
     """Send text message through SMS gateway of destination number.
 
     References:
@@ -57,7 +57,7 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
         subject: Takes subject as an optional argument.
 
     Returns:
-        Union[bool, str]:
+        bool | str:
         - Boolean flag to indicate the SMS was sent successfully.
         - Error response from gmail-connector.
     """
@@ -77,9 +77,9 @@ def send_sms(user: str, password: str, number: Union[str, int], body: str, subje
         return response.body
 
 
-def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, sender: str = None,
-               gmail_user: Union[EmailStr, str] = None, gmail_pass: str = None, title: str = None,
-               attachment: str = None) -> Union[bool, str]:
+def send_email(body: str, recipient: EmailStr | str, subject: str = None, sender: str = None,
+               gmail_user: EmailStr | str = None, gmail_pass: str = None, title: str = None,
+               attachment: str = None) -> bool | str:
     """Sends an email using an email template formatted as html.
 
     Args:
@@ -96,7 +96,7 @@ def send_email(body: str, recipient: Union[EmailStr, str], subject: str = None, 
         Uses `gmail-connector <https://pypi.org/project/gmail-connector/>`__ to send the Email.
 
     Returns:
-        Union[bool, str]:
+        bool | str:
         - Boolean flag to indicate the email was sent successfully.
         - Error response from gmail-connector.
     """

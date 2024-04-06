@@ -9,7 +9,7 @@ from typing import List, Tuple, Union
 
 
 def reverse_lookup(lookup: str,
-                   match_list: Union[List, Tuple]) -> Union[str, None]:
+                   match_list: List | Tuple) -> str | None:
     """Returns the word in phrase that matches the one in given list."""
     reverse = sum([w.lower().split() for w in match_list], [])  # extract multi worded conditions in match list
     for word in lookup.split():  # loop through words in the phrase
@@ -17,8 +17,8 @@ def reverse_lookup(lookup: str,
             return word
 
 
-def forward_lookup(lookup: Union[str, List, Tuple],
-                   match_list: Union[List, Tuple]) -> Union[str, None]:
+def forward_lookup(lookup: str | List | Tuple,
+                   match_list: List | Tuple) -> str | None:
     """Returns the word in list that matches with the phrase given as string or list."""
     for word in match_list:
         if word.lower() in lookup:
@@ -26,8 +26,8 @@ def forward_lookup(lookup: Union[str, List, Tuple],
 
 
 def word_match(phrase: str,
-               match_list: Union[List, Tuple],
-               strict: bool = False) -> Union[str, None]:
+               match_list: List | Tuple,
+               strict: bool = False) -> str | None:
     """Keyword classifier.
 
     Args:

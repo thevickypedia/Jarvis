@@ -19,7 +19,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 
-def ip_address() -> Union[str, None]:
+def ip_address() -> str | None:
     """Uses simple check on network id to see if it is connected to local host or not.
 
     Returns:
@@ -37,7 +37,7 @@ def ip_address() -> Union[str, None]:
     return ip_address_
 
 
-def vpn_checker() -> Union[bool, str]:
+def vpn_checker() -> bool | str:
     """Uses simple check on network id to see if it is connected to local host or not.
 
     Returns:
@@ -101,7 +101,7 @@ def ip_info(phrase: str) -> None:
     speaker.speak(text=output)
 
 
-def get_connection_info(target: str = "SSID") -> Union[str, None]:
+def get_connection_info(target: str = "SSID") -> str | None:
     """Gets information about the network connected.
 
     Returns:

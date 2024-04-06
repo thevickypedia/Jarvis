@@ -14,7 +14,7 @@ class OfflineCommunicatorModal(BaseModel):
 
     command: str
     native_audio: Optional[bool] = False
-    speech_timeout: Optional[Union[int, float]] = 0
+    speech_timeout: Optional[int | float] = 0
 
 
 class StockMonitorModal(BaseModel):
@@ -24,9 +24,9 @@ class StockMonitorModal(BaseModel):
 
     """
 
-    email: Union[EmailStr, None] = None
-    token: Union[Any, None] = None
-    request: Union[Any, None] = None
+    email: EmailStr | None = None
+    token: Any | None = None
+    request: Any | None = None
     plaintext: bool = False
 
 
@@ -48,6 +48,6 @@ class SpeechSynthesisModal(BaseModel):
     """
 
     text: str
-    timeout: Optional[Union[int, float]] = None
+    timeout: Optional[int | float] = None
     quality: Optional[str] = models.env.speech_synthesis_quality
     voice: Optional[str] = models.env.speech_synthesis_voice

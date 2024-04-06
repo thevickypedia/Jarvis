@@ -11,7 +11,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
 
 
-def get_contacts() -> Union[Dict[str, Dict[str, str]], DefaultDict[str, Dict[str, str]]]:
+def get_contacts() -> Dict[str, Dict[str, str]] | DefaultDict[str, Dict[str, str]]:
     """Reads the contact file and returns the data."""
     try:
         with open(models.fileio.contacts) as file:
@@ -43,7 +43,7 @@ def put_frequent(data: Dict[str, int]) -> None:
         file.flush()  # Write everything in buffer to file right away
 
 
-def get_location() -> Dict:
+def get_location() -> DefaultDict[str, Dict | float | bool]:
     """Reads the location file and returns the location data."""
     try:
         with open(models.fileio.location) as file:
@@ -51,6 +51,7 @@ def get_location() -> Dict:
                 return location
     except (yaml.YAMLError, FileNotFoundError) as error:
         logger.error(error)
+    # noinspection PyTypeChecker
     return collections.defaultdict(lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False)
 
 
@@ -165,11 +166,11 @@ def put_gpt_data(data: List[Dict[str, str]]) -> None:
         file.flush()  # Write buffer to file immediately
 
 
-def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:
+def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
     """Load automation data from feed file.
 
     Returns:
-        Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]:
+        Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
         Returns the automation data in the feed file.
     """
     try:
@@ -180,7 +181,7 @@ def get_automation() -> Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[
     return {}
 
 
-def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict[str, Union[str, bool]]]]) -> None:
+def put_automation(data: Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]) -> None:
     """Dumps automation data into feed file.
 
     Args:
@@ -191,11 +192,11 @@ def put_automation(data: Dict[str, Union[List[Dict[str, Union[str, bool]]], Dict
         file.flush()  # Write buffer to file immediately
 
 
-def get_smart_devices() -> Union[dict, bool, None]:
+def get_smart_devices() -> dict | bool | None:
     """Load smart devices' data from feed file.
 
     Returns:
-        Union[dict, bool]:
+        dict | bool | None:
         Returns the smart devices' data in the feed file.
     """
     try:
@@ -224,11 +225,11 @@ def put_smart_devices(data: dict) -> None:
         file.flush()  # Write buffer to file immediately
 
 
-def get_processes() -> Dict[str, List[Union[int, List[str]]]]:
+def get_processes() -> Dict[str, List[int | List[str]]]:
     """Get the processes' mapping from stored map file.
 
     Returns:
-        Dict[str, List[Union[int, List[str]]]]:
+        Dict[str, List[int | List[str]]]:
         Processes' mapping data.
     """
     try:
@@ -265,11 +266,11 @@ def put_reminders(data: List[Dict[str, str]]):
         file.flush()  # Write buffer to file immediately
 
 
-def get_alarms() -> List[Dict[str, Union[str, bool]]]:
+def get_alarms() -> List[Dict[str, str | bool]]:
     """Get all alarms stored.
 
     Returns:
-        Dict[str, Union[str, bool]]:
+        Dict[str, str | bool]:
         Returns a dictionary of information for stored alarms.
     """
     try:
@@ -280,7 +281,7 @@ def get_alarms() -> List[Dict[str, Union[str, bool]]]:
     return []
 
 
-def put_alarms(data: List[Dict[str, Union[str, bool]]]):
+def put_alarms(data: List[Dict[str, str | bool]]):
     """Dumps the alarm data into the respective yaml file.
 
     Args:

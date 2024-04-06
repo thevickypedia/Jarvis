@@ -22,7 +22,7 @@ recognizer = Recognizer()
 AUDIO_DRIVER = voices.voice_default()
 
 
-def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[FilePath, str, None]:
+def text_to_audio(text: str, filename: FilePath | str = None) -> FilePath | str | None:
     """Converts text into an audio file using the default speaker configuration.
 
     Args:
@@ -47,7 +47,7 @@ def text_to_audio(text: str, filename: Union[FilePath, str] = None) -> Union[Fil
         return filename
 
 
-def audio_to_text(filename: Union[FilePath, str]) -> str:
+def audio_to_text(filename: FilePath | str) -> str:
     """Converts audio to text using speech recognition.
 
     Args:

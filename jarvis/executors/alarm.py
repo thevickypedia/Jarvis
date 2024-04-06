@@ -16,8 +16,8 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
-def check_overlap(new_alarm: Dict[str, Union[str, bool]],
-                  old_alarms: List[Dict[str, Union[str, bool]]]) -> bool:
+def check_overlap(new_alarm: Dict[str, str | bool],
+                  old_alarms: List[Dict[str, str | bool]]) -> bool:
     """Checks to see if there is a possibility of an overlap.
 
     Args:
@@ -127,17 +127,7 @@ def set_alarm(phrase: str) -> None:
             extracted_time = ["12:00 PM"]
         elif 'night' in phrase:
             extracted_time = ["12:00 AM"]
-        extracted_time = extracted_time[0]
-        alarm_time = extracted_time.split()[0]
-        if ":" in extracted_time:
-            hour = int(alarm_time.split(":")[0])
-            minute = int(alarm_time.split(":")[-1])
-        else:
-            hour = int(alarm_time.split()[0])
-            minute = 0
-        # makes sure hour and minutes are two digits
-        hour, minute = f"{hour:02}", f"{minute:02}"
-        am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
+        hour, minute, am_pm = util.split_time(input_=extracted_time[0])
         if int(hour) <= 12 and int(minute) <= 59:
             datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
             if day := word_match.word_match(phrase=phrase, match_list=('sunday', 'monday', 'tuesday', 'wednesday',
@@ -193,7 +183,7 @@ def get_alarm_state(alarm_time: str = None) -> List[str]:
     return response
 
 
-def more_than_one_alarm_to_kill(alarms: List[Dict[str, Union[str, bool]]],
+def more_than_one_alarm_to_kill(alarms: List[Dict[str, str | bool]],
                                 phrase: str, alarm_states: List[str]) -> None:
     """Helper function for kill alarm, if there are multiple alarms set at the same time with different days.
 
@@ -261,17 +251,7 @@ def kill_alarm(phrase: str) -> None:
             extracted_time = ["12:00 PM"]
         elif 'night' in phrase:
             extracted_time = ["12:00 AM"]
-        extracted_time = extracted_time[0]
-        alarm_time = extracted_time.split()[0]
-        if ":" in extracted_time:
-            hour = int(alarm_time.split(":")[0])
-            minute = int(alarm_time.split(":")[-1])
-        else:
-            hour = int(alarm_time.split()[0])
-            minute = 0
-        # makes sure hour and minutes are two digits
-        hour, minute = f"{hour:02}", f"{minute:02}"
-        am_pm = "AM" if "A" in extracted_time.split()[-1].upper() else "PM"
+        hour, minute, am_pm = util.split_time(extracted_time[0])
         if int(hour) <= 12 and int(minute) <= 59:
             chosen_alarm = f"{hour}:{minute} {am_pm}"
             if chosen_alarm in [_alarm['alarm_time'] for _alarm in alarms]:

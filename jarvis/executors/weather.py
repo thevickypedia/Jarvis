@@ -15,7 +15,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
 
-def make_request(lat: float, lon: float) -> Union[Dict, None]:
+def make_request(lat: float, lon: float) -> Dict | None:
     """Get weather information from OpenWeatherMap API.
 
     Args:
@@ -40,7 +40,7 @@ def make_request(lat: float, lon: float) -> Union[Dict, None]:
         logger.error(error)
 
 
-def weather(phrase: str = None, monitor: bool = False) -> Union[Tuple[Any, int, int, int, Optional[str]], None]:
+def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, int, Optional[str]] | None:
     """Says weather at any location if a specific location is mentioned.
 
     Says weather at current location by getting IP using reverse geocoding if no place is received.

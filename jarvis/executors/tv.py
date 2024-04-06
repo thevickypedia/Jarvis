@@ -12,14 +12,14 @@ from jarvis.modules.utils import shared, support
 from jarvis.modules.wakeonlan import wakeonlan
 
 
-def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str]:
+def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, str | List[str]]], str]:
     """Extract TV mapping from the data in smart devices.
 
     Args:
         data: Raw data from smart devices.
 
     Returns:
-        Tuple[Dict[str, Dict[str, Union[str, List[str]]]], str]:
+        Tuple[Dict[str, Dict[str, str | List[str]]], str]:
         Return TV information and the key name under which it was stored. The key will be used to update the file.
     """
     for key, value in data.items():

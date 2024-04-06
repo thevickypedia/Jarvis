@@ -98,7 +98,7 @@ def set_thermostat(device: Zone, phrase: str) -> None:
     speaker.speak(text=f"I'm sorry {models.env.title}! Please specify if you want to set it as heat or cool.")
 
 
-def get_auth_object() -> Union[Zone, None]:
+def get_auth_object() -> Zone | None:
     """Loads the authenticated Zone object with a built-in retry logic and expiration check.
 
     Returns:

@@ -23,7 +23,7 @@ from jarvis.modules.utils import shared, support
 
 
 def speech_synthesizer(text: str,
-                       timeout: Union[int, float] = None,
+                       timeout: int | float = None,
                        quality: str = models.env.speech_synthesis_quality,
                        voice: str = models.env.speech_synthesis_voice) -> bool:
     """Makes a post call to docker container for speech synthesis.

@@ -43,7 +43,7 @@ def split_phrase(phrase: str) -> 'conditions.conditions':
     return exit_check
 
 
-def delay_condition(phrase: str, delay: Union[int, float]) -> None:
+def delay_condition(phrase: str, delay: int | float) -> None:
     """Delays the execution after sleeping for the said time, after which it is sent to ``offline_communicator``.
 
     Args:
@@ -60,7 +60,7 @@ def delay_condition(phrase: str, delay: Union[int, float]) -> None:
         logger.error(traceback.format_exc())
 
 
-def timed_delay(phrase: str) -> Tuple[str, Union[int, float]]:
+def timed_delay(phrase: str) -> Tuple[str, int | float]:
     """Checks pre-conditions if a delay is necessary.
 
     Args:

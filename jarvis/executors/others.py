@@ -467,14 +467,14 @@ def version(*args) -> None:
     speaker.speak(text=text)
 
 
-def get_aws_secrets(name: str = None) -> Union[Union[str, Dict[str, str]], List[str]]:
+def get_aws_secrets(name: str = None) -> str | List[str]:
     """Get secrets from AWS secretsmanager.
 
     Args:
         name: Get name of the particular secret.
 
     Returns:
-        Union[Union[str, Dict[str]], List[str]]:
+        str | List[str]:
         Returns the value of the secret or list of all secrets' names.
     """
     if name:
@@ -487,14 +487,14 @@ def get_aws_secrets(name: str = None) -> Union[Union[str, Dict[str, str]], List[
     return [page['Name'] for page in page_results['SecretList']]
 
 
-def get_aws_params(name: str = None) -> Union[str, List[str]]:
+def get_aws_params(name: str = None) -> str | List[str]:
     """Get SSM parameters from AWS.
 
     Args:
         name: Get name of the particular parameter.
 
     Returns:
-        Union[str, List[str]]:
+        str | List[str]:
         Returns the value of the parameter or list of all parameter names.
     """
     if name:

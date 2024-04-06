@@ -15,7 +15,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 
-def device_selector(phrase: str) -> Union[AppleDevice, None]:
+def device_selector(phrase: str) -> AppleDevice | None:
     """Selects a device using the received input string.
 
     Args:
@@ -36,7 +36,7 @@ def device_selector(phrase: str) -> Union[AppleDevice, None]:
     return icloud_api.devices[index]
 
 
-def location_services(device: AppleDevice) -> Union[None, dict]:
+def location_services(device: AppleDevice) -> dict | None:
     """Gets the current location of an Apple device.
 
     Args:

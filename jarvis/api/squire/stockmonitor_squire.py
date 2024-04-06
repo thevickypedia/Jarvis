@@ -29,7 +29,7 @@ def cleanup_stock_userdata() -> None:
             stock_db.connection.commit()
 
 
-def insert_stock_userdata(params: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> None:
+def insert_stock_userdata(params: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
     """Inserts new entry into the stock database.
 
     Args:
@@ -43,8 +43,8 @@ def insert_stock_userdata(params: Tuple[str, EmailStr, Union[int, float], Union[
         stock_db.connection.commit()
 
 
-def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
-        List[Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]]:
+def get_stock_userdata(email: Optional[EmailStr | str] = None) -> \
+        List[Tuple[str, EmailStr, int | float, int | float, int, str]]:
     """Reads the stock database to get all the user data.
 
     Returns:
@@ -61,7 +61,7 @@ def get_stock_userdata(email: Optional[Union[EmailStr, str]] = None) -> \
 
 
 def get_daily_alerts() -> \
-        Generator[Dict[int, Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str]]]:
+        Generator[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]:
     """Get all the information stored in ``stock_daily`` database table.
 
     Yields:
@@ -74,7 +74,7 @@ def get_daily_alerts() -> \
 
 
 def put_daily_alerts(
-        params: List[Dict[int, Tuple[int, str, EmailStr, Union[int, float], Union[int, float], int, str]]]
+        params: List[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]
 ):
     """Updates the daily alerts into the ``stock_daily`` database table.
 
@@ -92,7 +92,7 @@ def put_daily_alerts(
         stock_db.connection.commit()
 
 
-def delete_stock_userdata(data: Tuple[str, EmailStr, Union[int, float], Union[int, float], int, str]) -> None:
+def delete_stock_userdata(data: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
     """Delete particular user data from stock database.
 
     Args:

@@ -7,8 +7,8 @@
 
 import platform
 from collections.abc import Generator
-from enum import Enum
-from typing import Dict, Union
+from enum import StrEnum
+from typing import Dict
 
 import pyaudio
 
@@ -23,7 +23,7 @@ else:
 _device_range = audio_engine.get_device_count()
 
 
-class ChannelType(str, Enum):
+class ChannelType(StrEnum):
     """Allowed values for channel types.
 
     >>> ChannelType
@@ -37,7 +37,7 @@ class ChannelType(str, Enum):
 channel_type = ChannelType
 
 
-def get_audio_devices(channels: str) -> Generator[Dict[str, Union[str, int, float]]]:
+def get_audio_devices(channels: str) -> Generator[Dict[str, str | int | float]]:
     """Iterates over all devices and yields the device that has input channels.
 
     Args:

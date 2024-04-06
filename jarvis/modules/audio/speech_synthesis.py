@@ -75,7 +75,7 @@ def check_existing() -> bool:
                 logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
 
 
-def run_existing_container(client: DockerClient, verified: bool = False) -> Union[str, None]:
+def run_existing_container(client: DockerClient, verified: bool = False) -> str | None:
     """Tries to run the container if a container ID is present in the CID file in fileio directory.
 
     Args:

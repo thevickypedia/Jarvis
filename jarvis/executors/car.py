@@ -67,7 +67,7 @@ if models.settings.pname in ('JARVIS', 'telegram_api', 'jarvis_api'):
         Thread(target=create_connection).start()
 
 
-def current_set_temperature(latitude: float, longitude: float) -> Tuple[Union[int, str], int]:
+def current_set_temperature(latitude: float, longitude: float) -> Tuple[int | str, int]:
     """Get the current temperature at a given location.
 
     Returns:
@@ -324,9 +324,9 @@ def convert_dt_report(dt_string: str) -> str:
     return support.utc_to_local(utc_dt=utc_dt).strftime("%A, %B %d %Y - %I:%M %p")
 
 
-def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
+def report(status_data: Dict[str, str | Dict[str, str]],
            subscription_data: List[Dict[str, str]],
-           attributes: Dict[str, Union[List[Dict[str, str]], Dict[str, str]]]) -> str:
+           attributes: Dict[str, List[Dict[str, str]] | Dict[str, str]]) -> str:
     """Generates a report based on the vehicle's status and sends an email notification.
 
     Args:
@@ -402,7 +402,7 @@ def report(status_data: Dict[str, Union[str, Union[Dict[str, str]]]],
         return f"Failed to send the vehicle report {models.env.title}! Please check the logs for more information."
 
 
-def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool = True) -> Union[str, dict, None]:
+def vehicle(operation: str, temp: int = None, end_time: int = None, retry: bool = True) -> str | dict | None:
     """Establishes a connection with the car and returns an object to control the primary vehicle.
 
     Args:

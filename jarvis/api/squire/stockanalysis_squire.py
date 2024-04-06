@@ -3,7 +3,7 @@ import string
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from typing import Callable, Iterable, List, Union
+from typing import Callable, Iterable, List
 
 import requests
 import yaml
@@ -38,7 +38,7 @@ def ticker_gatherer(character: str) -> None:
         settings.trader.stock_list[td2[0].text] = td2[1].text
 
 
-def thread_worker(function_to_call: Callable, iterable: Union[List, Iterable], workers: int = None) -> None:
+def thread_worker(function_to_call: Callable, iterable: List | Iterable, workers: int = None) -> None:
     """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
 
     Args:

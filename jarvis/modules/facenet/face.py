@@ -19,7 +19,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
-def verify_image(filename: Union[str, FilePath]) -> bool:
+def verify_image(filename: str | FilePath) -> bool:
     """Verifies if a particular image can be used for training.
 
     Args:
@@ -38,7 +38,7 @@ def verify_image(filename: Union[str, FilePath]) -> bool:
         return True
 
 
-def condition_check(filename: Union[str, FilePath]) -> bool:
+def condition_check(filename: str | FilePath) -> bool:
     """Condition check to load the dataset.
 
     Args:
@@ -93,7 +93,7 @@ class FaceNet:
                     self.train_faces.append(encoded)  # loads ended values to match
                     self.train_names.append(char_dir)  # loads the names of each named subdirectories
 
-    def face_recognition(self, location: Union[str, FilePath], retry_count: int = 20) -> str:
+    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str:
         """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:

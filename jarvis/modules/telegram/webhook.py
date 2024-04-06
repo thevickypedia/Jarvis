@@ -1,5 +1,4 @@
 import logging
-from typing import Union
 
 import requests
 from pydantic import HttpUrl
@@ -21,7 +20,7 @@ def get_webhook(base_url: str, logger: logging.Logger):
     response.raise_for_status()
 
 
-def delete_webhook(base_url: Union[str, HttpUrl], logger: logging.Logger):
+def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger):
     """Delete webhook.
 
     References:
@@ -35,7 +34,7 @@ def delete_webhook(base_url: Union[str, HttpUrl], logger: logging.Logger):
     response.raise_for_status()
 
 
-def set_webhook(base_url: Union[HttpUrl, str], webhook: Union[HttpUrl, str], logger: logging.Logger):
+def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger):
     """Set webhook.
 
     References:

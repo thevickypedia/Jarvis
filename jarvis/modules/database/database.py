@@ -21,7 +21,7 @@ class Database:
 
     """
 
-    def __init__(self, database: Union[FilePath, str], timeout: int = 10):
+    def __init__(self, database: FilePath | str, timeout: int = 10):
         """Instantiates the class ``Database`` to create a connection and a cursor.
 
         Args:
@@ -33,7 +33,7 @@ class Database:
         self.datastore = database
         self.connection = sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=timeout)
 
-    def create_table(self, table_name: str, columns: Union[List[str], Tuple[str]]) -> None:
+    def create_table(self, table_name: str, columns: List[str] | Tuple[str]) -> None:
         """Creates the table with the required columns.
 
         Args:

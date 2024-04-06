@@ -40,14 +40,14 @@ class Speaker:
         self.voices = self.engine.getProperty("voices")  # gets the list of voices available
 
     # noinspection PyTypeChecker
-    def get_all_voices(self) -> Generator[Dict[str, Union[str, int]]]:
+    def get_all_voices(self) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices, converting attributes into dict."""
         logger.info('Getting all voice attributes.')
         for index, voice in enumerate(self.voices):
             yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
     # noinspection PyTypeChecker
-    def get_english_voices(self) -> Generator[Dict[str, Union[str, int]]]:
+    def get_english_voices(self) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices for english language, converting attributes into dict."""
         logger.info('Getting voice attributes for english language.')
         for index, voice in enumerate(self.voices):
@@ -55,28 +55,28 @@ class Speaker:
                 yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
     # noinspection PyTypeChecker
-    def get_voice_by_language(self, lang_code: str) -> Generator[Dict[str, Union[str, int]]]:
+    def get_voice_by_language(self, lang_code: str) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices for the given language, converting attributes into dict."""
         logger.info("Getting voice for the language code: '%s'", lang_code)
         for index, voice in enumerate(self.voices):
             if lang_code in voice.languages:
                 yield {'index': index, 'id': voice.id, 'name': voice.name, 'gender': voice.gender}
 
-    def get_voice_by_index(self, index: int) -> Dict[str, Union[str, int]]:
+    def get_voice_by_index(self, index: int) -> Dict[str, str | int]:
         """Yields all the available voices for the given index, converting attributes into dict."""
         logger.info("Getting voice for the index: '%s'", index)
         for voice in self.get_all_voices():
             if voice['index'] == index:
                 return voice
 
-    def get_voice_by_name(self, name: str) -> Generator[Dict[str, Union[str, int]]]:
+    def get_voice_by_name(self, name: str) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices matching the given name, converting attributes into dict."""
         logger.info("Getting voices for the name: %s", name)
         for voice in self.get_all_voices():
             if name.lower() in voice['name'].lower():
                 yield voice
 
-    def get_voice_by_gender(self, gender: str) -> Generator[Dict[str, Union[str, int]]]:
+    def get_voice_by_gender(self, gender: str) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices matching the given gender, converting attributes into dict."""
         gender = "VoiceGenderMale" if gender.lower() == 'male' else "VoiceGenderFemale"
         logger.info("Getting voices for the gender: %s", gender)
@@ -104,7 +104,7 @@ class Speaker:
             rate: Rate at which the voice should speak.
         """
         logger.debug("Setting voice name to %s and speech rate to '%d'", voice_name, rate)
-        voices: Union[list, object] = self.engine.getProperty("voices")
+        voices: list | object = self.engine.getProperty("voices")
         for voice in voices:
             if voice.name == voice_name or voice_name in voice.name:
                 self.engine.setProperty("voice", voice.id)

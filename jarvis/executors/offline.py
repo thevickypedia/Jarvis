@@ -203,7 +203,7 @@ def background_task_runner() -> None:
         time.sleep(0.5)  # Reduces CPU utilization as constant fileIO operations spike CPU %
 
 
-def ondemand_offline_automation(task: str) -> Union[str, None]:
+def ondemand_offline_automation(task: str) -> str | None:
     """Makes a ``POST`` call to offline-communicator to execute a said task.
 
     Args:
@@ -222,7 +222,7 @@ def ondemand_offline_automation(task: str) -> Union[str, None]:
         return response.json()['detail'].split('\n')[-1]
 
 
-def offline_communicator(command: str, bg_flag: bool = False) -> Union[AnyStr, HttpUrl]:
+def offline_communicator(command: str, bg_flag: bool = False) -> AnyStr | HttpUrl:
     """Initiates conditions after flipping ``status`` flag in ``called_by_offline`` dict which suppresses the speaker.
 
     Args:

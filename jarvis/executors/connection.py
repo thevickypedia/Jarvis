@@ -9,7 +9,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
 
 
-def wifi(conn_object: classes.WiFiConnection) -> Union[classes.WiFiConnection, None]:
+def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     """Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.
 
     Args:

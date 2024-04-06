@@ -31,8 +31,8 @@ if models.settings.pname == "JARVIS":
 
 
 def listen(sound: bool = True, no_conf: bool = False,
-           timeout: Union[PositiveInt, PositiveFloat] = models.env.listener_timeout,
-           phrase_time_limit: Union[PositiveInt, PositiveFloat] = models.env.listener_phrase_limit) -> Union[str, None]:
+           timeout: PositiveInt | PositiveFloat = models.env.listener_timeout,
+           phrase_time_limit: PositiveInt | PositiveFloat = models.env.listener_phrase_limit) -> str | None:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:

@@ -31,7 +31,7 @@ def audio_converter_mac() -> Callable:
         logger.error(error)
 
 
-def audio_converter_win(input_filename: Union[FilePath, str], output_audio_format: str) -> Union[str, None]:
+def audio_converter_win(input_filename: FilePath | str, output_audio_format: str) -> str | None:
     """Imports AudioSegment from pydub.
 
     Args:

@@ -11,7 +11,6 @@ References:
 import socket
 import struct
 import time
-from typing import Union
 
 import webcolors
 
@@ -110,7 +109,7 @@ class MagicHomeApi:
             byte = 0
         return int((byte * 100) / 255)
 
-    def get_status(self) -> Union[str, None]:
+    def get_status(self) -> str | None:
         """Get the current status of a device.
 
         Returns:

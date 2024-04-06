@@ -35,7 +35,7 @@ class Settings:
 
     # User config
     channels: Optional[List[int]]
-    device: Optional[Union[str, int]]
+    device: Optional[str | int]
     window: Optional[int]
     interval: Optional[int]
     samplerate: Optional[float]
@@ -88,7 +88,7 @@ def update_plot(frame: int) -> List[Line2D]:
     return settings.lines
 
 
-def plot_mic(channels: List[int] = None, device: Union[str, int] = None, window: int = 200,
+def plot_mic(channels: List[int] = None, device: str | int = None, window: int = 200,
              interval: int = 30, samplerate: float = None, down_sample: int = 10,
              window_size: Tuple[int, int] = (5, 3), rate: int = 40, dark_mode: bool = True) -> None:
     """Loads all the arguments into a dict and kicks off the mapping.

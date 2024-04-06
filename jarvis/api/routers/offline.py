@@ -32,7 +32,7 @@ def kill_power() -> None:
         cursor.connection.commit()
 
 
-async def process_ok_response(response: str, input_data: modals.OfflineCommunicatorModal) -> Union[bytes, FileResponse]:
+async def process_ok_response(response: str, input_data: modals.OfflineCommunicatorModal) -> bytes | FileResponse:
     """Processes responses for 200 messages. Response is framed as synthesized or native based on input data.
 
     Args:
@@ -40,7 +40,7 @@ async def process_ok_response(response: str, input_data: modals.OfflineCommunica
         input_data: Input data modal.
 
     Returns:
-        Union[bytes, FileResponse]:
+        bytes | FileResponse:
         FileResponse in case of native audio or bytes in case of speech synthesized response.
     """
     if input_data.speech_timeout:
