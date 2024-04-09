@@ -188,7 +188,8 @@ Licensed under the [MIT License][license]
 [sphinx]: https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html
 [runbook]: https://jarvis-docs.vigneshrao.com/
 
-[//]: # (labels)
+<!-- labels -->
+
 [label-python]: https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python
 [label-pyversion]: https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-orange
 [label-pypi-downloads]: https://img.shields.io/pypi/dm/jarvis-ironman
