@@ -4,7 +4,7 @@ import warnings
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import psutil
 

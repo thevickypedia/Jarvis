@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 from pydantic import EmailStr
 

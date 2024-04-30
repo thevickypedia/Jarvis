@@ -7,7 +7,6 @@
 
 import os
 import time
-from typing import Union
 
 import soundfile
 from pydantic import FilePath

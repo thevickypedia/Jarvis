@@ -1,12 +1,12 @@
-from typing import Union
-
 import gmailconnector
 import jinja2
+import requests
 from pydantic import EmailStr
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
@@ -61,6 +61,10 @@ def send_sms(user: str, password: str, number: str | int, body: str, subject: st
         - Boolean flag to indicate the SMS was sent successfully.
         - Error response from gmail-connector.
     """
+    if not all([models.env.gmail_user, models.env.gmail_pass]):
+        logger.warning("Gmail username and password not found.")
+        support.no_env_vars()
+        return False
     if not any([models.env.phone_number, number]):
         logger.error('No phone number was stored in env vars to trigger a notification.')
         return False
@@ -100,6 +104,10 @@ def send_email(body: str, recipient: EmailStr | str, subject: str = None, sender
         - Boolean flag to indicate the email was sent successfully.
         - Error response from gmail-connector.
     """
+    if not all([models.env.gmail_user, models.env.gmail_pass]):
+        logger.warning("Gmail username and password not found.")
+        support.no_env_vars()
+        return False
     if not subject:
         subject = "Message from Jarvis" if recipient == models.env.recipient else f"Message from {models.env.name}"
     rendered = jinja2.Template(source=templates.email.notification).render(SENDER=title or models.env.name,
@@ -115,3 +123,37 @@ def send_email(body: str, recipient: EmailStr | str, subject: str = None, sender
         logger.error('Unable to send email notification.')
         logger.error(mail_stat.json())
         return mail_stat.body
+
+
+def ntfy_send(topic: str,
+              title: str,
+              message: str) -> bool:
+    """Uses `ntfy` to send notification to a specific topic.
+
+    Args:
+        topic: Topic to send notifications to.
+        title: Title of the notification.
+        message: Notification content.
+
+    Returns:
+        bool:
+        Boolean flag to indicate the results
+    """
+    if not all([models.env.ntfy_username, models.env.ntfy_password]):
+        logger.warning("Ntfy username and password not found.")
+        support.no_env_vars()
+        return False
+    headers = {
+        'X-Title': title,
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    endpoint = f"{models.env.ntfy_url}{topic}"
+    try:
+        response = requests.post(url=endpoint, auth=(models.env.ntfy_username, models.env.ntfy_password),
+                                 headers=headers, data=message)
+        response.raise_for_status()
+    except EgressErrors as error:
+        logger.error(error)
+        return False
+    logger.info(response.json())
+    return True

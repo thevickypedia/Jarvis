@@ -2,7 +2,7 @@
 
 import collections
 from threading import Timer
-from typing import Any, DefaultDict, Dict, List, Union
+from typing import Any, DefaultDict, Dict, List
 
 import yaml
 from pydantic import ValidationError

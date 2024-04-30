@@ -6,7 +6,7 @@ import math
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import gmailconnector
 import jinja2

@@ -8,7 +8,7 @@
 import multiprocessing
 import time
 from logging import Logger
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Callable, Dict, List, Tuple
 
 from pydantic import PositiveFloat, PositiveInt
 

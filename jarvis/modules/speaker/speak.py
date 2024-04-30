@@ -7,7 +7,7 @@
 
 import logging
 from collections.abc import Generator
-from typing import Dict, Union
+from typing import Dict
 
 import pyttsx3
 

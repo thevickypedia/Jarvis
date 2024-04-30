@@ -4,7 +4,7 @@ import subprocess
 import urllib.error
 import urllib.request
 from multiprocessing import Process
-from typing import Dict, Union
+from typing import Dict
 
 import psutil
 import requests

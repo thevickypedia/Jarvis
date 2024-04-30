@@ -9,7 +9,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from threading import Thread
-from typing import Dict, List, Tuple, Union
+from typing import List, Tuple
 
 import boto3
 from blockstdout import BlockPrint

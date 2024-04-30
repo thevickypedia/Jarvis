@@ -1,7 +1,6 @@
 import socket
 import threading
 from http.client import HTTPSConnection
-from typing import Union
 
 import pywifi
 

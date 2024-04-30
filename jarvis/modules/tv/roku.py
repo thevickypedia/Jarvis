@@ -8,7 +8,7 @@
 import socket
 from collections.abc import Generator
 from threading import Thread
-from typing import Dict, Union
+from typing import Dict
 from xml.etree import ElementTree
 
 import requests

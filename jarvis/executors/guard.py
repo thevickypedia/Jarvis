@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread, Timer
-from typing import Tuple, Union
+from typing import Tuple
 
 import gmailconnector
 import jinja2

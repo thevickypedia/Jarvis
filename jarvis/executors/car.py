@@ -4,7 +4,7 @@ from multiprocessing.context import \
     TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 import gmailconnector
 import jinja2

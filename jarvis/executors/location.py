@@ -4,7 +4,7 @@ import re
 import ssl
 import time
 import webbrowser
-from typing import Dict, Tuple, Union
+from typing import Dict, Tuple
 
 import certifi
 import yaml

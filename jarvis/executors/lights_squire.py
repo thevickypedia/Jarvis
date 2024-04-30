@@ -1,7 +1,7 @@
 import random
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Process
-from typing import List, Union
+from typing import List
 
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database

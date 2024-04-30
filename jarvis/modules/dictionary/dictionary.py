@@ -6,7 +6,7 @@
 """
 
 import re
-from typing import Dict, Union
+from typing import Dict
 
 import requests
 from bs4 import BeautifulSoup, ResultSet

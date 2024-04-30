@@ -7,9 +7,7 @@
 
 import imghdr
 import os
-from typing import Union
 
-import face_recognition
 from cv2 import cv2
 from cv2 import data as cv2_data
 from PIL import Image, UnidentifiedImageError
@@ -17,6 +15,14 @@ from pydantic import FilePath
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
+
+try:
+    # todo: figure out what's happening with dlib==19.24.2
+    #   if unable to find, simply overwrite ffmpeg files with older version names
+    import face_recognition
+except ImportError as error:
+    logger.critical(error)
+    face_recognition = None
 
 
 def verify_image(filename: str | FilePath) -> bool:
@@ -93,7 +99,7 @@ class FaceNet:
                     self.train_faces.append(encoded)  # loads ended values to match
                     self.train_names.append(char_dir)  # loads the names of each named subdirectories
 
-    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str:
+    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str | None:
         """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:
@@ -103,6 +109,9 @@ class FaceNet:
             str:
             Name of the enclosing directory in case of a recognized face.
         """
+        if not face_recognition:
+            logger.error("Requirement unsatisfied!!")
+            return
         logger.debug("Initiating face recognition.")
         self.load_dataset(location=location)
         for _ in range(retry_count):

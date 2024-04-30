@@ -12,7 +12,7 @@ import secrets
 import sys
 import time
 import traceback
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import requests
 from pydantic import FilePath

@@ -3,7 +3,6 @@ import os
 import traceback
 from http import HTTPStatus
 from threading import Thread
-from typing import Union
 
 from fastapi import APIRouter, Request
 from fastapi.responses import FileResponse

@@ -16,7 +16,7 @@ from datetime import datetime
 from enum import StrEnum
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 from uuid import UUID
 
 import jlrpy
@@ -289,6 +289,8 @@ class ReminderOptions(StrEnum):
 
     phone: str = "phone"
     email: str = "email"
+    telegram: str = "telegram"
+    ntfy: str = "ntfy"
     all: str = "all"
 
 
@@ -332,7 +334,11 @@ class EnvConfig(BaseSettings):
     name: str = 'Vignesh'
     website: HttpUrl = 'https://vigneshrao.com'
     plot_mic: bool = True
-    notify_reminders: ReminderOptions = ReminderOptions.all
+    ntfy_url: HttpUrl | None = None
+    ntfy_username: str | None = None
+    ntfy_password: str | None = None
+    ntfy_topic: str | None = None
+    notify_reminders: ReminderOptions | List[ReminderOptions] = ReminderOptions.all
 
     # Author specific
     author_mode: bool = False
@@ -351,8 +357,10 @@ class EnvConfig(BaseSettings):
     gmail_pass: str | None = None
     open_gmail_user: EmailStr | None = None
     open_gmail_pass: str | None = None
+    # todo: move the following to "contacts.yaml" file
     recipient: EmailStr | None = None
     phone_number: str | None = Field(None, pattern="\\d{10}$")
+    telegram_id: int | None = None
 
     # Offline communicator config
     offline_host: str = socket.gethostbyname('localhost')
@@ -455,6 +463,16 @@ class EnvConfig(BaseSettings):
         env_prefix = ""
         env_file = os.environ.get("env_file", os.environ.get("ENV_FILE", ".env"))
         extra = "allow"
+
+    # noinspection PyMethodParameters
+    @field_validator("notify_reminders", mode="after", check_fields=True)
+    def parse_notify_reminders(cls, value: ReminderOptions | List[ReminderOptions]) -> List[ReminderOptions]:
+        """Validate reminder options."""
+        if isinstance(value, list):
+            if ReminderOptions.all in value:
+                return [ReminderOptions.all]
+            return value
+        return [value]
 
     # noinspection PyMethodParameters
     @field_validator("microphone_index", mode='before', check_fields=True)

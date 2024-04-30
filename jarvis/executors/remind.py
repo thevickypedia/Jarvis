@@ -11,6 +11,7 @@ from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
+from jarvis.modules.telegram import bot
 from jarvis.modules.utils import shared, support, util
 
 
@@ -168,18 +169,29 @@ def reminder(phrase: str) -> None:
 
 
 def executor(message: str, contact: str = None) -> None:
-    """Notifies user about the reminder and displays a notification on the device.
+    """Notifies user about the reminder (per the options set in env vars) and displays a notification on the device.
 
     Args:
         message: Takes the reminder message as an argument.
         contact: Name of the person to send the reminder to.
 
     See Also:
+        - Uses phone number to send SMS notification
+        - Uses recipient email address to send email notification
+        - Uses telegram account ID to send a message notification
+        - Uses NTFY topic to send a push notification
+
+    See Also:
         - Personalized icons for `Linux OS <https://wiki.ubuntu.com/Artwork/BreatheIconSet/Icons>`__
     """
-    notify_phone = models.env.notify_reminders in (classes.ReminderOptions.phone, classes.ReminderOptions.all)
-    notify_email = models.env.notify_reminders in (classes.ReminderOptions.email, classes.ReminderOptions.all)
-    title = f"REMINDER from Jarvis {datetime.now().strftime('%c')}"
+    if classes.ReminderOptions.all in models.env.notify_reminders:
+        notify_phone, notify_email, notify_telegram, ntfy = True, True, True, True
+    else:
+        notify_phone = classes.ReminderOptions.phone in models.env.notify_reminders
+        notify_email = classes.ReminderOptions.email in models.env.notify_reminders
+        notify_telegram = classes.ReminderOptions.telegram in models.env.notify_reminders
+        ntfy = classes.ReminderOptions.ntfy in models.env.notify_reminders
+    title = f"REMINDER from Jarvis - {datetime.now().strftime('%c')}"
     if contact:
         contacts = files.get_contacts()
         if notify_phone and (phone := contacts.get('phone', {}).get(contact)):
@@ -188,9 +200,19 @@ def executor(message: str, contact: str = None) -> None:
         if notify_email and (email := contacts.get('email', {}).get(contact)):
             communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
                                     recipient=email, subject=title, body=message)
+        if notify_telegram and (chat_id := contacts.get('telegram', {}).get(contact)):
+            bot.send_message(chat_id=int(chat_id), response=f"*{title}*\n\n{message}")
+        if ntfy and (ntfy_topic := contacts.get('ntfy', {}).get(contact)):
+            communicator.ntfy_send(topic=ntfy_topic, title=title, message=message)
         return
-    communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass, number=models.env.phone_number,
-                          body=message, subject=title)
-    communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
-                            recipient=models.env.recipient, subject=title, body=message)
+    if notify_phone and models.env.phone_number:
+        communicator.send_sms(user=models.env.gmail_user, password=models.env.gmail_pass,
+                              number=models.env.phone_number, body=message, subject=title)
+    if notify_email and models.env.recipient:
+        communicator.send_email(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass,
+                                recipient=models.env.recipient, subject=title, body=message)
+    if notify_telegram and models.env.telegram_id:
+        bot.send_message(chat_id=models.env.telegram_id, response=f"*{title}*\n\n{message}")
+    if ntfy and models.env.ntfy_topic:
+        communicator.ntfy_send(topic=models.env.ntfy_topic, title=title, message=message)
     pynotification.pynotifier(title=title, message=message, debug=True, logger=logger)

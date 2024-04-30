@@ -8,7 +8,7 @@
 import importlib
 import logging
 import os
-from typing import Callable, Union
+from typing import Callable
 
 from pydantic import FilePath
 

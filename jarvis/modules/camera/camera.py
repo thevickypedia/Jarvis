@@ -6,7 +6,7 @@
 
 import subprocess
 from collections.abc import Generator
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.models import models

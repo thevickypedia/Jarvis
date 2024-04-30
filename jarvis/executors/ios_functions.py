@@ -1,5 +1,4 @@
 import difflib
-from typing import Union
 
 from pyicloud import PyiCloudService
 from pyicloud.exceptions import (PyiCloudAPIResponseException,

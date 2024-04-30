@@ -12,7 +12,7 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from http.client import HTTPSConnection
-from typing import Any, Dict, Iterable, List, Tuple, Union
+from typing import Any, Dict, Iterable, List, Tuple
 
 import dateutil.tz
 import inflect

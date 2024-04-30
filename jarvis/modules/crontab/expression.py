@@ -7,7 +7,7 @@
 
 import calendar
 import datetime
-from typing import Tuple, Union
+from typing import Tuple
 
 from jarvis.modules.exceptions import InvalidArgument
 

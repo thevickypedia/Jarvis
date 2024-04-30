@@ -4,7 +4,6 @@
 >>> Listener
 
 """
-from typing import Union
 
 from playsound import playsound
 from pydantic import PositiveFloat, PositiveInt

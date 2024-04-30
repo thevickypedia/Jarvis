@@ -9,7 +9,7 @@ import logging
 import os
 import random
 import sqlite3
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from pydantic import FilePath
 

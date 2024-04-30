@@ -1,6 +1,5 @@
 import time
 from threading import Thread
-from typing import Union
 
 from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError, PyHTCC,
                     Zone)
@@ -28,7 +27,7 @@ def create_connection() -> None:
     try:
         classes.Thermostat.device = tcc_object.get_zone_by_name(models.env.tcc_device_name)
         classes.Thermostat.expiration = time.time() + 86_400
-    except (EnvironmentError, ValueError, NameError, KeyError) as error:
+    except (EnvironmentError, ValueError, NameError, KeyError, IndexError) as error:
         logger.error(error)
         classes.Thermostat.device = error.__class__.__name__
 

@@ -1,7 +1,7 @@
 import string
 from collections import OrderedDict
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlencode
 
 import requests

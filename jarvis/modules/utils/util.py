@@ -14,7 +14,7 @@ import socket
 import string
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, Hashable, List, Tuple, Union
+from typing import Any, Dict, Hashable, List, Tuple
 
 
 def get_timezone() -> str:

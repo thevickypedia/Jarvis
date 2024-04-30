@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process, Queue
 from threading import Thread, Timer
-from typing import AnyStr, List, Union
+from typing import AnyStr, List
 
 import requests
 from deepdiff import DeepDiff

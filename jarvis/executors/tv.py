@@ -2,7 +2,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 from jarvis.executors import files, internet, tv_controls, word_match
 from jarvis.modules.audio import speaker

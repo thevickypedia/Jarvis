@@ -2656,6 +2656,27 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.communicator.ntfy_send">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.communicator.</span></span><span class="sig-name descname"><span class="pre">ntfy_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.communicator.ntfy_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses <cite>ntfy</cite> to send notification to a specific topic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topic</strong> – Topic to send notifications to.</p></li>
+<li><p><strong>title</strong> – Title of the notification.</p></li>
+<li><p><strong>message</strong> – Notification content.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean flag to indicate the results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.comm_squire">
 <span id="communicator-squire"></span><h1>Communicator Squire<a class="headerlink" href="#module-jarvis.executors.comm_squire" title="Permalink to this heading">¶</a></h1>
@@ -4592,7 +4613,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.remind.executor">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.remind.</span></span><span class="sig-name descname"><span class="pre">executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.remind.executor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Notifies user about the reminder and displays a notification on the device.</p>
+<dd><p>Notifies user about the reminder (per the options set in env vars) and displays a notification on the device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -4601,6 +4622,15 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Uses phone number to send SMS notification</p></li>
+<li><p>Uses recipient email address to send email notification</p></li>
+<li><p>Uses telegram account ID to send a message notification</p></li>
+<li><p>Uses NTFY topic to send a push notification</p></li>
+</ul>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -6077,6 +6107,16 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.ReminderOptions.telegram">
+<span class="sig-name descname"><span class="pre">telegram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'telegram'</span></em><a class="headerlink" href="#jarvis.modules.models.classes.ReminderOptions.telegram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.ReminderOptions.ntfy">
+<span class="sig-name descname"><span class="pre">ntfy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ntfy'</span></em><a class="headerlink" href="#jarvis.modules.models.classes.ReminderOptions.ntfy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.ReminderOptions.all">
 <span class="sig-name descname"><span class="pre">all</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#jarvis.modules.models.classes.ReminderOptions.all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6517,8 +6557,28 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ntfy_url">
+<span class="sig-name descname"><span class="pre">ntfy_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ntfy_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ntfy_username">
+<span class="sig-name descname"><span class="pre">ntfy_username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ntfy_username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ntfy_password">
+<span class="sig-name descname"><span class="pre">ntfy_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ntfy_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ntfy_topic">
+<span class="sig-name descname"><span class="pre">ntfy_topic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ntfy_topic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.notify_reminders">
-<span class="sig-name descname"><span class="pre">notify_reminders</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.notify_reminders" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">notify_reminders</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.notify_reminders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6589,6 +6649,11 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.phone_number">
 <span class="sig-name descname"><span class="pre">phone_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.phone_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.telegram_id">
+<span class="sig-name descname"><span class="pre">telegram_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.telegram_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6900,6 +6965,12 @@ allow <cite>self</cite> as a field name.</p>
 <span class="sig-name descname"><span class="pre">extra</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'allow'</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.Config.extra" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.parse_notify_reminders">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_notify_reminders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.ReminderOptions" title="jarvis.modules.models.classes.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.parse_notify_reminders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate reminder options.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -7435,7 +7506,7 @@ allow <cite>self</cite> as a field name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.facenet.face.FaceNet.face_recognition">
-<span class="sig-name descname"><span class="pre">face_recognition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.facenet.face.FaceNet.face_recognition" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">face_recognition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.facenet.face.FaceNet.face_recognition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recognizes faces from the training dataset - images in the <code class="docutils literal notranslate"><span class="pre">train</span></code> directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

@@ -9,7 +9,6 @@ import re
 import sys
 from datetime import datetime
 from threading import Thread
-from typing import Union
 
 import pynotification
 import requests

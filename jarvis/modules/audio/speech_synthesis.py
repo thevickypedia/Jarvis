@@ -8,7 +8,7 @@
 import os
 import subprocess
 import time
-from typing import NoReturn, Union
+from typing import NoReturn
 
 import docker
 import psutil

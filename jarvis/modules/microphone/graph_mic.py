@@ -12,7 +12,7 @@ References:
 import os
 import queue
 from struct import Struct
-from typing import List, Optional, Tuple, Union, cast
+from typing import List, Optional, Tuple, cast
 
 import matplotlib.pyplot as plt
 import numpy as np

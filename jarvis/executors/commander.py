@@ -3,7 +3,7 @@ import time
 import traceback
 from multiprocessing import Process
 from threading import Thread
-from typing import Tuple, Union
+from typing import Tuple
 
 from jarvis.executors import (conditions, controls, listener_controls, offline,
                               others, word_match)

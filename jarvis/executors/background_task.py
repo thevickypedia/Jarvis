@@ -2,7 +2,6 @@ import os
 import warnings
 from collections import OrderedDict
 from collections.abc import Generator
-from typing import Union
 
 import yaml
 from pydantic import ValidationError
