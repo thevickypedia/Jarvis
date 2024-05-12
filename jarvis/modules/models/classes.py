@@ -332,7 +332,7 @@ class EnvConfig(BaseSettings):
     birthday: str | None = None
     title: str = 'sir'
     name: str = 'Vignesh'
-    website: HttpUrl = 'https://vigneshrao.com'
+    website: HttpUrl | List[HttpUrl] = []
     plot_mic: bool = True
     ntfy_url: HttpUrl | None = None
     ntfy_username: str | None = None
@@ -463,6 +463,14 @@ class EnvConfig(BaseSettings):
         env_prefix = ""
         env_file = os.environ.get("env_file", os.environ.get("ENV_FILE", ".env"))
         extra = "allow"
+
+    # noinspection PyMethodParameters
+    @field_validator("website", mode="after", check_fields=True)
+    def parse_websites(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
+        """Validate websites."""
+        if isinstance(value, list):
+            return value
+        return [value]
 
     # noinspection PyMethodParameters
     @field_validator("notify_reminders", mode="after", check_fields=True)

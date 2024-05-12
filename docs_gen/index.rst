@@ -174,6 +174,13 @@ Routers - Offline
    :members:
    :undoc-members:
 
+Routers - Proxy Engine
+======================
+
+.. automodule:: jarvis.api.routers.proxy_service
+   :members:
+   :undoc-members:
+
 Routers - SecureSend
 ====================
 

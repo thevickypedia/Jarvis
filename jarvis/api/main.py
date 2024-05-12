@@ -30,9 +30,12 @@ def enable_cors() -> None:
     origins = [
         "http://localhost.com",
         "https://localhost.com",
-        f"http://{models.env.website.host}",
-        f"https://{models.env.website.host}",
     ]
+    for website in models.env.website:
+        origins.extend([
+            f"http://{website.host}",
+            f"https://{website.host}"
+        ])
 
     app.add_middleware(
         CORSMiddleware,
