@@ -12,4 +12,4 @@ jobs:
       - Ubuntu
     steps:
       - uses: actions/checkout@v4
-      - uses: thevickypedia/none-shall-pass@v4
+      - uses: thevickypedia/none-shall-pass@v5
