@@ -10,8 +10,8 @@ import os
 
 import cv2
 import face_recognition
-from PIL import Image, UnidentifiedImageError
 from cv2.data import haarcascades
+from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger

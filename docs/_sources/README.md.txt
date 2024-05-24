@@ -75,7 +75,7 @@
 
 ## Kick off
 
-> :bulb: Using a dedicated [virtual environment][venv] and an IDE like [PyCharm][pycharm] is highly recommended.
+> :bulb: Using a dedicated [virtual environment] with [python3.11] and an IDE like [PyCharm] is highly recommended.
 
 **Install**
 ```shell
@@ -110,7 +110,7 @@ if __name__ == '__main__':
        - `Microphone` - **Required** to listen and respond.
        - `Camera` - **[Optional]** Required only during face recognition/detection.
        - Unlike `macOS`, `Windows` pops a confirmation window to **Allow** or **Deny** access to files and folders.
-     - Install [Anaconda][conda] or [Miniconda][miniconda], [VisualStudio C++ BuildTools][vcpp], and [Git][git-cli]
+     - Install [Anaconda] or [Miniconda], [VisualStudio C++ BuildTools][vcpp], and [Git][git-cli]
      - Make sure C++ build tools are installed completely and restart
      - Add anaconda/miniconda scripts location to `PATH` in Environment Variables
 
@@ -163,8 +163,9 @@ pre-commit run --all-files
 Licensed under the [MIT License][license]
 
 [python]: https://python.org
-[venv]: https://docs.python.org/3/tutorial/venv.html
-[pycharm]: https://www.jetbrains.com/pycharm/
+[python3.11]: https://docs.python.org/3/whatsnew/3.11.html
+[virtual environment]: https://docs.python.org/3/tutorial/venv.html
+[PyCharm]: https://www.jetbrains.com/pycharm/
 [repo]: https://api.github.com/repos/thevickypedia/Jarvis
 [license]: https://github.com/thevickypedia/Jarvis/blob/master/LICENSE
 [pypi]: https://pypi.org/project/jarvis-ironman
@@ -178,8 +179,8 @@ Licensed under the [MIT License][license]
 [gha_cleanup]: https://github.com/thevickypedia/Jarvis/actions/workflows/cleanup.yml
 [webpage]: https://vigneshrao.com/
 [webpage_contact]: https://vigneshrao.com/contact
-[conda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
-[miniconda]: https://docs.conda.io/en/latest/miniconda.html#windows-installers
+[Anaconda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
+[Miniconda]: https://docs.conda.io/en/latest/miniconda.html#windows-installers
 [vcpp]: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 [git-cli]: https://git-scm.com/download/win/
 [google-docs]: https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings

@@ -12,7 +12,9 @@ classifiers = [
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Operating System :: POSIX :: Linux",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Multimedia :: Sound/Audio :: Speech",
     "Topic :: Scientific/Engineering :: Human Machine Interfaces",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -32,7 +34,7 @@ classifiers = [
 ]
 keywords = ["python", "home-automation", "natural-language-processing", "text-to-speech",
             "speech-recognition", "jarvis", "hotword-detection", "virtual-assistant"]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 
 [tool.setuptools]
 packages     = ["jarvis", "jarvis._preexec", "jarvis.executors"]
