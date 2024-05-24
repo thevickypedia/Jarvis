@@ -40,12 +40,6 @@ download_from_ext_sources_windows() {
     rm "$pyaudio"
 }
 
-handle_dlib_error() {
-    # Certain macOS versions like Catalina and Big Sur, don't support dlib version 19.24.0,
-    # so bypass for those with exception handling
-    python -m pip install dlib==19.24.2
-}
-
 
 if [[ "$OSName" == "Darwin" ]]; then
     # Looks for xcode installation and installs only if xcode is not found already
@@ -93,13 +87,10 @@ if [[ "$OSName" == "Darwin" ]]; then
     # Uninstall any remaining cmake packages from pypi before brew installing it to avoid conflict
     python -m pip uninstall --no-cache --no-cache-dir cmake && brew install cmake && brew upgrade
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
+      # fixme: not sure if this still valid, no way for the author to test High Sierra or older
       python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
     else
-      python -m pip install pvporcupine==1.9.5
-      trap 'handle_dlib_error' ERR
-      python -m pip install dlib==19.24.2 || true  # this will bypass the set -e flag, and continue with rest of the script
-      trap - ERR
-      python -m pip install opencv-python==4.9.0.80
+      python -m pip install pvporcupine==1.9.5 dlib==19.24.2 opencv-python==4.9.0.80
     fi
 
     # Install as stand alone as face recognition depends on dlib
