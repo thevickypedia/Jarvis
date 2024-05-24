@@ -21,31 +21,22 @@ from jarvis.modules.utils import shared, support, util
 CONNECTION = classes.VehicleConnection()
 
 
-def create_connection(alt_cdn: bool = False) -> None:
-    """Creates a new connection and stores the refresh token and device ID in a dedicated object.
-
-    Args:
-        alt_cdn: Boolean flag to use alternate CDN.
-    """
-    if CONNECTION.refresh_token and time.time() - CONNECTION.expiration <= 86_400:
-        # this might never happen, as the connection and vin are reused until auth expiry anyway
-        connection = jlrpy.Connection(email=models.env.car_username, refresh_token=CONNECTION.refresh_token,
-                                      use_china_servers=alt_cdn, device_id=CONNECTION.device_id)
-        logger.info("Using refresh token to create a connection with JLR API")
-    else:
-        connection = jlrpy.Connection(email=models.env.car_username, password=models.env.car_password,
-                                      use_china_servers=alt_cdn)
-        logger.info("Using password to create a connection with JLR API")
+def create_connection() -> None:
+    """Creates a new connection and stores the refresh token and device ID in a dedicated object."""
     try:
-        connection.connect()
-    except EgressErrors as error:
-        logger.error(error)
-        if alt_cdn:
-            connection.head = None
+        if CONNECTION.refresh_token and time.time() - CONNECTION.expiration <= 86_400:
+            # this might never happen, as the connection and vin are reused until auth expiry anyway
+            connection = jlrpy.Connection(email=models.env.car_username, refresh_token=CONNECTION.refresh_token,
+                                          device_id=CONNECTION.device_id)
+            logger.info("Using refresh token to create a connection with JLR API")
         else:
-            logger.info("Retrying with China Servers")
-            create_connection(True)
-    if connection.head:
+            connection = jlrpy.Connection(email=models.env.car_username, password=models.env.car_password)
+            logger.info("Using password to create a connection with JLR API")
+        connection.connect()
+    except Exception as error:  # also raises type error in addition to connection errors
+        logger.error(error)
+        connection = None
+    if connection and connection.head:
         if len(connection.vehicles) == 1:
             primary_vehicle = connection.vehicles[0]
         else:

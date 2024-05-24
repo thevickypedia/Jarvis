@@ -8,21 +8,14 @@
 import imghdr
 import os
 
-from cv2 import cv2
-from cv2 import data as cv2_data
+import cv2
+import face_recognition
 from PIL import Image, UnidentifiedImageError
+from cv2.data import haarcascades
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-
-try:
-    # todo: figure out what's happening with dlib==19.24.2
-    #   if unable to find, simply overwrite ffmpeg files with older version names
-    import face_recognition
-except ImportError as error:
-    logger.critical(error)
-    face_recognition = None
 
 
 def verify_image(filename: str | FilePath) -> bool:
@@ -145,7 +138,7 @@ class FaceNet:
             A boolean value if not a face was detected.
         """
         logger.debug("Initiating face detection.")
-        cv2_cascades = cv2_data.haarcascades + "haarcascade_frontalface_default.xml"
+        cv2_cascades = haarcascades + "haarcascade_frontalface_default.xml"
         if not os.path.isfile(cv2_cascades):
             logger.debug("Cascades not found at: %s", cv2_cascades)
             raise FileNotFoundError(cv2_cascades)
