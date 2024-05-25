@@ -8,10 +8,10 @@ ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.m
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
 
 # todo: check installation on Windows with 3.11 and remove the wheel file dependency
-if [ "$ver" -ge 38 ] && [ "$ver" -le 311 ]; then
+if [ "$ver" -eq 311 ]; then
   pyaudio="PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
 else
-  echo "Python version $echo_ver is unsupported for Jarvis. Please use any python version between 3.8.* and 3.11.*"
+  echo "Python version $echo_ver is unsupported for Jarvis. Please use python version 3.11.*"
   exit
 fi
 
@@ -20,11 +20,11 @@ echo "                               $OSName running python $echo_ver"
 echo -e '***************************************************************************************************\n'
 
 # Upgrades pip module
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
+# Get to the current directory
+current_dir="$(dirname "$(realpath "$0")")"
 
 os_agnostic() {
-    # Get to the current directory and install the module specific packages
-    current_dir="$(dirname "$(realpath "$0")")"
     python -m pip install --no-cache-dir -r "$current_dir"/version_pinned_requirements.txt
     python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
     python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
@@ -52,25 +52,21 @@ if [[ "$OSName" == "Darwin" ]]; then
         xcode-select --install
     fi
 
-    # Looks for brew installation and installs only if brew is not found
-    brew_check=$(which brew)
-    if [[ "$brew_check" == "/usr/local/bin/brew" ]] || [[ "$brew_check" == "/usr/bin/brew" ]]; then
-        brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
-        echo "$brew_version"
-    else
-        echo "Installing Homebrew"
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+		# Looks for brew installation and installs only if brew is not found
+    if ! [ -x "$(command -v brew)" ]; then
+			echo "Installing Homebrew"
+			/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     fi
+    brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
+    echo "$brew_version"
 
-    # Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
-    git_check=$(which git)
-    if [[ "$git_check" == "/usr/bin/git" || "$git_check" == "/usr/local/bin/git" ]]; then
-        git_version="$(git --version)"
-        echo "$git_version"
-    else
-      echo "Installing Git CLI"
+		# Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
+		if ! [ -x "$(command -v git)" ]; then
+			echo "Installing Git CLI"
       brew install git
-    fi
+		fi
+		git_version="$(git --version)"
+		echo "$git_version"
 
     # Packages installed using homebrew
     brew install portaudio coreutils ffmpeg lame
@@ -85,7 +81,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     base_ver="10.14"  # Versions older than Mojave (High Sierra and older versions)
     os_ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
     # Uninstall any remaining cmake packages from pypi before brew installing it to avoid conflict
-    python -m pip uninstall --no-cache --no-cache-dir cmake && brew install cmake && brew upgrade
+    python -m pip uninstall --no-cache --no-cache-dir cmake && brew install cmake
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
       # fixme: not sure if this still valid, no way for the author to test High Sierra or older
       python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
@@ -174,3 +170,8 @@ else
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"
 fi
+
+osname=$(echo "$OSName" | tr '[:upper:]' '[:lower:]')
+freezer="$osname.txt"
+echo "Freezing the dependencies to $freezer"
+pip freeze > "$current_dir/frozen/$freezer"
