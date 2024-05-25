@@ -13,7 +13,6 @@ import socket
 import sys
 from collections import ChainMap
 from datetime import datetime
-from enum import StrEnum
 from ipaddress import IPv4Address
 from multiprocessing import current_process
 from typing import Dict, List, Optional
@@ -35,6 +34,15 @@ from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
 AUDIO_DRIVER = pyttsx3.init()
+
+if sys.version_info.minor > 10:
+    from enum import StrEnum
+else:
+    from enum import Enum
+
+
+    class StrEnum(str, Enum):
+        """Override for python 3.10"""
 
 
 class SupportedPlatforms(StrEnum):

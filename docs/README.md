@@ -192,7 +192,7 @@ Licensed under the [MIT License][license]
 <!-- labels -->
 
 [label-python]: https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python
-[label-pyversion]: https://img.shields.io/badge/python-3.11-orange
+[label-pyversion]: https://img.shields.io/badge/python-3.10%20%7C%203.11-orange
 [label-pypi-downloads]: https://img.shields.io/pypi/dm/jarvis-ironman
 [label-platform]: https://img.shields.io/badge/Platform-Linux|MacOS|Windows-1f425f.svg
 

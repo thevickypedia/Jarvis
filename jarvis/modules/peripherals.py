@@ -6,13 +6,22 @@
 """
 
 import platform
+import sys
 from collections.abc import Generator
-from enum import StrEnum
 from typing import Dict
 
 import pyaudio
 
 from jarvis.modules.exceptions import no_alsa_err
+
+if sys.version_info.minor > 10:
+    from enum import StrEnum
+else:
+    from enum import Enum
+
+
+    class StrEnum(str, Enum):
+        """Override for python 3.10"""
 
 if platform.system() == "Linux":
     with no_alsa_err():

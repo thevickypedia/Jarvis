@@ -12,6 +12,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Operating System :: POSIX :: Linux",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Topic :: Multimedia :: Sound/Audio :: Speech",
     "Topic :: Scientific/Engineering :: Human Machine Interfaces",
@@ -32,11 +33,15 @@ classifiers = [
 ]
 keywords = ["python", "home-automation", "natural-language-processing", "text-to-speech",
             "speech-recognition", "jarvis", "hotword-detection", "virtual-assistant"]
-requires-python = "==3.11"
+requires-python = ">=3.10,<3.12"  # Only 3.10 and 3.11 are supported
 
 [tool.setuptools]
 packages     = ["jarvis", "jarvis._preexec", "jarvis.executors"]
-script-files = ["jarvis/lib/install.sh"]
+script-files = [
+    "jarvis/lib/install.sh",
+    "jarvis/lib/squire/detector.sh",
+    "jarvis/lib/squire/functions.sh"
+]
 
 [tool.setuptools.dynamic]
 version      = {attr = "jarvis.version"}
@@ -44,7 +49,8 @@ dependencies = {file = [
     "jarvis/lib/version_locked_requirements.txt",
     "jarvis/lib/version_pinned_requirements.txt",
     "jarvis/lib/version_upgrade_requirements.txt",
-    "jarvis/lib/frozen/darwin_amd64.txt"
+    "jarvis/lib/frozen/darwin-amd64-python310.txt",
+    "jarvis/lib/frozen/darwin-amd64-python311.txt"
 ]}
 
 [build-system]

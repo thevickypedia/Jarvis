@@ -3,45 +3,37 @@
 # This is the opposite of the default shell behaviour, which is to ignore errors in scripts.
 set -e
 
-OSName=$(python -c "import platform; print(platform.system())")
+# defaults
+osname=""
+architecture=""
+
+# Get to the current directory
+current_dir="$(dirname "$(realpath "$0")")"
+export current_dir=$current_dir
+source "$current_dir/squire/detector.sh"
+source "$current_dir/squire/functions.sh"
+
 ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
 
 # todo: check installation on Windows with 3.11 and remove the wheel file dependency
-if [ "$ver" -eq 311 ]; then
-  pyaudio="PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
+if [ "$ver" -eq 310 ] || [ "$ver" -eq 311 ]; then
+  echo -e '\n***************************************************************************************************'
+  echo "                               $osname running python $echo_ver"
+  echo -e '***************************************************************************************************\n'
 else
-  echo "Python version $echo_ver is unsupported for Jarvis. Please use python version 3.11.*"
-  exit
+  echo "Python version $echo_ver is unsupported for Jarvis. Please use any python version between 3.10.* and 3.11.*"
+  exit 1
 fi
 
-echo -e '\n***************************************************************************************************'
-echo "                               $OSName running python $echo_ver"
-echo -e '***************************************************************************************************\n'
-
-# Upgrades pip module
+# Upgrades pip, setuptools and wheel
 python -m pip install --upgrade pip setuptools wheel
-# Get to the current directory
-current_dir="$(dirname "$(realpath "$0")")"
 
-os_agnostic() {
-    python -m pip install --no-cache-dir -r "$current_dir"/version_pinned_requirements.txt
-    python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
-    python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
-}
+if [[ "$osname" == "darwin" ]]; then
+    echo -e '\n***************************************************************************************************'
+    echo "                             Installing dependencies specific to macOS"
+    echo -e '***************************************************************************************************\n'
 
-download_from_ext_sources_windows() {
-    # Downloads ffmpeg for audio conversion when received voice commands from Telegram API
-    curl -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip --output ffmpeg.zip --silent && unzip ffmpeg.zip && rm -rf ffmpeg.zip && mv ffmpeg-master-latest-win64-lgpl ffmpeg
-
-    # Downloads PyAudio's wheel file to install it on Windows
-    curl https://vigneshrao.com/jarvis/"$pyaudio" --output "$pyaudio" --silent
-    pip install "$pyaudio"
-    rm "$pyaudio"
-}
-
-
-if [[ "$OSName" == "Darwin" ]]; then
     # Looks for xcode installation and installs only if xcode is not found already
     which xcodebuild > tmp_xcode && xcode_check=$(cat tmp_xcode) && rm tmp_xcode
     if  [[ "$xcode_check" == "/usr/bin/xcodebuild" ]] || [[ $HOST == "/*" ]] ; then
@@ -72,7 +64,7 @@ if [[ "$OSName" == "Darwin" ]]; then
     brew install portaudio coreutils ffmpeg lame
 
     # Installs the OS agnostic packages
-    os_agnostic
+    os_agnostic "$current_dir"
 
     # Mac specifics
     python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==9.0.1
@@ -83,17 +75,25 @@ if [[ "$OSName" == "Darwin" ]]; then
     # Uninstall any remaining cmake packages from pypi before brew installing it to avoid conflict
     python -m pip uninstall --no-cache --no-cache-dir cmake && brew install cmake
     if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
-      # fixme: not sure if this still valid, no way for the author to test High Sierra or older
+      # fixme: not sure if this is still valid in new versions of python, no way for the author to test High Sierra
+      # todo: print deprecation warning before next major release
       python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
     else
-      python -m pip install pvporcupine==1.9.5 dlib==19.24.2 opencv-python==4.9.0.80
+      if [ "$ver" -eq 310 ]; then
+        python -m pip install dlib==19.24.0
+      fi
+      if [ "$ver" -eq 311 ]; then
+        python -m pip install dlib==19.24.4
+      fi
+      python -m pip install pvporcupine==1.9.5 opencv-python==4.9.0.80
     fi
 
     # Install as stand alone as face recognition depends on dlib
     python -m pip install face-recognition==1.3.0
-elif [[ "$OSName" == "Windows" ]]; then
+elif [[ "$osname" == "windows" ]]; then
     clear
     echo "*****************************************************************************************************************"
+    echo "                            Installing dependencies specific to Windows"
     echo "*****************************************************************************************************************"
     echo ""
     echo "Make sure Git, Anaconda (or Miniconda) and VS C++ BuildTools are installed."
@@ -115,12 +115,12 @@ elif [[ "$OSName" == "Windows" ]]; then
         exit
     fi
 
-    download_from_ext_sources_windows
+    download_from_ext_sources_windows "PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
 
     conda install portaudio=19.6.0
 
     # Installs the OS agnostic packages
-    os_agnostic
+    os_agnostic "$current_dir"
 
     # Install Windows specifics
     python -m pip install pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
@@ -130,7 +130,11 @@ elif [[ "$OSName" == "Windows" ]]; then
     python -m pip install cmake==3.25.0
     python -m pip install dlib==19.24.0
     python -m pip install face-recognition==1.3.0
-elif [[ "$OSName" == "Linux" ]]; then
+elif [[ "$osname" == "linux" ]]; then
+    echo -e '\n***************************************************************************************************'
+    echo "                             Installing dependencies specific to Linux"
+    echo -e '***************************************************************************************************\n'
+
     dot_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
     sudo apt install -y "python$dot_ver-distutils"  # Install distutils for the current python version
     sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
@@ -144,7 +148,7 @@ elif [[ "$OSName" == "Linux" ]]; then
     sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
     # Installs the OS agnostic packages
-    os_agnostic
+    os_agnostic "$current_dir"
 
     python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
 
@@ -160,18 +164,19 @@ elif [[ "$OSName" == "Linux" ]]; then
     # Install as stand alone as playsound depends on gobject
     python -m pip install playsound==1.3.0
 else
+    # todo: include support for raspberry-pi
+    # todo: possible arch (arm11, cortex-a7, cortex-a53, cortex-53-aarch64, cortex-a72, cortex-a72-aarch64)
     clear
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"
     echo ""
-    echo "Current Operating System: $OSName"
+    echo "Current Operating System: $osname"
     echo "Jarvis is currently supported only on Linux, MacOS and Windows"
     echo ""
     echo "*****************************************************************************************************************"
     echo "*****************************************************************************************************************"
 fi
 
-osname=$(echo "$OSName" | tr '[:upper:]' '[:lower:]')
-freezer="$osname.txt"
+freezer="$osname-$architecture-python$ver.txt"
 echo "Freezing the dependencies to $freezer"
-pip freeze > "$current_dir/frozen/$freezer"
+python -m pip freeze > "$current_dir/frozen/$freezer"
