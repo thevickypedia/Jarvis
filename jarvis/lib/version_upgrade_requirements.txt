@@ -1,5 +1,5 @@
 # pypi modules created/maintained by the author: Vignesh Rao
-gmail-connector
-py3-tts
-pycontrols
-vpn-server
+gmail-connector>=1.0
+py3-tts>=3.5
+pycontrols>=0.0.4
+vpn-server>=1.7

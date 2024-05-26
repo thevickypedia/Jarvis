@@ -1,12 +1,9 @@
 import os
 import subprocess
-import warnings
 from collections.abc import Generator
-from datetime import datetime
-
-import yaml
 
 from jarvis.api.squire import scheduler
+from jarvis.executors import files
 from jarvis.modules.crontab import expression
 from jarvis.modules.exceptions import InvalidArgument
 from jarvis.modules.logger import logger, multiprocessing_logger
@@ -56,31 +53,17 @@ def validate_jobs(log: bool = True) -> Generator[expression.CronExpression]:
         CronExpression:
         CronExpression object.
     """
-    if os.path.isfile(models.fileio.crontab):
-        cron_info = []
-        with open(models.fileio.crontab) as file:
-            try:
-                cron_info = yaml.load(stream=file, Loader=yaml.FullLoader) or []
-            except yaml.YAMLError as error:
-                logger.error(error)
-                warnings.warn(
-                    "CRONTAB :: Invalid file format."
-                )
-                # rename to avoid getting triggered in a loop
-                os.rename(src=models.fileio.crontab,
-                          dst=datetime.now().strftime(os.path.join(models.fileio.root, 'crontab_%d-%m-%Y.yaml')))
-        for idx in cron_info:
-            try:
-                cron = expression.CronExpression(idx)
-            except InvalidArgument as error:
-                logger.error(error)
-                os.rename(src=models.fileio.crontab,
-                          dst=datetime.now().strftime(os.path.join(models.fileio.root, 'crontab_%d-%m-%Y.yaml')))
-                continue
-            if log:
-                msg = f"{cron.comment!r} will be executed as per the schedule {cron.expression!r}"
-                logger.info(msg)
-            yield cron
+    for idx in files.get_crontab():
+        try:
+            cron = expression.CronExpression(idx)
+        except InvalidArgument as error:
+            logger.error(error)
+            os.rename(src=models.fileio.crontab, dst=models.fileio.tmp_crontab)
+            continue
+        if log:
+            msg = f"{cron.comment!r} will be executed as per the schedule {cron.expression!r}"
+            logger.info(msg)
+        yield cron
     if models.env.author_mode:
         if all((models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass)):
             yield scheduler.rh_cron_schedule(extended=True)

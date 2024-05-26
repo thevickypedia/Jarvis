@@ -7,6 +7,7 @@
 
 import os
 import pathlib
+import platform
 import warnings
 
 import cv2
@@ -133,6 +134,12 @@ def _global_validations() -> None:
                 "Linux requires the host machine's password to be set as the env var: "
                 "ROOT_PASSWORD due to terminal automations."
             )
+
+    if settings.legacy:
+        warnings.warn(
+            f"\nmacOS {platform.mac_ver()[0]} will be deprecated in the near future\n"
+            f"Please upgrade to 10.14 or above to continue using Jarvis", DeprecationWarning
+        )
 
     if voice_names := [__voice.name for __voice in voices]:
         if not env.voice_name:

@@ -3,13 +3,7 @@ from collections.abc import Generator
 from multiprocessing import Process
 from threading import Thread
 
-from botocore.exceptions import BotoCoreError
-
-try:
-    # todo: update vpn-server to ensure regions are not pulled during imports
-    import vpn
-except BotoCoreError as vpn_error:
-    vpn = None
+import vpn
 
 from jarvis.executors import communicator
 from jarvis.modules.audio import speaker
@@ -20,8 +14,6 @@ from jarvis.modules.utils import support, util
 
 db = database.Database(database=models.fileio.base_db)
 available_regions = {'regions': []}
-if not vpn:
-    logger.error(vpn_error)
 
 
 def regional_phrase(phrase: str) -> Generator[str]:
@@ -66,10 +58,6 @@ def vpn_server(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not vpn:
-        speaker.speak(text="VPN features are not integrated. Please check the logs for more information.")
-        logger.critical(vpn_error)
-        return
     if not all((models.env.vpn_username, models.env.vpn_password)):
         speaker.speak(text="VPN username and password are required for any VPN server related operations.")
         return

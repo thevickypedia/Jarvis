@@ -1,8 +1,7 @@
-# third party pypi modules from well known sources
 aiofiles==23.2.*
 aiohttp==3.8.*
 bs4==0.0.*
-certifi==2023.7.*
+certifi  # Follows year based versioning
 deepdiff==6.6.*
 docker==6.1.*
 fastapi==0.103.*
@@ -21,7 +20,7 @@ PyJWT==2.8.*
 pytest==7.4.*
 python-dateutil==2.8.*
 python-multipart==0.0.*
-pytz==2023.3.*
+pytz  # Follows year based versioning
 PyYAML==6.0.*
 requests==2.31.*
 SoundFile==0.12.*

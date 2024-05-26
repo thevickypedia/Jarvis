@@ -138,7 +138,7 @@ markdown files (including Wiki pages)
 
 **Requirement**
 ```shell
-pip install sphinx==5.1.1 pre-commit recommonmark
+python -m pip install sphinx==5.1.1 pre-commit recommonmark
 ```
 
 **Usage**

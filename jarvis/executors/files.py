@@ -1,6 +1,8 @@
 """Wrapper for frequently used mapping files."""
 
 import collections
+import os
+import warnings
 from threading import Timer
 from typing import Any, DefaultDict, Dict, List
 
@@ -306,3 +308,26 @@ def get_recognizer() -> classes.RecognizerSettings:
     except (yaml.YAMLError, FileNotFoundError, TypeError, ValidationError) as error:
         logger.debug(error)
     return classes.RecognizerSettings()
+
+
+def get_crontab() -> List[str]:
+    """Get the stored crontab settings.
+
+    Returns:
+        List[str]:
+        List of crontab entries.
+    """
+    try:
+        with open(models.fileio.crontab) as file:
+            data = yaml.load(stream=file, Loader=yaml.FullLoader) or []
+            assert isinstance(data, list)
+            return data
+    except FileNotFoundError as error:
+        logger.debug(error)
+    except (yaml.YAMLError, AssertionError) as error:
+        logger.error(error)
+        os.rename(src=models.fileio.crontab, dst=models.fileio.tmp_crontab)
+        warnings.warn(
+            "CRONTAB :: Invalid file format."
+        )
+    return []

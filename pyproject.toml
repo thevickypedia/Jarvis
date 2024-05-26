@@ -47,13 +47,7 @@ version      = {attr = "jarvis.version"}
 dependencies = {file = [
     "jarvis/lib/version_locked_requirements.txt",
     "jarvis/lib/version_pinned_requirements.txt",
-    "jarvis/lib/version_upgrade_requirements.txt",
-    "jarvis/lib/frozen/darwin-amd64-python310.txt",
-    "jarvis/lib/frozen/darwin-amd64-python311.txt",
-    "jarvis/lib/frozen/linux-amd64-python310.txt",
-    "jarvis/lib/frozen/linux-amd64-python311.txt",
-    "jarvis/lib/frozen/windows-amd64-python310.txt",
-    "jarvis/lib/frozen/windows-amd64-python311.txt"
+    "jarvis/lib/version_upgrade_requirements.txt"
 ]}
 
 [build-system]

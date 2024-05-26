@@ -9,6 +9,7 @@ import getpass
 import os
 import pathlib
 import platform
+import re
 import socket
 import sys
 from collections import ChainMap
@@ -22,14 +23,13 @@ import jlrpy
 import psutil
 import pyttsx3
 from packaging.version import Version
-from pydantic import (BaseModel, DirectoryPath, EmailStr, Field, FilePath,
-                      HttpUrl, PositiveFloat, PositiveInt, constr,
+from pydantic import (AliasChoices, BaseModel, DirectoryPath, EmailStr, Field,
+                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
                       field_validator)
 from pydantic_settings import BaseSettings
 from pyhtcc import Zone
 
 from jarvis import indicators, scripts
-from jarvis.modules.crontab import expression
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
@@ -85,10 +85,9 @@ class Settings(BaseModel):
             "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
+    legacy: bool = False
     if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14'):
         legacy: bool = True
-    else:
-        legacy: bool = False
 
 
 settings = Settings()
@@ -318,7 +317,7 @@ class EnvConfig(BaseSettings):
     volume: PositiveInt = 50
     limited: bool = False
     root_user: str = getpass.getuser()
-    root_password: str | None = None
+    root_password: str | None = Field(None, validation_alias=AliasChoices('root_password', 'password'))
 
     # Mute during meetings
     mute_for_meetings: bool = False
@@ -365,7 +364,6 @@ class EnvConfig(BaseSettings):
     gmail_pass: str | None = None
     open_gmail_user: EmailStr | None = None
     open_gmail_pass: str | None = None
-    # todo: move the following to "contacts.yaml" file
     recipient: EmailStr | None = None
     phone_number: str | None = Field(None, pattern="\\d{10}$")
     telegram_id: int | None = None
@@ -449,7 +447,6 @@ class EnvConfig(BaseSettings):
     speech_synthesis_port: PositiveInt = 5002
 
     # Background tasks
-    crontab: List[expression.CronExpression] = []  # todo: move to yaml file in config dir
     weather_alert: str | datetime | None = None
     weather_alert_min: int | PositiveInt = 36
     weather_alert_max: int | PositiveInt = 104
@@ -529,6 +526,16 @@ class EnvConfig(BaseSettings):
         except ValueError:
             raise InvalidEnvVars("format should be 'DD-MM'")
 
+    @field_validator('vpn_password', mode='before', check_fields=True)
+    def validate_vpn_password(cls, v: str) -> str:
+        """Validates vpn_password as per the required regex."""
+        if v:
+            if re.match(pattern=r"^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%&'()*+,-/[\]^_`{|}~<>]).+$", string=v):
+                return v
+            raise ValueError(
+                r"Password must contain a digit, an Uppercase letter, and a symbol from !@#$%&'()*+,-/[\]^_`{|}~<>"
+            )
+
     # noinspection PyMethodParameters
     @field_validator("weather_alert", mode='before', check_fields=True)
     def parse_weather_alert(cls, value: str) -> str | None:
@@ -561,6 +568,7 @@ class FileIO(BaseModel):
 
     # Home automation
     crontab: FilePath = os.path.join(root, 'crontab.yaml')
+    tmp_crontab: FilePath = os.path.join(root, 'tmp_crontab.yaml')
     automation: FilePath = os.path.join(root, 'automation.yaml')
     tmp_automation: FilePath = os.path.join(root, 'tmp_automation.yaml')
     background_tasks: FilePath = os.path.join(root, 'background_tasks.yaml')
@@ -607,8 +615,6 @@ class FileIO(BaseModel):
     # Speech Synthesis
     speech_synthesis_wav: FilePath = os.path.join(root, 'speech_synthesis.wav')
     # Store log file name in a variable as it is used in multiple modules with file IO
-    # todo: remove datetime from id and create log files in dedicated functions
-    # todo: check if there are any specific use cases for cid file to have datetime
     speech_synthesis_cid: FilePath = os.path.join(root, 'speech_synthesis.cid')
     speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
 
