@@ -83,7 +83,7 @@ def background_task_runner() -> None:
                         db.connection.commit()
 
         # Trigger wifi checker
-        if (wifi_checker and start_wifi + models.env.connection_retry <= time.time()) or dry_run:
+        if wifi_checker and (start_wifi + models.env.connection_retry <= time.time() or dry_run):
             start_wifi = time.time()
             logger.debug("Initiating WiFi connection checker")
             wifi_checker = connection.wifi(wifi_checker)

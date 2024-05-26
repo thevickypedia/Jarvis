@@ -18,7 +18,7 @@ def get_contacts() -> Dict[str, Dict[str, str]] | DefaultDict[str, Dict[str, str
             if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
                 return contacts
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return collections.defaultdict(lambda: {}, phone={}, email={})
 
 
@@ -28,7 +28,7 @@ def get_frequent() -> Dict[str, int]:
         with open(models.fileio.frequent) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return {}
 
 
@@ -50,7 +50,7 @@ def get_location() -> DefaultDict[str, Dict | float | bool]:
             if location := yaml.load(stream=file, Loader=yaml.FullLoader):
                 return location
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     # noinspection PyTypeChecker
     return collections.defaultdict(lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False)
 
@@ -66,7 +66,7 @@ def get_secure_send() -> Dict[str, Dict[str, Any]]:
         with open(models.fileio.secure_send) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return {}
 
 
@@ -112,7 +112,7 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
         with open(models.fileio.conditions) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader)
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
 
 
 def get_restrictions() -> List[str]:
@@ -126,7 +126,7 @@ def get_restrictions() -> List[str]:
         with open(models.fileio.restrictions) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader)
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return []
 
 
@@ -152,7 +152,7 @@ def get_gpt_data() -> List[Dict[str, str]]:
         with open(models.fileio.gpt_data) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader)
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
 
 
 def put_gpt_data(data: List[Dict[str, str]]) -> None:
@@ -177,7 +177,7 @@ def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | 
         with open(models.fileio.automation) as read_file:
             return yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return {}
 
 
@@ -210,7 +210,7 @@ def get_smart_devices() -> dict | bool | None:
             logger.warning("%s not found.", models.fileio.smart_devices)
             return
         else:
-            logger.error(error)
+            logger.debug(error)
             return False
 
 
@@ -236,7 +236,7 @@ def get_processes() -> Dict[str, List[int | List[str]]]:
         with open(models.fileio.processes) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return {}
 
 
@@ -251,7 +251,7 @@ def get_reminders() -> List[Dict[str, str]]:
         with open(models.fileio.reminders) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or []
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return []
 
 
@@ -277,7 +277,7 @@ def get_alarms() -> List[Dict[str, str | bool]]:
         with open(models.fileio.alarms) as file:
             return yaml.load(stream=file, Loader=yaml.FullLoader) or []
     except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.error(error)
+        logger.debug(error)
     return []
 
 
@@ -304,5 +304,5 @@ def get_recognizer() -> classes.RecognizerSettings:
             rec_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         return classes.RecognizerSettings(**rec_data)
     except (yaml.YAMLError, FileNotFoundError, TypeError, ValidationError) as error:
-        logger.error(error)
+        logger.debug(error)
     return classes.RecognizerSettings()

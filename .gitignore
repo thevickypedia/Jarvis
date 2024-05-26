@@ -3,7 +3,7 @@
 .DS_Store
 __pycache__
 .pytest_cache
-venv
+*venv*/
 
 # module generated
 did.bin
@@ -46,9 +46,7 @@ ffmpeg
 
 # future work
 hidden
-temp_*.py
-temp_*.sh
-temp_*/
+temp*
 
 # pypi package files
 dist

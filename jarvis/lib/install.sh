@@ -19,7 +19,7 @@ echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_
 # todo: check installation on Windows with 3.11 and remove the wheel file dependency
 if [ "$ver" -eq 310 ] || [ "$ver" -eq 311 ]; then
   echo -e '\n***************************************************************************************************'
-  echo "                               $osname running python $echo_ver"
+  echo "                            $osname-$architecture running python $echo_ver"
   echo -e '***************************************************************************************************\n'
 else
   echo "Python version $echo_ver is unsupported for Jarvis. Please use any python version between 3.10.* and 3.11.*"
@@ -135,6 +135,7 @@ elif [[ "$osname" == "linux" ]]; then
     echo "                             Installing dependencies specific to Linux"
     echo -e '***************************************************************************************************\n'
 
+    sudo apt update
     dot_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
     sudo apt install -y "python$dot_ver-distutils"  # Install distutils for the current python version
     sudo apt-get install -y git libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
@@ -150,16 +151,22 @@ elif [[ "$osname" == "linux" ]]; then
     # Installs the OS agnostic packages
     os_agnostic "$current_dir"
 
-    python -m pip install pyaudio pvporcupine==1.9.5 PyAudio==0.2.12
+    python -m pip install pvporcupine==1.9.5 PyAudio==0.2.12
 
     # CMake must be installed to build dlib
-    python -m pip install cmake==3.25.0
-    python -m pip install dlib==19.24.0 opencv-python==4.5.5.64
+    python -m pip uninstall --no-cache-dir cmake  # Remove cmake distro installed by pip
+    sudo apt install cmake  # Install cmake via apt repository
+    if [ "$ver" -eq 310 ]; then
+      python -m pip install dlib==19.24.0
+    fi
+    if [ "$ver" -eq 311 ]; then
+      python -m pip install dlib==19.24.4
+    fi
 
     # Install as stand alone as face recognition depends on dlib
-    python -m pip install face-recognition==1.3.0
+    python -m pip install opencv-python==4.9.0.80 face-recognition==1.3.0
 
-    python -m pip install gobject PyGObject
+    python -m pip install gobject==0.1.0 PyGObject==3.48.2
 
     # Install as stand alone as playsound depends on gobject
     python -m pip install playsound==1.3.0

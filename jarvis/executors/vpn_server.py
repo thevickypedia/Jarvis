@@ -6,6 +6,7 @@ from threading import Thread
 from botocore.exceptions import BotoCoreError
 
 try:
+    # todo: update vpn-server to ensure regions are not pulled during imports
     import vpn
 except BotoCoreError as vpn_error:
     vpn = None
