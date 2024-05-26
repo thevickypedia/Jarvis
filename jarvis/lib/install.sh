@@ -11,7 +11,6 @@ architecture=""
 current_dir="$(dirname "$(realpath "$0")")"
 export current_dir=$current_dir
 source "$current_dir/squire/detector.sh"
-source "$current_dir/squire/functions.sh"
 
 ver=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
 echo_ver=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
@@ -28,6 +27,15 @@ fi
 
 # Upgrades pip, setuptools and wheel
 python -m pip install --upgrade pip setuptools wheel
+
+os_agnostic() {
+    echo -e '\n***************************************************************************************************'
+    echo "                             Installing OS agnostic dependencies"
+    echo -e '***************************************************************************************************\n'
+    python -m pip install --no-cache-dir -r "$current_dir"/version_pinned_requirements.txt
+    python -m pip install --no-cache-dir -r "$current_dir"/version_locked_requirements.txt
+    python -m pip install --no-cache-dir --upgrade -r "$current_dir"/version_upgrade_requirements.txt
+}
 
 if [[ "$osname" == "darwin" ]]; then
     echo -e '\n***************************************************************************************************'
@@ -64,9 +72,10 @@ if [[ "$osname" == "darwin" ]]; then
     brew install portaudio coreutils ffmpeg lame
 
     # Installs the OS agnostic packages
-    os_agnostic "$current_dir"
+    os_agnostic
 
     # Mac specifics
+    # todo: Check if PyAudio can be upgraded
     python -m pip install PyAudio==0.2.13 playsound==1.3.0 ftransc==7.0.3 pyobjc-framework-CoreWLAN==9.0.1
 
     # Checks current version and installs legacy version of dependencies if macOS is older han 10.14
@@ -115,21 +124,32 @@ elif [[ "$osname" == "windows" ]]; then
         exit
     fi
 
-    download_from_ext_sources_windows "PyAudio-0.2.11-cp$ver-cp$ver-win_amd64.whl"
+		git_version="$(conda --version)"
+		echo "$git_version"
 
-    conda install portaudio=19.6.0
+		git_version="$(git --version)"
+		echo "$git_version"
+
+    conda install ffmpeg=4.2.2 portaudio=19.6.0
 
     # Installs the OS agnostic packages
-    os_agnostic "$current_dir"
+    os_agnostic
 
     # Install Windows specifics
-    python -m pip install pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
+    python -m pip install PyAudio==0.2.14 pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1.9.5
 
-    # Install face-recognition/detection dependencies as stand alone so users aren't blocked until then
-    python -m pip install opencv-python==4.5.5.64
-    python -m pip install cmake==3.25.0
-    python -m pip install dlib==19.24.0
-    python -m pip install face-recognition==1.3.0
+    # CMake must be installed to build dlib
+    python -m pip uninstall --no-cache-dir cmake  # Remove cmake distro installed by pip
+    conda install cmake  # Install cmake from conda
+    if [ "$ver" -eq 310 ]; then
+      python -m pip install dlib==19.24.0
+    fi
+    if [ "$ver" -eq 311 ]; then
+      python -m pip install dlib==19.24.4
+    fi
+
+    # Install as stand alone as face recognition depends on dlib
+    python -m pip install opencv-python==4.9.0.80 face-recognition==1.3.0
 elif [[ "$osname" == "linux" ]]; then
     echo -e '\n***************************************************************************************************'
     echo "                             Installing dependencies specific to Linux"
@@ -149,13 +169,14 @@ elif [[ "$osname" == "linux" ]]; then
     sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
     # Installs the OS agnostic packages
-    os_agnostic "$current_dir"
+    os_agnostic
 
+    # todo: Check if PyAudio can be upgraded
     python -m pip install pvporcupine==1.9.5 PyAudio==0.2.12
 
     # CMake must be installed to build dlib
     python -m pip uninstall --no-cache-dir cmake  # Remove cmake distro installed by pip
-    sudo apt install cmake  # Install cmake via apt repository
+    sudo apt install cmake  # Install cmake from apt repository
     if [ "$ver" -eq 310 ]; then
       python -m pip install dlib==19.24.0
     fi
