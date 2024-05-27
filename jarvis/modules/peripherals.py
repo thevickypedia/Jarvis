@@ -19,9 +19,8 @@ if sys.version_info.minor > 10:
 else:
     from enum import Enum
 
-
     class StrEnum(str, Enum):
-        """Override for python 3.10"""
+        """Override for python 3.10 due to lack of StrEnum."""
 
 if platform.system() == "Linux":
     with no_alsa_err():

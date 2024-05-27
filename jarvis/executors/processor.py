@@ -60,8 +60,8 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
     Handles:
         - speech_synthesis_api: Speech Synthesis
         - telegram_api: Telegram Bot
-        - jarvis_api: Offline communicator, Robinhood portfolio report, Jarvis UI, Stock monitor, Surveillance, Telegram
-        - background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Wi-Fi connector, Cron jobs, Background tasks
+        - jarvis_api: Offline communicator,Robinhood portfolio report,Jarvis UI,Stock monitor,Surveillance,Telegram
+        - background_tasks: Home automation,Alarms,Reminders,Meetings sync,Wi-Fi connector,Cron jobs,Background tasks
         - plot_mic: Plot microphone usage in real time
     """
     impact_lib = {}
@@ -69,7 +69,7 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         if doc.strip():
             element = doc.strip().split(':')
             func = element[0].lstrip('- ')
-            desc = element[1].strip().split(', ')
+            desc = element[1].strip().split(',')
             if processes.get(func):
                 impact_lib[func] = desc
             else:

@@ -1,8 +1,10 @@
 import difflib
 
 from pyicloud import PyiCloudService
-from pyicloud.exceptions import (PyiCloudAPIResponseException,
-                                 PyiCloudFailedLoginException)
+from pyicloud.exceptions import (
+    PyiCloudAPIResponseException,
+    PyiCloudFailedLoginException,
+)
 from pyicloud.services.findmyiphone import AppleDevice
 
 from jarvis.executors import location, word_match

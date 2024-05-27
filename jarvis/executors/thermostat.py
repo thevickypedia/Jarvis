@@ -1,8 +1,7 @@
 import time
 from threading import Thread
 
-from pyhtcc import (AuthenticationError, LoginCredentialsInvalidError, PyHTCC,
-                    Zone)
+from pyhtcc import AuthenticationError, LoginCredentialsInvalidError, PyHTCC, Zone
 
 from jarvis.executors import word_match
 from jarvis.modules.audio import speaker

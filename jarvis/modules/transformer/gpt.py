@@ -1,7 +1,8 @@
 import collections
 import difflib
-from multiprocessing.context import \
-    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 

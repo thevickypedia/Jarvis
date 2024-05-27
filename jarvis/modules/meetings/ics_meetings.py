@@ -9,8 +9,9 @@ import datetime
 import sqlite3
 import time
 from multiprocessing import Process, Queue
-from multiprocessing.context import \
-    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from typing import List
 

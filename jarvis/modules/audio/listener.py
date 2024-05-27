@@ -7,8 +7,13 @@
 
 from playsound import playsound
 from pydantic import PositiveFloat, PositiveInt
-from speech_recognition import (Microphone, Recognizer, RequestError,
-                                UnknownValueError, WaitTimeoutError)
+from speech_recognition import (
+    Microphone,
+    Recognizer,
+    RequestError,
+    UnknownValueError,
+    WaitTimeoutError,
+)
 
 from jarvis.executors import files, word_match
 from jarvis.modules.audio import speaker

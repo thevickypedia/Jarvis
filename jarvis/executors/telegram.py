@@ -5,8 +5,7 @@ import time
 from urllib.parse import urljoin
 
 from jarvis.executors import controls, internet, process_map
-from jarvis.modules.exceptions import (BotInUse, BotWebhookConflict,
-                                       EgressErrors)
+from jarvis.modules.exceptions import BotInUse, BotWebhookConflict, EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import bot, webhook

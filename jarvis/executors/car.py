@@ -1,7 +1,8 @@
 import time
 from datetime import datetime
-from multiprocessing.context import \
-    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import Dict, List, Tuple

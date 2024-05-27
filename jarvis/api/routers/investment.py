@@ -13,8 +13,7 @@ from fastapi.responses import HTMLResponse
 from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, settings
 from jarvis.api.squire import timeout_otp
-from jarvis.modules.exceptions import (CONDITIONAL_ENDPOINT_RESTRICTION,
-                                       APIResponse)
+from jarvis.modules.exceptions import CONDITIONAL_ENDPOINT_RESTRICTION, APIResponse
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util

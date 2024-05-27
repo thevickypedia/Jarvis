@@ -9,8 +9,15 @@ import pyaudio
 import pywifi
 from playsound import playsound
 
-from jarvis.executors import (commander, controls, internet, listener_controls,
-                              location, process_map, processor)
+from jarvis.executors import (
+    commander,
+    controls,
+    internet,
+    listener_controls,
+    location,
+    process_map,
+    processor,
+)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger import custom_handler, logger

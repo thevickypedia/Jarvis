@@ -1,5 +1,4 @@
 import random
-import time
 from threading import Thread
 
 from jarvis.modules.audio import speaker

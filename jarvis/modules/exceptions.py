@@ -77,7 +77,7 @@ class CameraError(BlockingIOError):
 
 
 class BotError(Exception):
-    """Custom base exception for Telegram Bot
+    """Custom base exception for Telegram Bot.
 
     >>> BotError
 

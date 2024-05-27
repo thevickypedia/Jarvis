@@ -11,8 +11,13 @@ from collections.abc import Generator
 from typing import List
 
 from pywebostv.connection import WebOSClient
-from pywebostv.controls import (ApplicationControl, AudioOutputSource,
-                                MediaControl, SourceControl, SystemControl)
+from pywebostv.controls import (
+    ApplicationControl,
+    AudioOutputSource,
+    MediaControl,
+    SourceControl,
+    SystemControl,
+)
 
 from jarvis.executors import files
 from jarvis.modules.audio import speaker

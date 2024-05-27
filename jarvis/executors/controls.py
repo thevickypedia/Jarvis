@@ -15,8 +15,15 @@ import pybrightness
 import pywslocker
 from docker.errors import APIError, ContainerError, DockerException
 
-from jarvis.executors import (alarm, files, listener_controls, remind, system,
-                              volume, word_match)
+from jarvis.executors import (
+    alarm,
+    files,
+    listener_controls,
+    remind,
+    system,
+    volume,
+    word_match,
+)
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database

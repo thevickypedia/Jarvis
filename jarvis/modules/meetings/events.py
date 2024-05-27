@@ -11,8 +11,9 @@ import sqlite3
 import subprocess
 from datetime import datetime
 from multiprocessing import Process
-from multiprocessing.context import \
-    TimeoutError as ThreadTimeoutError  # noqa: PyProtectedMember
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 
 import pynotification

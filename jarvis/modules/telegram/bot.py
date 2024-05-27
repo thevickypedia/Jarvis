@@ -17,13 +17,16 @@ from typing import Dict, List
 import requests
 from pydantic import FilePath
 
-from jarvis.executors import (commander, offline, others, restrictions,
-                              word_match)
+from jarvis.executors import commander, offline, others, restrictions, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import (BotInUse, BotWebhookConflict,
-                                       EgressErrors, InvalidArgument)
+from jarvis.modules.exceptions import (
+    BotInUse,
+    BotWebhookConflict,
+    EgressErrors,
+    InvalidArgument,
+)
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import audio_handler, file_handler, settings

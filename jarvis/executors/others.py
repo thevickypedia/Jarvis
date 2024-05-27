@@ -25,8 +25,16 @@ from pychromecast.error import ChromecastConnectionError
 from randfacts import get_fact
 
 from jarvis import version as module_version
-from jarvis.executors import (communicator, date_time, files, internet,
-                              robinhood, todo_list, weather, word_match)
+from jarvis.executors import (
+    communicator,
+    date_time,
+    files,
+    internet,
+    robinhood,
+    todo_list,
+    weather,
+    word_match,
+)
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database

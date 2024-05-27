@@ -10,8 +10,7 @@ from fastapi.responses import FileResponse
 from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, modals
 from jarvis.api.routers import speech_synthesis
-from jarvis.executors import (commander, offline, others, restrictions,
-                              word_match)
+from jarvis.executors import commander, offline, others, restrictions, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database

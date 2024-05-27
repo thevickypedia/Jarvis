@@ -23,9 +23,19 @@ import jlrpy
 import psutil
 import pyttsx3
 from packaging.version import Version
-from pydantic import (AliasChoices, BaseModel, DirectoryPath, EmailStr, Field,
-                      FilePath, HttpUrl, PositiveFloat, PositiveInt, constr,
-                      field_validator)
+from pydantic import (
+    AliasChoices,
+    BaseModel,
+    DirectoryPath,
+    EmailStr,
+    Field,
+    FilePath,
+    HttpUrl,
+    PositiveFloat,
+    PositiveInt,
+    constr,
+    field_validator,
+)
 from pydantic_settings import BaseSettings
 from pyhtcc import Zone
 
@@ -40,9 +50,8 @@ if sys.version_info.minor > 10:
 else:
     from enum import Enum
 
-
     class StrEnum(str, Enum):
-        """Override for python 3.10"""
+        """Override for python 3.10 due to lack of StrEnum."""
 
 
 class SupportedPlatforms(StrEnum):

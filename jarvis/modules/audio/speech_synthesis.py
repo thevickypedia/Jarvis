@@ -145,7 +145,7 @@ def run_new_container(client: DockerClient) -> str:
         logger.info("Spinning up a new docker container to run speech-synthesis API")
         result = client.containers.run(
             image="thevickypedia/speech-synthesis",
-            ports={f"5002/tcp": models.env.speech_synthesis_port},
+            ports={"5002/tcp": models.env.speech_synthesis_port},
             environment=[f"HOME={models.env.home}"],
             volumes={models.env.home: {"bind": models.env.home, "mode": "rw"}},
             working_dir=os.getcwd(),

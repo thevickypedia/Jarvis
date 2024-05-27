@@ -8,13 +8,38 @@
 from collections import OrderedDict
 from typing import Callable
 
-from jarvis.executors import (alarm, automation, background_task, car,
-                              comm_squire, communicator, controls, date_time,
-                              display_functions, face, github, guard, internet,
-                              ios_functions, lights, listener_controls,
-                              location, others, remind, robinhood, simulator,
-                              static_responses, system, thermostat, todo_list,
-                              tv, volume, vpn_server, weather, wiki)
+from jarvis.executors import (
+    alarm,
+    automation,
+    background_task,
+    car,
+    comm_squire,
+    communicator,
+    controls,
+    date_time,
+    display_functions,
+    face,
+    github,
+    guard,
+    internet,
+    ios_functions,
+    lights,
+    listener_controls,
+    location,
+    others,
+    remind,
+    robinhood,
+    simulator,
+    static_responses,
+    system,
+    thermostat,
+    todo_list,
+    tv,
+    volume,
+    vpn_server,
+    weather,
+    wiki,
+)
 from jarvis.modules.audio import voices
 from jarvis.modules.meetings import events, ics_meetings
 

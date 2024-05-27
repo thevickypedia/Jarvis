@@ -16,8 +16,11 @@ from jarvis.api.logger import logger
 from jarvis.api.models import authenticator, modals, settings
 from jarvis.api.squire import surveillance_squire, timeout_otp
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import (CONDITIONAL_ENDPOINT_RESTRICTION,
-                                       APIResponse, CameraError)
+from jarvis.modules.exceptions import (
+    CONDITIONAL_ENDPOINT_RESTRICTION,
+    APIResponse,
+    CameraError,
+)
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util

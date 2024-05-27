@@ -1,6 +1,11 @@
+# MANIFEST.in is mandatory due to a wire range of filetypes
 global-exclude .env
 global-exclude *.yaml
 global-exclude .DS_Store
+prune **/.idea
+prune */__pycache__
+include LICENSE
+include README.md
 include jarvis/lib/*
 include jarvis/scripts/*
 include jarvis/indicators/*

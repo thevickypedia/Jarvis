@@ -1,5 +1,5 @@
 fail_fast: true
-exclude: ^docs/
+exclude: ^(notebooks/|scripts/|.github/|docs/)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -11,26 +11,42 @@ repos:
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-executables-have-shebangs
+      - id: check-json
       - id: check-shebang-scripts-are-executable
+      - id: pretty-format-json
       - id: check-merge-conflict
+      - id: check-symlinks
       - id: check-toml
       - id: check-vcs-permalinks
       - id: check-xml
+      - id: check-yaml
       - id: debug-statements
       - id: destroyed-symlinks
       - id: detect-aws-credentials
       - id: detect-private-key
       - id: end-of-file-fixer
+      - id: file-contents-sorter
       - id: fix-byte-order-marker
       - id: mixed-line-ending
       - id: name-tests-test
       - id: requirements-txt-fixer
+      - id: sort-simple-yaml
       - id: trailing-whitespace
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: '6.1.0'
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-docstrings
+          - flake8-sfs
+        args: [ --max-line-length=120, --extend-ignore=SFS3 D107 SFS301 D100 D104 D401 SFS101 SFS201 D412 ]
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:
       - id: isort
+        args: [ --profile, black ]
 
   - repo: local
     hooks:
