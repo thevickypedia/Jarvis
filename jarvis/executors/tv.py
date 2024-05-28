@@ -185,9 +185,8 @@ def television(phrase: str) -> None:
                 "Trying to power on the device using the mac addresses: %s", tv_mac
             )
             power_controller = wakeonlan.WakeOnLan()
-            for _ in range(
-                3
-            ):  # REDUNDANT-Roku: Send magic packets thrice to ensure device wakes up from sleep
+            # REDUNDANT-Roku: Send magic packets thrice to ensure device wakes up from sleep
+            for _ in range(3):
                 with ThreadPoolExecutor(max_workers=len(tv_mac)) as executor:
                     executor.map(power_controller.send_packet, tv_mac)
             if not shared.called_by_offline:

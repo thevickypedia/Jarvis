@@ -54,12 +54,11 @@ def get_todo() -> None:
             speaker.speak(text=json.dumps(result))
             return
         speaker.speak(text="Your to-do items are")
+        # browses dictionary and stores result in response and says it
         for (
             category,
             item,
-        ) in (
-            result.items()
-        ):  # browses dictionary and stores result in response and says it
+        ) in result.items():
             response = f"{item}, in {category} category."
             speaker.speak(text=response)
     else:
@@ -92,9 +91,8 @@ def add_todo() -> None:
         downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
     if downloaded:
         for c, i in downloaded:  # browses through all categories and items
-            if (
-                i == item and c == category
-            ):  # checks if already present and updates items in case of repeated category
+            # checks if already present and updates items in case of repeated category
+            if i == item and c == category:
                 speaker.speak(
                     text=f"Looks like you already have the item: {item} added in, {category} category"
                 )

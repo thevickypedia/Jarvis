@@ -124,9 +124,8 @@ def get_capitalized(
     ignore = tuple(ignore or ()) + tuple(keywords.keywords["avoid"])
     place = ""
     for word in phrase.split():
-        if word[0].isupper() and word.lower() not in map(
-            lambda x: x.lower(), ignore
-        ):  # convert iterable to lowercase
+        # convert iterable to lowercase
+        if word[0].isupper() and word.lower() not in map(lambda x: x.lower(), ignore):
             place += word + " "
         elif "." in word and dot:
             place += word + " "
@@ -295,9 +294,8 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
     """
     floating_days = build_lookup()
     lookup_day = get_capitalized(phrase=phrase)
-    if (
-        not lookup_day or lookup_day not in days_in_week
-    ):  # basically, if lookup day is in lower case
+    # basically, if lookup day is in lower case
+    if not lookup_day or lookup_day not in days_in_week:
         if matched := word_match.word_match(phrase=phrase, match_list=days_in_week):
             lookup_day = string.capwords(matched)
     if not lookup_day or lookup_day not in days_in_week:
@@ -375,9 +373,8 @@ def extract_humanized_date(
             "was",
         )
 
-    if (
-        parsed_date.date() < today and fail_past
-    ):  # validates only the date, so the date might be same with a past-time
+    # validates only the date, so the date might be same with a past-time
+    if parsed_date.date() < today and fail_past:
         raise ValueError(f"{parsed_date!r} is in the past!")
 
     return (

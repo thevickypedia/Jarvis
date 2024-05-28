@@ -350,9 +350,8 @@ def matrix_to_flat_list(input_: List[list]) -> List:
         list:
         Flat list.
     """
-    if filter(
-        lambda x: isinstance(x, list), input_
-    ):  # do conversion only if it is a real matrix
+    # do conversion only if it is a real matrix
+    if filter(lambda x: isinstance(x, list), input_):
         return sum(input_, []) or [item for sublist in input_ for item in sublist]
     return input_
 

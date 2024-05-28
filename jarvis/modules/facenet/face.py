@@ -91,9 +91,8 @@ class FaceNet:
                 img = face_recognition.load_image_file(
                     os.path.join(location, char_dir, file_name)
                 )
-                if encoded := face_recognition.face_encodings(
-                    img
-                ):  # generates face encoding matrix
+                # generates face encoding matrix
+                if encoded := face_recognition.face_encodings(img):
                     encoded = encoded[0]
                     self.train_faces.append(encoded)  # loads ended values to match
                     self.train_names.append(
@@ -135,9 +134,8 @@ class FaceNet:
                 results = face_recognition.compare_faces(
                     self.train_faces, face_encoding, self.LEARNING_RATE
                 )
-                if (
-                    True in results
-                ):  # if a match is found the directory name is rendered and returned as match value
+                # if a match is found the directory name is rendered and returned as match value
+                if True in results:
                     return self.train_names[results.index(True)]
 
     def face_detection(
@@ -196,9 +194,8 @@ class FaceNet:
                 if k == 27:
                     break
                 continue
-            if len(
-                faces
-            ):  # Returns an empty tuple when no face is detected, returns a matrix when a face is detected
+            # Returns an empty tuple when no face is detected, returns a matrix when a face is detected
+            if len(faces):
                 self.capture_image(filename=filename)
                 if os.path.isfile(filename):
                     return True

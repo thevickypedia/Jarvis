@@ -152,9 +152,8 @@ async def stock_monitor_api(
         )
     ):
         logger.info("%s has been verified using apikey", input_data.email)
-    elif apikey and models.env.stock_monitor_api.get(
-        input_data.email
-    ):  # both vars are present but don't match
+    # both vars are present but don't match
+    elif apikey and models.env.stock_monitor_api.get(input_data.email):
         logger.info("%s sent an invalid API key", input_data.email)
         raise APIResponse(
             status_code=HTTPStatus.UNAUTHORIZED.real,
@@ -190,9 +189,9 @@ async def stock_monitor_api(
         # if input_data.token:
         #     decoded = jwt.decode(jwt=input_data.token, options={"verify_signature": False}, algorithms="HS256")
         #     logger.warning("Unwanted information received: '%s'", decoded)
-        if db_entry := stockmonitor_squire.get_stock_userdata(
-            email=input_data.email
-        ):  # Filter data from DB by email
+
+        # Filter data from DB by email
+        if db_entry := stockmonitor_squire.get_stock_userdata(email=input_data.email):
             logger.info(db_entry)
             if input_data.plaintext:
                 raise APIResponse(
@@ -252,9 +251,8 @@ async def stock_monitor_api(
     decoded["Min"] = util.extract_nos(input_=decoded["Min"], method=float)
     decoded["Correction"] = util.extract_nos(input_=decoded["Correction"], method=int)
 
-    if (
-        decoded["Correction"] is None
-    ):  # Consider 0 as valid in case user doesn't want any correction value
+    # Consider 0 as valid in case user doesn't want any correction value
+    if decoded["Correction"] is None:
         decoded["Correction"] = 5
     if decoded["Max"] is None or decoded["Min"] is None:
         raise APIResponse(
@@ -288,9 +286,10 @@ async def stock_monitor_api(
     # Deletes an entry that's present already when requested
     if input_data.request == "DELETE":
         logger.info("'%s' requested to delete '%s'", input_data.email, new_entry)
+        # Checks if entry exists
         if new_entry not in stockmonitor_squire.get_stock_userdata(
             email=input_data.email
-        ):  # Checks if entry exists
+        ):
             raise APIResponse(
                 status_code=HTTPStatus.NOT_FOUND.real,
                 detail="Entry is not present in the database.",
@@ -322,17 +321,15 @@ async def stock_monitor_api(
             status_code=HTTPStatus.BAD_GATEWAY.real,
             detail=f"Failed to perform a price check on {decoded['Ticker']}\n\n{error.__str__()}",
         )
-    if (
-        decoded["Max"] and current_price >= decoded["Max"]
-    ):  # Ignore 0 which doesn't trigger a notification
+    # Ignore 0 which doesn't trigger a notification
+    if decoded["Max"] and current_price >= decoded["Max"]:
         raise APIResponse(
             status_code=HTTPStatus.CONFLICT.real,
             detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"
             "Please choose a higher 'Max' value or try at a later time.",
         )
-    if (
-        decoded["Min"] and current_price <= decoded["Min"]
-    ):  # Ignore 0 which doesn't trigger a notification
+    # Ignore 0 which doesn't trigger a notification
+    if decoded["Min"] and current_price <= decoded["Min"]:
         raise APIResponse(
             status_code=HTTPStatus.CONFLICT.real,
             detail=f"Current price of {decoded['Ticker']} is {current_price}.\n"

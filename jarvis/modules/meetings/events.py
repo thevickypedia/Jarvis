@@ -97,14 +97,12 @@ def events_gatherer() -> str:
     if error := process.returncode:  # stores non zero error
         err_msg = err.decode("UTF-8")
         err_code = err_msg.split()[-1].strip()
-        if (
-            err_code == "(-1728)"
-        ):  # If 'Jarvis' is unavailable in calendar/outlook application
+        # If 'Jarvis' is unavailable in calendar/outlook application
+        if err_code == "(-1728)":
             logger.warning("'Jarvis' is unavailable in %s.", models.env.event_app)
             return f"Jarvis is unavailable in your {models.env.event_app} {models.env.title}!"
-        elif (
-            err_code == "(-1712)"
-        ):  # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
+        # If an event takes 2+ minutes, the Apple Event Manager reports a time-out error.
+        elif err_code == "(-1712)":
             failure = (
                 f"{models.env.event_app}/event took an unusually long time to respond/complete.\nInclude, "
                 f"'with timeout of 300 seconds' to your {models.fileio.event_script} right after the "

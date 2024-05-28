@@ -210,13 +210,11 @@ def _global_validations() -> None:
                 f"Defaulting to {env.speech_synthesis_port}"
             )
 
-    if (
-        env.limited
-    ):  # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
+    # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
+    if env.limited:
         settings.limited = True
-    if (
-        env.limited is False
-    ):  # If env var is set as False to brute force full version on a device with < 4 processors
+    # If env var is set as False to brute force full version on a device with < 4 processors
+    if env.limited is False:
         settings.limited = False
     if settings.limited is True and env.weather_alert:
         warnings.warn("weather alert cannot function on limited mode")

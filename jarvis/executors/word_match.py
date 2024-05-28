@@ -14,9 +14,8 @@ def reverse_lookup(lookup: str, match_list: List | Tuple) -> str | None:
         [w.lower().split() for w in match_list], []
     )  # extract multi worded conditions in match list
     for word in lookup.split():  # loop through words in the phrase
-        if (
-            word in reverse
-        ):  # check at least one word in phrase matches the multi worded condition
+        # check at least one word in phrase matches the multi worded condition
+        if word in reverse:
             return word
 
 
@@ -43,9 +42,8 @@ def word_match(
     """
     if not all((phrase, match_list)):
         return
-    if (
-        strict
-    ):  # simply check at least one string in the match list is present in phrase
+    # simply check at least one string in the match list is present in phrase
+    if strict:
         lookup = phrase.lower().split()
         return forward_lookup(lookup, match_list)
     else:

@@ -101,9 +101,8 @@ class ThreadExecutor:
                 else:
                     msg = f'{support.pluralize(count=len(ip_list), word="light", to_words=True, cap_word=True)} '
                 failed_msg.append(msg + f"from {light_location}")
-            if len(failed_msg) == 1 and failed_msg[0].startswith(
-                "One"
-            ):  # Failed only on a single lamp
+            # Failed only on a single lamp
+            if len(failed_msg) == 1 and failed_msg[0].startswith("One"):
                 response = "".join(failed_msg) + " isn't available right now!"
             else:
                 response = (

@@ -279,9 +279,8 @@ def reply_to(
             "parse_mode": parse_mode,
         },
     )
-    if (
-        result.status_code == 400 and parse_mode and not retry
-    ):  # Retry with response as plain text
+    # Retry with response as plain text
+    if result.status_code == 400 and parse_mode and not retry:
         logger.warning("Retrying response as plain text with no parsing")
         reply_to(chat, response, None, True)
     return result
@@ -309,9 +308,8 @@ def send_message(
         url=BASE_URL + "/sendMessage",
         payload={"chat_id": chat_id, "text": response, "parse_mode": parse_mode},
     )
-    if (
-        result.status_code == 400 and parse_mode and not retry
-    ):  # Retry with response as plain text
+    # Retry with response as plain text
+    if result.status_code == 400 and parse_mode and not retry:
         logger.warning("Retrying response as plain text with no parsing")
         send_message(chat_id=chat_id, response=response, parse_mode=None, retry=True)
     return result
@@ -656,9 +654,8 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
         send_message(chat.id, f"{greeting()} {chat.first_name}! {intro()}")
         return
     if data_class.text.startswith("/"):
-        if (
-            "_" not in data_class.text
-        ):  # Auto-complete can be setup using "/" commands so ignore if "_" is present
+        # Auto-complete can be setup using "/" commands so ignore if "_" is present
+        if "_" not in data_class.text:
             reply_to(
                 chat,
                 "*Deprecation Notice*\n\nSlash commands ('/') have been deprecated. Please use "

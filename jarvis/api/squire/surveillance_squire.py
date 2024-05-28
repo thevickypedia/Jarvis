@@ -73,11 +73,12 @@ def test_camera() -> None:
     if not available_cameras:
         raise CameraError("No available cameras to monitor.")
 
+    # Initial value is str but requests will be int
     if (
         settings.surveillance.camera_index is None
         or settings.surveillance.camera_index == ""
         or not str(settings.surveillance.camera_index).isdigit()
-    ):  # Initial value is str but requests will be int
+    ):
         logger.info("Camera index received: %s", settings.surveillance.camera_index)
         logger.info("Available cameras: %s", available_cameras)
         raise CameraError(f"Available cameras:\n{camera_object.get_index()}")

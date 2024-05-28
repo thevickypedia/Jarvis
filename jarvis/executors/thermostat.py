@@ -129,9 +129,8 @@ def get_auth_object() -> Zone | None:
         Zone:
         Authenticated Zone object.
     """
-    if isinstance(
-        classes.Thermostat.device, str
-    ):  # retry in case there was an error previously
+    # retry in case there was an error previously
+    if isinstance(classes.Thermostat.device, str):
         logger.warning("Previous error: '%s', retrying", classes.Thermostat.device)
         create_connection()
     if isinstance(classes.Thermostat.device, str):  # failed even after retry:

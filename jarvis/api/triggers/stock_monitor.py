@@ -150,9 +150,8 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is less than set maximum by correction percentage.
         """
-        if (
-            correction < 1
-        ):  # Because math.floor will round it off to the previous whole number
+        # Because math.floor will round it off to the previous whole number
+        if correction < 1:
             return False
         max_corrected_amt = math.floor(maximum - (stock_price * correction / 100))
         return stock_price >= max_corrected_amt
@@ -180,9 +179,8 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is more than set maximum by correction percentage.
         """
-        if (
-            correction < 1
-        ):  # Because math.ceil will round it off to the next whole number
+        # Because math.ceil will round it off to the next whole number
+        if correction < 1:
             return False
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
@@ -203,9 +201,8 @@ class StockMonitor:
         for repeater in self.repeat_alerts:
             for alert_time, alert_entry in repeater.items():
                 if alert_entry == condition_list:
-                    if (
-                        time.time() <= alert_time + hours * 60 * 60
-                    ):  # no notification should be triggered
+                    # no notification should be triggered
+                    if time.time() <= alert_time + hours * 60 * 60:
                         return True
                     else:
                         self.repeat_alerts.remove({alert_time: alert_entry})

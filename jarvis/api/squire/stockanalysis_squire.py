@@ -69,9 +69,8 @@ def thread_worker(
                 futures[future],
                 future.exception(),
             )
-    if thread_except > (
-        len(iterable) * 10 / 100
-    ):  # Use backup file if more than 10% of the requests fail
+    # Use backup file if more than 10% of the requests fail
+    if thread_except > (len(iterable) * 10 / 100):
         with open(models.fileio.stock_list_backup) as file:
             settings.trader.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
 
@@ -80,9 +79,8 @@ def nasdaq() -> None:
     """Get all stock tickers available. Creates/Updates backup file to be used."""
     if os.path.isfile(models.fileio.stock_list_backup):
         modified = int(os.stat(models.fileio.stock_list_backup).st_mtime)
-        if (
-            int(time.time()) - modified < 86_400
-        ):  # Gathers new stock list only if the file is older than a day
+        # Gathers new stock list only if the file is older than a day
+        if int(time.time()) - modified < 86_400:
             try:
                 with open(models.fileio.stock_list_backup) as file:
                     settings.trader.stock_list = yaml.load(

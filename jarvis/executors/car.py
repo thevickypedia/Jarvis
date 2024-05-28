@@ -416,9 +416,8 @@ def report(
                 overall_status["status"][dict_["key"]] = dict_["value"] + "v"
             if dict_.get("key", "") == "DISTANCE_TO_EMPTY_FUEL":
                 distance_to_empty_fuel = float(dict_["value"])
-                if (
-                    models.env.distance_unit == models.DistanceUnits.MILES
-                ):  # Convert to miles if custom unit is set
+                # Convert to miles if custom unit is set
+                if models.env.distance_unit == models.DistanceUnits.MILES:
                     distance_to_empty_fuel = util.kms_to_miles(float(dict_["value"]))
                 overall_status["status"][dict_["key"]] = (
                     f"{int(distance_to_empty_fuel):02,} "

@@ -71,9 +71,8 @@ def background_task_runner() -> None:
         now = datetime.now()
         # Trigger background tasks
         for i, task in enumerate(tasks):
-            if (
-                task_dict[i] + task.seconds <= time.time() or dry_run
-            ):  # Checks a particular tasks' elapsed time
+            # Checks a particular tasks' elapsed time
+            if task_dict[i] + task.seconds <= time.time() or dry_run:
                 task_dict[i] = time.time()  # Updates that particular tasks' start time
                 if now.hour in task.ignore_hours:
                     logger.debug("'%s' skipped honoring ignore hours", task)

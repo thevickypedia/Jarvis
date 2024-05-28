@@ -231,14 +231,12 @@ def reminder(phrase: str) -> None:
         elif datetime_obj <= datetime.now():
             datetime_obj += timedelta(days=1)
             day = "tomorrow"
-        elif datetime_obj.date() == (
-            datetime.now().date() + timedelta(days=1)
-        ):  # requested for next day
+        # requested for next day
+        elif datetime_obj.date() == (datetime.now().date() + timedelta(days=1)):
             day = "tomorrow"
 
-        message = message.replace(
-            day, ""
-        )  # strip off statements like today, tomorrow, day after tomorrow from message
+        # strip off statements like today, tomorrow, day after tomorrow from message
+        message = message.replace(day, "")
 
         create_reminder(
             reminder_time=datetime_obj,

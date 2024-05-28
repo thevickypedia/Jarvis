@@ -56,9 +56,8 @@ def monitor() -> None:
         number=models.env.phone_number,
         subject=subject,
     )
-    if (
-        high >= models.env.weather_alert_max
-    ):  # high will definitely be greater than or equal to current
+    # high will definitely be greater than or equal to current
+    if high >= models.env.weather_alert_max:
         if alert:
             email_args["body"] = (
                 f"High weather alert!\n{alert}\n\n" + email_args["body"]
@@ -74,9 +73,8 @@ def monitor() -> None:
         communicator.send_email(**email_args)
         communicator.send_sms(**phone_args)
         return
-    if (
-        low <= models.env.weather_alert_min
-    ):  # low will definitely be lesser than or equal to current
+    # low will definitely be lesser than or equal to current
+    if low <= models.env.weather_alert_min:
         if alert:
             email_args["body"] = f"Low weather alert!\n{alert}\n\n" + email_args["body"]
             phone_args["body"] = f"Low weather alert!\n{alert}\n\n" + phone_args["body"]

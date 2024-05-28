@@ -245,16 +245,14 @@ def speech_synthesis_api() -> None:
         logger.critical(error.__str__())
         return
     if check_existing():  # Test call to speech synthesis API successful
-        if container_id := run_existing_container(
-            docker_client, True
-        ):  # Map existing API session with docker
+        # Map existing API session with docker
+        if container_id := run_existing_container(docker_client, True):
             logger.info("Dry run successful, streaming logs")
             stream_logs(docker_client, container_id)
         logger.warning("Unable to stream container logs locally")
         # Container logs will not be available outside docker, so try to update the process map with docker's PID
-        if pid := find_pid_by_port(
-            models.env.speech_synthesis_port
-        ):  # Identified the PID to update in process map
+        # Identified the PID to update in process map
+        if pid := find_pid_by_port(models.env.speech_synthesis_port):
             process_map.update(speech_synthesis_api.__name__, models.settings.pid, pid)
         else:
             # Failed to get the PID of the listening API, hence removing entry from process map

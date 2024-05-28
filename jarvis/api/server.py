@@ -32,9 +32,8 @@ def jarvis_api() -> None:
         except EgressErrors:
             logger.error("Unable to connect to existing uvicorn server.")
 
-        if not port_handler.kill_port_pid(
-            port=models.env.offline_port
-        ):  # This might terminate Jarvis
+        # This might terminate Jarvis
+        if not port_handler.kill_port_pid(port=models.env.offline_port):
             logger.critical(
                 "ATTENTION::Failed to kill existing PID. Attempting to re-create session."
             )

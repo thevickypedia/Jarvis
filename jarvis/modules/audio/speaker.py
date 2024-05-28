@@ -99,13 +99,14 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
     """
     if not models.AUDIO_DRIVER:
         models.env.speech_synthesis_timeout = 10
-    caller = sys._getframe(
+    caller = sys._getframe(  # noqa: PyProtectedMember,PyUnresolvedReferences
         1
-    ).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
+    ).f_code.co_name
+    # function where all the magic happens
     if caller not in (
         "conditions",
         "custom_conditions",
-    ):  # function where all the magic happens
+    ):
         Thread(target=frequently_used, kwargs={"function_name": caller}).start()
     if text:
         text = text.replace("\n", "\t").strip()

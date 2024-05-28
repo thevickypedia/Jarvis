@@ -120,9 +120,8 @@ def distance(phrase) -> None:
     check = phrase.split()  # str to list
     places = []
     for word in check:
-        if (
-            word[0].isupper() or "." in word
-        ):  # looks for words that start with uppercase
+        # looks for words that start with uppercase
+        if word[0].isupper() or "." in word:
             try:
                 next_word = check[
                     check.index(word) + 1

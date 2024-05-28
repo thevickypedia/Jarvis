@@ -225,9 +225,8 @@ def google_home(device: str = None, file: str = None) -> None:
 
     devices = []
     with ThreadPoolExecutor(max_workers=100) as executor:
-        for info in executor.map(
-            ip_scan, range(1, 101)
-        ):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
+        # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
+        for info in executor.map(ip_scan, range(1, 101)):
             devices.append(
                 info
             )  # this includes all the NoneType values returned by unassigned host IDs
@@ -443,15 +442,12 @@ def celebrate(phrase: str = None) -> str:
                 break
     else:
         location = files.get_location()
-        if not (
-            countrycode := location.get("address", {}).get("country_code")
-        ):  # get country code from location.yaml
-            if idna_timezone := location.get(
-                "timezone"
-            ):  # get timezone from location.yaml
-                countrycode = support.country_timezone().get(
-                    idna_timezone
-                )  # get country code using timezone map
+        # get country code from location.yaml
+        if not (countrycode := location.get("address", {}).get("country_code")):
+            # get timezone from location.yaml
+            if idna_timezone := location.get("timezone"):
+                # get country code using timezone map
+                countrycode = support.country_timezone().get(str(idna_timezone))
     if not countrycode:
         countrycode = "US"
         countryname = "USA"
@@ -503,9 +499,8 @@ def photo(*args) -> str:
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
     facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
-        if (
-            not shared.called_by_offline
-        ):  # don't show preview on screen if requested via offline
+        # don't show preview on screen if requested via offline
+        if not shared.called_by_offline:
             if models.settings.os != models.supported_platforms.windows:
                 subprocess.call(["open", filename])
             else:
@@ -616,9 +611,8 @@ def secrets(phrase: str) -> str:
                 "example: create and share secret for drogon589#"
             )
 
-    if (
-        "list" in text
-    ):  # calling list will always create a new list in the dict regardless of what exists
+    # Calling list will always create a new list in the dict regardless of what exists
+    if "list" in text:
         if "aws" in text:
             SECRET_STORAGE["aws"] = []  # reset everytime list param is called
             if "ssm" in text:
@@ -641,9 +635,8 @@ def secrets(phrase: str) -> str:
             return ", ".join(SECRET_STORAGE["local"])
         return "Please specify which secrets you want to list: 'aws' or 'local''"
 
-    if (
-        "get" in text or "send" in text
-    ):  # calling get will always return the latest information in the existing dict
+    # calling get will always return the latest information in the existing dict
+    if "get" in text or "send" in text:
         if "aws" in text:
             if SECRET_STORAGE["aws"]:
                 if aws_key := [
