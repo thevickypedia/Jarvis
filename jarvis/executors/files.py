@@ -3,6 +3,7 @@
 import collections
 import os
 import warnings
+from datetime import datetime
 from threading import Timer
 from typing import Any, DefaultDict, Dict, List
 
@@ -40,7 +41,7 @@ def put_frequent(data: Dict[str, int]) -> None:
     Args:
         data: Takes the mapping dictionary as an argument.
     """
-    with open(models.fileio.frequent, 'w') as file:
+    with open(models.fileio.frequent, "w") as file:
         yaml.dump(data=data, stream=file, sort_keys=False)
         file.flush()  # Write everything in buffer to file right away
 
@@ -54,7 +55,9 @@ def get_location() -> DefaultDict[str, Dict | float | bool]:
     except (yaml.YAMLError, FileNotFoundError) as error:
         logger.debug(error)
     # noinspection PyTypeChecker
-    return collections.defaultdict(lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False)
+    return collections.defaultdict(
+        lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False
+    )
 
 
 def get_secure_send() -> Dict[str, Dict[str, Any]]:
@@ -84,7 +87,7 @@ def delete_secure_send(key: str) -> None:
         del current_data[key]
     else:
         logger.critical("data for key [%s] was removed unprecedentedly", key)
-    with open(models.fileio.secure_send, 'w') as file:
+    with open(models.fileio.secure_send, "w") as file:
         yaml.dump(data=current_data, stream=file, Dumper=yaml.Dumper)
         file.flush()  # Write buffer to file immediately
 
@@ -96,10 +99,13 @@ def put_secure_send(data: Dict[str, Dict[str, Any]]):
         data: Data dict that has to be added.
     """
     existing = get_secure_send()
-    with open(models.fileio.secure_send, 'w') as file:
+    with open(models.fileio.secure_send, "w") as file:
         yaml.dump(data={**existing, **data}, stream=file, Dumper=yaml.Dumper)
         file.flush()  # Write buffer to file immediately
-    logger.info("Secure dict for [%s] will be cleared after 5 minutes", [*[*data.values()][0].keys()][0])
+    logger.info(
+        "Secure dict for [%s] will be cleared after 5 minutes",
+        [*[*data.values()][0].keys()][0],
+    )
     Timer(function=delete_secure_send, args=data.keys(), interval=300).start()
 
 
@@ -138,7 +144,7 @@ def put_restrictions(restrictions: List[str]) -> None:
     Args:
         restrictions: A list of function names that has to be restricted.
     """
-    with open(models.fileio.restrictions, 'w') as file:
+    with open(models.fileio.restrictions, "w") as file:
         yaml.dump(data=restrictions, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
 
@@ -163,7 +169,7 @@ def put_gpt_data(data: List[Dict[str, str]]) -> None:
     Args:
         data: List of dictionaries that have to be saved for future reference.
     """
-    with open(models.fileio.gpt_data, 'w') as file:
+    with open(models.fileio.gpt_data, "w") as file:
         yaml.dump(data=data, stream=file, indent=4, Dumper=yaml.Dumper)
         file.flush()  # Write buffer to file immediately
 
@@ -183,14 +189,27 @@ def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | 
     return {}
 
 
-def put_automation(data: Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]) -> None:
+def put_automation(
+    data: Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]
+) -> None:
     """Dumps automation data into feed file.
 
     Args:
         data: Data that has to be dumped into the automation feed file.
     """
-    with open(models.fileio.automation, 'w') as file:
-        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
+    # Sort the keys by timestamp
+    try:
+        sorted_data = {
+            k: data[k]
+            for k in sorted(data.keys(), key=lambda x: datetime.strptime(x, "%I:%M %p"))
+        }
+    except ValueError as error:
+        logger.error(error)
+        logger.error("Writing automation data without sorting")
+        sorted_data = data
+
+    with open(models.fileio.automation, "w") as file:
+        yaml.dump(data=sorted_data, stream=file, indent=2)
         file.flush()  # Write buffer to file immediately
 
 
@@ -222,7 +241,7 @@ def put_smart_devices(data: dict) -> None:
     Args:
         data: Data that has to be dumped into the smart devices' feed file.
     """
-    with open(models.fileio.smart_devices, 'w') as file:
+    with open(models.fileio.smart_devices, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
 
@@ -263,7 +282,7 @@ def put_reminders(data: List[Dict[str, str]]):
     Args:
         data: Data to be dumped.
     """
-    with open(models.fileio.reminders, 'w') as file:
+    with open(models.fileio.reminders, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
 
@@ -289,7 +308,7 @@ def put_alarms(data: List[Dict[str, str | bool]]):
     Args:
         data: Data to be dumped.
     """
-    with open(models.fileio.alarms, 'w') as file:
+    with open(models.fileio.alarms, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
         file.flush()  # Write buffer to file immediately
 
@@ -327,7 +346,5 @@ def get_crontab() -> List[str]:
     except (yaml.YAMLError, AssertionError) as error:
         logger.error(error)
         os.rename(src=models.fileio.crontab, dst=models.fileio.tmp_crontab)
-        warnings.warn(
-            "CRONTAB :: Invalid file format."
-        )
+        warnings.warn("CRONTAB :: Invalid file format.")
     return []

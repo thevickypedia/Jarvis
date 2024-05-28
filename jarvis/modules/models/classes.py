@@ -88,20 +88,26 @@ class Settings(BaseModel):
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
     os: str = platform.system()
-    if os not in (supported_platforms.macOS, supported_platforms.linux, supported_platforms.windows):
+    if os not in (
+        supported_platforms.macOS,
+        supported_platforms.linux,
+        supported_platforms.windows,
+    ):
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
             "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
             f"\n{''.join('*' for _ in range(80))}\n"
         )
     legacy: bool = False
-    if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version('10.14'):
+    if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version(
+        "10.14"
+    ):
         legacy: bool = True
 
 
 settings = Settings()
 # Intermittently changes to Windows_NT because of pydantic
-if settings.os.startswith('Windows'):
+if settings.os.startswith("Windows"):
     settings.os = "Windows"
 
 
@@ -178,8 +184,8 @@ class TemperatureUnits(StrEnum):
 
     """
 
-    METRIC: str = 'metric'
-    IMPERIAL: str = 'imperial'
+    METRIC: str = "metric"
+    IMPERIAL: str = "imperial"
 
 
 class DistanceUnits(StrEnum):
@@ -189,8 +195,8 @@ class DistanceUnits(StrEnum):
 
     """
 
-    MILES: str = 'miles'
-    KILOMETERS: str = 'kilometers'
+    MILES: str = "miles"
+    KILOMETERS: str = "kilometers"
 
 
 class EventApp(StrEnum):
@@ -200,8 +206,8 @@ class EventApp(StrEnum):
 
     """
 
-    CALENDAR = 'calendar'
-    OUTLOOK = 'outlook'
+    CALENDAR = "calendar"
+    OUTLOOK = "outlook"
 
 
 class SSQuality(StrEnum):
@@ -211,9 +217,9 @@ class SSQuality(StrEnum):
 
     """
 
-    High_Quality = 'high'
-    Medium_Quality = 'medium'
-    Low_Quality = 'low'
+    High_Quality = "high"
+    Medium_Quality = "medium"
+    Low_Quality = "low"
 
 
 def handle_multiform(form_list: List[str]) -> List[int]:
@@ -236,7 +242,9 @@ def handle_multiform(form_list: List[str]) -> List[int]:
         assert form_list[0].isdigit()
         assert form_list[1].isdigit()
     except AssertionError:
-        raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+        raise ValueError(
+            "string format can either be start-end (7-10) or just the hour by itself (7)"
+        )
     start_hour = int(form_list[0])
     end_hour = int(form_list[1])
     if start_hour <= end_hour:
@@ -255,48 +263,54 @@ class BackgroundTask(BaseModel):
     task: constr(strip_whitespace=True)
     ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = []
 
-    @field_validator('task', mode='before', check_fields=True)
+    @field_validator("task", mode="before", check_fields=True)
     def check_empty_string(cls, v, values, **kwargs):  # noqa
         """Validate task field in tasks."""
         if v:
             return v
-        raise ValueError('bad value')
+        raise ValueError("bad value")
 
-    @field_validator('ignore_hours', check_fields=True)
+    @field_validator("ignore_hours", check_fields=True)
     def check_hours_format(cls, v, values, **kwargs):  # noqa
         """Validate each entry in ignore hours list."""
         if not v:
             return []
         if isinstance(v, int):
             if v < 0 or v > 24:
-                raise ValueError('24h format cannot be less than 0 or greater than 24')
+                raise ValueError("24h format cannot be less than 0 or greater than 24")
             v = [v]
         elif isinstance(v, str):
-            form_list = v.split('-')
+            form_list = v.split("-")
             if len(form_list) == 1:
                 try:
                     assert form_list[0].isdigit()
                 except AssertionError:
-                    raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+                    raise ValueError(
+                        "string format can either be start-end (7-10) or just the hour by itself (7)"
+                    )
                 else:
                     v = [int(form_list[0])]
             elif len(form_list) == 2:
                 v = handle_multiform(form_list)
             else:
-                raise ValueError('string format can either be start-end (7-10) or just the hour by itself (7)')
+                raise ValueError(
+                    "string format can either be start-end (7-10) or just the hour by itself (7)"
+                )
         refined = []
         for multiple in v:
             if isinstance(multiple, str):
-                refined.extend(handle_multiform(multiple.split('-')))  # comes back as a list of string
+                refined.extend(
+                    handle_multiform(multiple.split("-"))
+                )  # comes back as a list of string
             else:
                 refined.append(multiple)
         if refined:
             v = refined
         for hour in v:
             try:
-                datetime.strptime(str(hour), '%H')
+                datetime.strptime(str(hour), "%H")
             except ValueError:
-                raise ValueError('ignore hours should be 24H format')
+                raise ValueError("ignore hours should be 24H format")
         return v
 
 
@@ -322,11 +336,13 @@ class EnvConfig(BaseSettings):
     temperature_unit: TemperatureUnits | None = None
 
     # System config
-    home: DirectoryPath = os.path.expanduser('~')
+    home: DirectoryPath = os.path.expanduser("~")
     volume: PositiveInt = 50
     limited: bool = False
     root_user: str = getpass.getuser()
-    root_password: str | None = Field(None, validation_alias=AliasChoices('root_password', 'password'))
+    root_password: str | None = Field(
+        None, validation_alias=AliasChoices("root_password", "password")
+    )
 
     # Mute during meetings
     mute_for_meetings: bool = False
@@ -346,8 +362,8 @@ class EnvConfig(BaseSettings):
 
     # User add-ons
     birthday: str | None = None
-    title: str = 'sir'
-    name: str = 'Vignesh'
+    title: str = "sir"
+    name: str = "Vignesh"
     website: HttpUrl | List[HttpUrl] = []
     plot_mic: bool = True
     ntfy_url: HttpUrl | None = None
@@ -364,7 +380,7 @@ class EnvConfig(BaseSettings):
     maps_api: str | None = None
     news_api: str | None = None
     openai_api: str | None = None
-    openai_model: str = 'gpt-3.5-turbo'
+    openai_model: str = "gpt-3.5-turbo"
     openai_timeout: int = Field(5, le=10, ge=1)
     openai_reuse_threshold: float | None = Field(None, ge=0.5, le=0.9)
 
@@ -378,9 +394,9 @@ class EnvConfig(BaseSettings):
     telegram_id: int | None = None
 
     # Offline communicator config
-    offline_host: str = socket.gethostbyname('localhost')
+    offline_host: str = socket.gethostbyname("localhost")
     offline_port: PositiveInt = 4483
-    offline_pass: str = 'OfflineComm'
+    offline_pass: str = "OfflineComm"
     workers: PositiveInt = 1
 
     # Calendar events and meetings config
@@ -432,7 +448,9 @@ class EnvConfig(BaseSettings):
     tcc_device_name: str | None = None
 
     # Listener config
-    sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(0.5, le=1, ge=0)
+    sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(
+        0.5, le=1, ge=0
+    )
     listener_timeout: PositiveFloat | PositiveInt = 3
     listener_phrase_limit: PositiveFloat | PositiveInt = 5
     recognizer_confidence: float | PositiveInt = Field(0, le=1, ge=0)
@@ -450,9 +468,9 @@ class EnvConfig(BaseSettings):
 
     # Speech synthesis config
     speech_synthesis_timeout: int = 3
-    speech_synthesis_voice: str = 'en-us_northern_english_male-glow_tts'
+    speech_synthesis_voice: str = "en-us_northern_english_male-glow_tts"
     speech_synthesis_quality: SSQuality = SSQuality.Medium_Quality
-    speech_synthesis_host: str = socket.gethostbyname('localhost')
+    speech_synthesis_host: str = socket.gethostbyname("localhost")
     speech_synthesis_port: PositiveInt = 5002
 
     # Background tasks
@@ -467,9 +485,9 @@ class EnvConfig(BaseSettings):
 
     # Legacy macOS config
     if settings.legacy:
-        wake_words: List[str] = ['alexa']
+        wake_words: List[str] = ["alexa"]
     else:
-        wake_words: List[str] = ['jarvis']
+        wake_words: List[str] = ["jarvis"]
 
     class Config:
         """Environment variables configuration."""
@@ -488,7 +506,9 @@ class EnvConfig(BaseSettings):
 
     # noinspection PyMethodParameters
     @field_validator("notify_reminders", mode="after", check_fields=True)
-    def parse_notify_reminders(cls, value: ReminderOptions | List[ReminderOptions]) -> List[ReminderOptions]:
+    def parse_notify_reminders(
+        cls, value: ReminderOptions | List[ReminderOptions]
+    ) -> List[ReminderOptions]:
         """Validate reminder options."""
         if isinstance(value, list):
             if ReminderOptions.all in value:
@@ -497,34 +517,62 @@ class EnvConfig(BaseSettings):
         return [value]
 
     # noinspection PyMethodParameters
-    @field_validator("microphone_index", mode='before', check_fields=True)
-    def parse_microphone_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
+    @field_validator("microphone_index", mode="before", check_fields=True)
+    def parse_microphone_index(
+        cls, value: int | PositiveInt
+    ) -> int | PositiveInt | None:
         """Validates microphone index."""
         if not value:
             return
-        if int(value) in list(map(lambda tag: tag['index'], get_audio_devices(channels=channel_type.input_channels))):
+        if int(value) in list(
+            map(
+                lambda tag: tag["index"],
+                get_audio_devices(channels=channel_type.input_channels),
+            )
+        ):
             return value
         else:
-            complicated = dict(ChainMap(*list(map(lambda tag: {tag['index']: tag['name']},
-                                                  get_audio_devices(channels=channel_type.input_channels)))))
+            complicated = dict(
+                ChainMap(
+                    *list(
+                        map(
+                            lambda tag: {tag["index"]: tag["name"]},
+                            get_audio_devices(channels=channel_type.input_channels),
+                        )
+                    )
+                )
+            )
             raise InvalidEnvVars(f"value should be one of {complicated}")
 
     # noinspection PyMethodParameters
-    @field_validator("speaker_index", mode='before', check_fields=True)
+    @field_validator("speaker_index", mode="before", check_fields=True)
     def parse_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage (currently the index value is unused)
         if not value:
             return
-        if int(value) in list(map(lambda tag: tag['index'], get_audio_devices(channels=channel_type.output_channels))):
+        if int(value) in list(
+            map(
+                lambda tag: tag["index"],
+                get_audio_devices(channels=channel_type.output_channels),
+            )
+        ):
             return value
         else:
-            complicated = dict(ChainMap(*list(map(lambda tag: {tag['index']: tag['name']},
-                                                  get_audio_devices(channels=channel_type.output_channels)))))
+            complicated = dict(
+                ChainMap(
+                    *list(
+                        map(
+                            lambda tag: {tag["index"]: tag["name"]},
+                            get_audio_devices(channels=channel_type.output_channels),
+                        )
+                    )
+                )
+            )
             raise InvalidEnvVars(f"value should be one of {complicated}")
 
     # noinspection PyMethodParameters
-    @field_validator("birthday", mode='before', check_fields=True)
+    @field_validator("birthday", mode="before", check_fields=True)
     def parse_birthday(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
@@ -535,26 +583,29 @@ class EnvConfig(BaseSettings):
         except ValueError:
             raise InvalidEnvVars("format should be 'DD-MM'")
 
-    @field_validator('vpn_password', mode='before', check_fields=True)
+    @field_validator("vpn_password", mode="before", check_fields=True)
     def validate_vpn_password(cls, v: str) -> str:
         """Validates vpn_password as per the required regex."""
         if v:
-            if re.match(pattern=r"^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%&'()*+,-/[\]^_`{|}~<>]).+$", string=v):
+            if re.match(
+                pattern=r"^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%&'()*+,-/[\]^_`{|}~<>]).+$",
+                string=v,
+            ):
                 return v
             raise ValueError(
                 r"Password must contain a digit, an Uppercase letter, and a symbol from !@#$%&'()*+,-/[\]^_`{|}~<>"
             )
 
     # noinspection PyMethodParameters
-    @field_validator("weather_alert", mode='before', check_fields=True)
+    @field_validator("weather_alert", mode="before", check_fields=True)
     def parse_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
             return
         try:
             # Convert datetime to string as the '07' for '%I' will pass validation but fail comparison
-            if val := datetime.strptime(value, '%I:%M %p'):
-                return val.strftime('%I:%M %p')
+            if val := datetime.strptime(value, "%I:%M %p"):
+                return val.strftime("%I:%M %p")
         except ValueError:
             raise InvalidEnvVars("format should be '%I:%M %p'")
 
@@ -570,65 +621,67 @@ class FileIO(BaseModel):
     """
 
     # Directories
-    root: DirectoryPath = os.path.realpath('fileio')
+    root: DirectoryPath = os.path.realpath("fileio")
 
     # Speech Recognition config
-    recognizer: FilePath = os.path.join(root, 'recognizer.yaml')
+    recognizer: FilePath = os.path.join(root, "recognizer.yaml")
 
     # Home automation
-    crontab: FilePath = os.path.join(root, 'crontab.yaml')
-    tmp_crontab: FilePath = os.path.join(root, 'tmp_crontab.yaml')
-    automation: FilePath = os.path.join(root, 'automation.yaml')
-    tmp_automation: FilePath = os.path.join(root, 'tmp_automation.yaml')
-    background_tasks: FilePath = os.path.join(root, 'background_tasks.yaml')
-    tmp_background_tasks: FilePath = os.path.join(root, 'tmp_background_tasks.yaml')
-    smart_devices: FilePath = os.path.join(root, 'smart_devices.yaml')
-    contacts: FilePath = os.path.join(root, 'contacts.yaml')
+    crontab: FilePath = os.path.join(root, "crontab.yaml")
+    tmp_crontab: FilePath = os.path.join(root, "tmp_crontab.yaml")
+    automation: FilePath = os.path.join(root, "automation.yaml")
+    tmp_automation: FilePath = os.path.join(root, "tmp_automation.yaml")
+    background_tasks: FilePath = os.path.join(root, "background_tasks.yaml")
+    tmp_background_tasks: FilePath = os.path.join(root, "tmp_background_tasks.yaml")
+    smart_devices: FilePath = os.path.join(root, "smart_devices.yaml")
+    contacts: FilePath = os.path.join(root, "contacts.yaml")
 
     # Alarms and Reminders
-    alarms: FilePath = os.path.join(root, 'alarms.yaml')
-    reminders: FilePath = os.path.join(root, 'reminders.yaml')
+    alarms: FilePath = os.path.join(root, "alarms.yaml")
+    reminders: FilePath = os.path.join(root, "reminders.yaml")
 
     # Simulation
-    simulation: FilePath = os.path.join(root, 'simulation.yaml')
+    simulation: FilePath = os.path.join(root, "simulation.yaml")
 
     # Custom keyword-function map
-    keywords: FilePath = os.path.join(root, 'keywords.yaml')
-    conditions: FilePath = os.path.join(root, 'conditions.yaml')
-    restrictions: FilePath = os.path.join(root, 'restrictions.yaml')
+    keywords: FilePath = os.path.join(root, "keywords.yaml")
+    conditions: FilePath = os.path.join(root, "conditions.yaml")
+    restrictions: FilePath = os.path.join(root, "restrictions.yaml")
 
     # Databases
-    base_db: FilePath = os.path.join(root, 'database.db')
-    task_db: FilePath = os.path.join(root, 'tasks.db')
-    stock_db: FilePath = os.path.join(root, 'stock.db')
+    base_db: FilePath = os.path.join(root, "database.db")
+    task_db: FilePath = os.path.join(root, "tasks.db")
+    stock_db: FilePath = os.path.join(root, "stock.db")
 
     # API used
-    robinhood: FilePath = os.path.join(root, 'robinhood.html')
-    stock_list_backup: FilePath = os.path.join(root, 'stock_list_backup.yaml')
+    robinhood: FilePath = os.path.join(root, "robinhood.html")
+    stock_list_backup: FilePath = os.path.join(root, "stock_list_backup.yaml")
 
     # Future useful
-    frequent: FilePath = os.path.join(root, 'frequent.yaml')
-    training_data: FilePath = os.path.join(root, 'training_data.yaml')
-    gpt_data: FilePath = os.path.join(root, 'gpt_history.yaml')
+    frequent: FilePath = os.path.join(root, "frequent.yaml")
+    training_data: FilePath = os.path.join(root, "training_data.yaml")
+    gpt_data: FilePath = os.path.join(root, "gpt_history.yaml")
 
     # Jarvis internal
-    startup_dir: DirectoryPath = os.path.join(root, 'startup')
-    location: FilePath = os.path.join(root, 'location.yaml')
-    notes: FilePath = os.path.join(root, 'notes.txt')
-    processes: FilePath = os.path.join(root, 'processes.yaml')
+    startup_dir: DirectoryPath = os.path.join(root, "startup")
+    location: FilePath = os.path.join(root, "location.yaml")
+    notes: FilePath = os.path.join(root, "notes.txt")
+    processes: FilePath = os.path.join(root, "processes.yaml")
 
     # macOS specifics
-    app_launcher: FilePath = os.path.join(scripts.__path__[0], 'applauncher.scpt')
-    event_script: FilePath = os.path.join(scripts.__path__[0], f'{env.event_app}.scpt')
+    app_launcher: FilePath = os.path.join(scripts.__path__[0], "applauncher.scpt")
+    event_script: FilePath = os.path.join(scripts.__path__[0], f"{env.event_app}.scpt")
 
     # Speech Synthesis
-    speech_synthesis_wav: FilePath = os.path.join(root, 'speech_synthesis.wav')
+    speech_synthesis_wav: FilePath = os.path.join(root, "speech_synthesis.wav")
     # Store log file name in a variable as it is used in multiple modules with file IO
-    speech_synthesis_cid: FilePath = os.path.join(root, 'speech_synthesis.cid')
-    speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join('logs', 'speech_synthesis_%d-%m-%Y.log'))
+    speech_synthesis_cid: FilePath = os.path.join(root, "speech_synthesis.cid")
+    speech_synthesis_log: FilePath = datetime.now().strftime(
+        os.path.join("logs", "speech_synthesis_%d-%m-%Y.log")
+    )
 
     # Secure Send
-    secure_send: FilePath = os.path.join(root, 'secure_send.yaml')
+    secure_send: FilePath = os.path.join(root, "secure_send.yaml")
 
     # On demand storage
     uploads: DirectoryPath = os.path.join(root, "uploads")
@@ -644,8 +697,10 @@ class Indicators(BaseModel):
 
     """
 
-    acknowledgement: FilePath = os.path.join(indicators.__path__[0], 'acknowledgement.mp3')
-    alarm: FilePath = os.path.join(indicators.__path__[0], 'alarm.mp3')
-    coin: FilePath = os.path.join(indicators.__path__[0], 'coin.mp3')
-    end: FilePath = os.path.join(indicators.__path__[0], 'end.mp3')
-    start: FilePath = os.path.join(indicators.__path__[0], 'start.mp3')
+    acknowledgement: FilePath = os.path.join(
+        indicators.__path__[0], "acknowledgement.mp3"
+    )
+    alarm: FilePath = os.path.join(indicators.__path__[0], "alarm.mp3")
+    coin: FilePath = os.path.join(indicators.__path__[0], "coin.mp3")
+    end: FilePath = os.path.join(indicators.__path__[0], "end.mp3")
+    start: FilePath = os.path.join(indicators.__path__[0], "start.mp3")

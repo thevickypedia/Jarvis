@@ -11,7 +11,9 @@ def executor(func: Callable, phrase: str) -> None:
         func: Function to be called.
         phrase: Takes the phrase spoken as an argument.
     """
-    if shared.called_by_bg_tasks:  # disable logging for background tasks, as they are meant run very frequently
+    if (
+        shared.called_by_bg_tasks
+    ):  # disable logging for background tasks, as they are meant run very frequently
         logger.propagate = False
         logger.disabled = True
         func(phrase)

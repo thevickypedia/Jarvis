@@ -34,9 +34,12 @@ if models.settings.pname == "JARVIS":
     recognizer.non_speaking_duration = recognizer_settings.non_speaking_duration
 
 
-def listen(sound: bool = True, no_conf: bool = False,
-           timeout: PositiveInt | PositiveFloat = models.env.listener_timeout,
-           phrase_time_limit: PositiveInt | PositiveFloat = models.env.listener_phrase_limit) -> str | None:
+def listen(
+    sound: bool = True,
+    no_conf: bool = False,
+    timeout: PositiveInt | PositiveFloat = models.env.listener_timeout,
+    phrase_time_limit: PositiveInt | PositiveFloat = models.env.listener_phrase_limit,
+) -> str | None:
     """Function to activate listener, this function will be called by most upcoming functions to listen to user input.
 
     Args:
@@ -52,16 +55,24 @@ def listen(sound: bool = True, no_conf: bool = False,
     with microphone as source:
         try:
             playsound(sound=models.indicators.start, block=False) if sound else None
-            support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
-            listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
+            support.write_screen(
+                text=f"Listener activated [{timeout}: {phrase_time_limit}]"
+            )
+            listened = recognizer.listen(
+                source=source, timeout=timeout, phrase_time_limit=phrase_time_limit
+            )
             playsound(sound=models.indicators.end, block=False) if sound else None
             support.flush_screen()
-            recognized, confidence = recognizer.recognize_google(audio_data=listened, with_confidence=True)
+            recognized, confidence = recognizer.recognize_google(
+                audio_data=listened, with_confidence=True
+            )
             # Should never meet the condition for called by offline but just a safety net
             if no_conf or shared.called_by_offline:
                 logger.info(recognized)
                 return recognized
-            logger.info("Recognized '%s' with a confidence rate '%.2f'", recognized, confidence)
+            logger.info(
+                "Recognized '%s' with a confidence rate '%.2f'", recognized, confidence
+            )
             if confidence > models.env.recognizer_confidence:
                 return recognized
             else:
@@ -88,9 +99,13 @@ def listen_recursive(source: Microphone, timeout: int, phrase_time_limit: int) -
     """
     playsound(sound=models.indicators.start, block=False)
     support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
-    listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
+    listened = recognizer.listen(
+        source=source, timeout=timeout, phrase_time_limit=phrase_time_limit
+    )
     playsound(sound=models.indicators.end, block=False)
     support.flush_screen()
     recognized = recognizer.recognize_google(audio_data=listened)
-    if word_match.word_match(phrase=recognized, match_list=('yes', 'yeah', 'yep', 'yeh', 'indeed')):
+    if word_match.word_match(
+        phrase=recognized, match_list=("yes", "yeah", "yep", "yeh", "indeed")
+    ):
         return True

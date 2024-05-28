@@ -49,7 +49,7 @@ def condition_check(filename: str | FilePath) -> bool:
     """
     if not os.path.isfile(filename):
         return False
-    if os.path.split(filename)[-1].startswith('.'):
+    if os.path.split(filename)[-1].startswith("."):
         return False
     if not verify_image(filename):
         return False
@@ -83,16 +83,26 @@ class FaceNet:
             if not os.path.isdir(os.path.join(location, char_dir)):
                 continue
             for file_name in os.listdir(os.path.join(location, char_dir)):
-                if not condition_check(filename=os.path.join(location, char_dir, file_name)):
+                if not condition_check(
+                    filename=os.path.join(location, char_dir, file_name)
+                ):
                     continue
                 # loads all the files within the named repo
-                img = face_recognition.load_image_file(os.path.join(location, char_dir, file_name))
-                if encoded := face_recognition.face_encodings(img):  # generates face encoding matrix
+                img = face_recognition.load_image_file(
+                    os.path.join(location, char_dir, file_name)
+                )
+                if encoded := face_recognition.face_encodings(
+                    img
+                ):  # generates face encoding matrix
                     encoded = encoded[0]
                     self.train_faces.append(encoded)  # loads ended values to match
-                    self.train_names.append(char_dir)  # loads the names of each named subdirectories
+                    self.train_names.append(
+                        char_dir
+                    )  # loads the names of each named subdirectories
 
-    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str | None:
+    def face_recognition(
+        self, location: str | FilePath, retry_count: int = 20
+    ) -> str | None:
         """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:
@@ -110,18 +120,33 @@ class FaceNet:
         for _ in range(retry_count):
             ret, img = self.validation_video.read()  # reads video from web cam
             if not ret:
-                logger.warning("Unable to read from camera index: %d", models.env.camera_index)
+                logger.warning(
+                    "Unable to read from camera index: %d", models.env.camera_index
+                )
                 continue
-            identifier = face_recognition.face_locations(img, model=self.MODEL)  # gets image from the video read above
-            encoded_ = face_recognition.face_encodings(img, identifier)  # creates an encoding for the image
+            identifier = face_recognition.face_locations(
+                img, model=self.MODEL
+            )  # gets image from the video read above
+            encoded_ = face_recognition.face_encodings(
+                img, identifier
+            )  # creates an encoding for the image
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
-                results = face_recognition.compare_faces(self.train_faces, face_encoding, self.LEARNING_RATE)
-                if True in results:  # if a match is found the directory name is rendered and returned as match value
+                results = face_recognition.compare_faces(
+                    self.train_faces, face_encoding, self.LEARNING_RATE
+                )
+                if (
+                    True in results
+                ):  # if a match is found the directory name is rendered and returned as match value
                     return self.train_names[results.index(True)]
 
-    def face_detection(self, retry_count: int = 20, mirror: bool = False, filename: str = 'cv2_open.jpg',
-                       display: bool = False) -> bool:
+    def face_detection(
+        self,
+        retry_count: int = 20,
+        mirror: bool = False,
+        filename: str = "cv2_open.jpg",
+        display: bool = False,
+    ) -> bool:
         """Detects faces by converting it to grayscale and neighbor match method.
 
         Args:
@@ -148,29 +173,37 @@ class FaceNet:
             if not ret:
                 continue
             try:
-                img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # convert the captured image to grayscale
+                img = cv2.cvtColor(
+                    image, cv2.COLOR_BGR2GRAY
+                )  # convert the captured image to grayscale
             except cv2.error as error:
                 logger.error(error)
                 img = image  # proceed without performing grayscale
-            scale_factor = 1.1  # specify how much the image size is reduced at each image scale
+            scale_factor = (
+                1.1  # specify how much the image size is reduced at each image scale
+            )
             min_neighbors = 5  # specify how many neighbors each candidate rectangle should have to retain it
             img = cv2.flip(img, 1) if mirror else img
-            faces = cascade.detectMultiScale(image=img, scaleFactor=scale_factor, minNeighbors=min_neighbors)
+            faces = cascade.detectMultiScale(
+                image=img, scaleFactor=scale_factor, minNeighbors=min_neighbors
+            )
             if display:
                 # Rectangle box around each face
                 for (x, y, w, h) in faces:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                cv2.imshow('img', img)
-                k = cv2.waitKey(30) & 0xff
+                cv2.imshow("img", img)
+                k = cv2.waitKey(30) & 0xFF
                 if k == 27:
                     break
                 continue
-            if len(faces):  # Returns an empty tuple when no face is detected, returns a matrix when a face is detected
+            if len(
+                faces
+            ):  # Returns an empty tuple when no face is detected, returns a matrix when a face is detected
                 self.capture_image(filename=filename)
                 if os.path.isfile(filename):
                     return True
 
-    def capture_image(self, filename: str = 'cv2_open.jpg') -> None:
+    def capture_image(self, filename: str = "cv2_open.jpg") -> None:
         """Captures an image and saves it locally.
 
         Args:

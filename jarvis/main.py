@@ -68,14 +68,18 @@ class Activator:
         References:
             - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
         """
-        label = ', '.join([f'{string.capwords(wake)!r}: {sens}' for wake, sens in
-                           zip(models.env.wake_words, models.env.sensitivity)])
+        label = ", ".join(
+            [
+                f"{string.capwords(wake)!r}: {sens}"
+                for wake, sens in zip(models.env.wake_words, models.env.sensitivity)
+            ]
+        )
         logger.info("Initiating hot-word detector with sensitivity: %s", label)
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
 
         arguments = {
             "library_path": pvporcupine.LIBRARY_PATH,
-            "sensitivities": models.env.sensitivity
+            "sensitivities": models.env.sensitivity,
         }
         if models.settings.legacy:
             arguments["keywords"] = models.env.wake_words
@@ -105,12 +109,12 @@ class Activator:
             format=pyaudio.paInt16,
             input=True,
             frames_per_buffer=self.detector.frame_length,
-            input_device_index=models.env.microphone_index
+            input_device_index=models.env.microphone_index,
         )
 
     def executor(self) -> None:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
-        logger.debug("Wake word detected at %s", datetime.now().strftime('%c'))
+        logger.debug("Wake word detected at %s", datetime.now().strftime("%c"))
         if listener_controls.get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
@@ -121,8 +125,10 @@ class Activator:
             except Exception as error:
                 logger.critical(error)
                 logger.error(traceback.format_exc())
-                speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
-                                   "Please check the logs for more information.")
+                speaker.speak(
+                    text=f"I'm sorry {models.env.title}! I ran into an unknown error. "
+                    "Please check the logs for more information."
+                )
             speaker.speak(run=True)
         self.audio_stream = self.open_stream()
         support.write_screen(text=self.label)
@@ -135,9 +141,11 @@ class Activator:
             while True:
                 result = self.detector.process(
                     pcm=struct.unpack_from(
-                        "h" * self.detector.frame_length, self.audio_stream.read(
-                            num_frames=self.detector.frame_length, exception_on_overflow=False
-                        )
+                        "h" * self.detector.frame_length,
+                        self.audio_stream.read(
+                            num_frames=self.detector.frame_length,
+                            exception_on_overflow=False,
+                        ),
                     )
                 )
                 if models.settings.legacy:
@@ -152,7 +160,9 @@ class Activator:
                     continue
                 restart_checker()
                 if flag := support.check_stop():
-                    logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
+                    logger.info(
+                        "Stopper condition is set to %s by %s", flag[0], flag[1]
+                    )
                     self.stop()
                     controls.terminator()
         except StopSignal:
@@ -188,27 +198,39 @@ def start() -> None:
     logger.info("Current Process ID: %d", models.settings.pid)
     controls.starter()
     if internet.ip_address() and internet.public_ip_info():
-        support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
+        support.write_screen(
+            text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}."
+        )
     else:
         support.write_screen("Trying to toggle WiFi")
         pywifi.ControlPeripheral(logger=logger).enable()
         if models.env.wifi_ssid and models.env.wifi_password:
             time.sleep(5)
             support.write_screen(f"Trying to connect to {models.env.wifi_ssid!r}")
-            if pywifi.ControlConnection(wifi_ssid=models.env.wifi_ssid, wifi_password=models.env.wifi_password,
-                                        logger=logger).wifi_connector():
+            if pywifi.ControlConnection(
+                wifi_ssid=models.env.wifi_ssid,
+                wifi_password=models.env.wifi_password,
+                logger=logger,
+            ).wifi_connector():
                 support.write_screen(f"Connected to {models.env.wifi_ssid!r}")
             else:
                 support.write_screen(text="BUMMER::Unable to connect to the Internet")
-                speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! "
-                                   "Please check your connection.", run=True)
-    support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
+                speaker.speak(
+                    text=f"I was unable to connect to the internet {models.env.title}! "
+                    "Please check your connection.",
+                    run=True,
+                )
+    support.write_screen(
+        text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}"
+    )
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
         process_map.add({"jarvis": {models.settings.pid: ["Main Process"]}})
         if models.settings.os != models.supported_platforms.macOS:
-            shared.processes = processor.start_processes(func_name="speech_synthesis_api")
+            shared.processes = processor.start_processes(
+                func_name="speech_synthesis_api"
+            )
     else:
         shared.processes = processor.start_processes()
     location.write_current_location()

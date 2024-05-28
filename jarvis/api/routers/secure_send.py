@@ -27,13 +27,20 @@ async def secure_send_api(request: Request, access_token: Optional[str] = Header
         - 401: For a failed authentication (if the access token doesn't match)
         - 404: If the ``secure_send`` mapping file is unavailable
     """
-    logger.info("Connection received from %s via %s using %s",
-                request.client.host, request.headers.get('host'), request.headers.get('user-agent'))
-    key = access_token or request.headers.get('access-token')
+    logger.info(
+        "Connection received from %s via %s using %s",
+        request.client.host,
+        request.headers.get("host"),
+        request.headers.get("user-agent"),
+    )
+    key = access_token or request.headers.get("access-token")
     if not key:
         logger.warning("'access-token' not received in headers")
-        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
-    if key.startswith('\\'):
+        raise APIResponse(
+            status_code=HTTPStatus.UNAUTHORIZED.real,
+            detail=HTTPStatus.UNAUTHORIZED.phrase,
+        )
+    if key.startswith("\\"):
         key = bytes(key, "utf-8").decode(encoding="unicode_escape")
     if os.path.isfile(models.fileio.secure_send):
         secure_strings = files.get_secure_send()
@@ -42,8 +49,17 @@ async def secure_send_api(request: Request, access_token: Optional[str] = Header
             files.delete_secure_send(key)
             raise APIResponse(status_code=HTTPStatus.OK.real, detail=secret)
         else:
-            logger.info("secret access was denied for key: %s, available keys: %s", key, [*secure_strings.keys()])
-            raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
+            logger.info(
+                "secret access was denied for key: %s, available keys: %s",
+                key,
+                [*secure_strings.keys()],
+            )
+            raise APIResponse(
+                status_code=HTTPStatus.UNAUTHORIZED.real,
+                detail=HTTPStatus.UNAUTHORIZED.phrase,
+            )
     else:
         logger.info("'%s' not found", models.fileio.secure_send)
-        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)
+        raise APIResponse(
+            status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase
+        )

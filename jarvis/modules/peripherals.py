@@ -22,6 +22,7 @@ else:
     class StrEnum(str, Enum):
         """Override for python 3.10 due to lack of StrEnum."""
 
+
 if platform.system() == "Linux":
     with no_alsa_err():
         audio_engine = pyaudio.PyAudio()
@@ -38,8 +39,8 @@ class ChannelType(StrEnum):
 
     """
 
-    input_channels: str = 'maxInputChannels'
-    output_channels: str = 'maxOutputChannels'
+    input_channels: str = "maxInputChannels"
+    output_channels: str = "maxOutputChannels"
 
 
 channel_type = ChannelType

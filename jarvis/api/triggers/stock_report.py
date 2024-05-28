@@ -24,15 +24,18 @@ class Investment:
         Args:
             logger: Takes the class ``logging.Logger`` as an argument.
         """
-        rh = Robinhood(username=models.env.robinhood_user, password=models.env.robinhood_pass,
-                       mfa=models.env.robinhood_qr)
+        rh = Robinhood(
+            username=models.env.robinhood_user,
+            password=models.env.robinhood_pass,
+            mfa=models.env.robinhood_qr,
+        )
         rh.login()
         raw_result = rh.positions()
         self.logger = logger
-        if result := raw_result.get('results'):
+        if result := raw_result.get("results"):
             self.result = result
         else:
-            self.logger.error(raw_result.get('detail', raw_result))
+            self.logger.error(raw_result.get("detail", raw_result))
             self.result = []
         self.rh = rh
 
@@ -45,25 +48,27 @@ class Investment:
         """
         shares_total, loss_dict, profit_dict = [], {}, {}
         num_stocks, num_shares = 0, 0
-        self.logger.info('Gathering portfolio.')
+        self.logger.info("Gathering portfolio.")
         for data in self.result:
-            shares_count = int(data['quantity'].split('.')[0])
+            shares_count = int(data["quantity"].split(".")[0])
             if not shares_count:
                 continue
             num_stocks += 1
             num_shares += shares_count
-            share_id = str(data['instrument'].split('/')[-2])
+            share_id = str(data["instrument"].split("/")[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
-                stock_name = requests.get(url=raw_details['instrument']).json()['simple_name']
+                stock_name = requests.get(url=raw_details["instrument"]).json()[
+                    "simple_name"
+                ]
             except PyrhException as error:
                 self.logger.error(error)
                 continue
-            ticker = (raw_details['symbol'])
-            buy = round(float(data['average_buy_price']), 2)
+            ticker = raw_details["symbol"]
+            buy = round(float(data["average_buy_price"]), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
-            current = round(float(raw_details['last_trade_price']), 2)
+            current = round(float(raw_details["last_trade_price"]), 2)
             current_total = round(shares_count * current, 2)
             difference = round(float(current_total - total), 2)
             if difference < 0:
@@ -71,50 +76,57 @@ class Investment:
                     -difference,
                     f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
                     f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n '
-                    f'Total bought: ${total:,} Current Total: ${current_total:,}'
-                    f'\nLOST ${-difference:,}\n'
+                    f"Total bought: ${total:,} Current Total: ${current_total:,}"
+                    f"\nLOST ${-difference:,}\n",
                 ]
             else:
                 profit_dict[ticker] = [
                     difference,
                     f'\n{stock_name}:\n{shares_count:,} shares of <a href="https://robinhood.com/stocks/{ticker}" '
                     f'target="_bottom">{ticker}</a> at ${buy:,} Currently: ${current:,}\n'
-                    f'Total bought: ${total:,} Current Total: ${current_total:,}'
-                    f'\nGained ${difference:,}\n'
+                    f"Total bought: ${total:,} Current Total: ${current_total:,}"
+                    f"\nGained ${difference:,}\n",
                 ]
 
         profit_output, profit_total, loss_output, loss_total = "", [], "", []
-        for key, value in sorted(profit_dict.items(), reverse=True, key=lambda item: item[1]):
+        for key, value in sorted(
+            profit_dict.items(), reverse=True, key=lambda item: item[1]
+        ):
             profit_output += value[1]
             profit_total.append(value[0])
-        for key, value in sorted(loss_dict.items(), reverse=True, key=lambda item: item[1]):
+        for key, value in sorted(
+            loss_dict.items(), reverse=True, key=lambda item: item[1]
+        ):
             loss_output += value[1]
             loss_total.append(value[0])
 
         portfolio = self.rh.portfolio()
-        port_msg = f'\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n' \
-                   f'Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n' \
-                   'The above values might differ from overall profit/loss if multiple shares ' \
-                   'of the stock were purchased at different prices.'
+        port_msg = (
+            f"\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n"
+            f"Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n"
+            "The above values might differ from overall profit/loss if multiple shares "
+            "of the stock were purchased at different prices."
+        )
         net_worth = round(float(portfolio.equity), 2)
         withdrawable_amount = round(float(portfolio.withdrawable_amount))
-        output = f'Total number of stocks purchased: {num_stocks:,}\n'
-        output += f'Total number of shares owned: {num_shares:,}\n'
-        output += f'\nCurrent value of your total investment is: ${net_worth:,}'
+        output = f"Total number of stocks purchased: {num_stocks:,}\n"
+        output += f"Total number of shares owned: {num_shares:,}\n"
+        output += f"\nCurrent value of your total investment is: ${net_worth:,}"
         total_buy = round(math.fsum(shares_total), 2)
-        output += f'\nValue of your total investment while purchase is: ${total_buy:,}'
+        output += f"\nValue of your total investment while purchase is: ${total_buy:,}"
         total_diff = round(float(net_worth - total_buy), 2) - withdrawable_amount
-        rh_text = \
-            f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares {models.env.title}. " \
-            f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you purchased. " \
-            f"Your current withdrawable amount is ${withdrawable_amount:,}. " \
+        rh_text = (
+            f"You have purchased {num_stocks:,} stocks and currently own {num_shares:,} shares {models.env.title}. "
+            f"Your total investment is ${round(net_worth):,}, and it was ${round(total_buy):,} when you purchased. "
+            f"Your current withdrawable amount is ${withdrawable_amount:,}. "
             f"Currently we are on an overall "
+        )
         if total_diff < 0:
             rh_text += f"loss of ${round(total_diff):,} {models.env.title}"
-            output += f'\n\nOverall Loss: ${total_diff:,}'
+            output += f"\n\nOverall Loss: ${total_diff:,}"
         else:
             rh_text += f"profit of ${round(total_diff):,} {models.env.title}"
-            output += f'\n\nOverall Profit: ${total_diff:,}'
+            output += f"\n\nOverall Profit: ${total_diff:,}"
         yesterday_close = round(float(portfolio.equity_previous_close), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
         output += f"\n\nYesterday's closing value: ${yesterday_close:,}"
@@ -125,7 +137,9 @@ class Investment:
         output += f"\n\nWithdrawable Amount: ${withdrawable_amount:,}"
         return port_msg, profit_output, loss_output, output, rh_text
 
-    def watchlist(self, interval: str = 'hour', strict: bool = False) -> Tuple[str, str]:
+    def watchlist(
+        self, interval: str = "hour", strict: bool = False
+    ) -> Tuple[str, str]:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
 
         Args:
@@ -136,40 +150,53 @@ class Investment:
             Tuple[str, str]:
             Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
         """
-        r1, r2 = '', ''
-        self.logger.info('Gathering watchlist.')
-        watchlist = [self.rh.get_url(item['instrument'])
-                     for item in self.rh.get_url(url='https://api.robinhood.com/watchlists/Default').get('results', [])]
+        r1, r2 = "", ""
+        self.logger.info("Gathering watchlist.")
+        watchlist = [
+            self.rh.get_url(item["instrument"])
+            for item in self.rh.get_url(
+                url="https://api.robinhood.com/watchlists/Default"
+            ).get("results", [])
+        ]
         if not watchlist:
             return r1, r2
-        instruments = [data['instrument'] for data in self.result] if strict else []
+        instruments = [data["instrument"] for data in self.result] if strict else []
         for item in watchlist:
-            if strict and item['url'] in instruments:
+            if strict and item["url"] in instruments:
                 continue
-            stock = item['symbol']
-            if interval == 'hour':
-                historic_data = self.rh.get_historical_quotes(stock, 'hour', 'day')
+            stock = item["symbol"]
+            if interval == "hour":
+                historic_data = self.rh.get_historical_quotes(stock, "hour", "day")
             else:
-                historic_data = self.rh.get_historical_quotes(stock, '10minute', 'day')
-            historic_results = historic_data['results']
-            numbers = [round(float(close_price['close_price']), 2) for each_item in historic_results
-                       for close_price in each_item['historicals']]
+                historic_data = self.rh.get_historical_quotes(stock, "10minute", "day")
+            historic_results = historic_data["results"]
+            numbers = [
+                round(float(close_price["close_price"]), 2)
+                for each_item in historic_results
+                for close_price in each_item["historicals"]
+            ]
             if not numbers:
                 return r1, r2
             try:
                 raw_details = self.rh.get_quote(stock)
-                stock_name = requests.get(raw_details['instrument']).json()['simple_name']
+                stock_name = requests.get(raw_details["instrument"]).json()[
+                    "simple_name"
+                ]
             except PyrhException as error:
                 self.logger.error(error)
                 continue
-            price = round(float(raw_details['last_trade_price']), 2)
+            price = round(float(raw_details["last_trade_price"]), 2)
             difference = round(float(price - numbers[-1]), 2)
             if price < numbers[-1]:
-                r1 += f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: ' \
-                      f'{price:,} &#8595 {difference}\n'
+                r1 += (
+                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: '
+                    f"{price:,} &#8595 {difference}\n"
+                )
             else:
-                r2 += f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: ' \
-                      f'{price:,} &#8593 {difference}\n'
+                r2 += (
+                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: '
+                    f"{price:,} &#8593 {difference}\n"
+                )
         return r1, r2
 
     def gatherer(self) -> None:
@@ -180,29 +207,38 @@ class Investment:
 
         port_head, profit, loss, overall_result, summary = self.watcher()
         s1, s2 = self.watchlist()
-        self.logger.info('Generating HTMl file.')
+        self.logger.info("Generating HTMl file.")
 
         title = f'Investment Summary as of {current_time.strftime("%A, %B %d, %Y %I:%M %p")}'
-        web_text = f'\n{overall_result}\n{port_head}\n'
-        profit_web = f'\n{profit}\n'
-        loss_web = f'\n{loss}\n'
-        title = title.replace('\n', '\n\t\t\t')
-        web_text = web_text.replace('\n', '\n\t\t\t')
-        profit_web = profit_web.replace('\n', '\n\t\t\t\t')
-        loss_web = loss_web.replace('\n', '\n\t\t\t\t')
-        s2 = s2.replace('\n', '\n\t\t\t')
-        s1 = s1.replace('\n', '\n\t\t\t')
+        web_text = f"\n{overall_result}\n{port_head}\n"
+        profit_web = f"\n{profit}\n"
+        loss_web = f"\n{loss}\n"
+        title = title.replace("\n", "\n\t\t\t")
+        web_text = web_text.replace("\n", "\n\t\t\t")
+        profit_web = profit_web.replace("\n", "\n\t\t\t\t")
+        loss_web = loss_web.replace("\n", "\n\t\t\t\t")
+        s2 = s2.replace("\n", "\n\t\t\t")
+        s1 = s1.replace("\n", "\n\t\t\t")
 
-        rendered = jinja2.Template(templates.endpoint.robinhood).render(TITLE=title, SUMMARY=web_text,
-                                                                        PROFIT=profit_web, LOSS=loss_web,
-                                                                        WATCHLIST_UP=s2, WATCHLIST_DOWN=s1)
-        with open(models.fileio.robinhood, 'w') as static_file:
+        rendered = jinja2.Template(templates.endpoint.robinhood).render(
+            TITLE=title,
+            SUMMARY=web_text,
+            PROFIT=profit_web,
+            LOSS=loss_web,
+            WATCHLIST_UP=s2,
+            WATCHLIST_DOWN=s1,
+        )
+        with open(models.fileio.robinhood, "w") as static_file:
             static_file.write(rendered)
-        self.logger.info("Static file '%s' has been generated.", models.fileio.robinhood)
+        self.logger.info(
+            "Static file '%s' has been generated.", models.fileio.robinhood
+        )
         with db.connection:
             cursor = db.connection.cursor()
             cursor.execute("DELETE FROM robinhood;")
-            cursor.execute("INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,))
+            cursor.execute(
+                "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
+            )
             db.connection.commit()
         self.logger.info("Stored summary in database.")
 
@@ -214,7 +250,7 @@ class Investment:
             self.logger.error(error)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # imports within __main__ to avoid potential/future path error and circular import
     # override 'current_process().name' to avoid being set as 'MainProcess'
     # importing at top level requires setting current_process().name at top level which will in turn override any import

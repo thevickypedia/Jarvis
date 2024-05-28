@@ -44,13 +44,20 @@ def meetings_writer(queue: Queue = None) -> None:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM ics")
         cursor.connection.commit()
-        cursor.execute("INSERT or REPLACE INTO ics (info, date) VALUES (?,?)",
-                       (info, datetime.datetime.now().strftime('%Y_%m_%d'),))
+        cursor.execute(
+            "INSERT or REPLACE INTO ics (info, date) VALUES (?,?)",
+            (
+                info,
+                datetime.datetime.now().strftime("%Y_%m_%d"),
+            ),
+        )
         cursor.connection.commit()
     return
 
 
-def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", queue: Queue = None) -> str:
+def meetings_gatherer(
+    custom_date: datetime.date = None, addon: str = "today", queue: Queue = None
+) -> str:
     """Get ICS data, parse it and frame a statement with meeting information.
 
     Args:
@@ -75,11 +82,16 @@ def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", q
         logger.error("[%d]: [%s]", response.status_code, response.text)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
     if custom_date:
-        events: List[ics.ICS] = list(ics.parse_calendar(calendar_data=response.text, lookup_date=custom_date))
+        events: List[ics.ICS] = list(
+            ics.parse_calendar(calendar_data=response.text, lookup_date=custom_date)
+        )
     else:
         now = datetime.datetime.now()
-        events: List[ics.ICS] = list(ics.parse_calendar(
-            calendar_data=response.text, lookup_date=datetime.date(year=now.year, month=now.month, day=now.day))
+        events: List[ics.ICS] = list(
+            ics.parse_calendar(
+                calendar_data=response.text,
+                lookup_date=datetime.date(year=now.year, month=now.month, day=now.day),
+            )
         )
     if not events:
         if "last" in addon or "yesterday" in addon:
@@ -88,35 +100,52 @@ def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", q
     meeting_status, count = "", 0
     for index, event in enumerate(events):
         # Skips if meeting ended earlier than current time
-        if time.mktime(event.end.timetuple()) < int(time.time()) and \
-                "last" not in addon and "yesterday" not in addon:
+        if (
+            time.mktime(event.end.timetuple()) < int(time.time())
+            and "last" not in addon
+            and "yesterday" not in addon
+        ):
             continue
         count += 1
         begin_local = event.start.strftime("%I:%M %p")
         event_duration = support.time_converter(second=event.duration.total_seconds())
         if queue and models.env.mute_for_meetings and not event.all_day:
-            logger.debug("Adding entry to mute during meetings: %s: %s", begin_local, event_duration)
+            logger.debug(
+                "Adding entry to mute during meetings: %s: %s",
+                begin_local,
+                event_duration,
+            )
             # create a dict instead of putting the event in queue, as duplicate objects cannot be stripped
             queue.put({event.summary: [begin_local, event.duration.total_seconds()]})
         if len(events) == 1:
             if event.all_day:
-                meeting_status += f"You have an all day meeting {models.env.title}! {event.summary}. "
+                meeting_status += (
+                    f"You have an all day meeting {models.env.title}! {event.summary}. "
+                )
             else:
-                meeting_status += f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! " \
-                                  f"{event.summary}. "
+                meeting_status += (
+                    f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! "
+                    f"{event.summary}. "
+                )
         else:
             if event.all_day:
                 meeting_status += f"{event.summary} - all day"
             else:
-                meeting_status += f"{event.summary} at {begin_local} for {event_duration}"
-            meeting_status += ', ' if index + 1 < len(events) else '.'
+                meeting_status += (
+                    f"{event.summary} at {begin_local} for {event_duration}"
+                )
+            meeting_status += ", " if index + 1 < len(events) else "."
     if count:
         plural = "meeting" if count == 1 else "meetings"
-        meeting_status = f"You have {count} {plural} {addon} {models.env.title}! {meeting_status}"
+        meeting_status = (
+            f"You have {count} {plural} {addon} {models.env.title}! {meeting_status}"
+        )
     else:
         plural = "meeting" if len(events) == 1 else "meetings"
-        meeting_status = f"You have no more meetings for rest of the day {models.env.title}! " \
-                         f"However, you had {len(events)} {plural} earlier {addon}. {meeting_status}"
+        meeting_status = (
+            f"You have no more meetings for rest of the day {models.env.title}! "
+            f"However, you had {len(events)} {plural} earlier {addon}. {meeting_status}"
+        )
     if "last" in addon or "yesterday" in addon:
         meeting_status = meeting_status.replace("You have", "You had")
     return meeting_status
@@ -135,8 +164,10 @@ def custom_meetings(phrase: str) -> bool:
     if tuple_res := support.detect_lookup_date(phrase):
         datetime_obj, addon = tuple_res
         meeting_status = meetings_gatherer(
-            custom_date=datetime.date(year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day),
-            addon=addon
+            custom_date=datetime.date(
+                year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day
+            ),
+            addon=addon,
         )
         speaker.speak(meeting_status)
         return True
@@ -149,31 +180,47 @@ def meetings(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     phrase = phrase.lower()
-    if word_match.word_match(phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")) and \
-            custom_meetings(phrase=phrase):
+    if word_match.word_match(
+        phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")
+    ) and custom_meetings(phrase=phrase):
         return
     with db.connection:
         cursor = db.connection.cursor()
         meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
-    if meeting_status and meeting_status[1] == datetime.datetime.now().strftime('%Y_%m_%d'):
+    if meeting_status and meeting_status[1] == datetime.datetime.now().strftime(
+        "%Y_%m_%d"
+    ):
         speaker.speak(text=meeting_status[0])
     elif meeting_status:
-        logger.warning("Date in meeting status (%s) does not match the current date (%s)" %
-                       (meeting_status[1], datetime.datetime.now().strftime('%Y_%m_%d')))
+        logger.warning(
+            "Date in meeting status (%s) does not match the current date (%s)"
+            % (meeting_status[1], datetime.datetime.now().strftime("%Y_%m_%d"))
+        )
         logger.info("Starting adhoc process to update ics table.")
         Process(target=meetings_writer).start()
-        speaker.speak(text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two.")
+        speaker.speak(
+            text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two."
+        )
     else:
         if shared.called_by_offline:
             logger.info("Starting adhoc process to get meetings from ICS.")
             Process(target=meetings_writer).start()
-            speaker.speak(text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two.")
+            speaker.speak(
+                text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two."
+            )
             return
-        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)  # Runs parallely and awaits completion
-        speaker.speak(text=f"Please give me a moment {models.env.title}! I'm working on it.", run=True)
+        meeting = ThreadPool(processes=1).apply_async(
+            func=meetings_gatherer
+        )  # Runs parallely and awaits completion
+        speaker.speak(
+            text=f"Please give me a moment {models.env.title}! I'm working on it.",
+            run=True,
+        )
         try:
             speaker.speak(text=meeting.get(timeout=60), run=True)
         except ThreadTimeoutError:
             logger.error("Unable to read the calendar schedule within 60 seconds.")
-            speaker.speak(text=f"I wasn't able to read your calendar within the set time limit {models.env.title}!",
-                          run=True)
+            speaker.speak(
+                text=f"I wasn't able to read your calendar within the set time limit {models.env.title}!",
+                run=True,
+            )

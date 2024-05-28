@@ -16,8 +16,10 @@ def speaker_volume(level: int) -> None:
     Args:
         level: Takes the volume level as an argument.
     """
-    logger.info("Jarvis' volume has been set to %d" % level + "%")  # % is mandatory because of string concatenation
-    models.AUDIO_DRIVER.setProperty('volume', level / 100)
+    logger.info(
+        "Jarvis' volume has been set to %d" % level + "%"
+    )  # % is mandatory because of string concatenation
+    models.AUDIO_DRIVER.setProperty("volume", level / 100)
 
 
 def volume(phrase: str = None, level: int = None) -> None:
@@ -34,11 +36,11 @@ def volume(phrase: str = None, level: int = None) -> None:
     if not level and phrase:
         response = random.choice(conversation.acknowledgement)
         phrase = phrase.lower()
-        if 'unmute' in phrase:
+        if "unmute" in phrase:
             level = models.env.volume
-        elif 'mute' in phrase:
+        elif "mute" in phrase:
             level = 0
-        elif 'max' in phrase or 'full' in phrase:
+        elif "max" in phrase or "full" in phrase:
             level = 100
         else:
             level = util.extract_nos(input_=phrase, method=int)
@@ -46,11 +48,11 @@ def volume(phrase: str = None, level: int = None) -> None:
         level = models.env.volume
     phrase = phrase or ""
     caller = sys._getframe(1).f_code.co_name  # noqa
-    if 'master' in phrase or 'main' in phrase or caller in ('executor', 'starter'):
+    if "master" in phrase or "main" in phrase or caller in ("executor", "starter"):
         pyvolume.custom(level, logger)
         speaker_volume(level=level)
     else:
-        if shared.called_by_offline or 'system' in phrase:
+        if shared.called_by_offline or "system" in phrase:
             pyvolume.custom(level, logger)
         else:
             speaker_volume(level=level)

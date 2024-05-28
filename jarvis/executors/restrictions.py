@@ -25,8 +25,10 @@ def restricted(phrase: str) -> bool:
     for category, identifiers in keywords.keywords.items():
         if word_match.word_match(phrase=phrase, match_list=identifiers):
             if category in restricted_functions:
-                speaker.speak(text=f"I'm sorry {models.env.title}! "
-                                   f"{string.capwords(category)} category is restricted via offline communicator.")
+                speaker.speak(
+                    text=f"I'm sorry {models.env.title}! "
+                    f"{string.capwords(category)} category is restricted via offline communicator."
+                )
                 return True
 
 
@@ -54,7 +56,9 @@ def get_func(phrase: str) -> str:
     elif "release" in phrase:
         func = phrase.split("release")[1].strip()
     else:
-        raise InvalidArgument("Please specify a valid function name to add or remove restrictions.")
+        raise InvalidArgument(
+            "Please specify a valid function name to add or remove restrictions."
+        )
     function_names = list(functions.function_mapping().keys())
     if func in function_names:
         return func
@@ -77,7 +81,9 @@ def handle_restrictions(phrase: str) -> str:
     """
     phrase = phrase.lower()
     current_restrictions = files.get_restrictions()
-    if word_match.word_match(phrase=phrase, match_list=("get", "current", "exist", "present")):
+    if word_match.word_match(
+        phrase=phrase, match_list=("get", "current", "exist", "present")
+    ):
         if current_restrictions:
             return f"Current restrictions are: {util.comma_separator(current_restrictions)}"
         return "Currently, there are no restrictions for offline communicators."
@@ -96,4 +102,6 @@ def handle_restrictions(phrase: str) -> str:
             return f"{string.capwords(func)} has been removed from restricted functions {models.env.title}!"
         else:
             return f"Restriction for {string.capwords(func)} was never in place {models.env.title}!"
-    raise InvalidArgument("Please specify the function that has to be added or removed from the restrictions' list.")
+    raise InvalidArgument(
+        "Please specify the function that has to be added or removed from the restrictions' list."
+    )

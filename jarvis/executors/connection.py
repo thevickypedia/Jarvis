@@ -21,21 +21,28 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         if models.settings.os == models.supported_platforms.windows:
-            connection = HTTPSConnection("8.8.8.8", timeout=3)  # Recreate a new connection everytime
+            connection = HTTPSConnection(
+                "8.8.8.8", timeout=3
+            )  # Recreate a new connection everytime
             connection.request("HEAD", "/")
         else:
             socket_.connect(("8.8.8.8", 80))
         if conn_object.unknown_errors:
-            logger.info("Connection established with IP: %s. Resetting flags.", socket_.getsockname()[0])
+            logger.info(
+                "Connection established with IP: %s. Resetting flags.",
+                socket_.getsockname()[0],
+            )
             conn_object.unknown_errors = 0
             conn_object.os_errors = 0
     except OSError as error:
         conn_object.os_errors += 1
         logger.error("OSError [%d]: %s", error.errno, error.strerror)
         pywifi.ControlPeripheral(logger=logger).enable()  # Make sure Wi-Fi is enabled
-        connection_control = pywifi.ControlConnection(wifi_ssid=models.env.wifi_ssid,
-                                                      wifi_password=models.env.wifi_password,
-                                                      logger=logger)
+        connection_control = pywifi.ControlConnection(
+            wifi_ssid=models.env.wifi_ssid,
+            wifi_password=models.env.wifi_password,
+            logger=logger,
+        )
         threading.Timer(interval=5, function=connection_control.wifi_connector).start()
     except Exception as error:
         logger.critical(error)
@@ -43,6 +50,8 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
 
     if conn_object.unknown_errors > 10 or conn_object.os_errors > 30:
         logger.warning(conn_object.model_dump_json())
-        logger.error("'%s' is running into repeated errors, hence stopping..!", wifi.__name__)
+        logger.error(
+            "'%s' is running into repeated errors, hence stopping..!", wifi.__name__
+        )
         return None
     return conn_object

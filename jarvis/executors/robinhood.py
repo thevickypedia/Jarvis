@@ -21,7 +21,11 @@ def get_summary() -> str:
         str:
         A string value of total purchased stocks and resultant profit/loss.
     """
-    rh = Robinhood(username=models.env.robinhood_user, password=models.env.robinhood_pass, mfa=models.env.robinhood_qr)
+    rh = Robinhood(
+        username=models.env.robinhood_user,
+        password=models.env.robinhood_pass,
+        mfa=models.env.robinhood_qr,
+    )
     rh.login()
     raw_result = rh.positions()
     result = raw_result["results"]
@@ -46,9 +50,11 @@ def get_summary() -> str:
             continue
         total = round(shares_count * float(buy), 2)
         shares_total.append(total)
-        current = (round(float(raw_details["last_trade_price"]), 2))
+        current = round(float(raw_details["last_trade_price"]), 2)
         current_total = round(shares_count * current, 2)
-        difference = round(float(current_total - total), 2)  # calculates difference between current and purchased total
+        difference = round(
+            float(current_total - total), 2
+        )  # calculates difference between current and purchased total
         if difference < 0:
             loss_total.append(-difference)
         else:
@@ -60,9 +66,11 @@ def get_summary() -> str:
     total_buy = round(math.fsum(shares_total))
     total_diff = round(net_worth - total_buy) - withdrawable_amount
 
-    output = f"You have purchased {n:,} stocks and currently own {n_:,} shares {models.env.title}. " \
-             f"Your total investment is ${net_worth:,} now, and it was ${total_buy:,} when you purchased. " \
-             f"Your current withdrawable amount is ${withdrawable_amount:,}. "
+    output = (
+        f"You have purchased {n:,} stocks and currently own {n_:,} shares {models.env.title}. "
+        f"Your total investment is ${net_worth:,} now, and it was ${total_buy:,} when you purchased. "
+        f"Your current withdrawable amount is ${withdrawable_amount:,}. "
+    )
 
     if total_diff < 0:
         output += f"Currently we are on an overall loss of ${total_diff:,} {models.env.title}."
@@ -74,7 +82,9 @@ def get_summary() -> str:
 
 def robinhood(*args) -> None:
     """Gets investment details from robinhood API."""
-    if not all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]):
+    if not all(
+        [models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]
+    ):
         logger.warning("Robinhood username, password or QR code not found.")
         support.no_env_vars()
         return
@@ -91,16 +101,22 @@ def robinhood(*args) -> None:
         summary = get_summary()
     except AuthenticationError as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an authentication error.")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I ran into an authentication error."
+        )
         return
     except PyrhException as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to fetch your investment summary.")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I wasn't able to fetch your investment summary."
+        )
         return
     speaker.speak(text=summary)
     with db.connection:
         cursor = db.connection.cursor()
         cursor.execute("DELETE FROM robinhood;")
-        cursor.execute("INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,))
+        cursor.execute(
+            "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
+        )
         db.connection.commit()
     logger.info("Stored summary in database.")

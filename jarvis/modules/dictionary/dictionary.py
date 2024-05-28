@@ -45,10 +45,10 @@ def meaning(term: str) -> Dict | None:
     for a in types:
         reg = str(lists[types.index(a)])
         meanings = []
-        for x in re.findall(r'\((.*?)\)', reg):
-            if 'often followed by' in x:
+        for x in re.findall(r"\((.*?)\)", reg):
+            if "often followed by" in x:
                 pass
-            elif len(x) > 5 or ' ' in str(x):
+            elif len(x) > 5 or " " in str(x):
                 meanings.append(x)
         name = a.text
         out[name] = meanings

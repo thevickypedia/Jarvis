@@ -21,7 +21,9 @@ from jarvis.modules.utils import support, util
 router = APIRouter()
 
 
-@router.post(path="/robinhood-authenticate", dependencies=authenticator.ROBINHOOD_PROTECTOR)
+@router.post(
+    path="/robinhood-authenticate", dependencies=authenticator.ROBINHOOD_PROTECTOR
+)
 async def authenticate_robinhood():
     """Authenticates the request and generates single use token.
 
@@ -39,33 +41,53 @@ async def authenticate_robinhood():
         - Also stores the token in the Robinhood object which is verified in the /investment endpoint.
         - The token is nullified in the object as soon as it is verified, making it single use.
     """
-    if not all([models.env.robinhood_user, models.env.robinhood_pass,
-                models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
+    if not all(
+        [
+            models.env.robinhood_user,
+            models.env.robinhood_pass,
+            models.env.robinhood_pass,
+            models.env.robinhood_endpoint_auth,
+        ]
+    ):
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     reset_timeout = 300
-    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
-    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
-                                        gmail_pass=models.env.open_gmail_pass)
+    timeout_in = support.pluralize(
+        count=util.format_nos(input_=reset_timeout / 60), word="minute"
+    )
+    mail_obj = gmailconnector.SendEmail(
+        gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass
+    )
     auth_stat = mail_obj.authenticate
     if not auth_stat.ok:
-        raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
+        raise APIResponse(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body
+        )
     settings.robinhood.token = util.keygen_uuid(length=16)
-    rendered = jinja2.Template(templates.email.one_time_passcode).render(TIMEOUT=timeout_in,
-                                                                         ENDPOINT="robinhood",
-                                                                         EMAIL=models.env.recipient,
-                                                                         TOKEN=settings.robinhood.token)
-    mail_stat = mail_obj.send_email(recipient=models.env.recipient, sender='Jarvis API',
-                                    subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
-                                    html_body=rendered)
+    rendered = jinja2.Template(templates.email.one_time_passcode).render(
+        TIMEOUT=timeout_in,
+        ENDPOINT="robinhood",
+        EMAIL=models.env.recipient,
+        TOKEN=settings.robinhood.token,
+    )
+    mail_stat = mail_obj.send_email(
+        recipient=models.env.recipient,
+        sender="Jarvis API",
+        subject=f"Robinhood Token - {datetime.now().strftime('%c')}",
+        html_body=rendered,
+    )
     if mail_stat.ok:
         logger.debug(mail_stat.body)
         logger.info("Token will be reset in %s", timeout_in)
         Timer(function=timeout_otp.reset_robinhood, interval=reset_timeout).start()
-        raise APIResponse(status_code=HTTPStatus.OK.real,
-                          detail="Authentication success. Please enter the OTP sent via email:")
+        raise APIResponse(
+            status_code=HTTPStatus.OK.real,
+            detail="Authentication success. Please enter the OTP sent via email:",
+        )
     else:
         logger.error(mail_stat.json())
-        raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
+        raise APIResponse(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body
+        )
 
 
 @router.get(path="/investment", response_class=HTMLResponse)
@@ -98,26 +120,50 @@ async def robinhood_path(request: Request, token: str = None):
         - The UUID is deleted from the object as soon as the argument is checked for the first time.
         - Page refresh is useless because the value in memory is cleared as soon as it is authed once.
     """
-    logger.debug("Connection received from %s via %s using %s" %
-                 (request.client.host, request.headers.get('host'), request.headers.get('user-agent')))
+    logger.debug(
+        "Connection received from %s via %s using %s"
+        % (
+            request.client.host,
+            request.headers.get("host"),
+            request.headers.get("user-agent"),
+        )
+    )
 
-    if not all([models.env.robinhood_user, models.env.robinhood_pass,
-                models.env.robinhood_pass, models.env.robinhood_endpoint_auth]):
+    if not all(
+        [
+            models.env.robinhood_user,
+            models.env.robinhood_pass,
+            models.env.robinhood_pass,
+            models.env.robinhood_endpoint_auth,
+        ]
+    ):
         raise CONDITIONAL_ENDPOINT_RESTRICTION
 
     if not token:
-        raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real,
-                          detail=HTTPStatus.UNAUTHORIZED.phrase)
+        raise APIResponse(
+            status_code=HTTPStatus.UNAUTHORIZED.real,
+            detail=HTTPStatus.UNAUTHORIZED.phrase,
+        )
     # token might be present because its added as headers but robinhood.token will be cleared after one time auth
-    if settings.robinhood.token and secrets.compare_digest(token, settings.robinhood.token):
+    if settings.robinhood.token and secrets.compare_digest(
+        token, settings.robinhood.token
+    ):
         settings.robinhood.token = None
         if not os.path.isfile(models.fileio.robinhood):
-            raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail='Static file was not found on server.')
+            raise APIResponse(
+                status_code=HTTPStatus.NOT_FOUND.real,
+                detail="Static file was not found on server.",
+            )
         with open(models.fileio.robinhood) as static_file:
             html_content = static_file.read()
         content_type, _ = mimetypes.guess_type(html_content)
-        return HTMLResponse(status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
-                            content=html_content, media_type=content_type)  # serves as a static webpage
+        return HTMLResponse(
+            status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
+            content=html_content,
+            media_type=content_type,
+        )  # serves as a static webpage
     else:
-        raise APIResponse(status_code=HTTPStatus.EXPECTATION_FAILED.real,
-                          detail='Requires authentication since endpoint uses single-use token.')
+        raise APIResponse(
+            status_code=HTTPStatus.EXPECTATION_FAILED.real,
+            detail="Requires authentication since endpoint uses single-use token.",
+        )

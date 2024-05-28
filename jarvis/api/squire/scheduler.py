@@ -19,18 +19,26 @@ def market_hours(extended: bool = False) -> Dict[str, Dict[str, int]]:
     """
     if extended:
         return {
-            'EDT': {'OPEN': 7, 'CLOSE': 18}, 'EST': {'OPEN': 7, 'CLOSE': 18},
-            'CDT': {'OPEN': 6, 'CLOSE': 17}, 'CST': {'OPEN': 6, 'CLOSE': 17},
-            'MDT': {'OPEN': 5, 'CLOSE': 16}, 'MST': {'OPEN': 5, 'CLOSE': 16},
-            'PDT': {'OPEN': 4, 'CLOSE': 15}, 'PST': {'OPEN': 4, 'CLOSE': 15},
-            'OTHER': {'OPEN': 5, 'CLOSE': 21}  # 5 AM to 9 PM
+            "EDT": {"OPEN": 7, "CLOSE": 18},
+            "EST": {"OPEN": 7, "CLOSE": 18},
+            "CDT": {"OPEN": 6, "CLOSE": 17},
+            "CST": {"OPEN": 6, "CLOSE": 17},
+            "MDT": {"OPEN": 5, "CLOSE": 16},
+            "MST": {"OPEN": 5, "CLOSE": 16},
+            "PDT": {"OPEN": 4, "CLOSE": 15},
+            "PST": {"OPEN": 4, "CLOSE": 15},
+            "OTHER": {"OPEN": 5, "CLOSE": 21},  # 5 AM to 9 PM
         }
     return {
-        'EDT': {'OPEN': 9, 'CLOSE': 16}, 'EST': {'OPEN': 9, 'CLOSE': 16},
-        'CDT': {'OPEN': 8, 'CLOSE': 15}, 'CST': {'OPEN': 8, 'CLOSE': 15},
-        'MDT': {'OPEN': 7, 'CLOSE': 14}, 'MST': {'OPEN': 7, 'CLOSE': 14},
-        'PDT': {'OPEN': 6, 'CLOSE': 13}, 'PST': {'OPEN': 6, 'CLOSE': 13},
-        'OTHER': {'OPEN': 7, 'CLOSE': 19}  # 7 AM to 7 PM
+        "EDT": {"OPEN": 9, "CLOSE": 16},
+        "EST": {"OPEN": 9, "CLOSE": 16},
+        "CDT": {"OPEN": 8, "CLOSE": 15},
+        "CST": {"OPEN": 8, "CLOSE": 15},
+        "MDT": {"OPEN": 7, "CLOSE": 14},
+        "MST": {"OPEN": 7, "CLOSE": 14},
+        "PDT": {"OPEN": 6, "CLOSE": 13},
+        "PST": {"OPEN": 6, "CLOSE": 13},
+        "OTHER": {"OPEN": 7, "CLOSE": 19},  # 7 AM to 7 PM
     }
 
 
@@ -52,8 +60,10 @@ def rh_cron_schedule(extended: bool = False) -> expression.CronExpression:
     job = f"{shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_report.py')}"
     tz = util.get_timezone()
     if tz not in hours:
-        tz = 'OTHER'
-    return expression.CronExpression(f"*/30 {hours[tz]['OPEN']}-{hours[tz]['CLOSE']} * * 1-5 {job}")
+        tz = "OTHER"
+    return expression.CronExpression(
+        f"*/30 {hours[tz]['OPEN']}-{hours[tz]['CLOSE']} * * 1-5 {job}"
+    )
 
 
 def sm_cron_schedule(include_weekends: bool = False) -> expression.CronExpression:

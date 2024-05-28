@@ -23,13 +23,17 @@ def cleanup_stock_userdata() -> None:
             cursor = stock_db.connection.cursor()
             cursor.execute("DELETE FROM stock")
             for params in cleaned:
-                query = f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} " \
-                        f"VALUES {settings.stock_monitor.values};"
+                query = (
+                    f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
+                    f"VALUES {settings.stock_monitor.values};"
+                )
                 cursor.execute(query, params)
             stock_db.connection.commit()
 
 
-def insert_stock_userdata(params: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
+def insert_stock_userdata(
+    params: Tuple[str, EmailStr, int | float, int | float, int, str]
+) -> None:
     """Inserts new entry into the stock database.
 
     Args:
@@ -37,14 +41,17 @@ def insert_stock_userdata(params: Tuple[str, EmailStr, int | float, int | float,
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        query = f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} " \
-                f"VALUES {settings.stock_monitor.values};"
+        query = (
+            f"INSERT or REPLACE INTO stock {settings.stock_monitor.user_info} "
+            f"VALUES {settings.stock_monitor.values};"
+        )
         cursor.execute(query, params)
         stock_db.connection.commit()
 
 
-def get_stock_userdata(email: Optional[EmailStr | str] = None) -> \
-        List[Tuple[str, EmailStr, int | float, int | float, int, str]]:
+def get_stock_userdata(
+    email: Optional[EmailStr | str] = None,
+) -> List[Tuple[str, EmailStr, int | float, int | float, int, str]]:
     """Reads the stock database to get all the user data.
 
     Returns:
@@ -54,14 +61,17 @@ def get_stock_userdata(email: Optional[EmailStr | str] = None) -> \
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
         if email:
-            data = cursor.execute("SELECT * FROM stock WHERE email=(?)", (email,)).fetchall()
+            data = cursor.execute(
+                "SELECT * FROM stock WHERE email=(?)", (email,)
+            ).fetchall()
         else:
             data = cursor.execute("SELECT * FROM stock").fetchall()
     return data
 
 
-def get_daily_alerts() -> \
-        Generator[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]:
+def get_daily_alerts() -> Generator[
+    Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]
+]:
     """Get all the information stored in ``stock_daily`` database table.
 
     Yields:
@@ -74,7 +84,9 @@ def get_daily_alerts() -> \
 
 
 def put_daily_alerts(
-        params: List[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]
+    params: List[
+        Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]
+    ]
 ):
     """Updates the daily alerts into the ``stock_daily`` database table.
 
@@ -85,14 +97,18 @@ def put_daily_alerts(
         cursor = stock_db.connection.cursor()
         params = [(key, *values) for param in params for key, values in param.items()]
         cursor.execute("DELETE FROM stock_daily")  # clear all existing data
-        query = f"INSERT OR REPLACE INTO stock_daily {settings.stock_monitor.alerts} VALUES " \
-                f"{settings.stock_monitor.alert_values};"
+        query = (
+            f"INSERT OR REPLACE INTO stock_daily {settings.stock_monitor.alerts} VALUES "
+            f"{settings.stock_monitor.alert_values};"
+        )
         for param in params:
             cursor.execute(query, param)  # write new data in db
         stock_db.connection.commit()
 
 
-def delete_stock_userdata(data: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
+def delete_stock_userdata(
+    data: Tuple[str, EmailStr, int | float, int | float, int, str]
+) -> None:
     """Delete particular user data from stock database.
 
     Args:
@@ -100,7 +116,9 @@ def delete_stock_userdata(data: Tuple[str, EmailStr, int | float, int | float, i
     """
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
-        cursor.execute("DELETE FROM stock WHERE ticker=(?) AND email=(?) AND "
-                       "max=(?) AND min=(?) AND correction=(?) AND repeat=(?);",
-                       data)
+        cursor.execute(
+            "DELETE FROM stock WHERE ticker=(?) AND email=(?) AND "
+            "max=(?) AND min=(?) AND correction=(?) AND repeat=(?);",
+            data,
+        )
         stock_db.connection.commit()

@@ -14,7 +14,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
 
     """
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_successful_synthesis(self, mock_post: MagicMock) -> None:
         """Test successful speech synthesis.
 
@@ -26,14 +26,14 @@ class TestSpeechSynthesizer(unittest.TestCase):
         """
         mock_response = MagicMock()
         mock_response.ok = True
-        mock_response.content = SAMPLE_PHRASE.encode(encoding='UTF-8')
+        mock_response.content = SAMPLE_PHRASE.encode(encoding="UTF-8")
         mock_post.return_value = mock_response
 
         result = speaker.speech_synthesizer(SAMPLE_PHRASE)
 
         self.assertTrue(result)
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_unsuccessful_synthesis(self, mock_post: MagicMock) -> None:
         """Test unsuccessful speech synthesis.
 
@@ -52,7 +52,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
 
         self.assertFalse(result)
 
-    @patch('requests.post', side_effect=UnicodeError("Test UnicodeError"))
+    @patch("requests.post", side_effect=UnicodeError("Test UnicodeError"))
     def test_unicode_error_handling(self, mock_post: MagicMock) -> None:
         """Test UnicodeError handling in speech synthesis.
 
@@ -65,7 +65,7 @@ class TestSpeechSynthesizer(unittest.TestCase):
 
         self.assertFalse(result)
 
-    @patch('requests.post', side_effect=EgressErrors)
+    @patch("requests.post", side_effect=EgressErrors)
     def test_egress_error_handling(self, mock_post: MagicMock) -> None:
         """Test EgressErrors handling in speech synthesis.
 
@@ -79,5 +79,5 @@ class TestSpeechSynthesizer(unittest.TestCase):
         self.assertFalse(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

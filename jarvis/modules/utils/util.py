@@ -27,7 +27,9 @@ def get_timezone() -> str:
     return datetime.utcnow().astimezone().tzname()
 
 
-def epoch_to_datetime(seconds: int | float, format_: str = None, zone: timezone = None) -> datetime | str:
+def epoch_to_datetime(
+    seconds: int | float, format_: str = None, zone: timezone = None
+) -> datetime | str:
     """Convert epoch time to datetime.
 
     Args:
@@ -75,7 +77,9 @@ def part_of_day() -> str:
     return "Night"
 
 
-def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Dict[str, float] | str:
+def get_closest_match(
+    text: str, match_list: list, get_ratio: bool = False
+) -> Dict[str, float] | str:
     """Get the closest matching word from a list of words.
 
     Args:
@@ -87,7 +91,10 @@ def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> D
         Dict[str, float] | str:
         Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.
     """
-    closest_match = [{"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
+    closest_match = [
+        {"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()}
+        for key in match_list
+    ]
     if get_ratio:
         return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0]
     return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0].get("text")
@@ -159,44 +166,44 @@ def words_to_number(input_: str) -> int:
     """
     input_ = input_.lower()
     number_mapping = {
-        'zero': 0,
-        'one': 1,
-        'two': 2,
-        'three': 3,
-        'four': 4,
-        'five': 5,
-        'six': 6,
-        'seven': 7,
-        'eight': 8,
-        'nine': 9,
-        'ten': 10,
-        'eleven': 11,
-        'twelve': 12,
-        'thirteen': 13,
-        'fourteen': 14,
-        'fifteen': 15,
-        'sixteen': 16,
-        'seventeen': 17,
-        'eighteen': 18,
-        'nineteen': 19,
-        'twenty': 20,
-        'thirty': 30,
-        'forty': 40,
-        'fifty': 50,
-        'sixty': 60,
-        'seventy': 70,
-        'eighty': 80,
-        'ninety': 90,
+        "zero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11,
+        "twelve": 12,
+        "thirteen": 13,
+        "fourteen": 14,
+        "fifteen": 15,
+        "sixteen": 16,
+        "seventeen": 17,
+        "eighteen": 18,
+        "nineteen": 19,
+        "twenty": 20,
+        "thirty": 30,
+        "forty": 40,
+        "fifty": 50,
+        "sixty": 60,
+        "seventy": 70,
+        "eighty": 80,
+        "ninety": 90,
     }
     numbers = []
-    for word in input_.replace('-', ' ').split():
+    for word in input_.replace("-", " ").split():
         if word in number_mapping:
             numbers.append(number_mapping[word])
-        elif word == 'hundred':
+        elif word == "hundred":
             numbers[-1] *= 100
-        elif word == 'thousand':
+        elif word == "thousand":
             numbers = [x * 1000 for x in numbers]
-        elif word == 'million':
+        elif word == "million":
             numbers = [x * 1000000 for x in numbers]
     return sum(numbers)
 
@@ -211,7 +218,9 @@ def comma_separator(list_: list) -> str:
         str:
         Comma separated list of elements.
     """
-    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
+    return ", and ".join(
+        [", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_
+    )
 
 
 def extract_time(input_: str) -> List[str]:
@@ -225,10 +234,12 @@ def extract_time(input_: str) -> List[str]:
         Extracted time from the string.
     """
     input_ = input_.lower()
-    return re.findall(r'(\d+:\d+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'(\d+\s?(?:a.m.|p.m.:?))', input_) or \
-        re.findall(r'(\d+:\d+\s?(?:am|pm:?))', input_) or \
-        re.findall(r'(\d+\s?(?:am|pm:?))', input_)
+    return (
+        re.findall(r"(\d+:\d+\s?(?:a.m.|p.m.:?))", input_)
+        or re.findall(r"(\d+\s?(?:a.m.|p.m.:?))", input_)
+        or re.findall(r"(\d+:\d+\s?(?:am|pm:?))", input_)
+        or re.findall(r"(\d+\s?(?:am|pm:?))", input_)
+    )
 
 
 def split_time(input_: str) -> Tuple[str, str, str]:
@@ -267,9 +278,9 @@ def delay_calculator(phrase: str) -> int | float:
     """
     if not (count := extract_nos(input_=phrase)):
         count = 1
-    if 'hour' in phrase:
+    if "hour" in phrase:
         delay = 3_600
-    elif 'minute' in phrase:
+    elif "minute" in phrase:
         delay = 60
     else:  # Default to # as seconds
         delay = 60
@@ -320,7 +331,13 @@ def extract_str(input_: str) -> str:
         str:
         A string after removing special characters.
     """
-    return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
+    return "".join(
+        [
+            i
+            for i in input_
+            if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]
+        ]
+    ).strip()
 
 
 def matrix_to_flat_list(input_: List[list]) -> List:
@@ -333,7 +350,9 @@ def matrix_to_flat_list(input_: List[list]) -> List:
         list:
         Flat list.
     """
-    if filter(lambda x: isinstance(x, list), input_):  # do conversion only if it is a real matrix
+    if filter(
+        lambda x: isinstance(x, list), input_
+    ):  # do conversion only if it is a real matrix
         return sum(input_, []) or [item for sublist in input_ for item in sublist]
     return input_
 
@@ -361,8 +380,8 @@ def remove_duplicates(input_: List[Any]) -> List[Any]:
         List[Any]:
         Returns a cleaned up list.
     """
-    # return list(set(input_))
-    return [i for n, i in enumerate(input_) if i not in input_[n + 1:]]
+    return [i for n, i in enumerate(input_) if i not in input_[n + 1:]] or list(set(input_))  # fmt: skip
+    # black formats to include space between '1' and ':', refer: https://github.com/psf/black/issues/1323
 
 
 def get_free_port() -> int:
@@ -386,6 +405,6 @@ def get_free_port() -> int:
         Randomly chosen port number that is not in use.
     """
     with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-        sock.bind(('', 0))
+        sock.bind(("", 0))
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock.getsockname()[1]

@@ -9,7 +9,9 @@ from jarvis.modules.exceptions import InvalidArgument
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 
-LOG_FILE = os.path.join('logs', 'cron_%d-%m-%Y.log')  # Used by api functions that run on cron schedule
+LOG_FILE = os.path.join(
+    "logs", "cron_%d-%m-%Y.log"
+)  # Used by api functions that run on cron schedule
 
 
 def executor(statement: str, log_file: str = None, process_name: str = None) -> None:
@@ -28,16 +30,16 @@ def executor(statement: str, log_file: str = None, process_name: str = None) -> 
         log_file = multiprocessing_logger(filename=LOG_FILE)
     if not process_name:
         process_name = "crontab_executor"
-    process_name = '_'.join(process_name.split())
+    process_name = "_".join(process_name.split())
     command = f"export PROCESS_NAME={process_name} && {statement}"
     logger.debug("Executing '%s' as '%s'", statement, command)
-    with open(log_file, 'a') as file:
-        file.write('\n')
+    with open(log_file, "a") as file:
+        file.write("\n")
         try:
             subprocess.call(command, shell=True, stdout=file, stderr=file)
         except Exception as error:
             if isinstance(error, subprocess.CalledProcessError):
-                result = error.output.decode(encoding='UTF-8').strip()
+                result = error.output.decode(encoding="UTF-8").strip()
                 file.write(f"[{error.returncode}]: {result}")
             else:
                 file.write(error.__str__())
@@ -65,6 +67,12 @@ def validate_jobs(log: bool = True) -> Generator[expression.CronExpression]:
             logger.info(msg)
         yield cron
     if models.env.author_mode:
-        if all((models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_pass)):
+        if all(
+            (
+                models.env.robinhood_user,
+                models.env.robinhood_pass,
+                models.env.robinhood_pass,
+            )
+        ):
             yield scheduler.rh_cron_schedule(extended=True)
         yield scheduler.sm_cron_schedule(include_weekends=True)

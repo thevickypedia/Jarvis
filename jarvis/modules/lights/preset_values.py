@@ -25,5 +25,5 @@ PRESET_VALUES = {
     "violet blink": 54,
     "white blue blink": 55,
     "change colors slowly": 56,
-    "slowly change colors": 57
+    "slowly change colors": 57,
 }

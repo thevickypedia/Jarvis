@@ -47,17 +47,22 @@ def get_entrypoints(routers: str) -> Generator[Entrypoint]:
     package = pathlib.Path(os.path.dirname(routers)).stem
     base_package = pathlib.Path(os.path.dirname(routers)).parent.stem
     for __path, __directory, __file in os.walk(routers):
-        if __path.endswith('__'):
+        if __path.endswith("__"):
             continue
         for file_ in __file:
-            if file_.startswith('__') or file_ == 'favicon.ico':
+            if file_.startswith("__") or file_ == "favicon.ico":
                 continue
             filepath = pathlib.PurePath(file_)
-            if filepath.suffix == '.py':
+            if filepath.suffix == ".py":
                 breaker = pathlib.PurePath(os.path.join(__path, filepath.stem)).parts
                 # Replace paths with . to make it appear as a module
-                yield Entrypoint(module='.'.join((base_package,) + breaker[breaker.index(package):]),
-                                 stem=filepath.stem)
+                # black formats to include space between '1' and ':', refer: https://github.com/psf/black/issues/1323
+                yield Entrypoint(
+                    module=".".join(
+                        (base_package,) + breaker[breaker.index(package):]  # fmt: skip
+                    ),
+                    stem=filepath.stem,
+                )
 
 
 def routes(routers: str) -> Generator[APIRouter]:
@@ -70,8 +75,9 @@ def routes(routers: str) -> Generator[APIRouter]:
         APIRouter:
         API Router from scanned modules.
     """
-    entrypoints: List[Entrypoint] = sorted(get_entrypoints(routers=routers),
-                                           key=lambda ent: ent.stem)  # sort by name of the route
+    entrypoints: List[Entrypoint] = sorted(
+        get_entrypoints(routers=routers), key=lambda ent: ent.stem
+    )  # sort by name of the route
     for entrypoint in entrypoints:
         try:
             route = import_module(entrypoint.module)
@@ -79,8 +85,8 @@ def routes(routers: str) -> Generator[APIRouter]:
             logger.error(error)
             warnings.warn(error.__str__())
             continue
-        if hasattr(route, 'router'):
+        if hasattr(route, "router"):
             logger.info("Loading router: %s", entrypoint.module)
-            yield getattr(route, 'router')
+            yield getattr(route, "router")
         else:
-            logger.warning('%s is missing the router attribute.', route.__name__)
+            logger.warning("%s is missing the router attribute.", route.__name__)

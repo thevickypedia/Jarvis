@@ -34,25 +34,29 @@ def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger):
     response.raise_for_status()
 
 
-def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger):
+def set_webhook(
+    base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger
+):
     """Set webhook.
 
     References:
         https://core.telegram.org/bots/api#setwebhook
     """
     put_info = f"{base_url}/setWebhook"
-    payload = dict(
-        url=webhook,
-        secret_token=models.env.bot_secret
-    )
+    payload = dict(url=webhook, secret_token=models.env.bot_secret)
     if models.env.bot_webhook_ip:
-        payload['ip_address'] = models.env.bot_webhook_ip.__str__()
+        payload["ip_address"] = models.env.bot_webhook_ip.__str__()
     logger.debug(payload)
     if models.env.bot_certificate:
         response = requests.post(
-            url=put_info, data=payload,
-            files={'certificate': (models.env.bot_certificate.stem + models.env.bot_certificate.suffix,
-                                   models.env.bot_certificate.certificate.open(mode="rb"))}
+            url=put_info,
+            data=payload,
+            files={
+                "certificate": (
+                    models.env.bot_certificate.stem + models.env.bot_certificate.suffix,
+                    models.env.bot_certificate.certificate.open(mode="rb"),
+                )
+            },
         )
     else:
         response = requests.post(url=put_info, params=payload)

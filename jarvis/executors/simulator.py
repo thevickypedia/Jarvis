@@ -38,7 +38,9 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> None:
         simulation_data: A key value pair of category and phrase list.
     """
     start = time.time()
-    log_file = multiprocessing_logger(filename=os.path.join('logs', 'simulation_%d-%m-%Y_%H:%M_%p.log'))
+    log_file = multiprocessing_logger(
+        filename=os.path.join("logs", "simulation_%d-%m-%Y_%H:%M_%p.log")
+    )
     successful, failed = 0, 0
     shared.called_by_offline = True
     for category, task_list in simulation_data.items():
@@ -58,13 +60,19 @@ def initiate_simulator(simulation_data: Dict[str, List[str]]) -> None:
                     logger.info("Response: %s", response)
     shared.called_by_offline = False
     with open(log_file) as file:
-        errors = len(file.read().split('ERROR')) - 1
-    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
-    mail_res = mail_obj.send_email(subject=f"Simulation results - {datetime.now().strftime('%c')}",
-                                   attachment=log_file, recipient=models.env.recipient, sender="Jarvis Simulator",
-                                   body=f"Total simulations attempted: {sum(len(i) for i in simulation_data.values())}"
-                                        f"\n\nSuccessful: {successful}\n\nFailed: {failed}\n\nError-ed: {errors}\n\n"
-                                        f"Run Time: {support.time_converter(second=time.time() - start)}")
+        errors = len(file.read().split("ERROR")) - 1
+    mail_obj = gmailconnector.SendEmail(
+        gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass
+    )
+    mail_res = mail_obj.send_email(
+        subject=f"Simulation results - {datetime.now().strftime('%c')}",
+        attachment=log_file,
+        recipient=models.env.recipient,
+        sender="Jarvis Simulator",
+        body=f"Total simulations attempted: {sum(len(i) for i in simulation_data.values())}"
+        f"\n\nSuccessful: {successful}\n\nFailed: {failed}\n\nError-ed: {errors}\n\n"
+        f"Run Time: {support.time_converter(second=time.time() - start)}",
+    )
     if mail_res.ok:
         logger.info("Test result has been sent via email")
     else:
@@ -76,10 +84,14 @@ def simulation(*args) -> None:
     """Initiates simulation in a dedicated process logging into a dedicated file."""
     simulation_data = get_simulation_data()
     if not simulation_data:
-        speaker.speak(f"There are no metrics for me to run a simulation {models.env.title}!")
+        speaker.speak(
+            f"There are no metrics for me to run a simulation {models.env.title}!"
+        )
         return
     process = Process(target=initiate_simulator, args=(simulation_data,))
     process.name = "simulator"
     process.start()
-    speaker.speak(text=f"Initiated simulation {models.env.title}! "
-                       "I will send you an email with the results once it is complete.")
+    speaker.speak(
+        text=f"Initiated simulation {models.env.title}! "
+        "I will send you an email with the results once it is complete."
+    )

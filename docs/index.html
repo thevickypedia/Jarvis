@@ -2893,17 +2893,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.commander.renew">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">renew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.commander.renew" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keeps listening and sends the response to <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> function.</p>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>This function runs only for a minute.</p></li>
-<li><p>split_phrase(converted) is a condition so that, loop breaks when if sleep in <code class="docutils literal notranslate"><span class="pre">conditions()</span></code> returns True.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.commander.initiator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">initiator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.commander.initiator" title="Permalink to this definition">¶</a></dt>
 <dd><p>When invoked by <code class="docutils literal notranslate"><span class="pre">Activator</span></code>, checks for the right keyword to wake up and gets into action.</p>
@@ -4509,8 +4498,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt>Handles:</dt><dd><ul class="simple">
 <li><p>speech_synthesis_api: Speech Synthesis</p></li>
 <li><p>telegram_api: Telegram Bot</p></li>
-<li><p>jarvis_api: Offline communicator, Robinhood portfolio report, Jarvis UI, Stock monitor, Surveillance, Telegram</p></li>
-<li><p>background_tasks: Home automation, Alarms, Reminders, Meetings and Events sync, Wi-Fi connector, Cron jobs, Background tasks</p></li>
+<li><p>jarvis_api: Offline communicator,Robinhood portfolio report,Jarvis UI,Stock monitor,Surveillance,Telegram</p></li>
+<li><p>background_tasks: Home automation,Alarms,Reminders,Meetings sync,Wi-Fi connector,Cron jobs,Background tasks</p></li>
 <li><p>plot_mic: Plot microphone usage in real time</p></li>
 </ul>
 </dd>
@@ -5748,7 +5737,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.ordered_dump">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">ordered_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'yaml.dumper.SafeDumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dumper</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.ordered_dump" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">ordered_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'yaml.dumper.SafeDumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.ordered_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom dumper to serialize OrderedDict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -7417,7 +7406,7 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="jarvis.modules.exceptions.BotError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotError</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom base exception for Telegram Bot</p>
+<dd><p>Custom base exception for Telegram Bot.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotError</span>
 </pre></div>
 </div>

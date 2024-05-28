@@ -26,12 +26,15 @@ def audio_converter_mac() -> Callable:
     """
     try:
         from ftransc.core.transcoders import transcode  # noqa
+
         return transcode
-    except (SystemExit, ModuleNotFoundError) as error:
+    except (SystemExit, ModuleNotFoundError, ImportError) as error:
         logger.error(error)
 
 
-def audio_converter_win(input_filename: FilePath | str, output_audio_format: str) -> str | None:
+def audio_converter_win(
+    input_filename: FilePath | str, output_audio_format: str
+) -> str | None:
     """Imports AudioSegment from pydub.
 
     Args:
@@ -46,8 +49,9 @@ def audio_converter_win(input_filename: FilePath | str, output_audio_format: str
     if not os.path.exists(path=ffmpeg_path):
         logger.warning("ffmpeg codec is missing!")
         return
-    os.environ['PATH'] += f";{ffmpeg_path}"
+    os.environ["PATH"] += f";{ffmpeg_path}"
     from pydub import AudioSegment  # noqa
+
     if input_filename.endswith(".ogg"):
         audio = AudioSegment.from_ogg(input_filename)
         output_filename = input_filename.replace(".ogg", f".{output_audio_format}")
@@ -61,6 +65,8 @@ def audio_converter_win(input_filename: FilePath | str, output_audio_format: str
         os.remove(input_filename)
         if os.path.isfile(output_filename):
             return output_filename
-        raise FileNotFoundError(f"{output_filename} was not found after exporting audio to {output_audio_format}")
+        raise FileNotFoundError(
+            f"{output_filename} was not found after exporting audio to {output_audio_format}"
+        )
     except FileNotFoundError as error:  # raised by audio.export when conversion fails
         logger.error(error)

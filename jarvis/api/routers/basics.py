@@ -45,10 +45,16 @@ async def get_favicon():
         Returns the favicon.ico file as FileResponse to support the front-end.
     """
     # This logger import should not be changed to make sure the path is detected using it
-    filepath = os.path.join(os.path.dirname(__file__), 'favicon.ico')
+    filepath = os.path.join(os.path.dirname(__file__), "favicon.ico")
     if os.path.exists(filepath):
-        return FileResponse(filename=os.path.basename(filepath), path=filepath, status_code=HTTPStatus.OK.real)
-    logger.warning("'favicon.ico' is missing or the path is messed up. Fix this to avoid errors in the UI")
+        return FileResponse(
+            filename=os.path.basename(filepath),
+            path=filepath,
+            status_code=HTTPStatus.OK.real,
+        )
+    logger.warning(
+        "'favicon.ico' is missing or the path is messed up. Fix this to avoid errors in the UI"
+    )
 
 
 @router.get(path="/keywords", dependencies=authenticator.OFFLINE_PROTECTOR)

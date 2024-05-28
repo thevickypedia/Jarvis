@@ -20,12 +20,14 @@ async def offline_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) ->
         APIResponse:
         - 401: If authorization is invalid.
     """
-    auth = token.dict().get('credentials', '')
-    if auth.startswith('\\'):
+    auth = token.dict().get("credentials", "")
+    if auth.startswith("\\"):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if secrets.compare_digest(auth, models.env.offline_pass):
         return
-    raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
+    raise APIResponse(
+        status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase
+    )
 
 
 async def robinhood_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) -> None:
@@ -38,15 +40,19 @@ async def robinhood_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) 
         APIResponse:
         - 401: If authorization is invalid.
     """
-    auth = token.dict().get('credentials')
-    if auth.startswith('\\'):
+    auth = token.dict().get("credentials")
+    if auth.startswith("\\"):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if secrets.compare_digest(auth, models.env.robinhood_endpoint_auth):
         return
-    raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
+    raise APIResponse(
+        status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase
+    )
 
 
-async def surveillance_has_access(token: HTTPBasicCredentials = Depends(SECURITY)) -> None:
+async def surveillance_has_access(
+    token: HTTPBasicCredentials = Depends(SECURITY),
+) -> None:
     """Validates the token if mentioned as a dependency.
 
     Args:
@@ -56,12 +62,14 @@ async def surveillance_has_access(token: HTTPBasicCredentials = Depends(SECURITY
         APIResponse:
         - 401: If authorization is invalid.
     """
-    auth = token.dict().get('credentials')
-    if auth.startswith('\\'):
+    auth = token.dict().get("credentials")
+    if auth.startswith("\\"):
         auth = bytes(auth, "utf-8").decode(encoding="unicode_escape")
     if secrets.compare_digest(auth, models.env.surveillance_endpoint_auth):
         return
-    raise APIResponse(status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase)
+    raise APIResponse(
+        status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase
+    )
 
 
 OFFLINE_PROTECTOR = [Depends(dependency=offline_has_access)]

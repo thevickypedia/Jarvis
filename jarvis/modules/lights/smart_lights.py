@@ -94,11 +94,15 @@ class MagicHomeApi:
 
     def turn_on(self) -> None:
         """Turn a device on."""
-        self.send_bytes(0x71, 0x23, 0x0F, 0xA3) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
+        self.send_bytes(
+            0x71, 0x23, 0x0F, 0xA3
+        ) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
 
     def turn_off(self) -> None:
         """Turn a device off."""
-        self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
+        self.send_bytes(
+            0x71, 0x24, 0x0F, 0xA4
+        ) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
     @staticmethod
     def byte_to_percent(byte: int) -> int:
@@ -116,7 +120,7 @@ class MagicHomeApi:
             str:
             Status of the light as string.
         """
-        msg = bytearray([0x81, 0x8a, 0x8b])
+        msg = bytearray([0x81, 0x8A, 0x8B])
         csum = sum(msg) & 0xFF
         msg.append(csum)
         try:
@@ -148,11 +152,11 @@ class MagicHomeApi:
             mode = "unknown"
         delay = rx[5]
         delay = delay - 1
-        if delay > 0x1f - 1:
-            delay = 0x1f - 1
+        if delay > 0x1F - 1:
+            delay = 0x1F - 1
         if delay < 0:
             delay = 0
-        inv_speed = int((delay * 100) / (0x1f - 1))
+        inv_speed = int((delay * 100) / (0x1F - 1))
         speed = 100 - inv_speed
         if mode == "color":
             red = rx[6]
@@ -180,7 +184,14 @@ class MagicHomeApi:
             mode_str += " (tmp)"
         return f"{power_str} [{mode_str}]"
 
-    def update_device(self, r: int = 0, g: int = 0, b: int = 0, warm_white: int = None, cool_white: int = None) -> None:
+    def update_device(
+        self,
+        r: int = 0,
+        g: int = 0,
+        b: int = 0,
+        warm_white: int = None,
+        cool_white: int = None,
+    ) -> None:
         """Updates a device based upon what we're sending to it.
 
         Values are excepted as integers between 0-255.
@@ -196,50 +207,78 @@ class MagicHomeApi:
         if self.device_type <= 1:
             # Update an RGB or an RGB + WW device
             warm_white = check_number_range(warm_white)
-            message = [0x31, r, g, b, warm_white, 0x00, 0x0f]
+            message = [0x31, r, g, b, warm_white, 0x00, 0x0F]
             self.send_bytes(*(message + [calculate_checksum(message)]))
 
         elif self.device_type == 2:
             # Update an RGB + WW + CW device
-            message = [0x31,
-                       check_number_range(r),
-                       check_number_range(g),
-                       check_number_range(b),
-                       check_number_range(warm_white),
-                       check_number_range(cool_white),
-                       0x0f, 0x0f]
+            message = [
+                0x31,
+                check_number_range(r),
+                check_number_range(g),
+                check_number_range(b),
+                check_number_range(warm_white),
+                check_number_range(cool_white),
+                0x0F,
+                0x0F,
+            ]
             self.send_bytes(*(message + [calculate_checksum(message)]))
 
         elif self.device_type == 3:
             # Update the white, or color, of a bulb
             if warm_white:
-                message = [0x31, 0x00, 0x00, 0x00,
-                           check_number_range(warm_white),
-                           0x0f, 0x0f]
+                message = [
+                    0x31,
+                    0x00,
+                    0x00,
+                    0x00,
+                    check_number_range(warm_white),
+                    0x0F,
+                    0x0F,
+                ]
                 self.send_bytes(*(message + [calculate_checksum(message)]))
             else:
-                message = [0x31,
-                           check_number_range(r),
-                           check_number_range(g),
-                           check_number_range(b),
-                           0x00, 0xf0, 0x0f]
+                message = [
+                    0x31,
+                    check_number_range(r),
+                    check_number_range(g),
+                    check_number_range(b),
+                    0x00,
+                    0xF0,
+                    0x0F,
+                ]
                 self.send_bytes(*(message + [calculate_checksum(message)]))
 
         elif self.device_type == 4:
             # Update the white, or color, of a legacy bulb
             if warm_white:
-                message = [0x56, 0x00, 0x00, 0x00,
-                           check_number_range(warm_white),
-                           0x0f, 0xaa, 0x56, 0x00, 0x00, 0x00,
-                           check_number_range(warm_white),
-                           0x0f, 0xaa]
+                message = [
+                    0x56,
+                    0x00,
+                    0x00,
+                    0x00,
+                    check_number_range(warm_white),
+                    0x0F,
+                    0xAA,
+                    0x56,
+                    0x00,
+                    0x00,
+                    0x00,
+                    check_number_range(warm_white),
+                    0x0F,
+                    0xAA,
+                ]
                 self.send_bytes(*(message + [calculate_checksum(message)]))
             else:
-                message = [0x56,
-                           check_number_range(r),
-                           check_number_range(g),
-                           check_number_range(b),
-                           0x00, 0xf0, 0xaa]
+                message = [
+                    0x56,
+                    check_number_range(r),
+                    check_number_range(g),
+                    check_number_range(b),
+                    0x00,
+                    0xF0,
+                    0xAA,
+                ]
                 self.send_bytes(*(message + [calculate_checksum(message)]))
         else:
             support.write_screen(text="Incompatible device type received.")

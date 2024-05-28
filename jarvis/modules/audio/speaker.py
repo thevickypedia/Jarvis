@@ -21,10 +21,12 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 
-def speech_synthesizer(text: str,
-                       timeout: int | float = None,
-                       quality: str = models.env.speech_synthesis_quality,
-                       voice: str = models.env.speech_synthesis_voice) -> bool:
+def speech_synthesizer(
+    text: str,
+    timeout: int | float = None,
+    quality: str = models.env.speech_synthesis_quality,
+    voice: str = models.env.speech_synthesis_voice,
+) -> bool:
     """Makes a post call to docker container for speech synthesis.
 
     Args:
@@ -39,32 +41,41 @@ def speech_synthesizer(text: str,
     """
     logger.info("Request for speech synthesis: %s", text)
     text = text.replace("%", " percent")
-    if time_in_str := re.findall(r'(\d+:\d+\s?(?:AM|PM|am|pm:?))', text):
+    if time_in_str := re.findall(r"(\d+:\d+\s?(?:AM|PM|am|pm:?))", text):
         for t_12 in time_in_str:
             t_24 = datetime.strftime(datetime.strptime(t_12, "%I:%M %p"), "%H:%M")
             logger.info("Converted %s -> %s", t_12, t_24)
             text = text.replace(t_12, t_24)
-    if 'IP' in text.split():
-        ip_new = '-'.join([i for i in text.split(' ')[-1]]).replace('-.-', ', ')  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
-        text = text.replace(text.split(' ')[-1], ip_new).replace(' IP ', ' I.P. ')
+    if "IP" in text.split():
+        ip_new = "-".join([i for i in text.split(" ")[-1]]).replace(
+            "-.-", ", "
+        )  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
+        text = text.replace(text.split(" ")[-1], ip_new).replace(" IP ", " I.P. ")
     # Raises UnicodeDecodeError within docker container
     text = text.replace("\N{DEGREE SIGN}F", " degrees fahrenheit")
     text = text.replace("\N{DEGREE SIGN}C", " degrees celsius")
     try:
         response = requests.post(
             url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
-            headers={"Content-Type": "text/plain"}, params={"voice": voice, "vocoder": quality},
-            data=text, verify=False,
-            timeout=timeout or models.env.speech_synthesis_timeout  # set timeout here as speak() sets it on demand
+            headers={"Content-Type": "text/plain"},
+            params={"voice": voice, "vocoder": quality},
+            data=text,
+            verify=False,
+            timeout=timeout
+            or models.env.speech_synthesis_timeout,  # set timeout here as speak() sets it on demand
         )
         if response.ok:
             with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
                 file.write(response.content)
                 file.flush()
             return True
-        logger.error("{code}::http://{host}:{port}/api/tts".format(code=response.status_code,
-                                                                   host=models.env.speech_synthesis_host,
-                                                                   port=models.env.speech_synthesis_port))
+        logger.error(
+            "{code}::http://{host}:{port}/api/tts".format(
+                code=response.status_code,
+                host=models.env.speech_synthesis_host,
+                port=models.env.speech_synthesis_port,
+            )
+        )
         return False
     except UnicodeError as error:
         logger.error(error)
@@ -72,7 +83,9 @@ def speech_synthesizer(text: str,
         logger.error(error)
         logger.info("Disabling speech synthesis")
         # Purposely exclude timeout since, speech-synthesis takes more time initially to download the required voice
-        if not any((isinstance(error, TimeoutError), isinstance(error, requests.Timeout))):
+        if not any(
+            (isinstance(error, TimeoutError), isinstance(error, requests.Timeout))
+        ):
             models.env.speech_synthesis_timeout = 0
 
 
@@ -86,11 +99,16 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
     """
     if not models.AUDIO_DRIVER:
         models.env.speech_synthesis_timeout = 10
-    caller = sys._getframe(1).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
-    if caller not in ('conditions', 'custom_conditions'):  # function where all the magic happens
+    caller = sys._getframe(
+        1
+    ).f_code.co_name  # noqa: PyProtectedMember,PyUnresolvedReferences
+    if caller not in (
+        "conditions",
+        "custom_conditions",
+    ):  # function where all the magic happens
         Thread(target=frequently_used, kwargs={"function_name": caller}).start()
     if text:
-        text = text.replace('\n', '\t').strip()
+        text = text.replace("\n", "\t").strip()
         shared.text_spoken = text
         if shared.called_by_offline:
             logger.debug("Speaker called by: '%s' with text: '%s'", caller, text)
@@ -98,17 +116,23 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
             return
         logger.info("Response: %s", text)
         support.write_screen(text=text)
-        if models.env.speech_synthesis_timeout and \
-                speech_synthesizer(text=text) and \
-                os.path.isfile(models.fileio.speech_synthesis_wav):
+        if (
+            models.env.speech_synthesis_timeout
+            and speech_synthesizer(text=text)
+            and os.path.isfile(models.fileio.speech_synthesis_wav)
+        ):
             playsound(sound=models.fileio.speech_synthesis_wav, block=block)
             os.remove(models.fileio.speech_synthesis_wav)
         elif models.AUDIO_DRIVER:
             models.AUDIO_DRIVER.say(text=text)
         else:
             support.flush_screen()
-            pynotification.pynotifier(message="speech-synthesis became unavailable when audio driver was faulty\n"
-                                              "resolving to on-screen response", title="AUDIO ERROR", dialog=True)
+            pynotification.pynotifier(
+                message="speech-synthesis became unavailable when audio driver was faulty\n"
+                "resolving to on-screen response",
+                title="AUDIO ERROR",
+                dialog=True,
+            )
             print(text)
     if run and models.AUDIO_DRIVER and not shared.called_by_offline:
         logger.debug("Speaker called by: '%s'", caller)
@@ -130,5 +154,7 @@ def frequently_used(function_name: str) -> None:
         data[function_name] += 1
     else:
         data[function_name] = 1
-    data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}  # sort by size
+    data = {
+        k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)
+    }  # sort by size
     files.put_frequent(data=data)

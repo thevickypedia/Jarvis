@@ -51,16 +51,18 @@ def restart(ask: bool = True) -> None:
         To stop Jarvis' PID.
     """
     if ask:
-        speaker.speak(text=f"{random.choice(conversation.confirmation)} restart your "
-                           f"{shared.hosted_device.get('device', 'machine')}?",
-                      run=True)
+        speaker.speak(
+            text=f"{random.choice(conversation.confirmation)} restart your "
+            f"{shared.hosted_device.get('device', 'machine')}?",
+            run=True,
+        )
         converted = listener.listen()
     else:
-        converted = 'yes'
-    if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
+        converted = "yes"
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords["ok"]):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
-            subprocess.call(['osascript', '-e', 'tell app "System Events" to restart'])
+            subprocess.call(["osascript", "-e", 'tell app "System Events" to restart'])
         elif models.settings.os == models.supported_platforms.windows:
             os.system("shutdown /r /t 1")
         else:
@@ -74,15 +76,21 @@ def exit_process() -> None:
     """Function that holds the list of operations done upon exit."""
     if reminders := remind.get_reminder_state():
         if len(reminders) == 1:
-            speaker.speak(text=f'You have a pending reminder {models.env.title}!')
+            speaker.speak(text=f"You have a pending reminder {models.env.title}!")
         else:
-            speaker.speak(text=f'You have {len(reminders)} pending reminders {models.env.title}!')
-        speaker.speak(text=util.comma_separator(reminders))  # No need for string.capwords as speaker runs in a new loop
+            speaker.speak(
+                text=f"You have {len(reminders)} pending reminders {models.env.title}!"
+            )
+        speaker.speak(
+            text=util.comma_separator(reminders)
+        )  # No need for string.capwords as speaker runs in a new loop
     if alarms := alarm.get_alarm_state():
         if len(alarms) == 1:
             speaker.speak(text="You have a pending alarm at ")
         else:
-            speaker.speak(text=f"You have {len(alarms)} pending alarms {models.env.title}!")
+            speaker.speak(
+                text=f"You have {len(alarms)} pending alarms {models.env.title}!"
+            )
         speaker.speak(text=util.comma_separator(alarms))
     if reminders or alarms:
         speaker.speak(text="This will not be executed while I'm deactivated!")
@@ -90,16 +98,20 @@ def exit_process() -> None:
     try:
         speaker.speak(text=support.exit_message(), run=True)
     except RuntimeError as error:
-        logger.critical("ATTENTION::Received a RuntimeError while self terminating.\n%s", error)
-    support.write_screen(f"Memory consumed: {support.size_converter(0)}"
-                         f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}")
+        logger.critical(
+            "ATTENTION::Received a RuntimeError while self terminating.\n%s", error
+        )
+    support.write_screen(
+        f"Memory consumed: {support.size_converter(0)}"
+        f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}"
+    )
 
 
 def sleep_control(*args) -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
     Thread(target=pybrightness.decrease, args=(logger,)).start()
     pywslocker.lock(logger)
-    if not shared.called['report']:
+    if not shared.called["report"]:
         speaker.speak(text=random.choice(conversation.acknowledgement))
     return True
 
@@ -130,7 +142,10 @@ def db_restart_entry(caller: str) -> None:
     """
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute("INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);", (True, caller))
+        cursor.execute(
+            "INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);",
+            (True, caller),
+        )
         cursor.connection.commit()
 
 
@@ -152,32 +167,46 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
                 logger.info("Restarting all background processes!")
                 # set as timer, so that process doesn't get restarted without returning response to user
                 # without timer, the process will keep getting restarted in a loop
-                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller="OFFLINE")).start()
+                Timer(
+                    interval=5, function=db_restart_entry, kwargs=dict(caller="OFFLINE")
+                ).start()
                 speaker.speak(text="Restarting all background processes!")
                 return
             if avail := list(files.get_processes().keys()):
-                avail.remove('jarvis')  # cannot be restarted
+                avail.remove("jarvis")  # cannot be restarted
             else:
-                speaker.speak(text="Unable to fetch background processes. Try specifying 'all'")
+                speaker.speak(
+                    text="Unable to fetch background processes. Try specifying 'all'"
+                )
                 return
-            if func := word_match.word_match(phrase=phrase, match_list=avail, strict=True):
+            if func := word_match.word_match(
+                phrase=phrase, match_list=avail, strict=True
+            ):
                 logger.info("Restarting %s", func)
                 # set as timer, so that process doesn't get restarted without returning response to user
                 # without timer, the process will keep getting restarted in a loop
-                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller=func)).start()
+                Timer(
+                    interval=5, function=db_restart_entry, kwargs=dict(caller=func)
+                ).start()
                 speaker.speak(text=f"Restarting the background process {func!r}")
             else:
-                speaker.speak(text=f"Please specify a function name. Available: {util.comma_separator(avail)}")
+                speaker.speak(
+                    text=f"Please specify a function name. Available: {util.comma_separator(avail)}"
+                )
         else:
             speaker.speak(text="Invalid request to restart.")
         return
     if phrase:
-        if not shared.hosted_device.get('device'):
+        if not shared.hosted_device.get("device"):
             system.hosted_device_info()
-        logger.info("Restart for %s has been requested.", shared.hosted_device.get('device'))
+        logger.info(
+            "Restart for %s has been requested.", shared.hosted_device.get("device")
+        )
         restart()
     else:
-        speaker.speak(text="I didn't quite get that. Did you mean restart your computer?")
+        speaker.speak(
+            text="I didn't quite get that. Did you mean restart your computer?"
+        )
         return
 
 
@@ -216,12 +245,16 @@ def delete_docker_container() -> None:
             client.api.remove_container(container_id)
         except ContainerError as error:
             err = f": {error.stderr}" if error.stderr else ""
-            log_file.write(f"Command '{error.command}' in image '{error.image}' "
-                           f"returned non-zero exit status {error.exit_status}{err}\n")
+            log_file.write(
+                f"Command '{error.command}' in image '{error.image}' "
+                f"returned non-zero exit status {error.exit_status}{err}\n"
+            )
         except APIError as error:
             log_file.write(f"{error.response.status_code} - {error.response.text}")
         else:
-            log_file.write(f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n")
+            log_file.write(
+                f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n"
+            )
             os.remove(models.fileio.speech_synthesis_cid)
 
 
@@ -234,8 +267,8 @@ def terminator() -> NoReturn:
         os.remove(models.fileio.processes)
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
-    if process_info.get('environ'):
-        del process_info['environ']  # To ensure env vars are not printed in log files
+    if process_info.get("environ"):
+        del process_info["environ"]  # To ensure env vars are not printed in log files
     logger.debug(process_info)
     support.stop_process(pid=proc.pid)
     # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -252,14 +285,19 @@ def shutdown(*args, proceed: bool = False) -> None:
         StopSignal: To stop Jarvis' PID.
     """
     if not proceed:
-        speaker.speak(text=f"{random.choice(conversation.confirmation)} turn off the machine?", run=True)
+        speaker.speak(
+            text=f"{random.choice(conversation.confirmation)} turn off the machine?",
+            run=True,
+        )
         converted = listener.listen()
     else:
-        converted = 'yes'
-    if word_match.word_match(phrase=converted, match_list=keywords.keywords['ok']):
+        converted = "yes"
+    if word_match.word_match(phrase=converted, match_list=keywords.keywords["ok"]):
         stop_terminals()
         if models.settings.os == models.supported_platforms.macOS:
-            subprocess.call(['osascript', '-e', 'tell app "System Events" to shut down'])
+            subprocess.call(
+                ["osascript", "-e", 'tell app "System Events" to shut down']
+            )
         elif models.settings.os == models.supported_platforms.windows:
             os.system("shutdown /s /t 1")
         else:
@@ -271,28 +309,35 @@ def shutdown(*args, proceed: bool = False) -> None:
 
 def delete_logs() -> None:
     """Delete log files that were updated before the log retention period. Checks if file's inode was changed."""
-    for __path, __directory, __file in os.walk('logs'):
+    for __path, __directory, __file in os.walk("logs"):
         for file_ in __file:
             inode_modified = os.stat(os.path.join(__path, file_)).st_ctime
-            if timedelta(seconds=(time.time() - inode_modified)).days > models.env.log_retention:
+            if (
+                timedelta(seconds=(time.time() - inode_modified)).days
+                > models.env.log_retention
+            ):
                 logger.debug("Deleting log file: %s", os.path.join(__path, file_))
-                os.remove(os.path.join(__path, file_))  # removes the file if it is older than log retention time
+                os.remove(
+                    os.path.join(__path, file_)
+                )  # removes the file if it is older than log retention time
 
 
 def delete_pycache() -> None:
     """Deletes ``__pycache__`` folder from all sub-dir."""
     for __path, __directory, __file in os.walk(os.getcwd()):
-        if '__pycache__' in __directory:
-            if os.path.exists(os.path.join(__path, '__pycache__')):
-                logger.debug("Deleting pycache: %s", os.path.join(__path, '__pycache__'))
-                shutil.rmtree(os.path.join(__path, '__pycache__'))
+        if "__pycache__" in __directory:
+            if os.path.exists(os.path.join(__path, "__pycache__")):
+                logger.debug(
+                    "Deleting pycache: %s", os.path.join(__path, "__pycache__")
+                )
+                shutil.rmtree(os.path.join(__path, "__pycache__"))
 
 
 def set_executable() -> None:
     """Modify file permissions for all the files within the fileio directory."""
     for file in os.listdir("fileio"):
         f_path = os.path.join("fileio", file)
-        if not file.endswith('.cid'):
+        if not file.endswith(".cid"):
             os.chmod(f_path, os.stat(f_path).st_mode | stat.S_IEXEC)
     # [os.chmod(file, int('755', base=8) or 0o755) for file in os.listdir("fileio") if not file.endswith('.cid')]
 

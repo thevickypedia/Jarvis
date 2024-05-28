@@ -20,7 +20,7 @@ processes = {}
 hosted_device = {}
 
 called = {
-    'report': False,
-    'locate_places': False,
-    'directions': False,
+    "report": False,
+    "locate_places": False,
+    "directions": False,
 }

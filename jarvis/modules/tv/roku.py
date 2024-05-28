@@ -35,7 +35,7 @@ class RokuECP:
         Args:
             ip_address: IP address of the TV.
         """
-        self.BASE_URL = f'http://{ip_address}:{self.PORT}'
+        self.BASE_URL = f"http://{ip_address}:{self.PORT}"
         try:
             response = requests.get(url=self.BASE_URL)
         except EgressErrors as error:
@@ -47,7 +47,7 @@ class RokuECP:
             except socket.error as error:
                 logger.error(error)
                 raise TVError
-            logger.info("Connected to '%s'", resolved[0].split('.')[0])
+            logger.info("Connected to '%s'", resolved[0].split(".")[0])
         else:
             logger.error("%d - %s", response.status_code, response.text)
             raise TVError
@@ -63,9 +63,9 @@ class RokuECP:
             requests.Response:
             Response from the session call.
         """
-        if method == 'GET':
+        if method == "GET":
             return self.SESSION.get(url=self.BASE_URL + path)
-        if method == 'POST':
+        if method == "POST":
             return self.SESSION.post(url=self.BASE_URL + path)
 
     def get_state(self) -> bool:
@@ -75,20 +75,20 @@ class RokuECP:
             bool:
             True if powered on.
         """
-        response = self.make_call(path='/query/device-info', method='GET')
+        response = self.make_call(path="/query/device-info", method="GET")
         xml_parsed = ElementTree.fromstring(response.content)
-        if xml_parsed.find('power-mode').text:
-            return xml_parsed.find('power-mode').text == 'PowerOn'
+        if xml_parsed.find("power-mode").text:
+            return xml_parsed.find("power-mode").text == "PowerOn"
 
     def startup(self) -> None:
         """Powers on the TV and launches Home screen."""
-        self.make_call(path='/keypress/PowerOn', method='POST')
-        self.make_call(path='/keypress/Home', method='POST')
+        self.make_call(path="/keypress/PowerOn", method="POST")
+        self.make_call(path="/keypress/Home", method="POST")
 
     def shutdown(self) -> None:
         """Turns off the TV is it is powered on."""
         if self.get_state():
-            self.make_call(path='/keypress/PowerOff', method='POST')
+            self.make_call(path="/keypress/PowerOff", method="POST")
 
     def increase_volume(self, limit: int = 10) -> None:
         """Increases the volume on the TV.
@@ -98,7 +98,7 @@ class RokuECP:
         """
         # RokuTVs perform in 2-step iterations for volume, so a single VolumeUp button increases the volume by 2%
         for _ in range(int(limit / 2)):
-            self.make_call(path='/keypress/VolumeUp', method='POST')
+            self.make_call(path="/keypress/VolumeUp", method="POST")
 
     def decrease_volume(self, limit: int = 10) -> None:
         """Decreases the volume on the TV.
@@ -108,31 +108,31 @@ class RokuECP:
         """
         # RokuTVs perform in 2-step iterations for volume, so a single VolumeDown button decreases the volume by 2%
         for _ in range(int(limit / 2)):
-            self.make_call(path='/keypress/VolumeDown', method='POST')
+            self.make_call(path="/keypress/VolumeDown", method="POST")
 
     def mute(self) -> None:
         """Mutes the TV."""
-        self.make_call(path='/keypress/VolumeMute', method='POST')
+        self.make_call(path="/keypress/VolumeMute", method="POST")
 
     def stop(self) -> None:
         """Sends a keypress to stop content on TV."""
-        self.make_call(path='/keypress/Stop', method='POST')
+        self.make_call(path="/keypress/Stop", method="POST")
 
     def pause(self) -> None:
         """Sends a keypress to pause content on TV."""
-        self.make_call(path='/keypress/Pause', method='POST')
+        self.make_call(path="/keypress/Pause", method="POST")
 
     def play(self) -> None:
         """Sends a keypress to play content on TV."""
-        self.make_call(path='/keypress/Play', method='POST')
+        self.make_call(path="/keypress/Play", method="POST")
 
     def forward(self) -> None:
         """Sends a keypress to forward content on TV."""
-        self.make_call(path='/keypress/Fwd', method='POST')
+        self.make_call(path="/keypress/Fwd", method="POST")
 
     def rewind(self) -> None:
         """Sends a keypress to rewind content on TV."""
-        self.make_call(path='/keypress/Rev', method='POST')
+        self.make_call(path="/keypress/Rev", method="POST")
 
     def get_sources(self) -> Generator[str]:
         """Returns a list of predetermined sources.
@@ -142,8 +142,8 @@ class RokuECP:
             Yields preset source's name.
         """
         for app in self.get_apps(raw=True):
-            if app['id'].startswith('tvinput'):
-                yield app['name']
+            if app["id"].startswith("tvinput"):
+                yield app["name"]
 
     def set_source(self, val: str) -> None:
         """Set input source on TV.
@@ -151,7 +151,7 @@ class RokuECP:
         Args:
             val: Source name.
         """
-        self.make_call(path=f'/keypress/{val}', method='POST')
+        self.make_call(path=f"/keypress/{val}", method="POST")
 
     def _set_vol_executor(self, target: int) -> None:
         """Executed in thread to set volume to a specific level.
@@ -179,20 +179,26 @@ class RokuECP:
             str:
             Name of the application.
         """
-        response = self.make_call(path='/query/active-app', method='GET')
+        response = self.make_call(path="/query/active-app", method="GET")
         xml_parsed = ElementTree.fromstring(response.content)
-        app_info = xml_parsed.find('screensaver')
+        app_info = xml_parsed.find("screensaver")
         if app_info is None:
-            app_info = xml_parsed.find('app')
+            app_info = xml_parsed.find("app")
         if app_info is None:
             return
-        logger.debug(dict(id=app_info.get('id'), version=app_info.get('version'), name=app_info.text))
+        logger.debug(
+            dict(
+                id=app_info.get("id"),
+                version=app_info.get("version"),
+                name=app_info.text,
+            )
+        )
         return app_info.text
 
     @staticmethod
     def get_volume() -> str:
         """Placeholder method as there is no call to get this information at the time of development."""
-        return 'unknown'
+        return "unknown"
 
     def launch_app(self, app_name: str) -> None:
         """Launches an application on the TV.
@@ -200,10 +206,16 @@ class RokuECP:
         Args:
             app_name: Name of the application to launch.
         """
-        app_id = next((item for item in self.get_apps(raw=True)
-                       if item['name'].lower() == app_name.lower()), {}).get('id')
+        app_id = next(
+            (
+                item
+                for item in self.get_apps(raw=True)
+                if item["name"].lower() == app_name.lower()
+            ),
+            {},
+        ).get("id")
         if app_id:
-            response = self.make_call(path=f'/launch/{app_id}', method='POST')
+            response = self.make_call(path=f"/launch/{app_id}", method="POST")
             if not response.ok:
                 logger.error("%d: %s", response.status_code, response.text)
         else:
@@ -219,11 +231,13 @@ class RokuECP:
             Generator[Dict[str, str]] | Generator[str]:
             Yields of app name or information dict if requested as raw.
         """
-        response = self.make_call(path='/query/apps', method='GET')
+        response = self.make_call(path="/query/apps", method="GET")
         xml_parsed = ElementTree.fromstring(response.content)
         if raw:
             for node in xml_parsed:
-                yield dict(id=node.get('id'), version=node.get('version'), name=node.text)
+                yield dict(
+                    id=node.get("id"), version=node.get("version"), name=node.text
+                )
         else:
             for node in xml_parsed:
                 yield node.text

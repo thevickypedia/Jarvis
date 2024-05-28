@@ -14,9 +14,11 @@ class TestSpeak(unittest.TestCase):
 
     """
 
-    @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
-    @patch('playsound.playsound')
-    def test_speech_synthesis_usage(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
+    @patch("jarvis.modules.audio.speaker.speech_synthesizer", return_value=False)
+    @patch("playsound.playsound")
+    def test_speech_synthesis_usage(
+        self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock
+    ) -> None:
         """Test speech synthesis usage.
 
         Args:
@@ -28,11 +30,15 @@ class TestSpeak(unittest.TestCase):
         mock_speech_synthesizer.assert_called_once_with(text=SAMPLE_PHRASE)
         mock_playsound.assert_not_called()
 
-    @patch('playsound.playsound')
-    @patch('jarvis.modules.audio.speaker.speak', return_value=False)
-    @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
-    def test_audio_driver_usage(self, mock_playsound: MagicMock, mock_speaker: MagicMock,
-                                mock_speech_synthesizer: MagicMock) -> None:
+    @patch("playsound.playsound")
+    @patch("jarvis.modules.audio.speaker.speak", return_value=False)
+    @patch("jarvis.modules.audio.speaker.speech_synthesizer", return_value=False)
+    def test_audio_driver_usage(
+        self,
+        mock_playsound: MagicMock,
+        mock_speaker: MagicMock,
+        mock_speech_synthesizer: MagicMock,
+    ) -> None:
         """Test audio driver usage.
 
         Args:
@@ -45,7 +51,7 @@ class TestSpeak(unittest.TestCase):
         mock_playsound.assert_not_called()
         mock_speech_synthesizer.assert_not_called()
 
-    @patch('jarvis.modules.utils.support.write_screen')
+    @patch("jarvis.modules.utils.support.write_screen")
     def test_no_text_input(self, mock_write_screen: MagicMock) -> None:
         """Test speak function with no text input.
 
@@ -55,7 +61,7 @@ class TestSpeak(unittest.TestCase):
         speaker.speak(text=None, run=False, block=True)
         mock_write_screen.assert_not_called()
 
-    @patch('jarvis.modules.utils.support.write_screen')
+    @patch("jarvis.modules.utils.support.write_screen")
     def test_text_input_and_run(self, mock_write_screen: MagicMock) -> None:
         """Test speak function with text input and run flag.
 
@@ -65,9 +71,11 @@ class TestSpeak(unittest.TestCase):
         speaker.speak(text=SAMPLE_PHRASE, run=True, block=True)
         mock_write_screen.assert_called_once_with(text=SAMPLE_PHRASE)
 
-    @patch('jarvis.modules.audio.speaker.speech_synthesizer', return_value=False)
-    @patch('playsound.playsound')
-    def test_offline_mode(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
+    @patch("jarvis.modules.audio.speaker.speech_synthesizer", return_value=False)
+    @patch("playsound.playsound")
+    def test_offline_mode(
+        self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock
+    ) -> None:
         """Test speak function in offline mode.
 
         Args:
@@ -81,5 +89,5 @@ class TestSpeak(unittest.TestCase):
         shared.called_by_offline = False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

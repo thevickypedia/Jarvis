@@ -17,7 +17,9 @@ class TestActivator(unittest.TestCase):
 
     @patch("pvporcupine.create")
     @patch("jarvis.main.audio_engine.open")
-    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock) -> None:
+    def test_init_activator(
+        self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock
+    ) -> None:
         """Test whether the Activator is initialized correctly.
 
         Mock the return values of the create function.
@@ -36,7 +38,7 @@ class TestActivator(unittest.TestCase):
             library_path=pvporcupine.LIBRARY_PATH,
             sensitivities=models.env.sensitivity,
             model_path=pvporcupine.MODEL_PATH,
-            keyword_paths=[pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
+            keyword_paths=[pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words],
         )
         mock_audio_open.assert_called_once_with(
             rate=mock_pvporcupine_create.return_value.sample_rate,
@@ -44,20 +46,30 @@ class TestActivator(unittest.TestCase):
             format=pyaudio.paInt16,
             input=True,
             frames_per_buffer=mock_pvporcupine_create.return_value.frame_length,
-            input_device_index=models.env.microphone_index
+            input_device_index=models.env.microphone_index,
         )
         self.assertEqual(self.activator.detector, mock_pvporcupine_create.return_value)
         self.assertEqual(self.activator.audio_stream, mock_audio_open.return_value)
 
-    @patch("jarvis.modules.audio.listener.listen")  # Patch the listener.listen from jarvis.modules.audio
-    @patch("jarvis.executors.commander.initiator")  # Patch the commander.initiator from jarvis.executors
-    @patch("jarvis.modules.audio.speaker.speak")  # Patch the speaker.speak from jarvis.modules.audio
-    @patch("jarvis.main.audio_engine.close")  # Patch the audio_engine.close from jarvis.main
-    def test_executor(self,
-                      mock_audio_close: MagicMock,
-                      mock_speak: MagicMock,
-                      mock_initiator: MagicMock,
-                      mock_listen: MagicMock) -> None:
+    @patch(
+        "jarvis.modules.audio.listener.listen"
+    )  # Patch the listener.listen from jarvis.modules.audio
+    @patch(
+        "jarvis.executors.commander.initiator"
+    )  # Patch the commander.initiator from jarvis.executors
+    @patch(
+        "jarvis.modules.audio.speaker.speak"
+    )  # Patch the speaker.speak from jarvis.modules.audio
+    @patch(
+        "jarvis.main.audio_engine.close"
+    )  # Patch the audio_engine.close from jarvis.main
+    def test_executor(
+        self,
+        mock_audio_close: MagicMock,
+        mock_speak: MagicMock,
+        mock_initiator: MagicMock,
+        mock_listen: MagicMock,
+    ) -> None:
         """Test the executor method of Activator.
 
         Mock return values of the listen function and set up necessary mocks.
@@ -75,11 +87,15 @@ class TestActivator(unittest.TestCase):
 
         # Assertions
         self.assertTrue(mock_audio_close.called)  # audio_engine.close should be called
-        mock_listen.assert_called_once_with(sound=False, no_conf=True)  # listener.listen should be called
+        mock_listen.assert_called_once_with(
+            sound=False, no_conf=True
+        )  # listener.listen should be called
         mock_initiator.assert_called_once_with(
             phrase=SAMPLE_PHRASE
         )  # commander.initiator should be called with the correct phrase
-        mock_speak.assert_called_once_with(run=True)  # speaker.speak should be called with run=True
+        mock_speak.assert_called_once_with(
+            run=True
+        )  # speaker.speak should be called with run=True
 
 
 if __name__ == "__main__":

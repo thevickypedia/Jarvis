@@ -53,7 +53,7 @@ class LGWebOS:
             - If no TV was found in the IP range.
             - If a connection timeout occurs (usually because of unstable internet or multiple connection types)
         """
-        store = {'client_key': client_key} if client_key else {}
+        store = {"client_key": client_key} if client_key else {}
 
         try:
             self.client = WebOSClient(ip_address)
@@ -62,8 +62,11 @@ class LGWebOS:
             logger.error(error)
             self._reconnect = True
             if not shared.called_by_offline:
-                speaker.speak(f"The TV's IP has either changed or unreachable {models.env.title}! "
-                              "Scanning your IP range now.", run=True)
+                speaker.speak(
+                    f"The TV's IP has either changed or unreachable {models.env.title}! "
+                    "Scanning your IP range now.",
+                    run=True,
+                )
             if discovered := WebOSClient.discover():
                 self.client = discovered[0]
                 try:
@@ -79,29 +82,42 @@ class LGWebOS:
 
         for status in self.client.register(store):
             if status == WebOSClient.REGISTERED and not self._init_status:
-                support.write_screen(text='Connected to the TV.')
+                support.write_screen(text="Connected to the TV.")
                 break
             elif status == WebOSClient.PROMPTED:
                 if shared.called_by_offline:
                     logger.info("Connection request sent to '%s'", nickname)
                 else:
-                    speaker.speak(text=f"Please accept the connection request on your TV {models.env.title}!", run=True)
+                    speaker.speak(
+                        text=f"Please accept the connection request on your TV {models.env.title}!",
+                        run=True,
+                    )
                 self._reconnect = True
-                support.write_screen(text='Please accept the connection request on your TV.')
+                support.write_screen(
+                    text="Please accept the connection request on your TV."
+                )
 
         if self._reconnect:
             self._reconnect = False
-            if (smart_devices := files.get_smart_devices()) and store.get('client_key'):
-                smart_devices[key][nickname]['client_key'] = store['client_key']
+            if (smart_devices := files.get_smart_devices()) and store.get("client_key"):
+                smart_devices[key][nickname]["client_key"] = store["client_key"]
                 files.put_smart_devices(data=smart_devices)
-                logger.info("Client key '%s' has been stored in '%s'", store['client_key'], models.fileio.smart_devices)
+                logger.info(
+                    "Client key '%s' has been stored in '%s'",
+                    store["client_key"],
+                    models.fileio.smart_devices,
+                )
             else:
-                logger.critical("ATTENTION::Client key has been generated. Store it in '%s' to re-use." %
-                                models.fileio.smart_devices)
+                logger.critical(
+                    "ATTENTION::Client key has been generated. Store it in '%s' to re-use."
+                    % models.fileio.smart_devices
+                )
                 logger.critical(str(store))
 
         self.system = SystemControl(self.client)
-        self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None
+        self.system.notify(
+            "Jarvis is controlling the TV now."
+        ) if not self._init_status else None
         self.media = MediaControl(self.client)
         self.app = ApplicationControl(self.client)
         self.source_control = SourceControl(self.client)
@@ -111,13 +127,17 @@ class LGWebOS:
         """Increases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_up()
-        self.system.notify(f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%")
+        self.system.notify(
+            f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%"
+        )
 
     def decrease_volume(self) -> None:
         """Decreases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_down()
-        self.system.notify(f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%")
+        self.system.notify(
+            f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%"
+        )
 
     def get_volume(self) -> int:
         """Get volume status.
@@ -126,8 +146,10 @@ class LGWebOS:
             int:
             Volume level.
         """
-        self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
-        return self.media.get_volume()['volume']
+        self.system.notify(
+            f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%"
+        )
+        return self.media.get_volume()["volume"]
 
     def get_state(self) -> bool:
         """Get current state of the TV.
@@ -148,7 +170,9 @@ class LGWebOS:
         Args:
             target: Takes an integer as argument to set the volume.
         """
-        self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
+        self.system.notify(
+            f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%"
+        )
         self.media.set_volume(target)
 
     def mute(self) -> None:
@@ -197,7 +221,9 @@ class LGWebOS:
         Args:
             app_name: Takes the application name as argument.
         """
-        app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
+        app_launcher = [
+            x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()
+        ][0]
         self.app.launch(app_launcher, content_id=None)
 
     def close_app(self, app_name: str) -> None:
@@ -216,7 +242,7 @@ class LGWebOS:
             Yields ``InputSource`` instance.
         """
         for source in self.source_control.list_sources():
-            yield source['label']
+            yield source["label"]
 
     def set_source(self, val: str) -> None:
         """Sets an ``InputSource`` instance.
@@ -236,7 +262,7 @@ class LGWebOS:
             Title of the current app that is running
         """
         app_id = self.app.get_current()
-        return [x for x in self.app.list_apps() if app_id == x["id"]][0]['title']
+        return [x for x in self.app.list_apps() if app_id == x["id"]][0]["title"]
 
     def audio_output(self) -> AudioOutputSource:
         """Returns the currently used audio output source as AudioOutputSource instance.
@@ -263,7 +289,7 @@ class LGWebOS:
     def shutdown(self) -> None:
         """Notifies the TV about shutdown and shuts down after 3 seconds."""
         try:
-            self.system.notify('Jarvis::SHUTTING DOWN now')
+            self.system.notify("Jarvis::SHUTTING DOWN now")
         except AttributeError as error:  # Happens when TV is already powered off
             logger.error(error)
             return

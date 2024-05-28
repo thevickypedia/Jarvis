@@ -118,5 +118,5 @@ def function_mapping() -> OrderedDict[str, Callable]:
         age=static_responses.age,
         form=static_responses.form,
         whats_up=static_responses.whats_up,
-        about_me=static_responses.about_me
+        about_me=static_responses.about_me,
     )

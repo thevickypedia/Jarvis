@@ -40,14 +40,21 @@ def clear_db() -> None:
             if table in models.KEEP_TABLES:
                 continue
             # Use f-string or %s as table names cannot be parametrized
-            data = cursor.execute(f'SELECT * FROM {table}').fetchall()
-            logger.info("Deleting data from %s: %s", table, util.matrix_to_flat_list([list(filter(None, d))
-                                                                                      for d in data if any(d)]))
+            data = cursor.execute(f"SELECT * FROM {table}").fetchall()
+            logger.info(
+                "Deleting data from %s: %s",
+                table,
+                util.matrix_to_flat_list(
+                    [list(filter(None, d)) for d in data if any(d)]
+                ),
+            )
             cursor.execute(f"DELETE FROM {table}")
 
 
 # noinspection LongLine
-def create_process_mapping(processes: Dict[str, Process], func_name: str = None) -> None:
+def create_process_mapping(
+    processes: Dict[str, Process], func_name: str = None
+) -> None:
     """Creates or updates the processes mapping file.
 
     Args:
@@ -65,18 +72,22 @@ def create_process_mapping(processes: Dict[str, Process], func_name: str = None)
         - plot_mic: Plot microphone usage in real time
     """
     impact_lib = {}
-    for doc in create_process_mapping.__doc__.split('Handles:')[1].splitlines():
+    for doc in create_process_mapping.__doc__.split("Handles:")[1].splitlines():
         if doc.strip():
-            element = doc.strip().split(':')
-            func = element[0].lstrip('- ')
-            desc = element[1].strip().split(',')
+            element = doc.strip().split(":")
+            func = element[0].lstrip("- ")
+            desc = element[1].strip().split(",")
             if processes.get(func):
                 impact_lib[func] = desc
             else:
                 logger.warning("'%s' not found in list of processes initiated", func)
     if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
-        warnings.warn(message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}")
-    if func_name:  # Assumes a processes mapping file exists already, since flag passed during process specific restart
+        warnings.warn(
+            message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}"
+        )
+    if (
+        func_name
+    ):  # Assumes a processes mapping file exists already, since flag passed during process specific restart
         dump = process_map.get()
         dump[func_name] = {processes[func_name].pid: impact_lib[func_name]}
     else:
@@ -105,25 +116,42 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
     """
     process_dict = {
         jarvis_api.__name__: Process(target=jarvis_api),  # no process map removal
-        offline.background_tasks.__name__: Process(target=offline.background_tasks),  # no process map removal
-        speech_synthesis.speech_synthesis_api.__name__: Process(target=speech_synthesis.speech_synthesis_api),
-        telegram.telegram_api.__name__: Process(target=telegram.telegram_api)
+        offline.background_tasks.__name__: Process(
+            target=offline.background_tasks
+        ),  # no process map removal
+        speech_synthesis.speech_synthesis_api.__name__: Process(
+            target=speech_synthesis.speech_synthesis_api
+        ),
+        telegram.telegram_api.__name__: Process(target=telegram.telegram_api),
     }
     if models.env.plot_mic:
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
         process_dict[graph_mic.plot_mic.__name__] = Process(
             target=crontab.executor,
-            kwargs={'statement': statement,
-                    'log_file': datetime.now().strftime(os.path.join('logs', 'mic_plotter_%d-%m-%Y.log')),
-                    'process_name': graph_mic.plot_mic.__name__}
+            kwargs={
+                "statement": statement,
+                "log_file": datetime.now().strftime(
+                    os.path.join("logs", "mic_plotter_%d-%m-%Y.log")
+                ),
+                "process_name": graph_mic.plot_mic.__name__,
+            },
         )
     # Used when a single process is requested to be triggered
-    processes: Dict[str, Process] = {func_name: process_dict[func_name]} if func_name else process_dict
+    processes: Dict[str, Process] = (
+        {func_name: process_dict[func_name]} if func_name else process_dict
+    )
     for func, process in processes.items():
         process.name = func
         process.start()
-        logger.info("Started function: {func} with PID: {pid}".format(func=func, pid=process.pid))
-    Thread(target=create_process_mapping, kwargs=dict(processes=processes, func_name=func_name)).start()
+        logger.info(
+            "Started function: {func} with PID: {pid}".format(
+                func=func, pid=process.pid
+            )
+        )
+    Thread(
+        target=create_process_mapping,
+        kwargs=dict(processes=processes, func_name=func_name),
+    ).start()
     return processes[func_name] if func_name else processes
 
 
@@ -135,8 +163,12 @@ def stop_child_processes() -> None:
         for child in models.TABLES["children"]:
             # Use f-string or %s as condition cannot be parametrized
             data = cursor.execute(f"SELECT {child} FROM children").fetchall()
-            children[child]: List[int] = util.matrix_to_flat_list([list(filter(None, d)) for d in data if any(d)])
-    logger.info(children)  # Include empty lists so logs have more information but will get skipped when looping anyway
+            children[child]: List[int] = util.matrix_to_flat_list(
+                [list(filter(None, d)) for d in data if any(d)]
+            )
+    logger.info(
+        children
+    )  # Include empty lists so logs have more information but will get skipped when looping anyway
     for category, pids in children.items():
         for pid in pids:
             try:

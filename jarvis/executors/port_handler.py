@@ -20,10 +20,10 @@ def is_port_in_use(port: int) -> bool:
         A boolean flag to indicate whether a port is open.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        return sock.connect_ex(('localhost', port)) == 0
+        return sock.connect_ex(("localhost", port)) == 0
 
 
-def kill_port_pid(port: int, protocol: str = 'tcp') -> bool | None:
+def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
     """Uses List all open files ``lsof`` to get the PID of the process that is listening on the given port and kills it.
 
     Args:
@@ -41,18 +41,32 @@ def kill_port_pid(port: int, protocol: str = 'tcp') -> bool | None:
         Flag to indicate whether the process was terminated successfully.
     """
     try:
-        active_sessions = subprocess.check_output(f"lsof -i {protocol}:{port}", shell=True).decode('utf-8').splitlines()
+        active_sessions = (
+            subprocess.check_output(f"lsof -i {protocol}:{port}", shell=True)
+            .decode("utf-8")
+            .splitlines()
+        )
         for each in active_sessions:
             each_split = each.split()
-            if each_split[0].strip() == 'Python':
-                logger.info("Application hosted on %s is listening to port: %d", each_split[-2], port)
+            if each_split[0].strip() == "Python":
+                logger.info(
+                    "Application hosted on %s is listening to port: %d",
+                    each_split[-2],
+                    port,
+                )
                 pid = int(each_split[1])
                 if pid == models.settings.pid:
                     called_function = sys._getframe(1).f_code.co_name  # noqa
-                    called_file = sys._getframe(1).f_code.co_filename.replace(f'{os.getcwd()}/', '')  # noqa
-                    logger.warning("%s from %s tried to kill the running process.", called_function, called_file)
+                    called_file = sys._getframe(1).f_code.co_filename.replace(
+                        f"{os.getcwd()}/", ""
+                    )  # noqa
+                    logger.warning(
+                        "%s from %s tried to kill the running process.",
+                        called_function,
+                        called_file,
+                    )
                     warnings.warn(
-                        f'OPERATION DENIED: {called_function} from {called_file} tried to kill the running process.'
+                        f"OPERATION DENIED: {called_function} from {called_file} tried to kill the running process."
                     )
                     return
                 os.kill(pid, signal.SIGTERM)
@@ -62,7 +76,7 @@ def kill_port_pid(port: int, protocol: str = 'tcp') -> bool | None:
         return False
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):
-            result = error.output.decode(encoding='UTF-8').strip()
+            result = error.output.decode(encoding="UTF-8").strip()
             logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)

@@ -26,11 +26,16 @@ def kill_power() -> None:
     """Inserts a flag into stopper table in base database."""
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute("INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);", (True, 'FastAPI'))
+        cursor.execute(
+            "INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);",
+            (True, "FastAPI"),
+        )
         cursor.connection.commit()
 
 
-async def process_ok_response(response: str, input_data: modals.OfflineCommunicatorModal) -> bytes | FileResponse:
+async def process_ok_response(
+    response: str, input_data: modals.OfflineCommunicatorModal
+) -> bytes | FileResponse:
     """Processes responses for 200 messages. Response is framed as synthesized or native based on input data.
 
     Args:
@@ -43,25 +48,40 @@ async def process_ok_response(response: str, input_data: modals.OfflineCommunica
     """
     if input_data.speech_timeout:
         logger.info("Storing response as %s", models.fileio.speech_synthesis_wav)
-        if binary := await speech_synthesis.speech_synthesis(input_data=modals.SpeechSynthesisModal(
-                text=response, timeout=input_data.speech_timeout, quality="low"  # low quality to speed up response
-        ), raise_for_status=False):
+        if binary := await speech_synthesis.speech_synthesis(
+            input_data=modals.SpeechSynthesisModal(
+                text=response,
+                timeout=input_data.speech_timeout,
+                quality="low",  # low quality to speed up response
+            ),
+            raise_for_status=False,
+        ):
             return binary
         else:
             input_data.native_audio = True  # try native voice if SpeechSynthesis fails
     if input_data.native_audio:
         if native_audio_wav := tts_stt.text_to_audio(text=response):
             logger.info("Storing response as %s in native audio.", native_audio_wav)
-            Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': native_audio_wav}, daemon=True).start()
-            return FileResponse(path=native_audio_wav, media_type='application/octet-stream',
-                                filename="synthesized.wav", status_code=HTTPStatus.OK.real)
+            Thread(
+                target=support.remove_file,
+                kwargs={"delay": 2, "filepath": native_audio_wav},
+                daemon=True,
+            ).start()
+            return FileResponse(
+                path=native_audio_wav,
+                media_type="application/octet-stream",
+                filename="synthesized.wav",
+                status_code=HTTPStatus.OK.real,
+            )
         logger.error("Failed to generate audio file in native voice.")
     # Send response as text if requested so or if all other options fail
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
 @router.post(path="/offline-communicator", dependencies=authenticator.OFFLINE_PROTECTOR)
-async def offline_communicator_api(request: Request, input_data: modals.OfflineCommunicatorModal):
+async def offline_communicator_api(
+    request: Request, input_data: modals.OfflineCommunicatorModal
+):
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
@@ -84,43 +104,69 @@ async def offline_communicator_api(request: Request, input_data: modals.OfflineC
         FileResponse:
         Returns the audio file as a response if the output is requested as audio.
     """
-    logger.debug("Connection received from %s via %s using %s",
-                 request.client.host, request.headers.get('host'), request.headers.get('user-agent'))
+    logger.debug(
+        "Connection received from %s via %s using %s",
+        request.client.host,
+        request.headers.get("host"),
+        request.headers.get("user-agent"),
+    )
     if not (command := input_data.command.strip()):
-        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase)
+        raise APIResponse(
+            status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase
+        )
 
     logger.info("Request: %s", command)
-    if command.lower() == 'test':
+    if command.lower() == "test":
         logger.info("Test message received.")
-        raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
+        raise APIResponse(
+            status_code=HTTPStatus.OK.real, detail="Test message received."
+        )
 
-    if word_match.word_match(phrase=command, match_list=keywords.keywords['kill']) and 'override' in command.lower():
+    if (
+        word_match.word_match(phrase=command, match_list=keywords.keywords["kill"])
+        and "override" in command.lower()
+    ):
         logger.info("STOP override has been requested.")
         Thread(target=kill_power).start()
-        return await process_ok_response(response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
-                                         input_data=input_data)
+        return await process_ok_response(
+            response=f"Shutting down now {models.env.title}!\n{support.exit_message()}",
+            input_data=input_data,
+        )
 
-    if word_match.word_match(phrase=command, match_list=keywords.keywords['restrictions']):
+    if word_match.word_match(
+        phrase=command, match_list=keywords.keywords["restrictions"]
+    ):
         try:
-            raise APIResponse(status_code=HTTPStatus.OK.real,
-                              detail=restrictions.handle_restrictions(phrase=command))
+            raise APIResponse(
+                status_code=HTTPStatus.OK.real,
+                detail=restrictions.handle_restrictions(phrase=command),
+            )
         except InvalidArgument as error:
-            raise APIResponse(status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__())
-    if word_match.word_match(phrase=command, match_list=keywords.keywords['secrets']) and \
-            word_match.word_match(phrase=command, match_list=('list', 'get', 'send', 'create', 'share')):
+            raise APIResponse(
+                status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__()
+            )
+    if word_match.word_match(
+        phrase=command, match_list=keywords.keywords["secrets"]
+    ) and word_match.word_match(
+        phrase=command, match_list=("list", "get", "send", "create", "share")
+    ):
         response = others.secrets(phrase=command)
         if len(response.split()) == 1:
-            response = "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n" \
-                       "Note that the secret cannot be retrieved again using the same token and the token will " \
-                       f"expire in 5 minutes.\n\n{response}"
+            response = (
+                "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n"
+                "Note that the secret cannot be retrieved again using the same token and the token will "
+                f"expire in 5 minutes.\n\n{response}"
+            )
         else:
             logger.error("Response: %s", response)
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
-    if 'alarm' in command.lower() or 'remind' in command.lower():
+    if "alarm" in command.lower() or "remind" in command.lower():
         command = command.lower()
-    if ' and ' in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
-        and_phrases = command.split(' and ')
+    if " and " in command and not word_match.word_match(
+        phrase=command, match_list=keywords.ignore_and
+    ):
+        and_phrases = command.split(" and ")
         logger.info("Looping through %s in iterations.", and_phrases)
         and_response = ""
         for each in and_phrases:
@@ -133,12 +179,21 @@ async def offline_communicator_api(request: Request, input_data: modals.OfflineC
         logger.info("Response: %s", and_response.strip())
         return await process_ok_response(response=and_response, input_data=input_data)
 
-    if ' after ' in command.lower() and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
+    if " after " in command.lower() and not word_match.word_match(
+        phrase=command, match_list=keywords.ignore_after
+    ):
         if delay_info := commander.timed_delay(phrase=command):
-            logger.info("%s will be executed after %s", delay_info[0], support.time_converter(second=delay_info[1]))
-            return await process_ok_response(response='I will execute it after '
-                                                      f'{support.time_converter(second=delay_info[1])} '
-                                                      f'{models.env.title}!', input_data=input_data)
+            logger.info(
+                "%s will be executed after %s",
+                delay_info[0],
+                support.time_converter(second=delay_info[1]),
+            )
+            return await process_ok_response(
+                response="I will execute it after "
+                f"{support.time_converter(second=delay_info[1])} "
+                f"{models.env.title}!",
+                input_data=input_data,
+            )
     try:
         response = offline.offline_communicator(command=command)
     except Exception as error:
@@ -146,9 +201,17 @@ async def offline_communicator_api(request: Request, input_data: modals.OfflineC
         logger.error(traceback.format_exc())
         response = error.__str__()
     logger.info("Response: %s", response)
-    if os.path.isfile(response) and response.endswith('.jpg'):
+    if os.path.isfile(response) and response.endswith(".jpg"):
         logger.info("Response received as a file.")
-        Thread(target=support.remove_file, kwargs={'delay': 2, 'filepath': response}, daemon=True).start()
-        return FileResponse(path=response, media_type=f'image/{imghdr.what(file=response)}',
-                            filename=os.path.basename(response), status_code=HTTPStatus.OK.real)
+        Thread(
+            target=support.remove_file,
+            kwargs={"delay": 2, "filepath": response},
+            daemon=True,
+        ).start()
+        return FileResponse(
+            path=response,
+            media_type=f"image/{imghdr.what(file=response)}",
+            filename=os.path.basename(response),
+            status_code=HTTPStatus.OK.real,
+        )
     return await process_ok_response(response=response, input_data=input_data)

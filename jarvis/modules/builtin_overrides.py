@@ -4,8 +4,7 @@ import logging
 
 import uvicorn
 import yaml
-from yaml.dumper import Dumper
-from yaml.nodes import Node
+from yaml.nodes import MappingNode
 
 
 class APIServer(uvicorn.Server):
@@ -27,9 +26,9 @@ class APIServer(uvicorn.Server):
         self.run()
 
 
-def ordered_load(stream,
-                 Loader=yaml.SafeLoader,  # noqa
-                 object_pairs_hook=collections.OrderedDict) -> collections.OrderedDict:  # noqa
+def ordered_load(
+    stream, Loader=yaml.SafeLoader, object_pairs_hook=collections.OrderedDict  # noqa
+) -> collections.OrderedDict:  # noqa
     """Custom loader for OrderedDict.
 
     Args:
@@ -51,20 +50,23 @@ def ordered_load(stream,
 
         pass
 
-    def construct_mapping(loader: Loader, node: Node) -> collections.OrderedDict:
+    def construct_mapping(loader: Loader, node: MappingNode) -> collections.OrderedDict:
         """Create a mapping for the constructor."""
         loader.flatten_mapping(node)
         return object_pairs_hook(loader.construct_pairs(node))
 
     OrderedLoader.add_constructor(
         tag=yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        constructor=construct_mapping
+        constructor=construct_mapping,
     )
 
     return yaml.load(stream=stream, Loader=OrderedLoader)
 
 
-def ordered_dump(data, stream=None, Dumper=yaml.SafeDumper, **kwds) -> 'Dumper':  # noqa
+# noinspection PyPep8Naming
+def ordered_dump(
+    data, stream=None, Dumper=yaml.SafeDumper, **kwds  # noqa: N803
+) -> None | str | bytes:  # noqa
     """Custom dumper to serialize OrderedDict.
 
     Args:
@@ -99,11 +101,12 @@ def ordered_dump(data, stream=None, Dumper=yaml.SafeDumper, **kwds) -> 'Dumper':
             Returns the representer node.
         """
         return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            data.items()
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items()
         )
 
-    OrderedDumper.add_representer(data_type=collections.OrderedDict, representer=_dict_representer)
+    OrderedDumper.add_representer(
+        data_type=collections.OrderedDict, representer=_dict_representer
+    )
     return yaml.dump(data=data, stream=stream, Dumper=OrderedDumper, **kwds)
 
 

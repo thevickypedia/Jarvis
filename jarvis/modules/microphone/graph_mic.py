@@ -59,12 +59,14 @@ def list_devices() -> sounddevice.DeviceList:
 
 
 # noinspection PyUnusedLocal
-def audio_callback(indata: np.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> None:
+def audio_callback(
+    indata: np.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags
+) -> None:
     """This is called (from a separate thread) for each audio block."""
     if status:
         logger.info(status)
     # Fancy indexing with mapping creates a (necessary!) copy:
-    QUEUE.put(indata[::settings.down_sample, settings.mapping])
+    QUEUE.put(indata[:: settings.down_sample, settings.mapping])
 
 
 # noinspection PyUnusedLocal
@@ -88,9 +90,17 @@ def update_plot(frame: int) -> List[Line2D]:
     return settings.lines
 
 
-def plot_mic(channels: List[int] = None, device: str | int = None, window: int = 200,
-             interval: int = 30, samplerate: float = None, down_sample: int = 10,
-             window_size: Tuple[int, int] = (5, 3), rate: int = 40, dark_mode: bool = True) -> None:
+def plot_mic(
+    channels: List[int] = None,
+    device: str | int = None,
+    window: int = 200,
+    interval: int = 30,
+    samplerate: float = None,
+    down_sample: int = 10,
+    window_size: Tuple[int, int] = (5, 3),
+    rate: int = 40,
+    dark_mode: bool = True,
+) -> None:
     """Loads all the arguments into a dict and kicks off the mapping.
 
     Args:
@@ -104,25 +114,31 @@ def plot_mic(channels: List[int] = None, device: str | int = None, window: int =
         rate: How quick the graph should be moving on screen (lower is slower, 1000 is pretty quick)
         dark_mode: Sets graph background to almost black
     """
-    multiprocessing_logger(filename=os.path.join('logs', 'mic_plotter_%d-%m-%Y.log'))
+    multiprocessing_logger(filename=os.path.join("logs", "mic_plotter_%d-%m-%Y.log"))
     subprocess_id = os.getpid()
     logger.info("Updating process ID [%d] in [plot_mic] children table.", subprocess_id)
     db = database.Database(database=models.fileio.base_db)
     with db.connection:
         cursor = db.connection.cursor()
         cursor.execute("UPDATE children SET plot_mic=null")
-        cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,))
+        cursor.execute(
+            "INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,)
+        )
         db.connection.commit()
-    logger.info("Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id)
+    logger.info(
+        "Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id
+    )
     if os.path.isfile(models.fileio.processes):
         with open(models.fileio.processes) as file:
             dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         if not dump.get(plot_mic.__name__):
-            logger.critical("ATTENTION::Missing %s's process ID in '%s'" %
-                            (plot_mic.__name__, models.fileio.processes))
+            logger.critical(
+                "ATTENTION::Missing %s's process ID in '%s'"
+                % (plot_mic.__name__, models.fileio.processes)
+            )
         # WATCH OUT: for changes in docstring in "processor.py -> create_process_mapping() -> Handles -> plot_mic"
         dump[plot_mic.__name__] = [subprocess_id, "Plot microphone usage in real time"]
-        with open(models.fileio.processes, 'w') as file:
+        with open(models.fileio.processes, "w") as file:
             yaml.dump(data=dump, stream=file)
     else:
         logger.critical("ATTENTION::Missing '%s'", models.fileio.processes)
@@ -130,8 +146,8 @@ def plot_mic(channels: List[int] = None, device: str | int = None, window: int =
     if not channels:
         channels = [1]
     if not samplerate:
-        device_info = sounddevice.query_devices(device, 'input')
-        samplerate = device_info['default_samplerate']
+        device_info = sounddevice.query_devices(device, "input")
+        samplerate = device_info["default_samplerate"]
     settings.channels = channels
     settings.device = device
     settings.window = window
@@ -146,17 +162,19 @@ def plot_mic(channels: List[int] = None, device: str | int = None, window: int =
     try:
         _kick_off()
     except Exception as error:
-        logger.error(type(error).__name__ + ': ' + error.__str__())
+        logger.error(type(error).__name__ + ": " + error.__str__())
 
 
 def _kick_off() -> None:
     """Plots the live microphone signal(s) with matplotlib."""
     logger.info("Initiating microphone plotter")
     if settings.samplerate is None:
-        device_info = sounddevice.query_devices(settings.device, 'input')
-        settings.samplerate = device_info['default_samplerate']
+        device_info = sounddevice.query_devices(settings.device, "input")
+        settings.samplerate = device_info["default_samplerate"]
 
-    length = int(settings.window * settings.samplerate / (settings.rate * settings.down_sample))
+    length = int(
+        settings.window * settings.samplerate / (settings.rate * settings.down_sample)
+    )
     settings.plot_data = np.zeros((length, len(settings.channels)))
 
     # Add type hint when unpacking a tuple (lazy way to avoid variables)
@@ -164,13 +182,22 @@ def _kick_off() -> None:
     fig.set_size_inches(settings.window_size)
     settings.lines = ax.plot(settings.plot_data)
     if len(settings.channels) > 1:
-        ax.legend([f'channel {c}' for c in settings.channels],
-                  loc='lower left', ncol=len(settings.channels))
+        ax.legend(
+            [f"channel {c}" for c in settings.channels],
+            loc="lower left",
+            ncol=len(settings.channels),
+        )
     ax.axis((0, len(settings.plot_data), -1, 1))
     ax.set_yticks([0])
     ax.yaxis.grid(True)
-    ax.tick_params(bottom=False, top=False, labelbottom=False,
-                   right=False, left=False, labelleft=False)
+    ax.tick_params(
+        bottom=False,
+        top=False,
+        labelbottom=False,
+        right=False,
+        left=False,
+        labelleft=False,
+    )
     # Labels are not set, but if it is to be set, then set padding at least to 2
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Frequency')
@@ -178,21 +205,30 @@ def _kick_off() -> None:
     plt.legend(["Microphone Amplitude"])
     fig.canvas.manager.set_window_title("Realtime Spectrum Display")
     if settings.dark_mode:
-        ax.set_facecolor('xkcd:almost black')  # https://xkcd.com/color/rgb/
+        ax.set_facecolor("xkcd:almost black")  # https://xkcd.com/color/rgb/
         # Takes RGB or RGBA values as arguments
         # ax.set_facecolor((0.1, 0.1, 0.1))  # https://matplotlib.org/stable/api/colors_api.html
 
     stream = sounddevice.InputStream(
-        device=settings.device, channels=max(settings.channels),
-        samplerate=settings.samplerate, callback=audio_callback
+        device=settings.device,
+        channels=max(settings.channels),
+        samplerate=settings.samplerate,
+        callback=audio_callback,
     )
-    ani = FuncAnimation(fig=fig, func=update_plot, interval=settings.interval, blit=True, cache_frame_data=False)  # noqa
+    # noinspection PyUnusedLocal
+    ani = FuncAnimation(  # noqa: F841
+        fig=fig,
+        func=update_plot,
+        interval=settings.interval,
+        blit=True,
+        cache_frame_data=False,
+    )
     with stream:
         plt.show()
     process_map.remove(plot_mic.__name__)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # imports within __main__ to avoid potential/future path error and circular import
     # override 'current_process().name' to avoid being set as 'MainProcess'
     # importing at top level requires setting current_process().name at top level which will in turn override any import

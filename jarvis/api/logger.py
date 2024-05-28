@@ -32,5 +32,7 @@ if not os.path.isfile(api_config.DEFAULT_LOG_FILENAME):
 # Configure logging
 importlib.reload(module=logging)
 dictConfig(config=api_config.LOG_CONFIG)
-logging.getLogger("uvicorn.access").propagate = False  # Disables access logger in default logger to log independently
+logging.getLogger(
+    "uvicorn.access"
+).propagate = False  # Disables access logger in default logger to log independently
 logger = logging.getLogger("uvicorn.default")

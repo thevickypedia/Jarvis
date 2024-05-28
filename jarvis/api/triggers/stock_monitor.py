@@ -27,10 +27,12 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> str 
         https://stackoverflow.com/a/49729752
     """
     logger.info("Generating price chart for '%s'", ticker)
-    dataframe = webull().get_bars(stock=ticker, interval='m60', count=bars, extendTrading=1)  # ~ 1 month
-    refined = dataframe[['close']]
+    dataframe = webull().get_bars(
+        stock=ticker, interval="m60", count=bars, extendTrading=1
+    )  # ~ 1 month
+    refined = dataframe[["close"]]
     if len(refined) == 0:
-        refined = dataframe[['open']]
+        refined = dataframe[["open"]]
     x = util.matrix_to_flat_list(input_=refined.values.tolist())
     y = [i.to_pydatetime() for i in refined.iloc[:, 0].keys()]
 
@@ -84,7 +86,7 @@ class StockMonitor:
     def at_exit(self):
         """Removes bin file created by webull client and updates the repeat alerts yaml mapping."""
         stockmonitor_squire.put_daily_alerts(params=self.repeat_alerts)
-        os.remove('did.bin') if os.path.isfile('did.bin') else None
+        os.remove("did.bin") if os.path.isfile("did.bin") else None
 
     def group_data(self) -> None:
         """Groups columns in the database by ticker to check the current prices and by email to send a notification.
@@ -110,12 +112,14 @@ class StockMonitor:
             prices[ticker] = {}
             try:
                 price_check = webull().get_quote(ticker)
-                if current_price := round(float(price_check.get('close') or price_check.get('open')), 2):
-                    prices[ticker]['price'] = float(current_price)
+                if current_price := round(
+                    float(price_check.get("close") or price_check.get("open")), 2
+                ):
+                    prices[ticker]["price"] = float(current_price)
                 else:
                     raise ValueError(price_check)
-                if category := price_check.get('disExchangeCode'):
-                    prices[ticker]['exchange_code'] = category
+                if category := price_check.get("disExchangeCode"):
+                    prices[ticker]["exchange_code"] = category
                 else:
                     raise ValueError(price_check)
             except ValueError as error:
@@ -124,7 +128,9 @@ class StockMonitor:
         return prices
 
     @staticmethod
-    def closest_maximum(stock_price: int | float, maximum: int | float, correction: int) -> bool:
+    def closest_maximum(
+        stock_price: int | float, maximum: int | float, correction: int
+    ) -> bool:
         """Determines if a stock price is close to the maximum value.
 
         Examples:
@@ -144,13 +150,17 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is less than set maximum by correction percentage.
         """
-        if correction < 1:  # Because math.floor will round it off to the previous whole number
+        if (
+            correction < 1
+        ):  # Because math.floor will round it off to the previous whole number
             return False
         max_corrected_amt = math.floor(maximum - (stock_price * correction / 100))
         return stock_price >= max_corrected_amt
 
     @staticmethod
-    def closest_minimum(stock_price: int | float, minimum: int | float, correction: int) -> bool:
+    def closest_minimum(
+        stock_price: int | float, minimum: int | float, correction: int
+    ) -> bool:
         """Determines if a stock price is close to the minimum value.
 
         Examples:
@@ -170,12 +180,16 @@ class StockMonitor:
             bool:
             Boolean flag to indicate whether the current stock price is more than set maximum by correction percentage.
         """
-        if correction < 1:  # Because math.ceil will round it off to the next whole number
+        if (
+            correction < 1
+        ):  # Because math.ceil will round it off to the next whole number
             return False
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
 
-    def skip_signal(self, condition_list: Tuple[Any, Any, Any, Any, Any, Any], hours: int = 12) -> bool:
+    def skip_signal(
+        self, condition_list: Tuple[Any, Any, Any, Any, Any, Any], hours: int = 12
+    ) -> bool:
         """Generate a skip signal for a particular stock monitoring alert.
 
         Args:
@@ -189,7 +203,9 @@ class StockMonitor:
         for repeater in self.repeat_alerts:
             for alert_time, alert_entry in repeater.items():
                 if alert_entry == condition_list:
-                    if time.time() <= alert_time + hours * 60 * 60:  # no notification should be triggered
+                    if (
+                        time.time() <= alert_time + hours * 60 * 60
+                    ):  # no notification should be triggered
                         return True
                     else:
                         self.repeat_alerts.remove({alert_time: alert_entry})
@@ -204,11 +220,16 @@ class StockMonitor:
             return
         subject = f"Stock Price Alert - {datetime.now().strftime('%c')}"
         prices = self.get_prices()
-        mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user,
-                                            gmail_pass=models.env.open_gmail_pass)
+        mail_obj = gmailconnector.SendEmail(
+            gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass
+        )
 
         for email_addr, corresponding_alerts in self.email_grouped.items():
-            datastore = {'text_gathered': [], 'removals': [], 'attachments': []}  # unique datastore for each user
+            datastore = {
+                "text_gathered": [],
+                "removals": [],
+                "attachments": [],
+            }  # unique datastore for each user
             for trigger in corresponding_alerts:
                 ticker = trigger[0]
                 maximum = trigger[1]
@@ -218,57 +239,94 @@ class StockMonitor:
                 if not prices[ticker]:
                     continue
                 if daily_alerts == "on" and self.skip_signal(
-                        condition_list=(ticker, email_addr, maximum, minimum, correction, daily_alerts),
+                    condition_list=(
+                        ticker,
+                        email_addr,
+                        maximum,
+                        minimum,
+                        correction,
+                        daily_alerts,
+                    ),
                 ):
                     self.logger.info("Skipping validations due to daily alerts.")
                     continue
-                ticker_hyperlinked = '<a href="https://www.webull.com/quote/' \
-                                     f'{prices[ticker]["exchange_code"].lower()}-{ticker.lower()}">{ticker}</a>'
+                ticker_hyperlinked = (
+                    '<a href="https://www.webull.com/quote/'
+                    f'{prices[ticker]["exchange_code"].lower()}-{ticker.lower()}">{ticker}</a>'
+                )
                 if not maximum and not minimum:
                     raise ValueError("Un-processable without both min and max")
                 maximum = util.format_nos(maximum)
                 minimum = util.format_nos(minimum)
                 email_text = ""
-                if maximum and prices[ticker]['price'] >= maximum:
+                if maximum and prices[ticker]["price"] >= maximum:
                     email_text += f"{ticker_hyperlinked} has increased more than the set value: ${maximum:,}"
-                elif maximum and self.closest_maximum(prices[ticker]['price'], maximum, correction):
-                    email_text += f"{ticker_hyperlinked} is close (within {correction}% range) to the set " \
-                                  f"maximum value: ${maximum:,}"
-                elif minimum and prices[ticker]['price'] <= minimum:
+                elif maximum and self.closest_maximum(
+                    prices[ticker]["price"], maximum, correction
+                ):
+                    email_text += (
+                        f"{ticker_hyperlinked} is close (within {correction}% range) to the set "
+                        f"maximum value: ${maximum:,}"
+                    )
+                elif minimum and prices[ticker]["price"] <= minimum:
                     email_text += f"{ticker_hyperlinked} has decreased less than the set value: ${minimum:,}"
-                elif minimum and self.closest_minimum(prices[ticker]['price'], minimum, correction):
-                    email_text += f"{ticker_hyperlinked} is close (within {correction}% range) to the set " \
-                                  f"minimum value: ${minimum:,}"
+                elif minimum and self.closest_minimum(
+                    prices[ticker]["price"], minimum, correction
+                ):
+                    email_text += (
+                        f"{ticker_hyperlinked} is close (within {correction}% range) to the set "
+                        f"minimum value: ${minimum:,}"
+                    )
                 if email_text:
                     email_text += f"<br>Current price of {ticker_hyperlinked} is ${prices[ticker]['price']:,}"
-                    datastore['text_gathered'].append(email_text)
-                    datastore['removals'].append(
-                        (ticker, email_addr, float(maximum), float(minimum), correction, daily_alerts)
+                    datastore["text_gathered"].append(email_text)
+                    datastore["removals"].append(
+                        (
+                            ticker,
+                            email_addr,
+                            float(maximum),
+                            float(minimum),
+                            correction,
+                            daily_alerts,
+                        )
                     )
-                    datastore['attachments'].append(generate_graph(ticker=ticker, logger=self.logger))
-            if not datastore['text_gathered']:
+                    datastore["attachments"].append(
+                        generate_graph(ticker=ticker, logger=self.logger)
+                    )
+            if not datastore["text_gathered"]:
                 self.logger.info("Nothing to report")
                 return
             template = jinja2.Template(templates.email.stock_alert).render(
-                CONVERTED="<br><br>".join(datastore['text_gathered'])
+                CONVERTED="<br><br>".join(datastore["text_gathered"])
             )
-            response = mail_obj.send_email(subject=subject, recipient=email_addr, html_body=template, sender="Jarvis",
-                                           attachment=datastore['attachments'])
+            response = mail_obj.send_email(
+                subject=subject,
+                recipient=email_addr,
+                html_body=template,
+                sender="Jarvis",
+                attachment=datastore["attachments"],
+            )
             if response.ok:
                 self.logger.info("Email has been sent to '%s'", email_addr)
-                for entry in datastore['removals']:
+                for entry in datastore["removals"]:
                     if entry[5] == "off":
                         self.logger.info("Removing '%s' from database.", entry)
                         stockmonitor_squire.delete_stock_userdata(data=entry)
                     else:
-                        self.logger.info("Retaining '%s' as user subscribed for daily alerts.", entry)
+                        self.logger.info(
+                            "Retaining '%s' as user subscribed for daily alerts.", entry
+                        )
                         self.repeat_alerts.append({int(time.time()): entry})
             else:
                 self.logger.error(response.json())
-            [os.remove(stock_graph) for stock_graph in datastore['attachments'] if os.path.isfile(stock_graph)]
+            [
+                os.remove(stock_graph)
+                for stock_graph in datastore["attachments"]
+                if os.path.isfile(stock_graph)
+            ]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # imports within __main__ to avoid potential/future path error and circular import
     # override 'current_process().name' to avoid being set as 'MainProcess'
     # importing at top level requires setting current_process().name at top level which will in turn override any import

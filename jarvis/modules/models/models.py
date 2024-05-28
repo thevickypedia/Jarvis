@@ -44,7 +44,15 @@ TABLES = {
     "ics": ("info", "date"),
     "stopper": ("flag", "caller"),
     "restart": ("flag", "caller"),
-    "children": ("meetings", "events", "crontab", "party", "guard", "surveillance", "plot_mic"),
+    "children": (
+        "meetings",
+        "events",
+        "crontab",
+        "party",
+        "guard",
+        "surveillance",
+        "plot_mic",
+    ),
     "vpn": ("state",),
     "party": ("pid",),
     "guard": ("state", "trigger"),
@@ -101,17 +109,27 @@ def _main_process_validations() -> None:
     if settings.legacy:
         pvporcupine.KEYWORD_PATHS = {}
         base_path = os.path.dirname(pvporcupine.__file__)
-        pvporcupine.MODEL_PATH = os.path.join(base_path, 'lib/common/porcupine_params.pv')
-        pvporcupine.LIBRARY_PATH = os.path.join(base_path, 'lib/mac/x86_64/libpv_porcupine.dylib')
+        pvporcupine.MODEL_PATH = os.path.join(
+            base_path, "lib/common/porcupine_params.pv"
+        )
+        pvporcupine.LIBRARY_PATH = os.path.join(
+            base_path, "lib/mac/x86_64/libpv_porcupine.dylib"
+        )
 
         # Iterates over the available flash files, to override the object reference
-        for x in os.listdir(os.path.join(base_path, 'resources/keyword_files/mac/')):
-            pvporcupine.KEYWORD_PATHS[x.split('_')[0]] = os.path.join(base_path, f'resources/keyword_files/mac/{x}')
+        for x in os.listdir(os.path.join(base_path, "resources/keyword_files/mac/")):
+            pvporcupine.KEYWORD_PATHS[x.split("_")[0]] = os.path.join(
+                base_path, f"resources/keyword_files/mac/{x}"
+            )
 
     for keyword in env.wake_words:
-        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(pvporcupine.KEYWORD_PATHS[keyword]):
-            raise InvalidEnvVars(f"Detecting {keyword!r} is unsupported!\n"
-                                 f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}")
+        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(
+            pvporcupine.KEYWORD_PATHS[keyword]
+        ):
+            raise InvalidEnvVars(
+                f"Detecting {keyword!r} is unsupported!\n"
+                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
+            )
 
     # If sensitivity is an integer or float, converts it to a list
     if isinstance(env.sensitivity, float) or isinstance(env.sensitivity, PositiveInt):
@@ -148,7 +166,8 @@ def _global_validations() -> None:
     if settings.legacy:
         warnings.warn(
             f"\nmacOS {platform.mac_ver()[0]} will be deprecated in the near future\n"
-            f"Please upgrade to 10.14 or above to continue using Jarvis", DeprecationWarning
+            f"Please upgrade to 10.14 or above to continue using Jarvis",
+            DeprecationWarning,
         )
 
     if voice_names := [__voice.name for __voice in voices]:
@@ -156,8 +175,10 @@ def _global_validations() -> None:
             _set_default_voice_name()
         elif env.voice_name not in voice_names:
             if main:
-                raise InvalidEnvVars(f"{env.voice_name!r} is not available.\n"
-                                     f"Available voices are: {', '.join(voice_names)}")
+                raise InvalidEnvVars(
+                    f"{env.voice_name!r} is not available.\n"
+                    f"Available voices are: {', '.join(voice_names)}"
+                )
             else:
                 _set_default_voice_name()
                 warnings.warn(
@@ -170,14 +191,12 @@ def _global_validations() -> None:
 
     # Note: Pydantic validation for ICS_URL can be implemented using regex=".*ics$"
     # However it will NOT work in this use case, since the type hint is HttpUrl
-    if env.ics_url and not env.ics_url.path.endswith('.ics'):
+    if env.ics_url and not env.ics_url.path.endswith(".ics"):
         if main:
             raise InvalidEnvVars("'ICS_URL' should end with .ics")
         else:
             env.ics_url = None
-            warnings.warn(
-                "'ICS_URL' should end with .ics"
-            )
+            warnings.warn("'ICS_URL' should end with .ics")
 
     if env.speech_synthesis_port == env.offline_port:
         if main:
@@ -191,14 +210,16 @@ def _global_validations() -> None:
                 f"Defaulting to {env.speech_synthesis_port}"
             )
 
-    if env.limited:  # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
+    if (
+        env.limited
+    ):  # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
         settings.limited = True
-    if env.limited is False:  # If env var is set as False to brute force full version on a device with < 4 processors
+    if (
+        env.limited is False
+    ):  # If env var is set as False to brute force full version on a device with < 4 processors
         settings.limited = False
     if settings.limited is True and env.weather_alert:
-        warnings.warn(
-            "weather alert cannot function on limited mode"
-        )
+        warnings.warn("weather alert cannot function on limited mode")
     if env.author_mode and settings.limited:
         warnings.warn(
             "'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode."
@@ -236,18 +257,27 @@ def _global_validations() -> None:
         cam = cv2.VideoCapture(env.camera_index)
         if cam is None or not cam.isOpened() or cam.read() == (False, None):
             if main:
-                raise CameraError(f"Unable to read the camera - {cameras[env.camera_index]}")
+                raise CameraError(
+                    f"Unable to read the camera - {cameras[env.camera_index]}"
+                )
             else:
-                warnings.warn(f"Unable to read the camera - {cameras[env.camera_index]}")
+                warnings.warn(
+                    f"Unable to read the camera - {cameras[env.camera_index]}"
+                )
                 env.camera_index = None
         cam.release()
 
     # Validate voice for speech synthesis
     try:
-        response = requests.get(url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
-                                timeout=(3, 3))  # Set connect and read timeout explicitly
+        response = requests.get(
+            url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
+            timeout=(3, 3),
+        )  # Set connect and read timeout explicitly
         if response.ok:
-            available_voices = [value.get('id').replace('/', '_') for key, value in response.json().items()]
+            available_voices = [
+                value.get("id").replace("/", "_")
+                for key, value in response.json().items()
+            ]
             if env.speech_synthesis_voice not in available_voices:
                 if main:
                     raise InvalidEnvVars(

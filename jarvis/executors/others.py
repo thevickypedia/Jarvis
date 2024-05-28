@@ -49,7 +49,7 @@ db = database.Database(database=models.fileio.base_db)
 # set to be accessible only via offline communicators
 # WATCH OUT: for changes in function name
 if models.settings.pname in ("jarvis_api", "telegram_api"):
-    SECRET_STORAGE = {'aws': [], 'local': []}
+    SECRET_STORAGE = {"aws": [], "local": []}
     SESSION = boto3.Session()
     SECRET_CLIENT = SESSION.client(service_name="secretsmanager")
     SSM_CLIENT = SESSION.client(service_name="ssm")
@@ -64,7 +64,7 @@ def repeat(phrase: str) -> None:
     if "i" in phrase.lower().split():
         speaker.speak(text="Please tell me what to repeat.", run=True)
         if keyword := listener.listen():
-            if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+            if "exit" in keyword or "quit" in keyword or "Xzibit" in keyword:
                 pass
             else:
                 speaker.speak(text=f"I heard {keyword}")
@@ -92,29 +92,29 @@ def apps(phrase: str) -> None:
         return
 
     keyword = phrase.split()[-1] if phrase else None
-    ignore = ['app', 'application']
+    ignore = ["app", "application"]
     if not keyword or keyword in ignore:
         if shared.called_by_offline:
-            speaker.speak(text=f'I need an app name to open {models.env.title}!')
+            speaker.speak(text=f"I need an app name to open {models.env.title}!")
             return
         speaker.speak(text=f"Which app shall I open {models.env.title}?", run=True)
         if keyword := listener.listen():
-            if 'exit' in keyword or 'quit' in keyword or 'Xzibit' in keyword:
+            if "exit" in keyword or "quit" in keyword or "Xzibit" in keyword:
                 return
         else:
             speaker.speak(text="I didn't quite get that. Try again.")
             return
 
     if models.settings.os == models.supported_platforms.windows:
-        status = os.system(f'start {keyword}')
+        status = os.system(f"start {keyword}")
         if status == 0:
-            speaker.speak(text=f'I have opened {keyword}')
+            speaker.speak(text=f"I have opened {keyword}")
         else:
             speaker.speak(text=f"I did not find the app {keyword}. Try again.")
         return
 
     all_apps = subprocess.check_output("ls /Applications/", shell=True)
-    apps_ = all_apps.decode('utf-8').split('\n')
+    apps_ = all_apps.decode("utf-8").split("\n")
 
     app_check = False
     for app in apps_:
@@ -125,13 +125,17 @@ def apps(phrase: str) -> None:
 
     if not app_check:
         speaker.speak(text=f"I did not find the app {keyword}. Try again.")
-        Thread(target=support.unrecognized_dumper, args=[{'APPLICATIONS': keyword}]).start()
+        Thread(
+            target=support.unrecognized_dumper, args=[{"APPLICATIONS": keyword}]
+        ).start()
         return
     app_status = os.system(f"open /Applications/{keyword!r} > /dev/null 2>&1")
-    keyword = keyword.replace('.app', '')
+    keyword = keyword.replace(".app", "")
     if app_status == 256:
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to launch {keyword}. "
-                           "You might need to check its permissions.")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I wasn't able to launch {keyword}. "
+            "You might need to check its permissions."
+        )
     else:
         speaker.speak(text=f"I have opened {keyword}")
 
@@ -142,11 +146,16 @@ def music(phrase: str = None) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    get_all_files = (os.path.join(root, f) for root, _, file in os.walk(os.path.join(models.env.home, "Music")) for f
-                     in file)
-    if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == '.mp3']:
+    get_all_files = (
+        os.path.join(root, f)
+        for root, _, file in os.walk(os.path.join(models.env.home, "Music"))
+        for f in file
+    )
+    if music_files := [
+        file for file in get_all_files if os.path.splitext(file)[1] == ".mp3"
+    ]:
         chosen = random.choice(music_files)
-        if phrase and 'speaker' in phrase:
+        if phrase and "speaker" in phrase:
             google_home(device=phrase, file=chosen)
         else:
             if models.settings.os == models.supported_platforms.windows:
@@ -156,7 +165,7 @@ def music(phrase: str = None) -> None:
             support.flush_screen()
             speaker.speak(text=f"Enjoy your music {models.env.title}!")
     else:
-        speaker.speak(text=f'No music files were found {models.env.title}!')
+        speaker.speak(text=f"No music files were found {models.env.title}!")
 
 
 def google_home(device: str = None, file: str = None) -> None:
@@ -188,8 +197,11 @@ def google_home(device: str = None, file: str = None) -> None:
         return
 
     if not shared.called_by_offline:
-        speaker.speak(text=f'Scanning your IP range for Google Home devices {models.env.title}!', run=True)
-    network_id = '.'.join(network_id.split('.')[:3])
+        speaker.speak(
+            text=f"Scanning your IP range for Google Home devices {models.env.title}!",
+            run=True,
+        )
+    network_id = ".".join(network_id.split(".")[:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str]:
         """Scans the IP range using the received args as host id in an IP address.
@@ -213,31 +225,48 @@ def google_home(device: str = None, file: str = None) -> None:
 
     devices = []
     with ThreadPoolExecutor(max_workers=100) as executor:
-        for info in executor.map(ip_scan, range(1, 101)):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
-            devices.append(info)  # this includes all the NoneType values returned by unassigned host IDs
-    devices = dict([i for i in devices if i])  # removes None values and converts list to dictionary of name and ip pair
+        for info in executor.map(
+            ip_scan, range(1, 101)
+        ):  # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
+            devices.append(
+                info
+            )  # this includes all the NoneType values returned by unassigned host IDs
+    devices = dict(
+        [i for i in devices if i]
+    )  # removes None values and converts list to dictionary of name and ip pair
 
     if not device or not file:
         support.flush_screen()
-        speaker.speak(text=f"You have {len(devices)} devices in your IP range {models.env.title}! "
-                           f"{util.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
-                           f"some music on any of these.")
+        speaker.speak(
+            text=f"You have {len(devices)} devices in your IP range {models.env.title}! "
+            f"{util.comma_separator(list(devices.keys()))}. You can choose one and ask me to play "
+            f"some music on any of these."
+        )
         return
     else:
-        chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
+        chosen = [
+            value for key, value in devices.items() if key.lower() in device.lower()
+        ]
         if not chosen:
-            speaker.speak(text=f"I don't see any matching devices {models.env.title}!. Let me help you. "
-                               f"You have {len(devices)} devices in your IP range {models.env.title}! "
-                               f"{util.comma_separator(list(devices.keys()))}.")
+            speaker.speak(
+                text=f"I don't see any matching devices {models.env.title}!. Let me help you. "
+                f"You have {len(devices)} devices in your IP range {models.env.title}! "
+                f"{util.comma_separator(list(devices.keys()))}."
+            )
             return
         for target in chosen:
-            file_url = serve_file(file, "audio/mp3")  # serves the file on local host and generates the play url
+            file_url = serve_file(
+                file, "audio/mp3"
+            )  # serves the file on local host and generates the play url
             support.flush_screen()
             with BlockPrint():
                 GoogleHome(host=target).play(file_url, "audio/mp3")
         if len(chosen) > 1:
-            speaker.speak(text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
-                               f"I hope you'll enjoy this {models.env.title}.", run=True)
+            speaker.speak(
+                text=f"That's interesting, you've asked me to play on {len(chosen)} devices at a time. "
+                f"I hope you'll enjoy this {models.env.title}.",
+                run=True,
+            )
         else:
             speaker.speak(text=f"Enjoy your music {models.env.title}!", run=True)
 
@@ -249,9 +278,13 @@ def jokes(*args) -> None:
 
 def flip_a_coin(*args) -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(sound=models.indicators.coin, block=True) if not shared.called_by_offline else None
-    speaker.speak(text=f"""{random.choice(['You got', 'It landed on',
-                                           "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}""")
+    playsound(
+        sound=models.indicators.coin, block=True
+    ) if not shared.called_by_offline else None
+    speaker.speak(
+        text=f"""{random.choice(['You got', 'It landed on',
+                                           "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}"""
+    )
 
 
 def facts(*args) -> None:
@@ -266,45 +299,59 @@ def meaning(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     keyword = phrase.split()[-1] if phrase else None
-    if not keyword or keyword == 'word':
+    if not keyword or keyword == "word":
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen()
-        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords['exit_']):
+        if not response or word_match.word_match(
+            phrase=response, match_list=keywords.keywords["exit_"]
+        ):
             return
         meaning(phrase=response)
     else:
         if definition := dictionary.meaning(term=keyword):
             n = 0
-            vowel = ['A', 'E', 'I', 'O', 'U']
+            vowel = ["A", "E", "I", "O", "U"]
             for key, value in definition.items():
-                insert = 'an' if key[0] in vowel else 'a'
-                repeated = ' also ' if n != 0 else ' '
+                insert = "an" if key[0] in vowel else "a"
+                repeated = " also " if n != 0 else " "
                 n += 1
-                mean = ', '.join(value[:2])
-                speaker.speak(text=f'{keyword} is{repeated}{insert} {key}, which means {mean}.')
+                mean = ", ".join(value[:2])
+                speaker.speak(
+                    text=f"{keyword} is{repeated}{insert} {key}, which means {mean}."
+                )
             if shared.called_by_offline:
                 return
-            speaker.speak(text=f'Do you wanna know how {keyword} is spelled?', run=True)
+            speaker.speak(text=f"Do you wanna know how {keyword} is spelled?", run=True)
             response = listener.listen()
-            if word_match.word_match(phrase=response, match_list=keywords.keywords['ok']):
+            if word_match.word_match(
+                phrase=response, match_list=keywords.keywords["ok"]
+            ):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
         else:
-            speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
+            speaker.speak(
+                text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}"
+            )
 
 
 def notes(*args) -> None:
     """Listens to the user and saves it as a text file."""
-    if (converted := listener.listen()) or 'exit' in converted or 'quit' in converted or \
-            'Xzibit' in converted:
+    if (
+        (converted := listener.listen())
+        or "exit" in converted
+        or "quit" in converted
+        or "Xzibit" in converted
+    ):
         return
-    with open(models.fileio.notes, 'a') as writer:
-        writer.write(f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
-                     f"{converted}\n")
+    with open(models.fileio.notes, "a") as writer:
+        writer.write(
+            f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
+            f"{converted}\n"
+        )
 
 
-def news(news_source: str = 'fox') -> None:
+def news(news_source: str = "fox") -> None:
     """Says news around the user's location.
 
     Args:
@@ -317,32 +364,43 @@ def news(news_source: str = 'fox') -> None:
 
     news_client = NewsApiClient(api_key=models.env.news_api)
     try:
-        all_articles = news_client.get_top_headlines(sources=f'{news_source}-news')
+        all_articles = news_client.get_top_headlines(sources=f"{news_source}-news")
     except newsapi_exception.NewsAPIException as error:
         logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!"
+        )
         return
-    if all_articles.get('status', 'fail') != 'ok':
+    if all_articles.get("status", "fail") != "ok":
         logger.warning(all_articles)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!"
+        )
         return
-    if all_articles.get('totalResults', 0) == 0 or all_articles.get('articles', []) == []:
+    if (
+        all_articles.get("totalResults", 0) == 0
+        or all_articles.get("articles", []) == []
+    ):
         logger.warning(all_articles)
-        speaker.speak(text=f"I wasn't able to find any news around you {models.env.title}!")
+        speaker.speak(
+            text=f"I wasn't able to find any news around you {models.env.title}!"
+        )
         return
     speaker.speak(text="News around you!")
-    speaker.speak(text=' '.join([article['title'] for article in all_articles['articles']]))
+    speaker.speak(
+        text=" ".join([article["title"] for article in all_articles["articles"]])
+    )
     if shared.called_by_offline:
         return
 
-    if shared.called['report']:
+    if shared.called["report"]:
         speaker.speak(run=True)
 
 
 def report(*args) -> None:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     support.write_screen(text="Starting today's report")
-    shared.called['report'] = True
+    shared.called["report"] = True
     date_time.current_date()
     date_time.current_time()
     weather.weather()
@@ -350,7 +408,7 @@ def report(*args) -> None:
     communicator.read_gmail()
     robinhood.robinhood()
     news()
-    shared.called['report'] = False
+    shared.called["report"] = False
 
 
 def celebrate(phrase: str = None) -> str:
@@ -373,7 +431,8 @@ def celebrate(phrase: str = None) -> str:
     if phrase:
         phrase = phrase.strip()
         countries = {
-            country[1]: [' '.join(re.findall('[A-Z][^A-Z]*', country[0])), country[2]] for country in COUNTRIES.values()
+            country[1]: [" ".join(re.findall("[A-Z][^A-Z]*", country[0])), country[2]]
+            for country in COUNTRIES.values()
         }
         for code, names in countries.items():
             # If country code is used, then it should be a precise match, otherwise just regex it
@@ -384,20 +443,30 @@ def celebrate(phrase: str = None) -> str:
                 break
     else:
         location = files.get_location()
-        if not (countrycode := location.get('address', {}).get('country_code')):  # get country code from location.yaml
-            if idna_timezone := location.get('timezone'):  # get timezone from location.yaml
-                countrycode = support.country_timezone().get(idna_timezone)  # get country code using timezone map
+        if not (
+            countrycode := location.get("address", {}).get("country_code")
+        ):  # get country code from location.yaml
+            if idna_timezone := location.get(
+                "timezone"
+            ):  # get timezone from location.yaml
+                countrycode = support.country_timezone().get(
+                    idna_timezone
+                )  # get country code using timezone map
     if not countrycode:
         countrycode = "US"
         countryname = "USA"
     if current_holiday := country_holidays(countrycode.upper()).get(date):
         if phrase:
-            speaker.speak(text=f"{string.capwords(day)} {tense} {current_holiday!r} in {countryname}")
+            speaker.speak(
+                text=f"{string.capwords(day)} {tense} {current_holiday!r} in {countryname}"
+            )
         else:
             return current_holiday
     elif models.env.birthday == date.strftime("%d-%B"):
         if phrase:
-            speaker.speak(text=f"{string.capwords(day)} {tense} your birthday {models.env.title}!")
+            speaker.speak(
+                text=f"{string.capwords(day)} {tense} your birthday {models.env.title}!"
+            )
         else:
             return "Birthday"
     elif phrase:
@@ -411,7 +480,9 @@ def abusive(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     logger.warning(phrase)
-    speaker.speak(text="I don't respond to abusive words. Ask me nicely, you might get a response.")
+    speaker.speak(
+        text="I don't respond to abusive words. Ask me nicely, you might get a response."
+    )
 
 
 def photo(*args) -> str:
@@ -422,7 +493,9 @@ def photo(*args) -> str:
         Filename.
     """
     # Ret value will be used only by offline communicator
-    filename = os.path.join(models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg")
+    filename = os.path.join(
+        models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg"
+    )
     try:
         facenet = face.FaceNet()
     except CameraError as error:
@@ -430,15 +503,19 @@ def photo(*args) -> str:
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
     facenet.capture_image(filename=filename)
     if os.path.isfile(filename):
-        if not shared.called_by_offline:  # don't show preview on screen if requested via offline
+        if (
+            not shared.called_by_offline
+        ):  # don't show preview on screen if requested via offline
             if models.settings.os != models.supported_platforms.windows:
                 subprocess.call(["open", filename])
             else:
-                os.system(f'start {filename}')
+                os.system(f"start {filename}")
         speaker.speak(text=f"A photo has been captured {models.env.title}!")
         return filename
     else:
-        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")
+        speaker.speak(
+            text=f"I'm sorry {models.env.title}! I wasn't able to take a picture."
+        )
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
 
 
@@ -455,7 +532,11 @@ def pypi_versions(package_name: str) -> List[str]:
     url = f"https://pypi.org/pypi/{package_name}/json"
     try:
         data = json.load(urllib.request.urlopen(urllib.request.Request(url=url)))
-    except (urllib.error.URLError, urllib.error.HTTPError, urllib.error.ContentTooShortError) as error:
+    except (
+        urllib.error.URLError,
+        urllib.error.HTTPError,
+        urllib.error.ContentTooShortError,
+    ) as error:
         logger.error(error)
     else:
         pypi = list(data.get("releases", {}).keys())
@@ -486,13 +567,11 @@ def get_aws_secrets(name: str = None) -> str | List[str]:
         Returns the value of the secret or list of all secrets' names.
     """
     if name:
-        response = SECRET_CLIENT.get_secret_value(
-            SecretId=name
-        )
-        return response['SecretString']
-    paginator = SECRET_CLIENT.get_paginator('list_secrets')
+        response = SECRET_CLIENT.get_secret_value(SecretId=name)
+        return response["SecretString"]
+    paginator = SECRET_CLIENT.get_paginator("list_secrets")
     page_results = paginator.paginate().build_full_result()
-    return [page['Name'] for page in page_results['SecretList']]
+    return [page["Name"] for page in page_results["SecretList"]]
 
 
 def get_aws_params(name: str = None) -> str | List[str]:
@@ -507,10 +586,10 @@ def get_aws_params(name: str = None) -> str | List[str]:
     """
     if name:
         response = SSM_CLIENT.get_parameter(Name=name, WithDecryption=True)
-        return response['Parameter']['Value']
-    paginator = SSM_CLIENT.get_paginator('describe_parameters')
+        return response["Parameter"]["Value"]
+    paginator = SSM_CLIENT.get_paginator("describe_parameters")
     page_results = paginator.paginate().build_full_result()
-    return [page['Name'] for page in page_results['Parameters']]
+    return [page["Name"] for page in page_results["Parameters"]]
 
 
 def secrets(phrase: str) -> str:
@@ -525,67 +604,87 @@ def secrets(phrase: str) -> str:
     """
     text = phrase.lower().split()
 
-    if 'create' in text or 'share' in text:
+    if "create" in text or "share" in text:
         before, part, after = phrase.partition("for")
         if custom_secret := after.strip():
             key = util.keygen_uuid()
-            files.put_secure_send(data={key: {'secret': custom_secret}})
+            files.put_secure_send(data={key: {"secret": custom_secret}})
             return key
         else:
-            return "Please specify the secret to create after the keyword 'for'\n" \
-                   "example: create and share secret for drogon589#"
+            return (
+                "Please specify the secret to create after the keyword 'for'\n"
+                "example: create and share secret for drogon589#"
+            )
 
-    if 'list' in text:  # calling list will always create a new list in the dict regardless of what exists
-        if 'aws' in text:
-            SECRET_STORAGE['aws'] = []  # reset everytime list param is called
-            if 'ssm' in text:
+    if (
+        "list" in text
+    ):  # calling list will always create a new list in the dict regardless of what exists
+        if "aws" in text:
+            SECRET_STORAGE["aws"] = []  # reset everytime list param is called
+            if "ssm" in text:
                 try:
-                    SECRET_STORAGE['aws'].extend(get_aws_params())
+                    SECRET_STORAGE["aws"].extend(get_aws_params())
                 except Exception as error:
                     logger.error(error)
             else:
                 try:
-                    SECRET_STORAGE['aws'].extend(get_aws_secrets())
+                    SECRET_STORAGE["aws"].extend(get_aws_secrets())
                 except Exception as error:
                     logger.error(error)
-            return ', '.join(SECRET_STORAGE['aws']) if SECRET_STORAGE['aws'] else "No parameters were found"
-        if 'local' in text:
-            SECRET_STORAGE['local'] = list(models.env.__dict__.keys())
-            return ', '.join(SECRET_STORAGE['local'])
+            return (
+                ", ".join(SECRET_STORAGE["aws"])
+                if SECRET_STORAGE["aws"]
+                else "No parameters were found"
+            )
+        if "local" in text:
+            SECRET_STORAGE["local"] = list(models.env.__dict__.keys())
+            return ", ".join(SECRET_STORAGE["local"])
         return "Please specify which secrets you want to list: 'aws' or 'local''"
 
-    if 'get' in text or 'send' in text:  # calling get will always return the latest information in the existing dict
-        if 'aws' in text:
-            if SECRET_STORAGE['aws']:
-                if aws_key := [key for key in phrase.split() if key in SECRET_STORAGE['aws']]:
+    if (
+        "get" in text or "send" in text
+    ):  # calling get will always return the latest information in the existing dict
+        if "aws" in text:
+            if SECRET_STORAGE["aws"]:
+                if aws_key := [
+                    key for key in phrase.split() if key in SECRET_STORAGE["aws"]
+                ]:
                     aws_key = aws_key[0]
                 else:
                     return "No AWS params were found matching your request."
             else:
                 return "Please use 'list secret' before using 'get secret'"
-            if 'ssm' in text:
+            if "ssm" in text:
                 try:
                     key = util.keygen_uuid()
-                    files.put_secure_send(data={key: {aws_key: get_aws_params(name=aws_key)}})
+                    files.put_secure_send(
+                        data={key: {aws_key: get_aws_params(name=aws_key)}}
+                    )
                     return key
                 except Exception as error:  # if secret is removed between 'list' and 'get'
                     logger.error(error)
             else:
                 try:
                     key = util.keygen_uuid()
-                    files.put_secure_send(data={key: {aws_key: get_aws_secrets(name=aws_key)}})
+                    files.put_secure_send(
+                        data={key: {aws_key: get_aws_secrets(name=aws_key)}}
+                    )
                     return key
                 except Exception as error:  # if secret is removed between 'list' and 'get'
                     logger.error(error)
             return f"Failed to retrieve {aws_key!r}"
-        if 'local' in text:
-            if not SECRET_STORAGE['local']:
-                SECRET_STORAGE['local'] = list(models.env.__dict__.keys())
-            if local_key := [key for key in phrase.split() if key in SECRET_STORAGE['local']]:
+        if "local" in text:
+            if not SECRET_STORAGE["local"]:
+                SECRET_STORAGE["local"] = list(models.env.__dict__.keys())
+            if local_key := [
+                key for key in phrase.split() if key in SECRET_STORAGE["local"]
+            ]:
                 local_key = local_key[0]
             else:
                 return "No local params were found matching your request."
             key = util.keygen_uuid()
-            files.put_secure_send(data={key: {local_key: models.env.__dict__[local_key]}})
+            files.put_secure_send(
+                data={key: {local_key: models.env.__dict__[local_key]}}
+            )
             return key
         return "Please specify which type of secret you want the value for: 'aws' or 'local'"

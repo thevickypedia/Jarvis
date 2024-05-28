@@ -37,10 +37,20 @@ def conditions(phrase: str) -> bool:
         Boolean True only when asked to sleep for conditioned sleep message.
     """
     # Allow conditions during offline communication
-    if not shared.called_by_offline and \
-            not listener_controls.get_listener_state() and \
-            not all(("activate" in phrase or "enable" in phrase,  # WATCH OUT: "activate" and "enable" are hard coded
-                     word_match.word_match(phrase=phrase, match_list=keywords.keywords['listener_control']))):
+    if (
+        not shared.called_by_offline
+        and not listener_controls.get_listener_state()
+        and not all(
+            (
+                "activate" in phrase
+                or "enable"
+                in phrase,  # WATCH OUT: "activate" and "enable" are hard coded
+                word_match.word_match(
+                    phrase=phrase, match_list=keywords.keywords["listener_control"]
+                ),
+            )
+        )
+    ):
         logger.info("Ignoring '%s' since listener is deactivated.", phrase)
         return False
     if "*" in phrase:
@@ -62,10 +72,16 @@ def conditions(phrase: str) -> bool:
                 if "send" not in phrase.lower():
                     continue
             if category in ("distance", "kill"):
-                if word_match.word_match(phrase=phrase, match_list=keywords.keywords['avoid']):
+                if word_match.word_match(
+                    phrase=phrase, match_list=keywords.keywords["avoid"]
+                ):
                     continue
             if category == "speed_test":
-                if not ('internet' in phrase.lower() or 'connection' in phrase.lower() or 'run' in phrase.lower()):
+                if not (
+                    "internet" in phrase.lower()
+                    or "connection" in phrase.lower()
+                    or "run" in phrase.lower()
+                ):
                     continue
 
             # Stand alone - Internally used [skip for both main and offline processes]
@@ -73,32 +89,54 @@ def conditions(phrase: str) -> bool:
                 continue
 
             # Requires manual intervention [skip for offline communicator]
-            if shared.called_by_offline and category in ('kill', 'report', 'repeat', 'directions', 'notes', 'faces',
-                                                         'music', 'voice_changer', 'restart_control', 'shutdown'):
+            if shared.called_by_offline and category in (
+                "kill",
+                "report",
+                "repeat",
+                "directions",
+                "notes",
+                "faces",
+                "music",
+                "voice_changer",
+                "restart_control",
+                "shutdown",
+            ):
                 # WATCH OUT: for changes in function name
-                if models.settings.pname in ("background_tasks", "telegram_api", "jarvis_api") and \
-                        category == "restart_control":
-                    logger.info("Allowing '%s' through the category '%s', for the process: '%s'",
-                                phrase, category, models.settings.pname)
+                if (
+                    models.settings.pname
+                    in ("background_tasks", "telegram_api", "jarvis_api")
+                    and category == "restart_control"
+                ):
+                    logger.info(
+                        "Allowing '%s' through the category '%s', for the process: '%s'",
+                        phrase,
+                        category,
+                        models.settings.pname,
+                    )
                 else:
                     static_responses.not_allowed_offline()
                     return False
 
             if function_map.get(category):  # keyword category matches function name
-                method.executor(function_map[category], phrase)  # call function with phrase as arg by default
+                method.executor(
+                    function_map[category], phrase
+                )  # call function with phrase as arg by default
                 if category in ("sleep_control", "sentry"):
                     return True  # repeat listeners are ended and wake word detection is activated
             else:
                 # edge case scenario if a category has matched but the function name is incorrect or not imported
-                warnings.warn("Condition matched for '%s' but there is not function to call." % category)
+                warnings.warn(
+                    "Condition matched for '%s' but there is not function to call."
+                    % category
+                )
             return False
     # GPT instance available only for communicable processes
     # WATCH OUT: for changes in function name
-    if models.settings.pname not in ('JARVIS', 'telegram_api', 'jarvis_api'):
+    if models.settings.pname not in ("JARVIS", "telegram_api", "jarvis_api"):
         logger.warning("%s reached unrecognized category", models.settings.pname)
         return False
     logger.info("Received unrecognized lookup parameter: %s", phrase)
-    Thread(target=support.unrecognized_dumper, args=[{'CONDITIONS': phrase}]).start()
+    Thread(target=support.unrecognized_dumper, args=[{"CONDITIONS": phrase}]).start()
     if not unconditional.google_maps(query=phrase):
         if gpt.instance:
             gpt.instance.query(phrase=phrase)

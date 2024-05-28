@@ -19,7 +19,7 @@ class CronExpression:
 
     """
 
-    DAY_NAMES = zip(('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'), range(7))
+    DAY_NAMES = zip(("sun", "mon", "tue", "wed", "thu", "fri", "sat"), range(7))
     MINUTES = (0, 59)
     HOURS = (0, 23)
     DAYS_OF_MONTH = (1, 31)
@@ -27,8 +27,23 @@ class CronExpression:
     DAYS_OF_WEEK = (0, 6)
     L_FIELDS = (DAYS_OF_WEEK, DAYS_OF_MONTH)
     FIELD_RANGES = (MINUTES, HOURS, DAYS_OF_MONTH, MONTHS, DAYS_OF_WEEK)
-    MONTH_NAMES = zip(('jan', 'feb', 'mar', 'apr', 'may', 'jun',
-                       'jul', 'aug', 'sep', 'oct', 'nov', 'dec'), range(1, 13))
+    MONTH_NAMES = zip(
+        (
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+        ),
+        range(1, 13),
+    )
     DEFAULT_EPOCH = (1970, 1, 1, 0, 0, 0)
     SUBSTITUTIONS = {
         "@yearly": "0 0 1 1 *",
@@ -37,10 +52,12 @@ class CronExpression:
         "@weekly": "0 0 * * 0",
         "@daily": "0 0 * * *",
         "@midnight": "0 0 * * *",
-        "@hourly": "0 * * * *"
+        "@hourly": "0 * * * *",
     }
 
-    def __init__(self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0):
+    def __init__(
+        self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0
+    ):
         """Instantiates a CronExpression object with an optionally defined epoch.
 
         Raises:
@@ -60,16 +77,16 @@ class CronExpression:
 
         fields = line.split(None, 5)
         if len(fields) == 5:
-            fields.append('')
+            fields.append("")
 
         if len(fields) < 6:
             raise InvalidArgument(f"{line!r} has invalid cron expression!")
 
         minutes, hours, dom, months, dow, self.comment = fields
-        self.expression = ' '.join(fields[:5])
+        self.expression = " ".join(fields[:5])
 
-        dow = dow.replace('7', '0').replace('?', '*')
-        dom = dom.replace('?', '*')
+        dow = dow.replace("7", "0").replace("?", "*")
+        dom = dom.replace("?", "*")
 
         for monthstr, monthnum in self.MONTH_NAMES:
             months = months.lower().replace(monthstr, str(monthnum))
@@ -94,7 +111,7 @@ class CronExpression:
         cron_line = self.string_tab + [str(self.comment)]
         if not self.comment:
             cron_line.pop()
-        arguments = '"' + ' '.join(cron_line) + '"'
+        arguments = '"' + " ".join(cron_line) + '"'
         if self.epoch != self.DEFAULT_EPOCH:
             return base % (arguments + ", epoch=" + repr(self.epoch))
         else:
@@ -113,14 +130,14 @@ class CronExpression:
         self.numerical_tab = []
 
         for field_str, span in zip(self.string_tab, self.FIELD_RANGES):
-            split_field_str = field_str.split(',')
+            split_field_str = field_str.split(",")
             if len(split_field_str) > 1 and "*" in split_field_str:
-                raise InvalidArgument("\"*\" must be alone in a field.")
+                raise InvalidArgument('"*" must be alone in a field.')
 
             unified = set()
             for cron_atom in split_field_str:
                 # parse_atom only handles static cases
-                for special_char in ('%', '#', 'L', 'W'):
+                for special_char in ("%", "#", "L", "W"):
                     if special_char in cron_atom:
                         break
                 else:
@@ -131,8 +148,11 @@ class CronExpression:
         if self.string_tab[2] == "*" and self.string_tab[4] != "*":
             self.numerical_tab[2] = set()
 
-    def check_trigger(self, date_tuple: Tuple[int, int, int, int, int] | Tuple[int, ...] = None,
-                      utc_offset: int = 0) -> bool:
+    def check_trigger(
+        self,
+        date_tuple: Tuple[int, int, int, int, int] | Tuple[int, ...] = None,
+        utc_offset: int = 0,
+    ) -> bool:
         """Returns boolean indicating if the trigger is active at the given time.
 
         Args:
@@ -151,7 +171,9 @@ class CronExpression:
         if date_tuple:
             year, month, day, hour, mins = date_tuple
         else:
-            year, month, day, hour, mins = tuple(map(int, datetime.datetime.now().strftime("%Y %m %d %H %M").split()))
+            year, month, day, hour, mins = tuple(
+                map(int, datetime.datetime.now().strftime("%Y %m %d %H %M").split())
+            )
         given_date = datetime.date(year, month, day)
         zeroday = datetime.date(*self.epoch[:3])
         last_dom = calendar.monthrange(year, month)[-1]
@@ -170,9 +192,13 @@ class CronExpression:
         mod_delta_min = mins - self.epoch[4] + mod_delta_hrs * 60
 
         # Makes iterating through like components easier.
-        quintuple = zip((mins, hour, day, month, given_dow), self.numerical_tab, self.string_tab,
-                        (mod_delta_min, mod_delta_hrs, mod_delta_day, mod_delta_mon, mod_delta_day),
-                        self.FIELD_RANGES)
+        quintuple = zip(
+            (mins, hour, day, month, given_dow),
+            self.numerical_tab,
+            self.string_tab,
+            (mod_delta_min, mod_delta_hrs, mod_delta_day, mod_delta_mon, mod_delta_day),
+            self.FIELD_RANGES,
+        )
 
         for value, valid_values, field_str, delta_t, field_type in quintuple:
             # All valid, static values for the fields are stored in sets
@@ -185,18 +211,18 @@ class CronExpression:
             # in the outer loop. If there are no matches found, the given date
             # does not match expression constraints, so the function returns
             # False as seen at the end of this for...else... construct.
-            for cron_atom in field_str.split(','):
-                if cron_atom[0] == '%':
+            for cron_atom in field_str.split(","):
+                if cron_atom[0] == "%":
                     if not (delta_t % int(cron_atom[1:])):
                         break
 
-                elif field_type == self.DAYS_OF_WEEK and '#' in cron_atom:
+                elif field_type == self.DAYS_OF_WEEK and "#" in cron_atom:
                     d, n = int(cron_atom[0]), int(cron_atom[2])
                     # Computes Nth occurence of D day of the week
                     if (((d - first_dow) % 7) + 1 + 7 * (n - 1)) == day:
                         break
 
-                elif field_type == self.DAYS_OF_MONTH and cron_atom[-1] == 'W':
+                elif field_type == self.DAYS_OF_MONTH and cron_atom[-1] == "W":
                     target = min(int(cron_atom[:-1]), last_dom)
                     lands_on = (first_dow + target - 1) % 7
                     if lands_on == 0:
@@ -210,24 +236,24 @@ class CronExpression:
                     if target == day and (first_dow + target - 7) % 7 > 1:
                         break
 
-                elif field_type in self.L_FIELDS and cron_atom.endswith('L'):
+                elif field_type in self.L_FIELDS and cron_atom.endswith("L"):
                     # In dom field, L means the last day of the month
                     target = last_dom
 
                     if field_type == self.DAYS_OF_WEEK:
                         # Calculates the last occurence of given day of week
                         desired_dow = int(cron_atom[:-1])
-                        target = (((desired_dow - first_dow) % 7) + 29)
+                        target = ((desired_dow - first_dow) % 7) + 29
                         target -= 7 if target > last_dom else 0
 
                     if target == day:
                         break
             else:
                 # See 2010.11.15 of CHANGELOG
-                if field_type == self.DAYS_OF_MONTH and self.string_tab[4] != '*':
+                if field_type == self.DAYS_OF_MONTH and self.string_tab[4] != "*":
                     dom_matched = False
                     continue
-                elif field_type == self.DAYS_OF_WEEK and self.string_tab[2] != '*':
+                elif field_type == self.DAYS_OF_WEEK and self.string_tab[2] != "*":
                     # If we got here, then days of months validated so it does
                     # not matter that days of the week failed.
                     return dom_matched
@@ -266,7 +292,7 @@ def parse_atom(parse: str, minmax: tuple) -> set:
     """
     parse = parse.strip()
     increment = 1
-    if parse == '*':
+    if parse == "*":
         return set(range(minmax[0], minmax[1] + 1))
     elif parse.isdigit():
         # A single number still needs to be returned as a set
@@ -275,19 +301,19 @@ def parse_atom(parse: str, minmax: tuple) -> set:
             return {value}
         else:
             raise InvalidArgument(f"invalid bounds: {parse}")
-    elif '-' in parse or '/' in parse:
-        divide = parse.split('/')
+    elif "-" in parse or "/" in parse:
+        divide = parse.split("/")
         subrange = divide[0]
         if len(divide) == 2:
             # Example: 1-3/5 or */7 increment should be 5 and 7 respectively
             increment = int(divide[1])
 
-        if '-' in subrange:
+        if "-" in subrange:
             # Example: a-b
-            prefix, suffix = [int(n) for n in subrange.split('-')]
+            prefix, suffix = [int(n) for n in subrange.split("-")]
             if prefix < minmax[0] or suffix > minmax[1]:
                 raise InvalidArgument(f"invalid bounds: {parse}")
-        elif subrange == '*':
+        elif subrange == "*":
             # Include all values with the given range
             prefix, suffix = minmax
         else:
@@ -303,12 +329,18 @@ def parse_atom(parse: str, minmax: tuple) -> set:
             return set(noskips[::increment])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     job = CronExpression("0 0 * * 1-5/2 find /var/log -delete")
     print(job.comment)
     print(job.expression)
 
-    print(job.check_trigger(tuple(map(int, datetime.datetime.now().strftime("%Y,%m,%d,%H,%M").split(",")))))
+    print(
+        job.check_trigger(
+            tuple(
+                map(int, datetime.datetime.now().strftime("%Y,%m,%d,%H,%M").split(","))
+            )
+        )
+    )
 
     print(job.check_trigger((2022, 7, 27, 0, 0)))
     print(job.check_trigger((2022, 7, 26, 0, 0)))

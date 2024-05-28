@@ -31,7 +31,15 @@ from jarvis.modules.utils import shared
 
 ENGINE = inflect.engine()
 
-days_in_week = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+days_in_week = (
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+)
 db = database.Database(database=models.fileio.base_db)
 
 
@@ -60,20 +68,29 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
     except socket.error as error:
         logger.error("%s [%d] on %s", error.strerror, error.errno, hostname)
         return []
-    logger.debug({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
+    logger.debug(
+        {"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list}
+    )
     if not _ipaddr_list:
         logger.critical("ATTENTION::No interfaces found for %s", hostname)
     elif len(_ipaddr_list) > 1:
-        logger.warning("Host %s has multiple interfaces. %s", hostname, _ipaddr_list) if localhost else None
+        logger.warning(
+            "Host %s has multiple interfaces. %s", hostname, _ipaddr_list
+        ) if localhost else None
         return _ipaddr_list
     else:
         if localhost:
             ip_addr = internet.ip_address()
-            if _ipaddr_list[0].split('.')[0] == ip_addr.split('.')[0]:
+            if _ipaddr_list[0].split(".")[0] == ip_addr.split(".")[0]:
                 return _ipaddr_list
             else:
-                logger.error("NetworkID of the InterfaceIP [%s] of host '%s' does not match the network id of the "
-                             "DeviceIP [%s].", ip_addr, hostname, ', '.join(_ipaddr_list))
+                logger.error(
+                    "NetworkID of the InterfaceIP [%s] of host '%s' does not match the network id of the "
+                    "DeviceIP [%s].",
+                    ip_addr,
+                    hostname,
+                    ", ".join(_ipaddr_list),
+                )
                 return []
         else:
             return _ipaddr_list
@@ -89,7 +106,9 @@ def country_timezone() -> Dict[str, str]:
     return timezone_country
 
 
-def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> str | None:
+def get_capitalized(
+    phrase: str, ignore: Iterable = None, dot: bool = True
+) -> str | None:
     """Looks for words starting with an upper-case letter.
 
     Args:
@@ -102,10 +121,12 @@ def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> s
         Returns the upper case words if skimmed.
     """
     # Set ignore as a tuple with avoid keywords regardless of current state
-    ignore = tuple(ignore or ()) + tuple(keywords.keywords['avoid'])
+    ignore = tuple(ignore or ()) + tuple(keywords.keywords["avoid"])
     place = ""
     for word in phrase.split():
-        if word[0].isupper() and word.lower() not in map(lambda x: x.lower(), ignore):  # convert iterable to lowercase
+        if word[0].isupper() and word.lower() not in map(
+            lambda x: x.lower(), ignore
+        ):  # convert iterable to lowercase
             place += word + " "
         elif "." in word and dot:
             place += word + " "
@@ -128,7 +149,9 @@ def unrecognized_dumper(train_data: dict) -> None:
             logger.error(error)
             os.rename(
                 src=models.fileio.training_data,
-                dst=str(models.fileio.training_data).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}.")
+                dst=str(models.fileio.training_data).replace(
+                    ".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."
+                ),
             )
         for key, value in train_data.items():
             if data.get(key):
@@ -141,12 +164,17 @@ def unrecognized_dumper(train_data: dict) -> None:
 
     data = {
         func: {
-            dt: unrec for dt, unrec in sorted(unrec_dict.items(), reverse=True,
-                                              key=lambda item: datetime.strptime(item[0], "%B %d, %Y %H:%M:%S.%f"))
-        } for func, unrec_dict in data.items()
+            dt: unrec
+            for dt, unrec in sorted(
+                unrec_dict.items(),
+                reverse=True,
+                key=lambda item: datetime.strptime(item[0], "%B %d, %Y %H:%M:%S.%f"),
+            )
+        }
+        for func, unrec_dict in data.items()
     }
 
-    with open(models.fileio.training_data, 'w') as writer:
+    with open(models.fileio.training_data, "w") as writer:
         yaml.dump(data=data, stream=writer, sort_keys=False)
 
 
@@ -192,8 +220,12 @@ def utc_to_local(utc_dt: datetime) -> datetime:
         datetime:
         Local datetime as an object.
     """
-    utc_dt = utc_dt.replace(tzinfo=timezone.utc)  # Tell datetime object that the tz is UTC
-    local_tz = dateutil.tz.gettz(datetime.now().astimezone().tzname())  # Get local timezone
+    utc_dt = utc_dt.replace(
+        tzinfo=timezone.utc
+    )  # Tell datetime object that the tz is UTC
+    local_tz = dateutil.tz.gettz(
+        datetime.now().astimezone().tzname()
+    )  # Get local timezone
     return utc_dt.astimezone(local_tz)  # Convert the UTC timestamp to local
 
 
@@ -210,7 +242,9 @@ def build_lookup() -> List[str]:
         if day == day_str:
             floating_days[0] = day_str
             floating_days[7] = day_str
-            for i, j in zip(range(idx + 1, len(days_in_week)), range(1, len(days_in_week))):
+            for i, j in zip(
+                range(idx + 1, len(days_in_week)), range(1, len(days_in_week))
+            ):
                 floating_days[j] = days_in_week[i]
             for i in range(idx):
                 floating_days[7 - (idx - i)] = days_in_week[i]
@@ -261,7 +295,9 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
     """
     floating_days = build_lookup()
     lookup_day = get_capitalized(phrase=phrase)
-    if not lookup_day or lookup_day not in days_in_week:  # basically, if lookup day is in lower case
+    if (
+        not lookup_day or lookup_day not in days_in_week
+    ):  # basically, if lookup day is in lower case
         if matched := word_match.word_match(phrase=phrase, match_list=days_in_week):
             lookup_day = string.capwords(matched)
     if not lookup_day or lookup_day not in days_in_week:
@@ -282,7 +318,9 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
     return datetime.today() + td, addon
 
 
-def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[datetime.date, str, str] | None:
+def extract_humanized_date(
+    phrase: str, fail_past: bool = False
+) -> Tuple[datetime.date, str, str] | None:
     """Converts most humanized date into datetime object.
 
     Args:
@@ -300,7 +338,11 @@ def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[dateti
     elif "day before yesterday" in phrase:
         if fail_past:
             raise ValueError("'day before yesterday' is in the past!")
-        return today - relativedelta.relativedelta(days=2), "day before yesterday", "was"
+        return (
+            today - relativedelta.relativedelta(days=2),
+            "day before yesterday",
+            "was",
+        )
     elif "tomorrow" in phrase:
         return today + relativedelta.relativedelta(days=1), "tomorrow", "is"
     elif "yesterday" in phrase:
@@ -316,20 +358,34 @@ def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[dateti
 
     if "next" in phrase:
         next_occurrence = parsed_date + relativedelta.relativedelta(weeks=1)
-        return next_occurrence.date(), f"next {next_occurrence.strftime('%A')}, ({next_occurrence.strftime('%B')} " \
-                                       f"{ENGINE.ordinal(next_occurrence.strftime('%d'))})", "is"
+        return (
+            next_occurrence.date(),
+            f"next {next_occurrence.strftime('%A')}, ({next_occurrence.strftime('%B')} "
+            f"{ENGINE.ordinal(next_occurrence.strftime('%d'))})",
+            "is",
+        )
     elif "last" in phrase:
         last_occurrence = parsed_date - relativedelta.relativedelta(weeks=1)
         if fail_past:
             raise ValueError(f"'last {last_occurrence.strftime('%A')}' is in the past!")
-        return last_occurrence.date(), f"last {last_occurrence.strftime('%A')}, ({last_occurrence.strftime('%B')} " \
-                                       f"{ENGINE.ordinal(last_occurrence.strftime('%d'))})", "was"
+        return (
+            last_occurrence.date(),
+            f"last {last_occurrence.strftime('%A')}, ({last_occurrence.strftime('%B')} "
+            f"{ENGINE.ordinal(last_occurrence.strftime('%d'))})",
+            "was",
+        )
 
-    if parsed_date.date() < today and fail_past:  # validates only the date, so the date might be same with a past-time
+    if (
+        parsed_date.date() < today and fail_past
+    ):  # validates only the date, so the date might be same with a past-time
         raise ValueError(f"{parsed_date!r} is in the past!")
 
-    return parsed_date.date(), f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} " \
-                               f"{ENGINE.ordinal(parsed_date.strftime('%d'))})", "is"
+    return (
+        parsed_date.date(),
+        f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} "
+        f"{ENGINE.ordinal(parsed_date.strftime('%d'))})",
+        "is",
+    )
 
 
 def check_stop() -> List[str]:
@@ -362,7 +418,11 @@ def exit_message() -> str:
         exit_msg = f"Have a nice day, and happy {day}."
     elif am_pm == "AM" and int(hour) >= 10:
         exit_msg = f"Enjoy your {day}."
-    elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3) and day in ["Friday", "Saturday"]:
+    elif (
+        am_pm == "PM"
+        and (int(hour) == 12 or int(hour) < 3)
+        and day in ["Friday", "Saturday"]
+    ):
         exit_msg = "Have a nice afternoon, and enjoy your weekend."
     elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3):
         exit_msg = "Have a nice afternoon."
@@ -390,7 +450,9 @@ def no_env_vars() -> None:
 def unsupported_features() -> None:
     """Says a message about unsupported features."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
-    speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!")
+    speaker.speak(
+        text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!"
+    )
 
 
 def write_screen(text: Any) -> None:
@@ -411,7 +473,9 @@ def flush_screen() -> None:
         Writes new set of empty strings for the size of the terminal if ran using one.
     """
     if models.settings.interactive:
-        sys.stdout.write(f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}")
+        sys.stdout.write(
+            f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}"
+        )
     else:
         sys.stdout.write("\r")
 
@@ -431,7 +495,9 @@ def number_to_words(input_: int | str, capitalize: bool = False) -> str:
     return result[0].upper() + result[1:] if capitalize else result
 
 
-def pluralize(count: int, word: str, to_words: bool = False, cap_word: bool = False) -> str:
+def pluralize(
+    count: int, word: str, to_words: bool = False, cap_word: bool = False
+) -> str:
     """Helper for ``time_converter`` function.
 
     Args:
@@ -467,27 +533,31 @@ def time_converter(second: float) -> str:
     second %= 60
     pluralize.counter = -1
     if day and hour and minute and second:
-        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
-               f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
+        return (
+            f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, "
+            f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
+        )
     elif day and hour and minute:
-        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " \
-               f"and {pluralize(minute, 'minute')}"
+        return (
+            f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, "
+            f"and {pluralize(minute, 'minute')}"
+        )
     elif day and hour:
         return f"{pluralize(day, 'day')}, and {pluralize(hour, 'hour')}"
     elif day:
-        return pluralize(day, 'day')
+        return pluralize(day, "day")
     elif hour and minute and second:
         return f"{pluralize(hour, 'hour')}, {pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
     elif hour and minute:
         return f"{pluralize(hour, 'hour')}, and {pluralize(minute, 'minute')}"
     elif hour:
-        return pluralize(hour, 'hour')
+        return pluralize(hour, "hour")
     elif minute and second:
         return f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
     elif minute:
-        return pluralize(minute, 'minute')
+        return pluralize(minute, "minute")
     else:
-        return pluralize(second, 'second')
+        return pluralize(second, "second")
 
 
 def remove_file(filepath: str, delay: int = 0) -> None:
@@ -498,7 +568,9 @@ def remove_file(filepath: str, delay: int = 0) -> None:
         delay: Delay in seconds after which the requested file is to be deleted.
     """
     time.sleep(delay)
-    os.remove(filepath) if os.path.isfile(filepath) else logger.error("%s not found.", filepath)
+    os.remove(filepath) if os.path.isfile(filepath) else logger.error(
+        "%s not found.", filepath
+    )
 
 
 def stop_process(pid: int) -> None:
@@ -528,7 +600,9 @@ def connected_to_network() -> bool:
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         if models.settings.os == models.supported_platforms.windows:
-            connection = HTTPSConnection("8.8.8.8", timeout=5)  # Recreate a new connection everytime
+            connection = HTTPSConnection(
+                "8.8.8.8", timeout=5
+            )  # Recreate a new connection everytime
             connection.request("HEAD", "/")
         else:
             socket_.connect(("8.8.8.8", 80))

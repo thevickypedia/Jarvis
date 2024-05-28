@@ -15,8 +15,9 @@ from jarvis.modules.utils import support
 
 
 # Cannot find reference '|' in 'Callable'
-def retry(attempts: int = 3, interval: int | float = 0, warn: bool = False, exclude_exc=None) -> \
-        Union[Callable, Any, None]:
+def retry(
+    attempts: int = 3, interval: int | float = 0, warn: bool = False, exclude_exc=None
+) -> Union[Callable, Any, None]:
     """Wrapper for any function that has to be retried upon failure.
 
     Args:
@@ -68,7 +69,9 @@ def retry(attempts: int = 3, interval: int | float = 0, warn: bool = False, excl
                     return_val = func(*args, **kwargs)
                     # Log messages only when the function did not return during the first attempt
                     if i > 1:
-                        logger.info(f"{func.__name__} returned at {support.ENGINE.ordinal(num=i)} attempt")
+                        logger.info(
+                            f"{func.__name__} returned at {support.ENGINE.ordinal(num=i)} attempt"
+                        )
                     return return_val
                 except exclusions as excl_error:
                     logger.error(excl_error)
@@ -77,9 +80,7 @@ def retry(attempts: int = 3, interval: int | float = 0, warn: bool = False, excl
                 time.sleep(interval)
             logger.error(f"{func.__name__} exceeded retry count::{attempts}")
             if return_exc and warn:
-                warnings.warn(
-                    f"{type(return_exc).__name__}: {return_exc.__str__()}"
-                )
+                warnings.warn(f"{type(return_exc).__name__}: {return_exc.__str__()}")
 
         return wrapper
 

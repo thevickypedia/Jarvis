@@ -11,12 +11,12 @@ from jarvis.modules.utils import support
 
 db = database.Database(database=models.fileio.base_db)
 word_map = {
-    'turn_on': ['turn on', 'cool', 'white'],
-    'turn_off': ['turn off'],
-    'party_mode': ['party mode'],
-    'reset': ['reset'],
-    'warm': ['warm', 'yellow'],
-    'set': ['set', 'percentage', 'percent', '%', 'dim', 'bright']
+    "turn_on": ["turn on", "cool", "white"],
+    "turn_off": ["turn off"],
+    "party_mode": ["party mode"],
+    "reset": ["reset"],
+    "warm": ["warm", "yellow"],
+    "set": ["set", "percentage", "percent", "%", "dim", "bright"],
 }
 
 
@@ -35,7 +35,9 @@ def warm(host: str) -> None:
     Args:
         host: Takes target device's IP address as an argument.
     """
-    smart_lights.MagicHomeApi(device_ip=host, device_type=1).update_device(r=0, g=0, b=0, warm_white=255)
+    smart_lights.MagicHomeApi(device_ip=host, device_type=1).update_device(
+        r=0, g=0, b=0, warm_white=255
+    )
 
 
 def cool(host: str) -> None:
@@ -44,8 +46,9 @@ def cool(host: str) -> None:
     Args:
         host: Takes target device's IP address as an argument.
     """
-    smart_lights.MagicHomeApi(device_ip=host,
-                              device_type=2).update_device(r=255, g=255, b=255, warm_white=255, cool_white=255)
+    smart_lights.MagicHomeApi(device_ip=host, device_type=2).update_device(
+        r=255, g=255, b=255, warm_white=255, cool_white=255
+    )
 
 
 def lumen(host: str, rgb: int = 255) -> None:
@@ -55,7 +58,7 @@ def lumen(host: str, rgb: int = 255) -> None:
         host: Takes target device's IP address as an argument.
         rgb: Red, Green andBlue values to alter the brightness.
     """
-    args = {'r': 255, 'g': 255, 'b': 255, 'warm_white': rgb}
+    args = {"r": 255, "g": 255, "b": 255, "warm_white": rgb}
     smart_lights.MagicHomeApi(device_ip=host, device_type=1).update_device(**args)
 
 
@@ -68,7 +71,9 @@ def preset(host: str, color: int = None, speed: int = 100) -> None:
         speed: Speed of color change. Defaults to 100.
     """
     smart_lights.MagicHomeApi(device_ip=host, device_type=2).send_preset_function(
-        preset_number=color or random.choice(list(preset_values.PRESET_VALUES.values())), speed=speed
+        preset_number=color
+        or random.choice(list(preset_values.PRESET_VALUES.values())),
+        speed=speed,
     )
 
 
@@ -114,7 +119,9 @@ def update_status(process: Process) -> None:
         cursor = db.connection.cursor()
         cursor.execute("UPDATE children SET party=null")
         cursor.execute("INSERT or REPLACE INTO party (pid) VALUES (?);", (process.pid,))
-        cursor.execute("INSERT or REPLACE INTO children (party) VALUES (?);", (process.pid,))
+        cursor.execute(
+            "INSERT or REPLACE INTO children (party) VALUES (?);", (process.pid,)
+        )
         db.connection.commit()
 
 
@@ -130,23 +137,31 @@ def party_mode(host: List[str], phrase: str) -> bool:
         True if party mode has to be disabled.
     """
     state = check_status()
-    if 'enable' in phrase:
+    if "enable" in phrase:
         if state:
-            speaker.speak(text=f'Party mode has already been enabled {models.env.title}!')
+            speaker.speak(
+                text=f"Party mode has already been enabled {models.env.title}!"
+            )
         else:
-            speaker.speak(text=f'Enabling party mode! Enjoy yourself {models.env.title}!')
+            speaker.speak(
+                text=f"Enabling party mode! Enjoy yourself {models.env.title}!"
+            )
             process = Process(target=runner, args=(host,))
             process.start()
             update_status(process=process)
-    elif 'disable' in phrase:
+    elif "disable" in phrase:
         if state:
-            speaker.speak(text=f'Party mode has been disabled {models.env.title}! Hope you enjoyed it.')
+            speaker.speak(
+                text=f"Party mode has been disabled {models.env.title}! Hope you enjoyed it."
+            )
             support.stop_process(pid=int(state[0]))
             remove_status()
             return True
         else:
-            speaker.speak(text=f'Party mode was never enabled {models.env.title}!')
+            speaker.speak(text=f"Party mode was never enabled {models.env.title}!")
     else:
-        state_ = 'enabled' if state else 'disabled'
-        speaker.speak(text=f"Party mode is currently {state_} {models.env.title}! "
-                           "You can ask me to enable or disable party mode.")
+        state_ = "enabled" if state else "disabled"
+        speaker.speak(
+            text=f"Party mode is currently {state_} {models.env.title}! "
+            "You can ask me to enable or disable party mode."
+        )

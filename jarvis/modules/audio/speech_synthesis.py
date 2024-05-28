@@ -33,7 +33,7 @@ def find_pid_by_port(port: int) -> int:
         ID of the process that's listening to the port.
     """
     try:
-        for conn in psutil.net_connections(kind='inet'):
+        for conn in psutil.net_connections(kind="inet"):
             if conn.laddr.port == port:
                 return conn.pid
     except psutil.Error as error:
@@ -41,12 +41,18 @@ def find_pid_by_port(port: int) -> int:
         if models.settings.os != models.supported_platforms.macOS:
             logger.error(error)
     try:
-        result = subprocess.run(['lsof', '-i', f':{port}', '-t'], capture_output=True, text=True)
+        result = subprocess.run(
+            ["lsof", "-i", f":{port}", "-t"], capture_output=True, text=True
+        )
         if result.returncode == 0:
             return int(result.stdout.strip())
-    except (subprocess.CalledProcessError, subprocess.SubprocessError, FileNotFoundError) as error:
+    except (
+        subprocess.CalledProcessError,
+        subprocess.SubprocessError,
+        FileNotFoundError,
+    ) as error:
         if isinstance(error, subprocess.CalledProcessError):
-            result = error.output.decode(encoding='UTF-8').strip()
+            result = error.output.decode(encoding="UTF-8").strip()
             logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)
@@ -62,17 +68,25 @@ def check_existing() -> bool:
     if port_handler.is_port_in_use(port=models.env.speech_synthesis_port):
         logger.info("%d is currently in use.", models.env.speech_synthesis_port)
         try:
-            res = requests.get(url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}",
-                               timeout=1)
+            res = requests.get(
+                url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}",
+                timeout=1,
+            )
             if res.ok:
-                logger.info('http://{host}:{port} is accessible.'.format(host=models.env.speech_synthesis_host,
-                                                                         port=models.env.speech_synthesis_port))
+                logger.info(
+                    "http://{host}:{port} is accessible.".format(
+                        host=models.env.speech_synthesis_host,
+                        port=models.env.speech_synthesis_port,
+                    )
+                )
                 return True
             return False
         except EgressErrors as error:
             logger.error(error)
             if not port_handler.kill_port_pid(port=models.env.speech_synthesis_port):
-                logger.critical('ATTENTION::Failed to kill existing PID. Attempting to re-create session.')
+                logger.critical(
+                    "ATTENTION::Failed to kill existing PID. Attempting to re-create session."
+                )
 
 
 def run_existing_container(client: DockerClient, verified: bool = False) -> str | None:
@@ -104,12 +118,26 @@ def run_existing_container(client: DockerClient, verified: bool = False) -> str 
         container = client.containers.get(container_id)
         if verified:
             return container.id
-        state = container.attrs.get('State')
-        if any((state['Running'], state['Dead'], state['ExitCode'], state['Error'], state['OOMKilled'])):
-            logger.info("Purging available container [%s] since one or more reuse conditions weren't met", container.id)
+        state = container.attrs.get("State")
+        if any(
+            (
+                state["Running"],
+                state["Dead"],
+                state["ExitCode"],
+                state["Error"],
+                state["OOMKilled"],
+            )
+        ):
+            logger.info(
+                "Purging available container [%s] since one or more reuse conditions weren't met",
+                container.id,
+            )
             container.remove()
             return
-        logger.info("Starting available container [%s] since all the reuse conditions were met", container.id)
+        logger.info(
+            "Starting available container [%s] since all the reuse conditions were met",
+            container.id,
+        )
         container.start()
         # Just because the container ID is valid, it doesn't mean
         #   it belongs to speech-synthesis, or it runs and maps the expected port
@@ -117,14 +145,21 @@ def run_existing_container(client: DockerClient, verified: bool = False) -> str 
         if check_existing():
             return container.id
         else:
-            logger.warning("Container ID is valid, but API is unreachable. Hence removing container.")
+            logger.warning(
+                "Container ID is valid, but API is unreachable. Hence removing container."
+            )
             container.remove()
     except NotFound as error:
         logger.warning(error.explanation)
     except ContainerError as error:
         err = f": {error.stderr}" if error.stderr else ""
-        logger.error("Command '{}' in image '{}' returned non-zero exit status {}{}",
-                     error.command, error.image, error.exit_status, err)
+        logger.error(
+            "Command '{}' in image '{}' returned non-zero exit status {}{}",
+            error.command,
+            error.image,
+            error.exit_status,
+            err,
+        )
     except DockerException as error:
         logger.critical(error.__str__())
 
@@ -149,15 +184,21 @@ def run_new_container(client: DockerClient) -> str:
             environment=[f"HOME={models.env.home}"],
             volumes={models.env.home: {"bind": models.env.home, "mode": "rw"}},
             working_dir=os.getcwd(),
-            user=f"{os.getuid()}:{os.getgid()}", detach=True,
-            restart_policy={"Name": "on-failure", "MaximumRetryCount": 10}
+            user=f"{os.getuid()}:{os.getgid()}",
+            detach=True,
+            restart_policy={"Name": "on-failure", "MaximumRetryCount": 10},
         )
         return result.id
     except ContainerError as error:
         # should never get here since detach flag is set to true
         err = f": {error.stderr}" if error.stderr else ""
-        logger.error("Command '{}' in image '{}' returned non-zero exit status {}{}",
-                     error.command, error.image, error.exit_status, err)
+        logger.error(
+            "Command '{}' in image '{}' returned non-zero exit status {}{}",
+            error.command,
+            error.image,
+            error.exit_status,
+            err,
+        )
     except APIError as error:
         logger.error(error.explanation)
 
@@ -169,12 +210,23 @@ def stream_logs(client: DockerClient, container_id: str) -> NoReturn:
         client: DockerClient object.
         container_id: Container ID.
     """
-    logs = client.api.logs(container=container_id, stdout=True, stderr=True, stream=True, timestamps=True,
-                           tail='all', since=None, follow=None, until=None)
-    log_file = open(file=models.fileio.speech_synthesis_log, mode="a", buffering=1)  # 1 line buffer on file
+    logs = client.api.logs(
+        container=container_id,
+        stdout=True,
+        stderr=True,
+        stream=True,
+        timestamps=True,
+        tail="all",
+        since=None,
+        follow=None,
+        until=None,
+    )
+    log_file = open(
+        file=models.fileio.speech_synthesis_log, mode="a", buffering=1
+    )  # 1 line buffer on file
     os.fsync(log_file.fileno())  # Tell os module to write the buffer of the file
-    __asterisks = ''.join(['*' for _ in range(120)])
-    __spaces = ''.join(['-' for _ in range(47)])
+    __asterisks = "".join(["*" for _ in range(120)])
+    __spaces = "".join(["-" for _ in range(47)])
     log_file.write(f"\n{__asterisks}\n")
     log_file.write(f"{__spaces} STREAMING CONTAINER LOGS {__spaces}\n")
     log_file.write(f"{__asterisks}\n\n")
@@ -193,25 +245,34 @@ def speech_synthesis_api() -> None:
         logger.critical(error.__str__())
         return
     if check_existing():  # Test call to speech synthesis API successful
-        if container_id := run_existing_container(docker_client, True):  # Map existing API session with docker
+        if container_id := run_existing_container(
+            docker_client, True
+        ):  # Map existing API session with docker
             logger.info("Dry run successful, streaming logs")
             stream_logs(docker_client, container_id)
         logger.warning("Unable to stream container logs locally")
         # Container logs will not be available outside docker, so try to update the process map with docker's PID
-        if pid := find_pid_by_port(models.env.speech_synthesis_port):  # Identified the PID to update in process map
+        if pid := find_pid_by_port(
+            models.env.speech_synthesis_port
+        ):  # Identified the PID to update in process map
             process_map.update(speech_synthesis_api.__name__, models.settings.pid, pid)
         else:
             # Failed to get the PID of the listening API, hence removing entry from process map
             process_map.remove(speech_synthesis_api.__name__)
         return
 
-    container_id = run_existing_container(docker_client) or run_new_container(docker_client)
+    container_id = run_existing_container(docker_client) or run_new_container(
+        docker_client
+    )
     if not container_id:
         return
     # Due to lack of a "cidfile" flag, create one manually
-    with open(models.fileio.speech_synthesis_cid, 'w') as file:
+    with open(models.fileio.speech_synthesis_cid, "w") as file:
         file.write(container_id)
     logger.info(f"Started speech synthesis in docker container {container_id!r}")
     if models.env.speech_synthesis_port != 5002:
-        logger.info("Docker port 5002 has been mapped to %d on localhost", models.env.speech_synthesis_port)
+        logger.info(
+            "Docker port 5002 has been mapped to %d on localhost",
+            models.env.speech_synthesis_port,
+        )
     stream_logs(docker_client, container_id)

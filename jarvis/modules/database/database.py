@@ -28,10 +28,12 @@ class Database:
             database: Name of the database file.
             timeout: Timeout for the connection to database.
         """
-        if not database.endswith('.db'):
-            database = database + '.db'
+        if not database.endswith(".db"):
+            database = database + ".db"
         self.datastore = database
-        self.connection = sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=timeout)
+        self.connection = sqlite3.connect(
+            database=self.datastore, check_same_thread=False, timeout=timeout
+        )
 
     def create_table(self, table_name: str, columns: List[str] | Tuple[str]) -> None:
         """Creates the table with the required columns.
@@ -43,7 +45,9 @@ class Database:
         with self.connection:
             cursor = self.connection.cursor()
             # Use f-string or %s as table names cannot be parametrized
-            cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})")
+            cursor.execute(
+                f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
+            )
 
 
 class __TestDatabase:
@@ -59,8 +63,8 @@ class __TestDatabase:
 
         handler = logging.StreamHandler()
         fmt_ = logging.Formatter(
-            fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s',
-            datefmt='%b-%d-%Y %I:%M:%S %p'
+            fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",
+            datefmt="%b-%d-%Y %I:%M:%S %p",
         )
         handler.setFormatter(fmt=fmt_)
         logging.root.addHandler(hdlr=handler)
@@ -92,13 +96,20 @@ class __TestDatabase:
         self.db.create_table(table_name="TestDatabase", columns=["row", "column"])
         with self.db.connection:
             cursor_ = self.db.connection.cursor()
-            cursor_.execute(f"INSERT INTO TestDatabase ({random.choice(['row', 'column'])}) VALUES (?);", (True,))
+            cursor_.execute(
+                f"INSERT INTO TestDatabase ({random.choice(['row', 'column'])}) VALUES (?);",
+                (True,),
+            )
             self.db.connection.commit()
-            if (row := cursor_.execute("SELECT row FROM TestDatabase").fetchone()) and row[0]:
+            if (
+                row := cursor_.execute("SELECT row FROM TestDatabase").fetchone()
+            ) and row[0]:
                 logging.info(f"Row: {row[0]}")
                 cursor_.execute("DELETE FROM TestDatabase WHERE row=1")
                 self.db.connection.commit()
-            if (col := cursor_.execute("SELECT column FROM TestDatabase").fetchone()) and col[0]:
+            if (
+                col := cursor_.execute("SELECT column FROM TestDatabase").fetchone()
+            ) and col[0]:
                 logging.info(f"Column: {col[0]}")
                 cursor_.execute("DELETE FROM TestDatabase WHERE column=1")
                 self.db.connection.commit()
@@ -106,7 +117,7 @@ class __TestDatabase:
             self.db.connection.commit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_db = __TestDatabase()
     test_db.random_single()
     test_db.random_double()
