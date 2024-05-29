@@ -2,7 +2,7 @@ axju-jokes==1.0.3
 googlehomepush==0.1.0
 holidays==0.37
 icalendar==5.0.11
-jlrpy==1.7.0
+jlrpy==1.7.1
 newsapi-python==0.2.7
 packaging==23.2
 PyAudio==0.2.14

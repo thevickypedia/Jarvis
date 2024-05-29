@@ -1,4 +1,5 @@
 import time
+import traceback
 from datetime import datetime
 
 # noinspection PyProtectedMember
@@ -39,8 +40,14 @@ def create_connection() -> None:
             )
             logger.info("Using password to create a connection with JLR API")
         connection.connect()
-    except Exception as error:  # also raises type error in addition to connection errors
+    except EgressErrors as error:
         logger.error(error)
+        connection = None
+    except Exception as error:
+        logger.error(error)
+        if models.settings.pname == "JARVIS":
+            # Avoid butchering all log files
+            logger.error(traceback.format_exc())
         connection = None
     if connection and connection.head:
         if len(connection.vehicles) == 1:
