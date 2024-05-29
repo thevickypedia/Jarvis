@@ -4670,12 +4670,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Uses NTFY topic to send a push notification</p></li>
 </ul>
 </div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Personalized icons for <a class="reference external" href="https://wiki.ubuntu.com/Artwork/BreatheIconSet/Icons">Linux OS</a></p></li>
-</ul>
-</div>
 </dd></dl>
 
 </section>
@@ -5361,20 +5355,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.wiki">
-<span id="wikipedia"></span><h1>Wikipedia<a class="headerlink" href="#module-jarvis.executors.wiki" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.wiki.wikipedia_">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.wiki.</span></span><span class="sig-name descname"><span class="pre">wikipedia_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.wiki.wikipedia_" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets any information from wikipedia using its API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="modules">
 <h1>———-Modules———-<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h1>
 </section>
@@ -5735,12 +5715,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.ordered_dump">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">ordered_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'yaml.dumper.SafeDumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.ordered_dump" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">ordered_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'yaml.dumper.SafeDumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.ordered_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom dumper to serialize OrderedDict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – Data to be dumped into yaml file.</p></li>
+<li><p><strong>dump</strong> – Data to be dumped into yaml file.</p></li>
 <li><p><strong>stream</strong> – FileIO stream.</p></li>
 <li><p><strong>Dumper</strong> – Yaml dumper.</p></li>
 <li><p><strong>kwds</strong> – Keyword arguments like indent.</p></li>
@@ -11083,7 +11063,6 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.vpn_server">VPN Server</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.weather">Weather</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.word_match">Word Match</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.wiki">Wikipedia</a></li>
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.auth_bearer">Auth Bearer</a></li>

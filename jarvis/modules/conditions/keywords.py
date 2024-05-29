@@ -72,7 +72,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         ],
         system_info=["configuration", "system config"],
         ip_info=["address"],
-        wikipedia_=["wikipedia", "info", "information"],
         news=["news"],
         report=["report"],
         robinhood=["robinhood", "investment", "portfolio", "summary"],

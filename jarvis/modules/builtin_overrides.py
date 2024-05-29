@@ -65,12 +65,12 @@ def ordered_load(
 
 # noinspection PyPep8Naming
 def ordered_dump(
-    data, stream=None, Dumper=yaml.SafeDumper, **kwds  # noqa: N803
-) -> None | str | bytes:  # noqa
+    dump, stream=None, Dumper=yaml.SafeDumper, **kwds
+) -> None | str | bytes:
     """Custom dumper to serialize OrderedDict.
 
     Args:
-        data: Data to be dumped into yaml file.
+        dump: Data to be dumped into yaml file.
         stream: FileIO stream.
         Dumper: Yaml dumper.
         kwds: Keyword arguments like indent.
@@ -89,12 +89,12 @@ def ordered_dump(
 
         pass
 
-    def _dict_representer(dumper: Dumper, data: dict) -> Node:  # noqa
+    def _dict_representer(dumper: Dumper, data: dict) -> MappingNode:
         """Overrides built-in representer.
 
         Args:
-            dumper: yaml dumper.
-            data: data to be dumped.
+            dumper: Yaml dumper.
+            data: Data to be dumped.
 
         Returns:
             Node:
@@ -107,7 +107,7 @@ def ordered_dump(
     OrderedDumper.add_representer(
         data_type=collections.OrderedDict, representer=_dict_representer
     )
-    return yaml.dump(data=data, stream=stream, Dumper=OrderedDumper, **kwds)
+    return yaml.dump(data=dump, stream=stream, Dumper=OrderedDumper, **kwds)
 
 
 class AddProcessName(logging.Filter):

@@ -67,7 +67,7 @@ def rewrite_keywords() -> None:
             )
 
     with open(models.fileio.keywords, "w") as dst_file:
-        ordered_dump(stream=dst_file, data=keywords_src, indent=4)
+        ordered_dump(keywords_src, stream=dst_file, indent=4)
     keywords.keywords = keywords_src
     load_ignores(keywords_src)
 

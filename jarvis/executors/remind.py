@@ -264,9 +264,6 @@ def executor(message: str, contact: str = None) -> None:
         - Uses recipient email address to send email notification
         - Uses telegram account ID to send a message notification
         - Uses NTFY topic to send a push notification
-
-    See Also:
-        - Personalized icons for `Linux OS <https://wiki.ubuntu.com/Artwork/BreatheIconSet/Icons>`__
     """
     if classes.ReminderOptions.all in models.env.notify_reminders:
         notify_phone, notify_email, notify_telegram, ntfy = True, True, True, True

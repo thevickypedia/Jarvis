@@ -614,13 +614,6 @@ Word Match
    :members:
    :undoc-members:
 
-Wikipedia
-=========
-
-.. automodule:: jarvis.executors.wiki
-   :members:
-   :undoc-members:
-
 ----------Modules----------
 ===========================
 Audio

@@ -38,7 +38,6 @@ from jarvis.executors import (
     volume,
     vpn_server,
     weather,
-    wiki,
 )
 from jarvis.modules.audio import voices
 from jarvis.modules.meetings import events, ics_meetings
@@ -66,7 +65,6 @@ def function_mapping() -> OrderedDict[str, Callable]:
         current_time=date_time.current_time,
         system_info=system.system_info,
         ip_info=internet.ip_info,
-        wikipedia_=wiki.wikipedia_,
         news=others.news,
         report=others.report,
         robinhood=robinhood.robinhood,

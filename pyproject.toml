@@ -24,10 +24,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Hardware :: Hardware Drivers",
     "Topic :: System :: Hardware :: Symmetric Multi-processing",
-    "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Human Interface Device (HID)",
+    "Framework :: AnyIO",
     "Framework :: FastAPI",
     "Framework :: AsyncIO",
-    "Framework :: Sphinx",
+    "Framework :: Pydantic :: 2",
+    "Framework :: Setuptools Plugin",
     "Framework :: aiohttp",
     "Natural Language :: English"
 ]
