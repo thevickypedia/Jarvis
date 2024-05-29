@@ -35,6 +35,9 @@
 
 **Code Stats**
 
+![GitHub file count][label-file-count]
+![GitHub lines of code][label-line-of-code]
+
 ![Modules][label-stats-Modules]
 ![Python][label-stats-Python]
 ![Threads][label-stats-Threads]
@@ -212,6 +215,9 @@ Licensed under the [MIT License][license]
 [label-issues-raw]: https://img.shields.io/github/issues-raw/thevickypedia/Jarvis
 [label-pr-closed]: https://img.shields.io/github/issues-pr-closed-raw/thevickypedia/Jarvis
 [label-pr-raw]: https://img.shields.io/github/issues-pr-raw/thevickypedia/Jarvis
+
+[label-file-count]: https://tokei.rs/b1/github/thevickypedia/Jarvis?category=files
+[label-line-of-code]: https://tokei.rs/b1/github/thevickypedia/Jarvis?category=code
 
 [label-stats-Modules]: https://img.shields.io/github/search/thevickypedia/Jarvis/module
 [label-stats-Python]: https://img.shields.io/github/search/thevickypedia/Jarvis/.py
