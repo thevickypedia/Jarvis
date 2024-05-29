@@ -1,19 +1,12 @@
 import os
-import shutil
-import warnings
-from datetime import datetime
 from multiprocessing import Process
-from threading import Thread
 from typing import Dict, List
 
 import psutil
 
-from jarvis.api.server import jarvis_api
-from jarvis.executors import crontab, offline, process_map, telegram
-from jarvis.modules.audio import speech_synthesis
+from jarvis.executors import process_map
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
-from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, support, util
@@ -53,45 +46,24 @@ def clear_db() -> None:
 
 # noinspection LongLine
 def create_process_mapping(
-    processes: Dict[str, Process], func_name: str = None
+    processes: Dict[str, Dict[str, Process | List[str]]], func_name: str = None
 ) -> None:
     """Creates or updates the processes mapping file.
 
     Args:
-        processes: Dictionary of process names and the process.
-        func_name: Function name of each process.
-
-    See Also:
-        - This is a special function, that uses doc strings to create a python dict.
-
-    Handles:
-        - speech_synthesis_api: Speech Synthesis
-        - telegram_api: Telegram Bot
-        - jarvis_api: Offline communicator,Robinhood portfolio report,Jarvis UI,Stock monitor,Surveillance,Telegram
-        - background_tasks: Home automation,Alarms,Reminders,Meetings sync,Wi-Fi connector,Cron jobs,Background tasks
-        - plot_mic: Plot microphone usage in real time
+        processes: Dictionary of process names, process id and their impact.
+        func_name: Function name of the process.
     """
-    impact_lib = {}
-    for doc in create_process_mapping.__doc__.split("Handles:")[1].splitlines():
-        if doc.strip():
-            element = doc.strip().split(":")
-            func = element[0].lstrip("- ")
-            desc = element[1].strip().split(",")
-            if processes.get(func):
-                impact_lib[func] = desc
-            else:
-                logger.warning("'%s' not found in list of processes initiated", func)
-    if not func_name and sorted(impact_lib.keys()) != sorted(processes.keys()):
-        warnings.warn(
-            message=f"{list(impact_lib.keys())} does not match {list(processes.keys())}"
-        )
-    if (
-        func_name
-    ):  # Assumes a processes mapping file exists already, since flag passed during process specific restart
+    if func_name:
+        # Assumes a processes mapping file exists already, since flag is passed during process specific restart
         dump = process_map.get()
-        dump[func_name] = {processes[func_name].pid: impact_lib[func_name]}
+        dump[func_name] = {
+            processes[func_name]["process"].pid: processes[func_name]["impact"]
+        }
     else:
-        dump = {k: {v.pid: impact_lib[k]} for k, v in processes.items()}
+        dump = {
+            k: {v["process"].pid: processes[k]["impact"]} for k, v in processes.items()
+        }
         dump["jarvis"] = {models.settings.pid: ["Main Process"]}
     logger.debug("Processes data: %s", dump)
     process_map.add(dump)
@@ -114,32 +86,14 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
         - plot_mic: Initiates plotting realtime microphone usage using matplotlib.
     """
-    process_dict = {
-        jarvis_api.__name__: Process(target=jarvis_api),  # no process map removal
-        offline.background_tasks.__name__: Process(
-            target=offline.background_tasks
-        ),  # no process map removal
-        speech_synthesis.speech_synthesis_api.__name__: Process(
-            target=speech_synthesis.speech_synthesis_api
-        ),
-        telegram.telegram_api.__name__: Process(target=telegram.telegram_api),
-    }
-    if models.env.plot_mic:
-        statement = shutil.which(cmd="python") + " " + graph_mic.__file__
-        process_dict[graph_mic.plot_mic.__name__] = Process(
-            target=crontab.executor,
-            kwargs={
-                "statement": statement,
-                "log_file": datetime.now().strftime(
-                    os.path.join("logs", "mic_plotter_%d-%m-%Y.log")
-                ),
-                "process_name": graph_mic.plot_mic.__name__,
-            },
-        )
-    # Used when a single process is requested to be triggered
-    processes: Dict[str, Process] = (
-        {func_name: process_dict[func_name]} if func_name else process_dict
-    )
+    process_dict = process_map.base()
+    # Used when a single process is requested to be triggered/restarted
+    if func_name:
+        processes: Dict[str, Process] = {func_name: process_dict[func_name]["process"]}
+    else:
+        processes: Dict[str, Process] = {
+            func: process_dict[func]["process"] for func in process_dict.keys()
+        }
     for func, process in processes.items():
         process.name = func
         process.start()
@@ -148,10 +102,7 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
                 func=func, pid=process.pid
             )
         )
-    Thread(
-        target=create_process_mapping,
-        kwargs=dict(processes=processes, func_name=func_name),
-    ).start()
+    create_process_mapping(process_dict, func_name)
     return processes[func_name] if func_name else processes
 
 

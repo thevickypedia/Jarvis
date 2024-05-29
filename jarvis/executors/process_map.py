@@ -1,9 +1,80 @@
+import os
+import shutil
+from datetime import datetime
+from multiprocessing import Process
 from typing import Dict, List
 
 import yaml
 
+from jarvis.api.server import jarvis_api
+from jarvis.executors import crontab, offline, telegram
+from jarvis.modules.audio import speech_synthesis
 from jarvis.modules.logger import logger
+from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import models
+
+
+def base() -> Dict[str, Dict[str, Process | List[str]]]:
+    """Creates a base mapping with all the processes handled by Jarvis.
+
+    Returns:
+        Dict[str, Dict[str, Process | List[str]]]:
+        Nested dictionary of process mapping.
+    """
+    base_mapping = {
+        # process map will not be removed
+        jarvis_api.__name__: {
+            "process": Process(target=jarvis_api),
+            "impact": [
+                "Offline communicator",
+                "Robinhood portfolio report",
+                "Jarvis UI",
+                "Stock monitor",
+                "Surveillance",
+                "Telegram",
+            ],
+        },
+        # process map will not be removed
+        offline.background_tasks.__name__: {
+            "process": Process(target=offline.background_tasks),
+            "impact": [
+                "Home automation",
+                "Alarms",
+                "Reminders",
+                "Meetings and Events sync",
+                "Wi-Fi connector",
+                "Cron jobs",
+                "Background tasks",
+            ],
+        },
+        # process map will be removed if speech_synthesis is disabled
+        speech_synthesis.speech_synthesis_api.__name__: {
+            "process": Process(target=speech_synthesis.speech_synthesis_api),
+            "impact": ["Speech Synthesis"],
+        },
+        # process map will be removed if telegram bot is hosted via Jarvis API
+        telegram.telegram_api.__name__: {
+            "process": Process(target=telegram.telegram_api),
+            "impact": ["Telegram Bot"],
+        },
+    }
+    if models.env.plot_mic:
+        statement = shutil.which(cmd="python") + " " + graph_mic.__file__
+        # process map will be removed if plot_mic is disabled
+        base_mapping[graph_mic.plot_mic.__name__] = {
+            "process": Process(
+                target=crontab.executor,
+                kwargs={
+                    "statement": statement,
+                    "log_file": datetime.now().strftime(
+                        os.path.join("logs", "mic_plotter_%d-%m-%Y.log")
+                    ),
+                    "process_name": graph_mic.plot_mic.__name__,
+                },
+            ),
+            "impact": ["Realtime microphone usage plotter"],
+        }
+    return base_mapping
 
 
 def get() -> Dict[str, Dict[int, List[str]]]:
