@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+v4.5 (05/28/2024)
+-----------------
+- Includes stability improvements for IOT devices
+- Improved installation experience focused to support only python 3.10 and 3.11
+- Includes a new feature to host a proxy server for `GET` requests
+- Onboard a new tool for notifications - `ntfy`
+- Allows multiple websites for CORS origins
+- Includes bug fixes and improved linting across the project
+- Enables multiple notification channels for reminders
+- Replaces in house module for car controls with `jlrpy`
+- Includes frozen pypi packages for all supported devices
+
 v4.4.2 (02/03/2024)
 -------------------
 - Bug fix on flaky response when all the lights fail to connect

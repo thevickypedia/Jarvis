@@ -7,9 +7,7 @@ on:
 
 jobs:
   none-shall-pass:
-    runs-on:
-      - self-hosted
-      - Ubuntu
+    runs-on: thevickypedia-default
     steps:
       - uses: actions/checkout@v4
       - uses: thevickypedia/none-shall-pass@v5
