@@ -81,7 +81,7 @@ multidict==6.0.5
 newsapi-python==0.2.7
 numpy==1.26.4
 oauthlib==3.2.2
-openai==0.28.1
+ollama==0.1.8
 opencv-python==4.9.0.80
 ordered-set==4.1.0
 packaging==23.2

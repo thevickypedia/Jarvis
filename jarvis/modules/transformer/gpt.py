@@ -1,18 +1,35 @@
+"""Generative Pre-trained Transformer with Ollama API client.
+
+Warnings:
+    - This module uses a pre-trained transformer to generate predictive responses.
+    - Due to the size of machine learning models, this feature will be disabled in limited mode.
+
+RAM Requirements:
+    - 8 GB to run the 7B models
+    - 16 GB to run the 13B models
+    - 32 GB to run the 33B models
+
+References:
+    - Model Artifactory: https://ollama.com/library
+    - Alternatives: https://huggingface.co/meta-llama
+    - Supported Models: https://github.com/ollama/ollama/blob/main/README.md#model-library
+
+See Also:
+    `Future Plans <https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/transformer/gpt.md>`__
+"""
+
 import collections
 import difflib
-
-# noinspection PyProtectedMember
-from multiprocessing.context import TimeoutError as ThreadTimeoutError
-from multiprocessing.pool import ThreadPool
+import time
+import warnings
 from threading import Thread
 
-import openai
-from openai.error import AuthenticationError, OpenAIError
-from openai.openai_object import OpenAIObject
+import httpcore
+import httpx
+import ollama
 
 from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
-from jarvis.modules.exceptions import MissingEnvVars
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
@@ -29,6 +46,7 @@ def dump_history(request: str, response: str) -> None:
     files.put_gpt_data(data)
 
 
+# todo: customize the model to improve response time and remove this functionality
 def existing_response(request: str) -> str | None:
     """Return existing response if new request closely matches historical requests.
 
@@ -37,7 +55,7 @@ def existing_response(request: str) -> str | None:
 
     See Also:
         - Reusing responses is not enabled by default.
-        - To enable reusing responses, set the env var ``OPENAI_REUSE_THRESHOLD`` to a value between 0.5 and 0.9
+        - To enable reusing responses, set the env var ``OLLAMA_REUSE_THRESHOLD`` to a value between 0.5 and 0.9
         - This value will choose how close the request should match with a historic request before reusing the response.
 
     Warnings:
@@ -46,7 +64,7 @@ def existing_response(request: str) -> str | None:
             - `what is the height of Mount Rushmore`
 
         - To get around this, refer `env-variables section of read me <https://github.com/thevickypedia/Jarvis#env-
-          variables>`__ about ``OPENAI_REUSE_THRESHOLD``
+          variables>`__ about ``OLLAMA_REUSE_THRESHOLD``
 
     Returns:
         str:
@@ -76,7 +94,7 @@ def existing_response(request: str) -> str | None:
         )
 
     # no identical requests found in history, and reuse threshold was not set
-    if not models.env.openai_reuse_threshold:
+    if not models.env.ollama_reuse_threshold:
         logger.warning(
             "No identical requests found in history, and reuse threshold was not set."
         )
@@ -89,7 +107,7 @@ def existing_response(request: str) -> str | None:
 
     # iterate over the ordered dict to look for numbers in existing requests and ignore them
     for existing_request, response_ratio in ratios.items():
-        if response_ratio[1] >= models.env.openai_reuse_threshold and not any(
+        if response_ratio[1] >= models.env.ollama_reuse_threshold and not any(
             word.isdigit() for word in existing_request
         ):
             logger.info(
@@ -100,106 +118,125 @@ def existing_response(request: str) -> str | None:
             return response_ratio[0]
 
 
-class ChatGPT:
-    """Wrapper for OpenAI's ChatGPT API.
+class Ollama:
+    """Wrapper for Ollama client that initiates the private AI.
 
-    >>> ChatGPT
+    >>> Ollama
 
     """
 
-    MESSAGES = []
-
     def __init__(self):
-        """Initiates authentication to GPT api."""
-        self.authenticated = False
-        self.authenticate()
-        if not self.authenticated:
-            raise MissingEnvVars
-
-    def authenticate(self) -> None:
-        """Initiates authentication and prepares GPT responses ready to be audio fed."""
-        if models.env.openai_api:
-            openai.api_key = models.env.openai_api
-        else:
-            logger.warning("'openai_api' wasn't found to proceed")
-            return
-        self.MESSAGES.append(
-            {
-                "role": "system",
-                "content": "All your response will be audio fed, "
-                "so keep your replies within 1 to 2 sentences without any parenthesis.",
-            }
-        )
+        """Instantiates the model and runs it locally."""
         try:
-            chat: OpenAIObject = openai.ChatCompletion.create(
-                messages=self.MESSAGES,
-                model=models.env.openai_model,
-                timeout=models.env.openai_timeout,
-            )
-            self.MESSAGES.append(
-                {"role": "system", "content": chat.choices[0].message.content}
-            )
-            self.authenticated = True
-        except AuthenticationError as error:
+            self.models = ollama.list().get("models")
+        except (httpcore.ConnectError, httpx.ConnectError) as error:
             logger.error(error)
-        except OpenAIError as error:
-            logger.critical(error)
+            logger.error(
+                "Ollama client has to be installed, refer: https://ollama.com/download"
+            )
+            raise ValueError
+        for model in self.models:
+            if model.get("name") == f"{models.env.ollama_model}:latest":
+                logger.info(f"Model {models.env.ollama_model!r} found")
+                break
+        else:
+            # To run manually: ollama run llama2
+            logger.info(f"Downloading {models.env.ollama_model!r}")
+            try:
+                ollama.pull(models.env.ollama_model)
+            except ollama.ResponseError as error:
+                logger.error(error)
+                warnings.warn(
+                    f"\n\tInvalid model name: {models.env.ollama_model}\n"
+                    "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
+                    UserWarning,
+                )
+                raise ValueError
+        self.client = ollama.Client()
 
-    def query(self, phrase: str) -> None:
-        """Queries ChatGPT api with the request and speaks the response.
+    def query(self, phrase: str, respond: bool = True) -> None:
+        """Queries the Ollama api with the request and speaks the response.
 
         See Also:
-            - Even without authentication, this plugin can fetch responses from a mapping file.
-            - This allows, reuse-ability for requests in identical pattern.
+            - This plugin can fetch responses from a mapping file for, reusability when requests are identical.
 
         Args:
             phrase: Takes the phrase spoken as an argument.
+            respond: Takes a boolean flag to suppress response.
         """
         if response := existing_response(request=phrase):
             speaker.speak(text=response)
             return
-        self.MESSAGES.append(
-            {"role": "user", "content": phrase},
-        )
+        start = time.time()
+        response = []
+        # todo: implement ollama_timeout functionality
+        #  timeout should be skipped when respond is set to False
         try:
-            chat: OpenAIObject = openai.ChatCompletion.create(
-                messages=self.MESSAGES,
-                model=models.env.openai_model,
-                timeout=models.env.openai_timeout,
+            for idx, res in enumerate(
+                self.client.generate(
+                    model=models.env.ollama_model,
+                    prompt=phrase,
+                    stream=True,
+                    options=ollama.Options(num_predict=100),
+                )
+            ):
+                if idx == 0:
+                    # todo: change this to debug before releasing
+                    logger.info(
+                        f"Generator started in {round(float(time.time() - start), 2)}s"
+                    )
+                # noinspection PyTypeChecker
+                response.append(res["response"])
+                # noinspection PyTypeChecker
+                if res["done"]:
+                    break
+            # todo: change this to debug before releasing
+            logger.info(
+                f"Generator completed in {round(float(time.time() - start), 2)}s\n\n"
             )
-        except OpenAIError as error:
+        except ollama.ResponseError as error:
             logger.error(error)
-            static_responses.un_processable()
+            static_responses.un_processable() if respond else None
             return
-        if chat.choices:
-            reply = chat.choices[0].message.content
-            self.MESSAGES.append({"role": "assistant", "content": reply})
+        if respond and response:
+            reply = "".join(response)
             Thread(target=dump_history, args=(phrase, reply)).start()
             speaker.speak(text=reply)
+        elif response:
+            logger.info("Request: %s", phrase)
+            logger.info("Response: %s", "".join(response))
         else:
-            logger.error(chat)
-            static_responses.un_processable()
+            logger.error("Unable to process response for %s", phrase)
+            static_responses.un_processable() if respond else None
 
 
 # WATCH OUT: for changes in function name
-if models.settings.pname in ("JARVIS", "telegram_api", "jarvis_api"):
-    if models.env.openai_reuse_threshold:
+if (
+    models.settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
+    and not models.env.limited
+):
+    if models.env.ollama_reuse_threshold:
         logger.info(
             "Initiating GPT instance for '%s' with a reuse threshold of '%.2f'",
             models.settings.pname,
-            models.env.openai_reuse_threshold,
+            models.env.ollama_reuse_threshold,
         )
     else:
         logger.info("Initiating GPT instance for '%s'", models.settings.pname)
     try:
-        # because, openai built-in timeout doesn't really timeout when failed to initiate
-        instance = ThreadPool(processes=1).apply_async(func=ChatGPT)
-        instance = instance.get(timeout=10)
+        instance = Ollama()
         logger.info("GPT instance has been loaded for '%s'", models.settings.pname)
-    except ThreadTimeoutError:
+        instance.query(
+            phrase=(
+                "Conversation Guidelines:\n\n"
+                "1. Keep your responses as short as possible (less than 100 words)\n"
+                "2. Use commas and full stops but DO NOT use emojis or other punctuations.\n"
+                "3. Your responses will be fed into a voice model, so ONLY one response for each request."
+            ),
+            respond=False,
+        )
+    except ValueError:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
-        instance = None
-    except MissingEnvVars:
         instance = None
 else:
     instance = None

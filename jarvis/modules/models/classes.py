@@ -379,10 +379,9 @@ class EnvConfig(BaseSettings):
     weather_api: str | None = None
     maps_api: str | None = None
     news_api: str | None = None
-    openai_api: str | None = None
-    openai_model: str = "gpt-3.5-turbo"
-    openai_timeout: int = Field(5, le=10, ge=1)
-    openai_reuse_threshold: float | None = Field(None, ge=0.5, le=0.9)
+    ollama_model: str = "llama3"
+    ollama_timeout: int = Field(5, le=10, ge=1)
+    ollama_reuse_threshold: float | None = Field(None, ge=0.5, le=0.9)
 
     # Communication config
     gmail_user: EmailStr | None = None

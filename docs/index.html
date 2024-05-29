@@ -3306,7 +3306,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.get_gpt_data">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_gpt_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_gpt_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get history from Jarvis -&gt; ChatGPT conversation.</p>
+<dd><p>Get history from Jarvis -&gt; Ollama conversation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of dictionaries with request and response key-value pairs.</p>
@@ -3320,7 +3320,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.put_gpt_data">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_gpt_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_gpt_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores Jarvis -&gt; ChatGPT conversations in a history file.</p>
+<dd><p>Stores Jarvis -&gt; Ollama conversations in a history file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> – List of dictionaries that have to be saved for future reference.</p>
@@ -6621,23 +6621,18 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_api">
-<span class="sig-name descname"><span class="pre">openai_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_api" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_model">
+<span class="sig-name descname"><span class="pre">ollama_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_model">
-<span class="sig-name descname"><span class="pre">openai_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_model" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_timeout">
+<span class="sig-name descname"><span class="pre">ollama_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_timeout">
-<span class="sig-name descname"><span class="pre">openai_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_timeout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.openai_reuse_threshold">
-<span class="sig-name descname"><span class="pre">openai_reuse_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.openai_reuse_threshold" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_reuse_threshold">
+<span class="sig-name descname"><span class="pre">ollama_reuse_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_reuse_threshold" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -10053,6 +10048,32 @@ allow <cite>self</cite> as a field name.</p>
 </section>
 <section id="module-jarvis.modules.transformer.gpt">
 <span id="transformer"></span><h1>Transformer<a class="headerlink" href="#module-jarvis.modules.transformer.gpt" title="Permalink to this heading">¶</a></h1>
+<p>Generative Pre-trained Transformer with Ollama API client.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>This module uses a pre-trained transformer to generate predictive responses.</p></li>
+<li><p>Due to the size of machine learning models, this feature will be disabled in limited mode.</p></li>
+</ul>
+</div>
+<dl class="simple">
+<dt>RAM Requirements:</dt><dd><ul class="simple">
+<li><p>8 GB to run the 7B models</p></li>
+<li><p>16 GB to run the 13B models</p></li>
+<li><p>32 GB to run the 33B models</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Model Artifactory: <a class="reference external" href="https://ollama.com/library">https://ollama.com/library</a></p></li>
+<li><p>Alternatives: <a class="reference external" href="https://huggingface.co/meta-llama">https://huggingface.co/meta-llama</a></p></li>
+<li><p>Supported Models: <a class="reference external" href="https://github.com/ollama/ollama/blob/main/README.md#model-library">https://github.com/ollama/ollama/blob/main/README.md#model-library</a></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/transformer/gpt.md">Future Plans</a></p>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.dump_history">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">dump_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.dump_history" title="Permalink to this definition">¶</a></dt>
@@ -10080,7 +10101,7 @@ allow <cite>self</cite> as a field name.</p>
 <p class="admonition-title">See also</p>
 <ul class="simple">
 <li><p>Reusing responses is not enabled by default.</p></li>
-<li><p>To enable reusing responses, set the env var <code class="docutils literal notranslate"><span class="pre">OPENAI_REUSE_THRESHOLD</span></code> to a value between 0.5 and 0.9</p></li>
+<li><p>To enable reusing responses, set the env var <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code> to a value between 0.5 and 0.9</p></li>
 <li><p>This value will choose how close the request should match with a historic request before reusing the response.</p></li>
 </ul>
 </div>
@@ -10095,7 +10116,7 @@ allow <cite>self</cite> as a field name.</p>
 </dd>
 </dl>
 </li>
-<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis#env-variables">env-variables section of read me</a> about <code class="docutils literal notranslate"><span class="pre">OPENAI_REUSE_THRESHOLD</span></code></p></li>
+<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis#env-variables">env-variables section of read me</a> about <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code></p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -10109,38 +10130,29 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">ChatGPT</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for OpenAI’s ChatGPT API.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ChatGPT</span>
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">Ollama</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for Ollama client that initiates the private AI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Ollama</span>
 </pre></div>
 </div>
-<p>Initiates authentication to GPT api.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.MESSAGES">
-<span class="sig-name descname"><span class="pre">MESSAGES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.MESSAGES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Instantiates the model and runs it locally.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.authenticate">
-<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.authenticate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates authentication and prepares GPT responses ready to be audio fed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.ChatGPT.query">
-<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.ChatGPT.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>Queries ChatGPT api with the request and speaks the response.</p>
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries the Ollama api with the request and speaks the response.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>Even without authentication, this plugin can fetch responses from a mapping file.</p></li>
-<li><p>This allows, reuse-ability for requests in identical pattern.</p></li>
+<li><p>This plugin can fetch responses from a mapping file for, reusability when requests are identical.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
+<li><p><strong>respond</strong> – Takes a boolean flag to suppress response.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

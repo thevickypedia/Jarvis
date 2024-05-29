@@ -150,7 +150,7 @@ def put_restrictions(restrictions: List[str]) -> None:
 
 
 def get_gpt_data() -> List[Dict[str, str]]:
-    """Get history from Jarvis -> ChatGPT conversation.
+    """Get history from Jarvis -> Ollama conversation.
 
     Returns:
         List[Dict[str, str]]:
@@ -164,7 +164,7 @@ def get_gpt_data() -> List[Dict[str, str]]:
 
 
 def put_gpt_data(data: List[Dict[str, str]]) -> None:
-    """Stores Jarvis -> ChatGPT conversations in a history file.
+    """Stores Jarvis -> Ollama conversations in a history file.
 
     Args:
         data: List of dictionaries that have to be saved for future reference.

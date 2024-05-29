@@ -35,8 +35,10 @@
 
 **Code Stats**
 
+<!-- todo: self-host a code analyzer
 ![GitHub file count][label-file-count]
 ![GitHub lines of code][label-line-of-code]
+-->
 
 ![Modules][label-stats-Modules]
 ![Python][label-stats-Python]
@@ -78,7 +80,11 @@
 
 ## Kick off
 
-> :bulb: Using a dedicated [virtual environment] with [python3.11] and an IDE like [PyCharm] is highly recommended.
+**Recommendations**
+
+- Install `python` [3.10] or [3.11]
+- Use an IDE like [PyCharm] or [VSCode]
+- Create a dedicated [virtual environment]
 
 **Install**
 ```shell
@@ -166,9 +172,11 @@ pre-commit run --all-files
 Licensed under the [MIT License][license]
 
 [python]: https://python.org
-[python3.11]: https://docs.python.org/3/whatsnew/3.11.html
+[3.10]: https://docs.python.org/3/whatsnew/3.10.html
+[3.11]: https://docs.python.org/3/whatsnew/3.11.html
 [virtual environment]: https://docs.python.org/3/tutorial/venv.html
 [PyCharm]: https://www.jetbrains.com/pycharm/
+[VSCode]: https://code.visualstudio.com/download
 [repo]: https://api.github.com/repos/thevickypedia/Jarvis
 [license]: https://github.com/thevickypedia/Jarvis/blob/master/LICENSE
 [pypi]: https://pypi.org/project/jarvis-ironman

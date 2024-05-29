@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v4.5.1 (05/29/2024)
+-------------------
+- Removes `wikipedia` feature integration
+- Includes break fix for an invalid return type
+
 v4.5 (05/28/2024)
 -----------------
 - Includes stability improvements for IOT devices
