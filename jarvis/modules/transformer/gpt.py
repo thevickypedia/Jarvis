@@ -22,7 +22,13 @@ import collections
 import difflib
 import time
 import warnings
+from collections.abc import Generator
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
+from multiprocessing.pool import ThreadPool
 from threading import Thread
+from typing import List
 
 import httpcore
 import httpx
@@ -154,11 +160,43 @@ class Ollama:
                 raise ValueError
         self.client = ollama.Client()
 
+    def request_model(self, request: str) -> Generator[str]:
+        """Interacts with the model with a request and yields the response.
+
+        Args:
+            request:
+
+        Yields:
+            Streaming response from the model.
+        """
+        start = time.time()
+        for idx, res in enumerate(
+            self.client.generate(
+                model=models.env.ollama_model,
+                prompt=request,
+                stream=True,
+                options=ollama.Options(num_predict=100),
+            )
+        ):
+            # noinspection PyTypeChecker
+            yield res["response"]
+            # noinspection PyTypeChecker
+            if res["done"]:
+                break
+        # todo: change this to debug before releasing
+        logger.info(
+            f"Generator completed in {round(float(time.time() - start), 2)}s\n\n"
+        )
+
+    def generator(self, phrase: str) -> List[str]:
+        """Returns the streaming response from the model in a list."""
+        return list(self.request_model(phrase))
+
     def query(self, phrase: str, respond: bool = True) -> None:
         """Queries the Ollama api with the request and speaks the response.
 
         See Also:
-            - This plugin can fetch responses from a mapping file for, reusability when requests are identical.
+            This plugin can fetch responses from a mapping file for, reusability when requests are identical.
 
         Args:
             phrase: Takes the phrase spoken as an argument.
@@ -167,44 +205,31 @@ class Ollama:
         if response := existing_response(request=phrase):
             speaker.speak(text=response)
             return
-        start = time.time()
-        response = []
-        # todo: implement ollama_timeout functionality
-        #  timeout should be skipped when respond is set to False
         try:
-            for idx, res in enumerate(
-                self.client.generate(
-                    model=models.env.ollama_model,
-                    prompt=phrase,
-                    stream=True,
-                    options=ollama.Options(num_predict=100),
+            if respond:
+                model_response = self.generator(phrase)
+            else:
+                process = ThreadPool(processes=1).apply_async(
+                    self.generator, args=(phrase,)
                 )
-            ):
-                if idx == 0:
-                    # todo: change this to debug before releasing
-                    logger.info(
-                        f"Generator started in {round(float(time.time() - start), 2)}s"
-                    )
-                # noinspection PyTypeChecker
-                response.append(res["response"])
-                # noinspection PyTypeChecker
-                if res["done"]:
-                    break
-            # todo: change this to debug before releasing
-            logger.info(
-                f"Generator completed in {round(float(time.time() - start), 2)}s\n\n"
-            )
+                model_response = process.get(models.env.ollama_timeout)
         except ollama.ResponseError as error:
             logger.error(error)
             static_responses.un_processable() if respond else None
             return
-        if respond and response:
-            reply = "".join(response)
+        except ThreadTimeoutError as error:
+            logger.error(error)
+            speaker.speak(
+                text=f"I'm sorry {models.env.title}! I wasn't able to process your request within the set timeout."
+            )
+            return
+        if respond and model_response:
+            reply = "".join(model_response)
             Thread(target=dump_history, args=(phrase, reply)).start()
             speaker.speak(text=reply)
-        elif response:
+        elif model_response:
             logger.info("Request: %s", phrase)
-            logger.info("Response: %s", "".join(response))
+            logger.info("Response: %s", "".join(model_response))
         else:
             logger.error("Unable to process response for %s", phrase)
             static_responses.un_processable() if respond else None
@@ -231,7 +256,8 @@ if (
                 "Conversation Guidelines:\n\n"
                 "1. Keep your responses as short as possible (less than 100 words)\n"
                 "2. Use commas and full stops but DO NOT use emojis or other punctuations.\n"
-                "3. Your responses will be fed into a voice model, so ONLY one response for each request."
+                "3. Your responses will be fed into a voice model, "
+                "so limit your responses to a SINGLE SENTENCE through out the session."
             ),
             respond=False,
         )

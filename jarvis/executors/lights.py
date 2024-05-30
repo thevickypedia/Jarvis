@@ -1,7 +1,9 @@
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from multiprocessing.context import TimeoutError as ThreadTimeout
+
+# noinspection PyProtectedMember
+from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import Callable, Dict, List
@@ -90,7 +92,7 @@ class ThreadExecutor:
         )  # Speak the initial response when the work is happening behind the scenes
         try:
             failed = status.get(5)
-        except ThreadTimeout as error:
+        except ThreadTimeoutError as error:
             logger.error(error)
             return
         if failed:
