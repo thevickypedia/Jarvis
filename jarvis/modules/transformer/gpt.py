@@ -20,7 +20,8 @@ See Also:
 
 import collections
 import difflib
-import time
+import os
+import subprocess
 import warnings
 from collections.abc import Generator
 
@@ -38,6 +39,7 @@ from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.utils import support
 
 
 def dump_history(request: str, response: str) -> None:
@@ -52,7 +54,6 @@ def dump_history(request: str, response: str) -> None:
     files.put_gpt_data(data)
 
 
-# todo: customize the model to improve response time and remove this functionality
 def existing_response(request: str) -> str | None:
     """Return existing response if new request closely matches historical requests.
 
@@ -124,6 +125,70 @@ def existing_response(request: str) -> str | None:
             return response_ratio[0]
 
 
+class Customizer:
+    """Customize prompt for the model with pre-defined instructions.
+
+    >>> Customizer
+
+    """
+
+    def __init__(self):
+        """Initializes the model name."""
+        self.model_name = "jarvis"
+
+    def run(self) -> str:
+        """Runs the customizer with SDK as the primary option and CLI as secondary.
+
+        Returns:
+            str:
+            Returns the model name.
+        """
+        try:
+            self.customize_model_sdk()
+            return self.model_name
+        except ollama.ResponseError as error:
+            logger.error(error)
+        try:
+            self.customize_model_cli()
+            return self.model_name
+        except (subprocess.SubprocessError, AssertionError) as error:
+            logger.error(error)
+        return models.env.ollama_model
+
+    def customize_model_cli(self) -> None:
+        """Uses the CLI to customize the model."""
+        model_file = os.path.join(os.path.dirname(__file__), "Modelfile")
+        model_file = model_file.lstrip(os.getcwd())
+        process = subprocess.Popen(
+            f"ollama create {self.model_name} -f {model_file}",
+            shell=True,
+            universal_newlines=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        for line in process.stdout:
+            logger.info(line)
+        process.wait()
+        for line in process.stderr:
+            logger.warning(line)
+        assert process.returncode == 0, "Failed to customize the model"
+
+    def customize_model_sdk(self) -> None:
+        """Uses the CLI to customize the model.
+
+        Warnings:
+            `Model creation with SDK is currently broke <https://github.com/ollama/ollama-python/issues/171>`__.
+        """
+        model_file = os.path.join(os.path.dirname(__file__), "Modelfile")
+        for res in ollama.create(
+            model=self.model_name, modelfile=model_file, stream=True
+        ):
+            logger.info(res["response"])
+            if res["done"]:
+                break
+
+
 class Ollama:
     """Wrapper for Ollama client that initiates the private AI.
 
@@ -138,7 +203,7 @@ class Ollama:
         except (httpcore.ConnectError, httpx.ConnectError) as error:
             logger.error(error)
             logger.error(
-                "Ollama client has to be installed, refer: https://ollama.com/download"
+                "Ollama client is either not installed or not running, refer: https://ollama.com/download"
             )
             raise ValueError
         for model in self.models:
@@ -158,6 +223,7 @@ class Ollama:
                     UserWarning,
                 )
                 raise ValueError
+        self.model_name = Customizer().run()
         self.client = ollama.Client()
 
     def request_model(self, request: str) -> Generator[str]:
@@ -169,30 +235,23 @@ class Ollama:
         Yields:
             Streaming response from the model.
         """
-        start = time.time()
-        for idx, res in enumerate(
-            self.client.generate(
-                model=models.env.ollama_model,
-                prompt=request,
-                stream=True,
-                options=ollama.Options(num_predict=100),
-            )
+        for res in self.client.generate(
+            model=self.model_name,
+            prompt=request,
+            stream=True,
+            options=ollama.Options(num_predict=100),
         ):
             # noinspection PyTypeChecker
             yield res["response"]
             # noinspection PyTypeChecker
             if res["done"]:
                 break
-        # todo: change this to debug before releasing
-        logger.info(
-            f"Generator completed in {round(float(time.time() - start), 2)}s\n\n"
-        )
 
     def generator(self, phrase: str) -> List[str]:
         """Returns the streaming response from the model in a list."""
         return list(self.request_model(phrase))
 
-    def query(self, phrase: str, respond: bool = True) -> None:
+    def query(self, phrase: str) -> None:
         """Queries the Ollama api with the request and speaks the response.
 
         See Also:
@@ -200,39 +259,26 @@ class Ollama:
 
         Args:
             phrase: Takes the phrase spoken as an argument.
-            respond: Takes a boolean flag to suppress response.
         """
         if response := existing_response(request=phrase):
             speaker.speak(text=response)
             return
         try:
-            if respond:
-                model_response = self.generator(phrase)
-            else:
-                process = ThreadPool(processes=1).apply_async(
-                    self.generator, args=(phrase,)
-                )
-                model_response = process.get(models.env.ollama_timeout)
-        except ollama.ResponseError as error:
-            logger.error(error)
-            static_responses.un_processable() if respond else None
-            return
-        except ThreadTimeoutError as error:
-            logger.error(error)
-            speaker.speak(
-                text=f"I'm sorry {models.env.title}! I wasn't able to process your request within the set timeout."
+            process = ThreadPool(processes=1).apply_async(
+                self.generator, args=(phrase,)
             )
+            model_response = process.get(models.env.ollama_timeout)
+        except (ollama.ResponseError, ThreadTimeoutError) as error:
+            logger.error("%s - %s", type(error), error)
+            static_responses.un_processable()
             return
-        if respond and model_response:
+        if model_response:
             reply = "".join(model_response)
             Thread(target=dump_history, args=(phrase, reply)).start()
             speaker.speak(text=reply)
-        elif model_response:
-            logger.info("Request: %s", phrase)
-            logger.info("Response: %s", "".join(model_response))
         else:
             logger.error("Unable to process response for %s", phrase)
-            static_responses.un_processable() if respond else None
+            static_responses.un_processable()
 
 
 # WATCH OUT: for changes in function name
@@ -241,26 +287,21 @@ if (
     and not models.env.limited
 ):
     if models.env.ollama_reuse_threshold:
-        logger.info(
-            "Initiating GPT instance for '%s' with a reuse threshold of '%.2f'",
-            models.settings.pname,
-            models.env.ollama_reuse_threshold,
+        start = (
+            f"Initiating GPT instance for {models.settings.pname!r} with a "
+            f"reuse threshold of '{models.env.ollama_reuse_threshold:.2f}'"
         )
     else:
-        logger.info("Initiating GPT instance for '%s'", models.settings.pname)
+        start = f"Initiating GPT instance for {models.settings.pname}"
+    logger.info(start)
+    if models.settings.pname == "JARVIS":
+        support.write_screen(start)
     try:
         instance = Ollama()
-        logger.info("GPT instance has been loaded for '%s'", models.settings.pname)
-        instance.query(
-            phrase=(
-                "Conversation Guidelines:\n\n"
-                "1. Keep your responses as short as possible (less than 100 words)\n"
-                "2. Use commas and full stops but DO NOT use emojis or other punctuations.\n"
-                "3. Your responses will be fed into a voice model, "
-                "so limit your responses to a SINGLE SENTENCE through out the session."
-            ),
-            respond=False,
-        )
+        finish = f"GPT instance has been loaded for {models.settings.pname!r}"
+        if models.settings.pname == "JARVIS":
+            support.write_screen(finish)
+        logger.info(finish)
     except ValueError:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None

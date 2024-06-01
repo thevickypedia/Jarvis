@@ -205,7 +205,7 @@ Licensed under the [MIT License][license]
 [label-python]: https://img.shields.io/badge/Made%20with-Python-blue?style=for-the-badge&logo=Python
 [label-pyversion]: https://img.shields.io/badge/python-3.10%20%7C%203.11-orange
 [label-pypi-downloads]: https://img.shields.io/pypi/dm/jarvis-ironman
-[label-platform]: https://img.shields.io/badge/Platform-Linux|MacOS|Windows-1f425f.svg
+[label-platform]: https://img.shields.io/badge/Platform-Linux|macOS|Windows-1f425f.svg
 
 [label-language-ct]: https://img.shields.io/github/languages/count/thevickypedia/Jarvis
 [label-code-coverage]: https://img.shields.io/github/languages/top/thevickypedia/Jarvis

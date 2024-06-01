@@ -7,6 +7,8 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.models import models
 from jarvis.modules.utils import util
 
+# TODO: Move most if not all of these to Modelfile
+
 
 def form(*args) -> None:
     """Response for form."""

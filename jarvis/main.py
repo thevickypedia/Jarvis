@@ -231,6 +231,9 @@ def start() -> None:
             shared.processes = processor.start_processes(
                 func_name="speech_synthesis_api"
             )
+            # Enable speech synthesis for speaker
+            if not models.env.speech_synthesis_timeout:
+                models.env.speech_synthesis_timeout = 10
     else:
         shared.processes = processor.start_processes()
     location.write_current_location()

@@ -8,7 +8,6 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from threading import Thread
 from typing import List, Tuple
 
 import boto3
@@ -125,9 +124,6 @@ def apps(phrase: str) -> None:
 
     if not app_check:
         speaker.speak(text=f"I did not find the app {keyword}. Try again.")
-        Thread(
-            target=support.unrecognized_dumper, args=[{"APPLICATIONS": keyword}]
-        ).start()
         return
     app_status = os.system(f"open /Applications/{keyword!r} > /dev/null 2>&1")
     keyword = keyword.replace(".app", "")

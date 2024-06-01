@@ -10130,6 +10130,46 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">Customizer</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customize prompt for the model with pre-defined instructions.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizer</span>
+</pre></div>
+</div>
+<p>Initializes the model name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the customizer with SDK as the primary option and CLI as secondary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the model name.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.customize_model_cli">
+<span class="sig-name descname"><span class="pre">customize_model_cli</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.customize_model_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the CLI to customize the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.customize_model_sdk">
+<span class="sig-name descname"><span class="pre">customize_model_sdk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.customize_model_sdk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the CLI to customize the model.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><a class="reference external" href="https://github.com/ollama/ollama-python/issues/171">Model creation with SDK is currently broke</a>.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">Ollama</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for Ollama client that initiates the private AI.</p>
@@ -10159,7 +10199,7 @@ allow <cite>self</cite> as a field name.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama.query">
-<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">respond</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.query" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queries the Ollama api with the request and speaks the response.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -10167,10 +10207,7 @@ allow <cite>self</cite> as a field name.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p></li>
-<li><p><strong>respond</strong> – Takes a boolean flag to suppress response.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
 </dd>
 </dl>
 </dd></dl>

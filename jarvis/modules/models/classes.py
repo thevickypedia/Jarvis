@@ -380,8 +380,8 @@ class EnvConfig(BaseSettings):
     maps_api: str | None = None
     news_api: str | None = None
     ollama_model: str = "llama3"
-    ollama_timeout: int = Field(5, le=10, ge=1)
-    ollama_reuse_threshold: float | None = Field(None, ge=0.5, le=0.9)
+    ollama_timeout: int = Field(5, le=30, ge=1)
+    ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.1)
 
     # Communication config
     gmail_user: EmailStr | None = None
@@ -465,8 +465,8 @@ class EnvConfig(BaseSettings):
     bot_secret: str | None = Field(None, pattern="^[A-Za-z0-9_-]{1,256}$")
     bot_certificate: FilePath | None = None
 
-    # Speech synthesis config
-    speech_synthesis_timeout: int = 3
+    # Speech synthesis config (disabled for speaker by default)
+    speech_synthesis_timeout: int = 0
     speech_synthesis_voice: str = "en-us_northern_english_male-glow_tts"
     speech_synthesis_quality: SSQuality = SSQuality.Medium_Quality
     speech_synthesis_host: str = socket.gethostbyname("localhost")

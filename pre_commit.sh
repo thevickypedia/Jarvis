@@ -30,6 +30,7 @@ gen_docs() {
 
 run_pytest() {
   # Run pytest
+  export PYTHONWARNINGS="ignore::DeprecationWarning"
   python -m pytest
 }
 

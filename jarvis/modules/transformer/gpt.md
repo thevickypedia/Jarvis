@@ -21,9 +21,9 @@
 
 ### Model specific todos:
 
-1. [Customize prompt](https://github.com/ollama/ollama/blob/main/README.md#customize-a-prompt)
+1. ~~[Customize prompt](https://github.com/ollama/ollama/blob/main/README.md#customize-a-prompt)~~
 2. Support running in Docker containers
 3. Write util scripts to,
-    - customize the model
+    - ~~customize the model~~
     - build model and initiate server independently _(including docker)_
 4. Add an option to host model on a remote server with an accessible endpoint
