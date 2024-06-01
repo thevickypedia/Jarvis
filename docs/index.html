@@ -2813,7 +2813,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="conditions"></span><h1>Conditions<a class="headerlink" href="#module-jarvis.executors.conditions" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.conditions.conditions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.conditions.</span></span><span class="sig-name descname"><span class="pre">conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.conditions.conditions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conditions function is used to check the message processed.</p>
 <p>Uses the keywords to match pre-defined conditions and trigger the appropriate function which has dedicated task.</p>
 <dl class="field-list simple">
@@ -2826,12 +2826,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p><strong>When requested to stop Jarvis.</strong> – </p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Boolean True only when asked to sleep for conditioned sleep message.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -2840,17 +2834,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="commander"></span><h1>Commander<a class="headerlink" href="#module-jarvis.executors.commander" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.commander.split_phrase">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">conditions</span></span></span><a class="headerlink" href="#jarvis.executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.commander.</span></span><span class="sig-name descname"><span class="pre">split_phrase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.commander.split_phrase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits the input at ‘and’ or ‘also’ and makes it multiple commands to execute if found in statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Return value from <code class="docutils literal notranslate"><span class="pre">conditions()</span></code></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>conditions.conditions</p>
 </dd>
 </dl>
 </dd></dl>
@@ -10116,7 +10104,7 @@ allow <cite>self</cite> as a field name.</p>
 </dd>
 </dl>
 </li>
-<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis#env-variables">env-variables section of read me</a> about <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code></p></li>
+<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-gpt-integration">env-variables section of the wiki page</a> about <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code></p></li>
 </ul>
 </div>
 <dl class="field-list simple">

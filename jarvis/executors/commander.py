@@ -20,18 +20,12 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support, util
 
 
-def split_phrase(phrase: str) -> "conditions.conditions":
+def split_phrase(phrase: str) -> None:
     """Splits the input at 'and' or 'also' and makes it multiple commands to execute if found in statement.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
-
-    Returns:
-        conditions.conditions:
-        Return value from ``conditions()``
     """
-    exit_check = False  # this is specifically to catch the sleep command which should break the loop in renew()
-
     if " after " in phrase and not word_match.word_match(
         phrase=phrase, match_list=keywords.ignore_after
     ):
@@ -40,7 +34,7 @@ def split_phrase(phrase: str) -> "conditions.conditions":
                 text=f"I will execute it after {support.time_converter(second=delay_info[1])} "
                 f"{models.env.title}!"
             )
-            return False
+            return
 
     if " and " in phrase and not word_match.word_match(
         phrase=phrase, match_list=keywords.ignore_and
@@ -48,11 +42,10 @@ def split_phrase(phrase: str) -> "conditions.conditions":
         and_phrases = phrase.split(" and ")
         logger.info("Looping through %s in iterations.", and_phrases)
         for each in and_phrases:
-            exit_check = conditions.conditions(phrase=each.strip())
+            conditions.conditions(phrase=each.strip())
             speaker.speak(run=True)
     else:
-        exit_check = conditions.conditions(phrase=phrase.strip())
-    return exit_check
+        conditions.conditions(phrase=phrase.strip())
 
 
 def delay_condition(phrase: str, delay: int | float) -> None:

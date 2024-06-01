@@ -70,8 +70,9 @@ def existing_response(request: str) -> str | None:
             - `what is the height of Mount Everest`
             - `what is the height of Mount Rushmore`
 
-        - To get around this, refer `env-variables section of read me <https://github.com/thevickypedia/Jarvis#env-
-          variables>`__ about ``OLLAMA_REUSE_THRESHOLD``
+        - To get around this, refer `env-variables section of the wiki page
+          <https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-
+          gpt-integration>`__ about ``OLLAMA_REUSE_THRESHOLD``
 
     Returns:
         str:
@@ -168,10 +169,10 @@ class Customizer:
             stderr=subprocess.PIPE,
         )
         for line in process.stdout:
-            logger.info(line)
+            logger.info(line.strip())
         process.wait()
         for line in process.stderr:
-            logger.warning(line)
+            logger.warning(line.strip())
         assert process.returncode == 0, "Failed to customize the model"
 
     def customize_model_sdk(self) -> None:

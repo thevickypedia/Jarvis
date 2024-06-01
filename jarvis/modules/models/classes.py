@@ -381,7 +381,7 @@ class EnvConfig(BaseSettings):
     news_api: str | None = None
     ollama_model: str = "llama3"
     ollama_timeout: int = Field(5, le=30, ge=1)
-    ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.1)
+    ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.5)
 
     # Communication config
     gmail_user: EmailStr | None = None
