@@ -65,9 +65,7 @@ def create_connection() -> None:
         logger.error("Vehicle connection received no headers!!")
 
 
-# Initiate connection only for main and offline communicators
-# WATCH OUT: for changes in function name
-if models.settings.pname in ("JARVIS", "telegram_api", "jarvis_api"):
+if models.startup_car:
     if all((models.env.car_username, models.env.car_password, models.env.car_pin)):
         logger.info(
             "Creating a new vehicle authorization connection for '%s'",

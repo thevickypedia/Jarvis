@@ -38,7 +38,6 @@ def tv_controller(
                 )
             elif identifier == "ROKU":
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
-                # todo: launch a harmless app to actually startup the TV
         except TVError as error:
             logger.error("Failed to connect to the TV. %s", error)
             speaker.speak(

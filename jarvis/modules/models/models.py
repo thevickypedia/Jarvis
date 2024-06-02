@@ -27,6 +27,7 @@ from jarvis.modules.models.classes import (
     AUDIO_DRIVER,
     DistanceUnits,
     Indicators,
+    StartupOptions,
     TemperatureUnits,
     env,
     fileio,
@@ -60,6 +61,19 @@ TABLES = {
     "listener": ("state",),
 }
 KEEP_TABLES = ("vpn", "party", "listener")  # TABLES to keep from `fileio.base_db`
+startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
+if startup and StartupOptions.all in env.startup_options:
+    startup_car = True
+    startup_gpt = True
+    startup_thermostat = True
+elif startup:
+    startup_car = StartupOptions.car in env.startup_options
+    startup_gpt = StartupOptions.gpt in env.startup_options
+    startup_thermostat = StartupOptions.thermostat in env.startup_options
+else:
+    startup_car = False
+    startup_gpt = False
+    startup_thermostat = False
 
 
 def _distance_temperature_brute_force() -> None:

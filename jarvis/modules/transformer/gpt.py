@@ -282,11 +282,7 @@ class Ollama:
             static_responses.un_processable()
 
 
-# WATCH OUT: for changes in function name
-if (
-    models.settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
-    and not models.env.limited
-):
+if models.startup_gpt:
     if models.env.ollama_reuse_threshold:
         start = (
             f"Initiating GPT instance for {models.settings.pname!r} with a "

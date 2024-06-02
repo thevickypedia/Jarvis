@@ -51,6 +51,7 @@ class RokuECP:
         else:
             logger.error("%d - %s", response.status_code, response.text)
             raise TVError
+        self.startup()
 
     def make_call(self, path: str, method: str) -> requests.Response:
         """Makes a session call using the path and method provided.

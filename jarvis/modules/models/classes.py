@@ -324,6 +324,15 @@ class ReminderOptions(StrEnum):
     all: str = "all"
 
 
+class StartupOptions(StrEnum):
+    """Background threads to startup."""
+
+    all: str = "all"
+    car: str = "car"
+    gpt: str = "gpt"
+    thermostat: str = "thermostat"
+
+
 class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
@@ -374,6 +383,7 @@ class EnvConfig(BaseSettings):
 
     # Author specific
     author_mode: bool = False
+    startup_options: StartupOptions | List[StartupOptions] = StartupOptions.all
 
     # Third party api config
     weather_api: str | None = None
@@ -512,6 +522,18 @@ class EnvConfig(BaseSettings):
         if isinstance(value, list):
             if ReminderOptions.all in value:
                 return [ReminderOptions.all]
+            return value
+        return [value]
+
+    # noinspection PyMethodParameters
+    @field_validator("startup_options", mode="after", check_fields=True)
+    def parse_startup_options(
+        cls, value: StartupOptions | List[StartupOptions]
+    ) -> List[StartupOptions]:
+        """Validate startup options."""
+        if isinstance(value, list):
+            if StartupOptions.all in value:
+                return [StartupOptions.all]
             return value
         return [value]
 

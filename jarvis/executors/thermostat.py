@@ -33,9 +33,7 @@ def create_connection() -> None:
         classes.Thermostat.device = error.__class__.__name__
 
 
-# Initiate connection only for main and offline communicators
-# WATCH OUT: for changes in function name
-if models.settings.pname in ("JARVIS", "telegram_api", "jarvis_api"):
+if models.startup_thermostat:
     if all(
         (models.env.tcc_username, models.env.tcc_password, models.env.tcc_device_name)
     ):

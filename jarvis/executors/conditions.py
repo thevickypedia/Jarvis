@@ -36,11 +36,10 @@ def conditions(phrase: str) -> None:
     if (
         not shared.called_by_offline
         and not listener_controls.get_listener_state()
+        # WATCH OUT: "activate" and "enable" are hard coded
         and not all(
             (
-                "activate" in phrase
-                or "enable"
-                in phrase,  # WATCH OUT: "activate" and "enable" are hard coded
+                "activate" in phrase or "enable" in phrase,
                 word_match.word_match(
                     phrase=phrase, match_list=keywords.keywords["listener_control"]
                 ),
