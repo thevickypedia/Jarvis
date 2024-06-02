@@ -6,10 +6,10 @@
 """
 
 import getpass
+import json
 import os
 import pathlib
 import platform
-import json
 import re
 import socket
 import sys
@@ -335,43 +335,44 @@ class StartupOptions(StrEnum):
     thermostat: str = "thermostat"
 
 
-# todo: this is redundant, take a page from pyfilebrowser `from_env_file`
-class EnvLoader:
-    for _key, _value in os.environ.items():
-        if _key.lower() == "env_file":
-            env_file = pathlib.Path(_value)
-            os.environ.pop(_key)
-            break
+def channel_validator(
+    value: int | PositiveInt, ch_type: str
+) -> int | PositiveInt | None:
+    """Channel validator for camera and microphone index.
+
+    Args:
+        value: Index of the device.
+        ch_type: Input/output.
+
+    Returns:
+        int | PositiveInt | None:
+        Returns the validated device index.
+    """
+    if ch_type == "input":
+        channels = channel_type.input_channels
     else:
-        env_file = pathlib.Path(".env")
-
-    @staticmethod
-    def yaml_loader(file):
-        with open(file) as stream:
-            return yaml.load(stream, yaml.FullLoader)
-
-    @staticmethod
-    def json_loader(file):
-        with open(file) as stream:
-            return json.load(stream)
-
-    @staticmethod
-    def default_loader(file):
-        return file
-
-    if env_file.suffix.lower() == ".json":
-        loader = json_loader
-    elif env_file.suffix.lower() in (".yaml", ".yml"):
-        loader = yaml_loader
-    elif not env_file.suffix or env_file.suffix.lower() in (".text", ".txt", ".env"):
-        loader = default_loader
-    else:
-        raise ValueError(
-            "\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text)"
+        channels = channel_type.output_channels
+    if not value:
+        return
+    if int(value) in list(
+        map(
+            lambda tag: tag["index"],
+            get_audio_devices(channels),
         )
-
-
-env_loader = EnvLoader()
+    ):
+        return value
+    else:
+        complicated = dict(
+            ChainMap(
+                *list(
+                    map(
+                        lambda tag: {tag["index"]: tag["name"]},
+                        get_audio_devices(channels),
+                    )
+                )
+            )
+        )
+        raise InvalidEnvVars(f"value should be one of {complicated}")
 
 
 class EnvConfig(BaseSettings):
@@ -543,12 +544,21 @@ class EnvConfig(BaseSettings):
         """Environment variables configuration."""
 
         env_prefix = ""
-        # Since `EnvConfig` is a nested object, `Config` gets loaded before the conditions could apply
-        if env_loader.loader == env_loader.default_loader:
-            env_file = env_loader.env_file
         extra = "allow"
 
-    # noinspection PyMethodParameters
+    @classmethod
+    def from_env_file(cls, filename: pathlib.Path) -> "EnvConfig":
+        """Create an instance of EnvConfig from environment file.
+
+        Args:
+            filename: Name of the env file.
+
+        Returns:
+            EnvConfig:
+            Loads the ``EnvConfig`` model.
+        """
+        return cls(_env_file=filename)
+
     @field_validator("website", mode="after", check_fields=True)
     def parse_websites(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
         """Validate websites."""
@@ -556,7 +566,6 @@ class EnvConfig(BaseSettings):
             return value
         return [value]
 
-    # noinspection PyMethodParameters
     @field_validator("notify_reminders", mode="after", check_fields=True)
     def parse_notify_reminders(
         cls, value: ReminderOptions | List[ReminderOptions]
@@ -568,7 +577,6 @@ class EnvConfig(BaseSettings):
             return value
         return [value]
 
-    # noinspection PyMethodParameters
     @field_validator("startup_options", mode="after", check_fields=True)
     def parse_startup_options(
         cls, value: StartupOptions | List[StartupOptions]
@@ -580,62 +588,19 @@ class EnvConfig(BaseSettings):
             return value
         return [value]
 
-    # noinspection PyMethodParameters
     @field_validator("microphone_index", mode="before", check_fields=True)
     def parse_microphone_index(
         cls, value: int | PositiveInt
     ) -> int | PositiveInt | None:
         """Validates microphone index."""
-        if not value:
-            return
-        if int(value) in list(
-            map(
-                lambda tag: tag["index"],
-                get_audio_devices(channels=channel_type.input_channels),
-            )
-        ):
-            return value
-        else:
-            complicated = dict(
-                ChainMap(
-                    *list(
-                        map(
-                            lambda tag: {tag["index"]: tag["name"]},
-                            get_audio_devices(channels=channel_type.input_channels),
-                        )
-                    )
-                )
-            )
-            raise InvalidEnvVars(f"value should be one of {complicated}")
+        return channel_validator(value, "input")
 
-    # noinspection PyMethodParameters
     @field_validator("speaker_index", mode="before", check_fields=True)
     def parse_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage (currently the index value is unused)
-        if not value:
-            return
-        if int(value) in list(
-            map(
-                lambda tag: tag["index"],
-                get_audio_devices(channels=channel_type.output_channels),
-            )
-        ):
-            return value
-        else:
-            complicated = dict(
-                ChainMap(
-                    *list(
-                        map(
-                            lambda tag: {tag["index"]: tag["name"]},
-                            get_audio_devices(channels=channel_type.output_channels),
-                        )
-                    )
-                )
-            )
-            raise InvalidEnvVars(f"value should be one of {complicated}")
+        return channel_validator(value, "output")
 
-    # noinspection PyMethodParameters
     @field_validator("birthday", mode="before", check_fields=True)
     def parse_birthday(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
@@ -660,7 +625,6 @@ class EnvConfig(BaseSettings):
                 r"Password must contain a digit, an Uppercase letter, and a symbol from !@#$%&'()*+,-/[\]^_`{|}~<>"
             )
 
-    # noinspection PyMethodParameters
     @field_validator("weather_alert", mode="before", check_fields=True)
     def parse_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
@@ -674,11 +638,44 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be '%I:%M %p'")
 
 
-if env_loader.loader == env_loader.default_loader:
-    env = EnvConfig()
-else:
-    env_data = env_loader.loader(env_loader.env_file)
-    env = EnvConfig(**{k.lower(): v for k, v in env_data.items()})
+def env_loader(key, default) -> EnvConfig:
+    """Loads environment variables based on filetypes.
+
+    Args:
+        key: Key for the filename from where env vars have to be loaded.
+        default: Default file to load env vars from.
+
+    Returns:
+        EnvConfig:
+        Returns a reference to the ``EnvConfig`` object.
+    """
+    for _key, _value in os.environ.items():
+        if _key.lower() == key.lower():
+            env_file = pathlib.Path(_value)
+            break
+    else:
+        env_file = pathlib.Path(default)
+    if env_file.suffix.lower() == ".json":
+        with open(env_file) as stream:
+            env_data = json.load(stream)
+        return EnvConfig(**{k.lower(): v for k, v in env_data.items()})
+    elif env_file.suffix.lower() in (".yaml", ".yml"):
+        with open(env_file) as stream:
+            env_data = yaml.load(stream, yaml.FullLoader)
+        return EnvConfig(**{k.lower(): v for k, v in env_data.items()})
+    elif not env_file.suffix or env_file.suffix.lower() in (
+        ".text",
+        ".txt",
+        default,
+    ):
+        return EnvConfig.from_env_file(env_file)
+    else:
+        raise ValueError(
+            f"\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text, {default})"
+        )
+
+
+env = env_loader(key="env_file", default=".env")
 
 
 class FileIO(BaseModel):

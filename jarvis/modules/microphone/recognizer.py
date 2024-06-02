@@ -74,9 +74,7 @@ async def main() -> None:
                 audio = RECOGNIZER.listen(source)
                 logger.info("Recognizing..")
                 # Requires stable internet connection
-                recognized = RECOGNIZER.recognize_google(
-                    audio_data=audio
-                )
+                recognized = RECOGNIZER.recognize_google(audio_data=audio)
                 # Requires pocketsphinx module, but can work offline
                 # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)
                 print(recognized)
