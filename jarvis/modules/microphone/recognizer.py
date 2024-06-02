@@ -66,17 +66,19 @@ async def save_for_reference() -> None:
 
 async def main() -> None:
     """Initiates yaml dump in an asynchronous call and initiates listener in a never ending loop."""
-    asyncio.create_task(save_for_reference())
+    await asyncio.create_task(save_for_reference())
     with MICROPHONE as source:
         while True:
             try:
                 logger.info("Listening..")
                 audio = RECOGNIZER.listen(source)
                 logger.info("Recognizing..")
+                # Requires stable internet connection
                 recognized = RECOGNIZER.recognize_google(
                     audio_data=audio
-                )  # Requires stable internet connection
-                # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)  # Requires pocketsphinx module
+                )
+                # Requires pocketsphinx module, but can work offline
+                # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)
                 print(recognized)
                 if "stop" in recognized.lower().split():
                     break

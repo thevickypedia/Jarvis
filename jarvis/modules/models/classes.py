@@ -9,6 +9,7 @@ import getpass
 import os
 import pathlib
 import platform
+import json
 import re
 import socket
 import sys
@@ -22,6 +23,7 @@ from uuid import UUID
 import jlrpy
 import psutil
 import pyttsx3
+import yaml
 from packaging.version import Version
 from pydantic import (
     AliasChoices,
@@ -333,6 +335,45 @@ class StartupOptions(StrEnum):
     thermostat: str = "thermostat"
 
 
+# todo: this is redundant, take a page from pyfilebrowser `from_env_file`
+class EnvLoader:
+    for _key, _value in os.environ.items():
+        if _key.lower() == "env_file":
+            env_file = pathlib.Path(_value)
+            os.environ.pop(_key)
+            break
+    else:
+        env_file = pathlib.Path(".env")
+
+    @staticmethod
+    def yaml_loader(file):
+        with open(file) as stream:
+            return yaml.load(stream, yaml.FullLoader)
+
+    @staticmethod
+    def json_loader(file):
+        with open(file) as stream:
+            return json.load(stream)
+
+    @staticmethod
+    def default_loader(file):
+        return file
+
+    if env_file.suffix.lower() == ".json":
+        loader = json_loader
+    elif env_file.suffix.lower() in (".yaml", ".yml"):
+        loader = yaml_loader
+    elif not env_file.suffix or env_file.suffix.lower() in (".text", ".txt", ".env"):
+        loader = default_loader
+    else:
+        raise ValueError(
+            "\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text)"
+        )
+
+
+env_loader = EnvLoader()
+
+
 class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
@@ -502,7 +543,9 @@ class EnvConfig(BaseSettings):
         """Environment variables configuration."""
 
         env_prefix = ""
-        env_file = os.environ.get("env_file", os.environ.get("ENV_FILE", ".env"))
+        # Since `EnvConfig` is a nested object, `Config` gets loaded before the conditions could apply
+        if env_loader.loader == env_loader.default_loader:
+            env_file = env_loader.env_file
         extra = "allow"
 
     # noinspection PyMethodParameters
@@ -631,7 +674,11 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be '%I:%M %p'")
 
 
-env = EnvConfig()
+if env_loader.loader == env_loader.default_loader:
+    env = EnvConfig()
+else:
+    env_data = env_loader.loader(env_loader.env_file)
+    env = EnvConfig(**{k.lower(): v for k, v in env_data.items()})
 
 
 class FileIO(BaseModel):

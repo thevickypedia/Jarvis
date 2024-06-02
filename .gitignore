@@ -47,6 +47,7 @@ ffmpeg
 # future work
 hidden
 temp*
+speech_recognition_values.yaml
 
 # pypi package files
 dist
