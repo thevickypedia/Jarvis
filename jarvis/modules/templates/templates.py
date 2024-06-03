@@ -77,6 +77,19 @@ class GenericTemplates:
             win_wifi_xml = file.read()
 
 
+class Llama:
+    """Modelfile template for ollama SDK.
+
+    >>> Llama
+
+    """
+
+    if models.settings.invoker != "sphinx-build":
+        with open(os.path.join(os.path.dirname(__file__), "Modelfile")) as file:
+            modelfile = file.read()
+
+
 email = EmailTemplates
 generic = GenericTemplates
 endpoint = EndpointTemplates
+llama = Llama

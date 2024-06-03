@@ -6680,6 +6680,11 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama">
+<span class="sig-name descname"><span class="pre">ollama</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_model">
 <span class="sig-name descname"><span class="pre">ollama_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7283,6 +7288,11 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.uploads">
 <span class="sig-name descname"><span class="pre">uploads</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.uploads" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.ollama_model_file">
+<span class="sig-name descname"><span class="pre">ollama_model_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.ollama_model_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -10074,6 +10084,15 @@ allow <cite>self</cite> as a field name.</p>
 </div>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.Llama">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">Llama</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.Llama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modelfile template for ollama SDK.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Llama</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.email">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.email" title="Permalink to this definition">¶</a></dt>
@@ -10090,6 +10109,12 @@ allow <cite>self</cite> as a field name.</p>
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.endpoint">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.EndpointTemplates" title="jarvis.modules.templates.templates.EndpointTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">EndpointTemplates</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.llama">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">llama</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.llama" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.Llama" title="jarvis.modules.templates.templates.Llama"><code class="xref py py-class docutils literal notranslate"><span class="pre">Llama</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -10130,11 +10155,19 @@ allow <cite>self</cite> as a field name.</p>
 <p class="admonition-title">Warning</p>
 <ul class="simple">
 <li><p>This module uses a pre-trained transformer to generate predictive responses.</p></li>
-<li><p>Due to the size of machine learning models, this feature will be disabled in limited mode.</p></li>
+<li><p>Although this feature is enabled by default, please note that machine learning models are memory beasts.</p></li>
+<li><p>Please refer the following minimum requirements before choosing the right model.</p></li>
+<li><p>This feature can be disabled by setting the env var <code class="docutils literal notranslate"><span class="pre">ollama=False</span></code> in the <code class="docutils literal notranslate"><span class="pre">env_file</span></code></p></li>
 </ul>
 </div>
+<p class="rubric">Notes</p>
+<p>There are quite a few parameters that can be adjusted, to customize the model usage and interaction with Jarvis.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-gpt-integration">Params for Jarvis</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Params for Ollama API (Modelfile)</a></p></li>
+</ul>
 <dl class="simple">
-<dt>RAM Requirements:</dt><dd><ul class="simple">
+<dt><strong>RAM Requirements</strong></dt><dd><ul class="simple">
 <li><p>8 GB to run the 7B models</p></li>
 <li><p>16 GB to run the 13B models</p></li>
 <li><p>32 GB to run the 33B models</p></li>
@@ -10154,7 +10187,7 @@ allow <cite>self</cite> as a field name.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.dump_history">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">dump_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.dump_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump responses from GPT to a yaml file for future response.</p>
+<dd><p>Dump responses from GPT into a yaml file for future response.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -10213,7 +10246,7 @@ allow <cite>self</cite> as a field name.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizer</span>
 </pre></div>
 </div>
-<p>Initializes the model name.</p>
+<p>Initializes the custom model name and the <code class="docutils literal notranslate"><span class="pre">Modelfile</span></code> used to customize it.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.run" title="Permalink to this definition">¶</a></dt>

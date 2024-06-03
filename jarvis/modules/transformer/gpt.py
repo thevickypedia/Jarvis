@@ -2,9 +2,20 @@
 
 Warnings:
     - This module uses a pre-trained transformer to generate predictive responses.
-    - Due to the size of machine learning models, this feature will be disabled in limited mode.
+    - Although this feature is enabled by default, please note that machine learning models are memory beasts.
+    - Please refer the following minimum requirements before choosing the right model.
+    - This feature can be disabled by setting the env var ``ollama=False`` in the ``env_file``
 
-RAM Requirements:
+Notes:
+    There are quite a few parameters that can be adjusted, to customize the model usage and interaction with Jarvis.
+
+    - `Params for Jarvis <https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables
+      #ollama-gpt-integration>`__
+
+    - `Params for Ollama API (Modelfile) <https://github.com/ollama/ollama/blob/main/docs/modelfile.md
+      #valid-parameters-and-values>`__
+
+**RAM Requirements**
     - 8 GB to run the 7B models
     - 16 GB to run the 13B models
     - 32 GB to run the 33B models
@@ -33,17 +44,19 @@ from typing import List
 
 import httpcore
 import httpx
+import jinja2
 import ollama
 
 from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
+from jarvis.modules.templates import templates
 from jarvis.modules.utils import support
 
 
 def dump_history(request: str, response: str) -> None:
-    """Dump responses from GPT to a yaml file for future response.
+    """Dump responses from GPT into a yaml file for future response.
 
     Args:
         request: Request from user.
@@ -134,8 +147,22 @@ class Customizer:
     """
 
     def __init__(self):
-        """Initializes the model name."""
+        """Initializes the custom model name and the ``Modelfile`` used to customize it."""
         self.model_name = "jarvis"
+        if not os.path.isfile(models.fileio.ollama_model_file):
+            logger.info(
+                "'%s' not found, creating one at '%s'",
+                os.path.basename(models.fileio.ollama_model_file),
+                os.path.basename(models.fileio.root),
+            )
+            logger.info(
+                "Feel free to modify this file in the future for custom instructions"
+            )
+            template = jinja2.Template(source=templates.llama.modelfile)
+            rendered = template.render(MODEL_NAME=models.env.ollama_model)
+            with open(models.fileio.ollama_model_file, "w") as file:
+                file.write(rendered)
+                file.flush()
 
     def run(self) -> str:
         """Runs the customizer with SDK as the primary option and CLI as secondary.
@@ -158,10 +185,8 @@ class Customizer:
 
     def customize_model_cli(self) -> None:
         """Uses the CLI to customize the model."""
-        model_file = os.path.join(os.path.dirname(__file__), "Modelfile")
-        model_file = model_file.lstrip(os.getcwd())
         process = subprocess.Popen(
-            f"ollama create {self.model_name} -f {model_file}",
+            f"ollama create {self.model_name} -f {models.fileio.ollama_model_file}",
             shell=True,
             universal_newlines=True,
             text=True,
@@ -181,9 +206,10 @@ class Customizer:
         Warnings:
             `Model creation with SDK is currently broke <https://github.com/ollama/ollama-python/issues/171>`__.
         """
-        model_file = os.path.join(os.path.dirname(__file__), "Modelfile")
         for res in ollama.create(
-            model=self.model_name, modelfile=model_file, stream=True
+            model=self.model_name,
+            modelfile=models.fileio.ollama_model_file,
+            stream=True,
         ):
             logger.info(res["response"])
             if res["done"]:

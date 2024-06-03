@@ -375,6 +375,7 @@ def channel_validator(
         raise InvalidEnvVars(f"value should be one of {complicated}")
 
 
+# noinspection PyMethodParameters
 class EnvConfig(BaseSettings):
     """Configure all env vars and validate using ``pydantic`` to share across modules.
 
@@ -431,6 +432,9 @@ class EnvConfig(BaseSettings):
     weather_api: str | None = None
     maps_api: str | None = None
     news_api: str | None = None
+
+    # Machine learning model config
+    ollama: bool = True
     ollama_model: str = "llama3"
     ollama_timeout: int = Field(5, le=30, ge=1)
     ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.5)
@@ -750,6 +754,9 @@ class FileIO(BaseModel):
 
     # On demand storage
     uploads: DirectoryPath = os.path.join(root, "uploads")
+
+    # Ollama
+    ollama_model_file: FilePath = os.path.join(root, "Modelfile")
 
 
 fileio = FileIO()
