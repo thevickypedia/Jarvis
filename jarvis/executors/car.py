@@ -1,5 +1,4 @@
 import time
-import traceback
 from datetime import datetime
 
 # noinspection PyProtectedMember
@@ -45,9 +44,6 @@ def create_connection() -> None:
         connection = None
     except Exception as error:
         logger.error(error)
-        if models.settings.pname == "JARVIS":
-            # Avoid butchering all log files
-            logger.error(traceback.format_exc())
         connection = None
     if connection and connection.head:
         if len(connection.vehicles) == 1:

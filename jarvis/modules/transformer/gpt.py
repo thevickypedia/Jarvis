@@ -32,7 +32,6 @@ See Also:
 import collections
 import difflib
 import os
-import subprocess
 import warnings
 from collections.abc import Generator
 
@@ -172,48 +171,20 @@ class Customizer:
             Returns the model name.
         """
         try:
-            self.customize_model_sdk()
+            self.customize_model()
             return self.model_name
         except ollama.ResponseError as error:
             logger.error(error)
-        try:
-            self.customize_model_cli()
-            return self.model_name
-        except (subprocess.SubprocessError, AssertionError) as error:
-            logger.error(error)
         return models.env.ollama_model
 
-    def customize_model_cli(self) -> None:
+    def customize_model(self) -> None:
         """Uses the CLI to customize the model."""
-        process = subprocess.Popen(
-            f"ollama create {self.model_name} -f {models.fileio.ollama_model_file}",
-            shell=True,
-            universal_newlines=True,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        for line in process.stdout:
-            logger.info(line.strip())
-        process.wait()
-        for line in process.stderr:
-            logger.warning(line.strip())
-        assert process.returncode == 0, "Failed to customize the model"
-
-    def customize_model_sdk(self) -> None:
-        """Uses the CLI to customize the model.
-
-        Warnings:
-            `Model creation with SDK is currently broke <https://github.com/ollama/ollama-python/issues/171>`__.
-        """
         for res in ollama.create(
             model=self.model_name,
-            modelfile=models.fileio.ollama_model_file,
+            path=models.fileio.ollama_model_file,
             stream=True,
         ):
-            logger.info(res["response"])
-            if res["done"]:
-                break
+            logger.info(res["status"])
 
 
 class Ollama:
