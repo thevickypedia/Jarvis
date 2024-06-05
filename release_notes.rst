@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+v5.0.0 (06/04/2024)
+-------------------
+- Includes a pre-trained generative model using Ollama
+- Bug fix for Roku TV's turn on functionality
+- Supports JSON and YAML files for environment variables
+
 v4.5.1 (05/29/2024)
 -------------------
 - Removes `wikipedia` feature integration
