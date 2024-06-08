@@ -126,7 +126,7 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         ],
         directions=["take me", "directions"],
         notes=["notes", "note"],
-        github=["git", "github", "clone", "GitHub"],
+        github=["git", "github", "GitHub"],
         apps=["launch"],
         music=["music", "songs", "play", "song"],
         faces=[

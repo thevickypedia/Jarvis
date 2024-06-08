@@ -121,6 +121,7 @@ async def line_of_code(redirect: bool = True, base_dir: DirectoryPath = "jarvis"
         Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
     """
     total_lines = total_lines_of_code(base_dir)
+    # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
     logger.info("Total lines of code: %d", total_lines)
     if redirect:
         return RedirectResponse(

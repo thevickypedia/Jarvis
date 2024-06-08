@@ -480,8 +480,7 @@ class EnvConfig(BaseSettings):
     robinhood_endpoint_auth: str | None = None
 
     # GitHub config
-    git_user: str | None = None
-    git_pass: str | None = None
+    git_token: str | None = None
 
     # VPN Server config
     vpn_username: str | None = None

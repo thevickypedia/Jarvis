@@ -1,117 +1,60 @@
-import os
-import re
+from collections.abc import Generator
+from typing import Dict
 
 import requests
-from requests.auth import HTTPBasicAuth
 
-from jarvis.executors import word_match
-from jarvis.modules.audio import listener, speaker
-from jarvis.modules.conditions import keywords
+from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.utils import shared, support
+from jarvis.modules.utils import support
 
 
-def github(phrase: str) -> None:
-    """Pre-process to check the phrase received and call the ``GitHub`` function as necessary.
+def get_repos() -> Generator[Dict[str, str | bool]]:
+    """Get repositories in GitHub account.
 
-    Args:
-        phrase: Takes the phrase spoken as an argument.
+    Yields:
+        Generator[Dict[str, str | bool]]:
+        Yields each repository information.
     """
-    if not all([models.env.git_user, models.env.git_pass]):
-        logger.warning("Github username or token not found.")
+    i = 1
+    while True:
+        response = requests.get(
+            f"https://api.github.com/user/repos?type=all&page={i}&per_page=100",
+            headers={"Authorization": f"Bearer {models.env.git_token}"},
+        )
+        response.raise_for_status()
+        assert response.ok
+        response_json = response.json()
+        logger.info("Repos in page %d: %d", i, len(response_json))
+        if response_json:
+            i += 1
+        else:
+            break
+        yield from response_json
+
+
+def github(*args) -> None:
+    """Get GitHub account information."""
+    if not models.env.git_token:
+        logger.warning("Github token not found.")
         support.no_env_vars()
         return
-    auth = HTTPBasicAuth(models.env.git_user, models.env.git_pass)
+    total, forked, private, archived, licensed = 0, 0, 0, 0, 0
     try:
-        response = requests.get(
-            "https://api.github.com/user/repos?type=all&per_page=100", auth=auth
-        ).json()
-    except EgressErrors as error:
+        for repo in get_repos():
+            total += 1
+            forked += 1 if repo["fork"] else 0
+            private += 1 if repo["private"] else 0
+            archived += 1 if repo["archived"] else 0
+            licensed += 1 if repo["license"] else 0
+    except (EgressErrors, AssertionError, requests.JSONDecodeError) as error:
         logger.error(error)
         speaker.speak(
             text=f"I'm sorry {models.env.title}! I wasn't able to connect to the GitHub API."
         )
         return
-    result, repos, total, forked, private, archived, licensed = [], [], 0, 0, 0, 0, 0
-    for i in range(len(response)):
-        total += 1
-        forked += 1 if response[i]["fork"] else 0
-        private += 1 if response[i]["private"] else 0
-        archived += 1 if response[i]["archived"] else 0
-        licensed += 1 if response[i]["license"] else 0
-        repos.append(
-            {
-                response[i]["name"]
-                .replace("_", " ")
-                .replace("-", " "): response[i]["clone_url"]
-            }
-        )
-    if "how many" in phrase:
-        speaker.speak(
-            text=f"You have {total} repositories {models.env.title}, out of which {forked} are forked, "
-            f"{private} are private, {licensed} are licensed, and {archived} archived."
-        )
-    elif not shared.called_by_offline:
-        [
-            result.append(clone_url)
-            if clone_url not in result and re.search(rf"\b{word}\b", repo.lower())
-            else None
-            for word in phrase.lower().split()
-            for item in repos
-            for repo, clone_url in item.items()
-        ]
-        if result:
-            github_controller(target=result)
-        else:
-            speaker.speak(text=f"Sorry {models.env.title}! I did not find that repo.")
-
-
-def github_controller(target: list) -> None:
-    """Clones the GitHub repository matched with existing repository in conditions function.
-
-    Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.
-
-    Args:
-        target: Takes repository name as argument which has to be cloned.
-    """
-    if len(target) == 1:
-        os.system(f"cd {models.env.home} && git clone -q {target[0]}")
-        cloned = target[0].split("/")[-1].replace(".git", "")
-        speaker.speak(
-            text=f"I've cloned {cloned} on your home directory {models.env.title}!"
-        )
-        return
-    elif len(target) <= 3:
-        speaker.speak(
-            text=f"I found {len(target)} results. On your screen {models.env.title}! "
-            "Which one shall I clone?",
-            run=True,
-        )
-        if not (converted := listener.listen()):
-            if word_match.word_match(
-                phrase=converted, match_list=keywords.keywords["exit_"]
-            ):
-                return
-            if "first" in converted.lower():
-                item = 1
-            elif "second" in converted.lower():
-                item = 2
-            elif "third" in converted.lower():
-                item = 3
-            else:
-                item = None
-                speaker.speak(
-                    text=f"Only first second or third can be accepted {models.env.title}! Try again!"
-                )
-                github_controller(target)
-            os.system(f"cd {models.env.home} && git clone -q {target[item]}")
-            cloned = target[item].split("/")[-1].replace(".git", "")
-            speaker.speak(
-                text=f"I've cloned {cloned} on your home directory {models.env.title}!"
-            )
-    else:
-        speaker.speak(
-            text=f"I found {len(target)} repositories {models.env.title}! You may want to be more specific."
-        )
+    speaker.speak(
+        text=f"You have {total} repositories {models.env.title}, out of which {forked} are forked, "
+        f"{private} are private, {licensed} are licensed, and {archived} archived."
+    )

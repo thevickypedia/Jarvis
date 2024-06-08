@@ -3605,26 +3605,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.github">
 <span id="github"></span><h1>GitHub<a class="headerlink" href="#module-jarvis.executors.github" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.github.github">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.github.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.github.github" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pre-process to check the phrase received and call the <code class="docutils literal notranslate"><span class="pre">GitHub</span></code> function as necessary.</p>
+<dt class="sig sig-object py" id="jarvis.executors.github.get_repos">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.github.</span></span><span class="sig-name descname"><span class="pre">get_repos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.github.get_repos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get repositories in GitHub account.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Generator[Dict[str, str | bool]]</em> – Yields each repository information.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.github.github_controller">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.github.</span></span><span class="sig-name descname"><span class="pre">github_controller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.github.github_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clones the GitHub repository matched with existing repository in conditions function.</p>
-<p>Asks confirmation if the results are more than 1 but less than 3 else asks to be more specific.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>target</strong> – Takes repository name as argument which has to be cloned.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="jarvis.executors.github.github">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.github.</span></span><span class="sig-name descname"><span class="pre">github</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.github.github" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get GitHub account information.</p>
 </dd></dl>
 
 </section>
@@ -6979,13 +6973,8 @@ allow <cite>self</cite> as a field name.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.git_user">
-<span class="sig-name descname"><span class="pre">git_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.git_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.git_pass">
-<span class="sig-name descname"><span class="pre">git_pass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.git_pass" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.git_token">
+<span class="sig-name descname"><span class="pre">git_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.git_token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
