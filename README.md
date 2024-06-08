@@ -27,6 +27,7 @@
 
 ![GitHub repo size][label-repo-size]
 ![GitHub code size][label-code-size]
+![GitHub code line][label-code-line]
 
 ![GitHub Repo issues][label-issues-closed]
 ![GitHub Repo issues][label-issues-raw]
@@ -218,6 +219,7 @@ Licensed under the [MIT License][license]
 
 [label-repo-size]: https://img.shields.io/github/repo-size/thevickypedia/Jarvis
 [label-code-size]: https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis
+[label-code-line]: http://jarvis.vigneshrao.com/loc
 
 [label-issues-closed]: https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis
 [label-issues-raw]: https://img.shields.io/github/issues-raw/thevickypedia/Jarvis

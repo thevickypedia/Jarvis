@@ -300,37 +300,37 @@
 <p>Instantiates the speaker engine and loads the voices available in the hosting machine.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_all_voices">
-<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_all_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_all_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_english_voices">
-<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_english_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_english_voices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for english language, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_language">
-<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lang_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_language" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for the given language, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_index">
-<span class="sig-name descname"><span class="pre">get_voice_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_index" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices for the given index, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_name">
-<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given name, converting attributes into dict.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.speaker.speak.Speaker.get_voice_by_gender">
-<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_voice_by_gender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.speaker.speak.Speaker.get_voice_by_gender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields all the available voices matching the given gender, converting attributes into dict.</p>
 </dd></dl>
 
@@ -1146,6 +1146,128 @@ allow <cite>self</cite> as a field name.</p>
 <li><p>Page refresh is useless because the value in memory is cleared as soon as it is authed once.</p></li>
 </ul>
 </div>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.api.routers.loc">
+<span id="routers-lines-of-code"></span><h1>Routers - Lines Of Code<a class="headerlink" href="#module-jarvis.api.routers.loc" title="Permalink to this heading">¶</a></h1>
+<p>Snippet to get the lines of code for Jarvis.</p>
+<p>Following shell command is a simple one-liner replicating this snippet.</p>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">.</span></code> (dot) can be replaced with the base directory to start the scan from.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>.<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./venv&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs_gen&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-prune<span class="w"> </span>-o<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.py&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.html&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.should_include">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">should_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.should_include" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the file has one of the desired extensions and if the directory is excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – File path for which the exclusion status is needed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean flag to indicate whether the file has to be included.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.count_lines">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">count_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.count_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a file and counts the number of lines in it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – File path to get the line count from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the number of lines in the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.get_files">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">get_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.get_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Walk through the directory and collect all relevant files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>base_path</strong> – Base path to start scan from.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p>Yields the file path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.total_lines_of_code">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">total_lines_of_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.total_lines_of_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cached function to calculate the total lines of code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>base_dir</strong> – Base directory to start the scan from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total lines of code in all files within the base directory.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.line_of_code">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">line_of_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.line_of_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get total lines of code for Jarvis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p></li>
+<li><p><strong>base_dir</strong> – Base directory to start the scan from.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RedirectResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">Customizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.Customizations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom exlusitions and inclusions for the scan.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizations</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations.excluded_dirs">
+<span class="sig-name descname"><span class="pre">excluded_dirs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.loc.Customizations.excluded_dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations.file_extensions">
+<span class="sig-name descname"><span class="pre">file_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.loc.Customizations.file_extensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -5742,6 +5864,38 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd><p>Overrides the built-in filter record.</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-jarvis.modules.cache.cache">
+<span id="cache-lru"></span><h1>Cache - LRU<a class="headerlink" href="#module-jarvis.modules.cache.cache" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.cache.cache.timed_cache">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.cache.cache.</span></span><span class="sig-name descname"><span class="pre">timed_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_age</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.cache.cache.timed_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Least-recently-used cache decorator with time-based cache invalidation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_age</strong> – Time to live for cached results (in seconds).</p></li>
+<li><p><strong>maxsize</strong> – Maximum cache size (see <cite>functools.lru_cache</cite>).</p></li>
+<li><p><strong>typed</strong> – Cache on distinct input types (see <cite>functools.lru_cache</cite>).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">lru_cache</span></code> takes all params of the function and creates a key.</p></li>
+<li><p>If even one key is changed, it will map to new entry thus refreshed.</p></li>
+<li><p>This is just a trick to force lru_cache lib to provide TTL on top of max size.</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">time.monotonic</span></code> since <code class="docutils literal notranslate"><span class="pre">time.time</span></code> relies on the system clock and may not be monotonic.</p></li>
+<li><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">time.time()</span></code> not always guaranteed to increase,</div>
+<div class="line">it may in fact decrease if the machine syncs its system clock over a network.</div>
+</div>
+</li>
+</ul>
+</div>
 </dd></dl>
 
 </section>
@@ -11168,6 +11322,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.routers.loc">Routers - Lines Of Code</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.offline">Routers - Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.proxy_service">Routers - Proxy Engine</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
@@ -11234,6 +11389,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.auth_bearer">Auth Bearer</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.builtin_overrides">Built-In Overrides</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.cache.cache">Cache - LRU</a></li>
 <li><a class="reference internal" href="#id1">Conditions</a></li>
 <li><a class="reference internal" href="#id2">Crontab</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.classes">Classes</a></li>
