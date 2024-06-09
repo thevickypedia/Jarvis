@@ -1,4 +1,4 @@
-r"""Snippet to get the lines of code for Jarvis.
+r"""Snippet to get the lines of code and total number of files for Jarvis.
 
 Following shell command is a simple one-liner replicating this snippet.
 
@@ -18,8 +18,9 @@ from typing import List
 
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, DirectoryPath, FilePath, PositiveInt
+from pydantic import BaseModel, FilePath, PositiveInt
 
+import jarvis
 from jarvis.api.logger import logger
 from jarvis.modules.cache import cache
 
@@ -33,8 +34,8 @@ class Customizations(BaseModel):
 
     """
 
-    excluded_dirs: List[str] = ["./venv", "./docs", "./docs_gen", "./logs"]
-    file_extensions: List[str] = [".py", ".sh", ".html"]
+    excluded_dirs: List[str] = ["venv", "docs", "logs"]
+    file_extensions: List[str] = [".html", ".py", ".scpt", ".sh", ".xml"]
 
 
 custom = Customizations()
@@ -54,7 +55,7 @@ def should_include(filepath: FilePath) -> bool:
         return False
     # Check if the file is in one of the excluded directories
     for excluded_dir in custom.excluded_dirs:
-        if os.path.commonpath([filepath, excluded_dir]) == excluded_dir:
+        if excluded_dir in filepath.split(os.sep):
             return False
     return True
 
@@ -73,16 +74,13 @@ def count_lines(filepath: FilePath) -> PositiveInt:
         return sum(1 for _ in file)
 
 
-def get_files(base_path: DirectoryPath) -> Generator[FilePath]:
+def get_files() -> Generator[FilePath]:
     """Walk through the directory and collect all relevant files.
-
-    Args:
-        base_path: Base path to start scan from.
 
     Yields:
         Yields the file path.
     """
-    for root, dirs, files in os.walk(base_path):
+    for root, dirs, files in os.walk(jarvis.__path__[0]):
         # Modify dirs in place to skip the excluded directories
         dirs[:] = [d for d in dirs if os.path.join(root, d) not in custom.excluded_dirs]
         for file in files:
@@ -92,50 +90,43 @@ def get_files(base_path: DirectoryPath) -> Generator[FilePath]:
 
 
 @cache.timed_cache(max_age=900)  # Cache for 15 minutes
-def total_lines_of_code(base_dir: DirectoryPath) -> PositiveInt:
+def total_lines_of_code() -> PositiveInt:
     """Cached function to calculate the total lines of code.
-
-    Args:
-        base_dir: Base directory to start the scan from.
 
     Returns:
         PositiveInt:
         Total lines of code in all files within the base directory.
     """
     logger.info("Calculating total lines of code.")
-    return sum(count_lines(file) for file in get_files(base_dir))
+    return sum(count_lines(file) for file in get_files())
 
 
 @cache.timed_cache(max_age=900)  # Cache for 15 minutes
-def total_files(base_dir: DirectoryPath) -> PositiveInt:
+def total_files() -> PositiveInt:
     """Cached function to calculate the total number of files.
-
-    Args:
-        base_dir: Base directory to start the scan from.
 
     Returns:
         PositiveInt:
         Total files within the base directory.
     """
-    logger.info("Calculating total lines of code.")
-    return len(list(get_files(base_dir)))
+    logger.info("Calculating total number of files.")
+    return len(list(get_files()))
 
 
 @router.get(path="/line-count", include_in_schema=True)
-async def line_count(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
+async def line_count(redirect: bool = True):
     """Get total lines of code for Jarvis.
 
     Args:
 
         redirect: Boolean flag to return a redirect response on-demand.
-        base_dir: Base directory to start the scan from.
 
     Returns:
 
         RedirectResponse:
         Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
     """
-    total_lines = total_lines_of_code(base_dir)
+    total_lines = total_lines_of_code()
     # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
     logger.info("Total lines of code: %d", total_lines)
     if redirect:
@@ -146,20 +137,19 @@ async def line_count(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
 
 
 @router.get(path="/file-count", include_in_schema=True)
-async def file_count(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
+async def file_count(redirect: bool = True):
     """Get total number of files for Jarvis.
 
     Args:
 
         redirect: Boolean flag to return a redirect response on-demand.
-        base_dir: Base directory to start the scan from.
 
     Returns:
 
         RedirectResponse:
         Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
     """
-    files = total_files(base_dir)
+    files = total_files()
     # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
     logger.info("Total number of files: %d", files)
     if redirect:

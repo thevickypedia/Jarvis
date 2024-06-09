@@ -227,13 +227,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.lib.installer.dev_uninstall">
 <span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">dev_uninstall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.dev_uninstall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uninstalls all the pip installed packages.</p>
+<dd><p>Uninstalls all the dev packages installed from pypi repository.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.lib.installer.main_uninstall">
 <span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">main_uninstall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.main_uninstall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uninstalls all the pip installed packages.</p>
+<dd><p>Uninstalls all the main packages installed from pypi repository.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1350,165 +1350,6 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.api.routers.loc">
-<span id="routers-lines-of-code"></span><h1>Routers - Lines Of Code<a class="headerlink" href="#module-jarvis.api.routers.loc" title="Permalink to this heading">¶</a></h1>
-<p>Snippet to get the lines of code for Jarvis.</p>
-<p>Following shell command is a simple one-liner replicating this snippet.</p>
-<p class="rubric">Notes</p>
-<p><code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">.</span></code> (dot) can be replaced with the base directory to start the scan from.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>.<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./venv&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs_gen&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-prune<span class="w"> </span>-o<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.py&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.html&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.should_include">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">should_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.should_include" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the file has one of the desired extensions and if the directory is excluded.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filepath</strong> – File path for which the exclusion status is needed.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Boolean flag to indicate whether the file has to be included.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.count_lines">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">count_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.count_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens a file and counts the number of lines in it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filepath</strong> – File path to get the line count from.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the number of lines in the file.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>PositiveInt</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.get_files">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">get_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.get_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Walk through the directory and collect all relevant files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_path</strong> – Base path to start scan from.</p>
-</dd>
-<dt class="field-even">Yields<span class="colon">:</span></dt>
-<dd class="field-even"><p>Yields the file path.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.total_lines_of_code">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">total_lines_of_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.total_lines_of_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cached function to calculate the total lines of code.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_dir</strong> – Base directory to start the scan from.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total lines of code in all files within the base directory.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>PositiveInt</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.total_files">
-<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">total_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.total_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cached function to calculate the total number of files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base_dir</strong> – Base directory to start the scan from.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total files within the base directory.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>PositiveInt</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.line_count">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">line_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.line_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get total lines of code for Jarvis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p></li>
-<li><p><strong>base_dir</strong> – Base directory to start the scan from.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>RedirectResponse</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.file_count">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">file_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.file_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get total number of files for Jarvis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p></li>
-<li><p><strong>base_dir</strong> – Base directory to start the scan from.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>RedirectResponse</p>
-</dd>
-</dl>
-</dd></dl>
-
-<hr class="docutils" />
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">Customizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.Customizations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom exlusitions and inclusions for the scan.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizations</span>
-</pre></div>
-</div>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
-allow <cite>self</cite> as a field name.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations.excluded_dirs">
-<span class="sig-name descname"><span class="pre">excluded_dirs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.loc.Customizations.excluded_dirs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.Customizations.file_extensions">
-<span class="sig-name descname"><span class="pre">file_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.loc.Customizations.file_extensions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-jarvis.api.routers.offline">
 <span id="routers-offline"></span><h1>Routers - Offline<a class="headerlink" href="#module-jarvis.api.routers.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -1688,6 +1529,150 @@ allow <cite>self</cite> as a field name.</p>
 <dd class="field-even"><p>FileResponse</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.api.routers.stats">
+<span id="routers-stats"></span><h1>Routers - Stats<a class="headerlink" href="#module-jarvis.api.routers.stats" title="Permalink to this heading">¶</a></h1>
+<p>Snippet to get the lines of code and total number of files for Jarvis.</p>
+<p>Following shell command is a simple one-liner replicating this snippet.</p>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">.</span></code> (dot) can be replaced with the base directory to start the scan from.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>.<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./venv&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs_gen&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-prune<span class="w"> </span>-o<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.py&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.html&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.should_include">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">should_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.should_include" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the file has one of the desired extensions and if the directory is excluded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – File path for which the exclusion status is needed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean flag to indicate whether the file has to be included.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.count_lines">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">count_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.count_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a file and counts the number of lines in it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – File path to get the line count from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the number of lines in the file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.get_files">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">get_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.get_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Walk through the directory and collect all relevant files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Yields the file path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.total_lines_of_code">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">total_lines_of_code</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.total_lines_of_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cached function to calculate the total lines of code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total lines of code in all files within the base directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.total_files">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">total_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.total_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cached function to calculate the total number of files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total files within the base directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.line_count">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">line_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.line_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get total lines of code for Jarvis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RedirectResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.file_count">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">file_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.file_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get total number of files for Jarvis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RedirectResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.Customizations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">Customizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.Customizations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom exlusitions and inclusions for the scan.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizations</span>
+</pre></div>
+</div>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.Customizations.excluded_dirs">
+<span class="sig-name descname"><span class="pre">excluded_dirs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.stats.Customizations.excluded_dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.Customizations.file_extensions">
+<span class="sig-name descname"><span class="pre">file_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.routers.stats.Customizations.file_extensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -11559,11 +11544,11 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
-<li><a class="reference internal" href="#module-jarvis.api.routers.loc">Routers - Lines Of Code</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.offline">Routers - Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.proxy_service">Routers - Proxy Engine</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.speech_synthesis">Routers - SpeechSynthesis</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.routers.stats">Routers - Stats</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_monitor">Routers - StockMonitor</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_analysis">Routers - StockAnalysis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.surveillance">Routers - Surveillance</a></li>

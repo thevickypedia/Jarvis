@@ -235,7 +235,7 @@ def thread_worker(commands: List[str]) -> bool:
 
 
 def dev_uninstall() -> None:
-    """Uninstalls all the pip installed packages."""
+    """Uninstalls all the dev packages installed from pypi repository."""
     init()
     logger.info(pretext())
     logger.info(center("Uninstalling dev dependencies"))
@@ -246,7 +246,7 @@ def dev_uninstall() -> None:
 
 
 def main_uninstall() -> None:
-    """Uninstalls all the pip installed packages."""
+    """Uninstalls all the main packages installed from pypi repository."""
     init()
     logger.info(pretext())
     logger.info(center("Uninstalling ALL dependencies"))

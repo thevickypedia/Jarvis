@@ -46,7 +46,10 @@ def commandline() -> None:
         "install": "Installs the main dependencies.",
         "dev-install": "Installs the dev dependencies.",
         "start | run": "Initiates Jarvis.",
+        "uninstall | cleanup": "Uninstall the main dependencies",
+        "dev-uninstall | dev-cleanup": "Uninstall the dev dependencies",
         "version | -v | --version | -V": "Prints the version.",
+        "help | --help": "Prints the help section.",
     }
     # weird way to increase spacing to keep all values monotonic
     _longest_key = len(max(options.keys()))

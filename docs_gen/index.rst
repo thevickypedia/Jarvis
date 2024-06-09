@@ -173,19 +173,6 @@ Routers - Investment
    :members:
    :undoc-members:
 
-Routers - Lines Of Code
-=======================
-
-.. automodule:: jarvis.api.routers.loc
-   :members:
-   :exclude-members: Customizations
-
-====
-
-.. autoclass:: jarvis.api.routers.loc.Customizations(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
 Routers - Offline
 =================
 
@@ -213,6 +200,19 @@ Routers - SpeechSynthesis
 .. automodule:: jarvis.api.routers.speech_synthesis
    :members:
    :undoc-members:
+
+Routers - Stats
+===============
+
+.. automodule:: jarvis.api.routers.stats
+   :members:
+   :exclude-members: Customizations
+
+====
+
+.. autoclass:: jarvis.api.routers.stats.Customizations(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
 
 Routers - StockMonitor
 ======================
