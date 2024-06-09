@@ -460,6 +460,7 @@ def write_screen(text: Any) -> None:
     """
     if shared.called_by_offline:
         return
+    flush_screen()
     sys.stdout.write(f"\r{text}")
 
 

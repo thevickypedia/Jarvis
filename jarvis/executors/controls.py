@@ -272,7 +272,7 @@ def terminator() -> NoReturn:
     logger.debug(process_info)
     support.stop_process(pid=proc.pid)
     # noinspection PyUnresolvedReferences,PyProtectedMember
-    os._exit(1)
+    os._exit(0)
 
 
 def shutdown(*args, proceed: bool = False) -> None:

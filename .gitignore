@@ -37,6 +37,8 @@ docs_gen/_static
 
 # credentials stored locally
 .env
+*.json
+*.yaml
 
 # volume exec file for Windows
 SetVol.exe

@@ -1,6 +1,6 @@
 [project]
 name = "jarvis-ironman"
-dynamic = ["version", "dependencies"]
+dynamic = ["version"]
 description = "Voice-Activated Natural Language UI"
 readme = "README.md"
 authors = [{ name = "Vignesh Rao", email = "svignesh1793@gmail.com" }]
@@ -40,17 +40,17 @@ requires-python = ">=3.10,<3.12"  # Only 3.10 and 3.11 are supported
 # packages section includes the directories with ONLY '.py' modules
 packages     = ["jarvis", "jarvis._preexec", "jarvis.executors"]
 script-files = [
-    "jarvis/lib/install.sh",
-    "jarvis/lib/squire/detector.sh"
+    "jarvis/lib/install_darwin.sh",
+    "jarvis/lib/install_linux.sh",
+    "jarvis/lib/install_windows.sh",
 ]
 
 [tool.setuptools.dynamic]
 version      = {attr = "jarvis.version"}
-dependencies = {file = [
-    "jarvis/lib/version_locked_requirements.txt",
-    "jarvis/lib/version_pinned_requirements.txt",
-    "jarvis/lib/version_upgrade_requirements.txt"
-]}
+
+[project.scripts]
+# sends all the args to commandline function, where the arbitary commands as processed accordingly
+jarvis = "jarvis:commandline"
 
 [build-system]
 requires      = ["setuptools", "wheel"]
