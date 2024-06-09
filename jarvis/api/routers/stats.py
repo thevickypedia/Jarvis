@@ -13,6 +13,8 @@ Notes:
 """
 
 import os
+import sys
+import urllib.parse
 from collections.abc import Generator
 from typing import List
 
@@ -23,6 +25,15 @@ from pydantic import BaseModel, FilePath, PositiveInt
 import jarvis
 from jarvis.api.logger import logger
 from jarvis.modules.cache import cache
+
+if sys.version_info.minor > 10:
+    from enum import StrEnum
+else:
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        """Override for python 3.10 due to lack of StrEnum."""
+
 
 router = APIRouter()
 
@@ -39,6 +50,28 @@ class Customizations(BaseModel):
 
 
 custom = Customizations()
+
+
+class ValidColors(StrEnum):
+    """Valid colors for badges in img.shields.io.
+
+    >>> ValidColors
+
+    **Source:**
+        https://github.com/badges/buckler/blob/master/README.md#valid-colours
+    """
+
+    brightgreen: str = "brightgreen"
+    green: str = "green"
+    yellowgreen: str = "yellowgreen"
+    yellow: str = "yellow"
+    orange: str = "orange"
+    red: str = "red"
+    grey: str = "grey"
+    gray: str = "grey"
+    lightgrey: str = "lightgrey"
+    lightgray: str = "lightgray"
+    blue: str = "blue"
 
 
 def should_include(filepath: FilePath) -> bool:
@@ -114,46 +147,51 @@ def total_files() -> PositiveInt:
 
 
 @router.get(path="/line-count", include_in_schema=True)
-async def line_count(redirect: bool = True):
+async def line_count(
+    badge: bool = False, color: ValidColors = "blue", text: str = "lines of code"
+):
     """Get total lines of code for Jarvis.
 
     Args:
-
-        redirect: Boolean flag to return a redirect response on-demand.
+        badge: Boolean flag to return a badge from ``img.shields.io`` as HTML.
+        color: Color for the badge.
+        text: Text to be displayed in the badge.
 
     Returns:
 
         RedirectResponse:
-        Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
+        Returns a badge from ``img.shields.io`` or an integer with total count based on the ``badge`` argument.
     """
     total_lines = total_lines_of_code()
-    # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
     logger.info("Total lines of code: %d", total_lines)
-    if redirect:
+    if badge:
         return RedirectResponse(
-            f"https://img.shields.io/badge/lines%20of%20code-{total_lines:,}-blue"
+            f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{total_lines:,}-{color}"
         )
     return total_lines
 
 
 @router.get(path="/file-count", include_in_schema=True)
-async def file_count(redirect: bool = True):
+async def file_count(
+    badge: bool = False, color: ValidColors = "blue", text: str = "total files"
+):
     """Get total number of files for Jarvis.
 
     Args:
+        badge: Boolean flag to return a badge from ``img.shields.io`` as HTML.
+        color: Color for the badge.
+        text: Text to be displayed in the badge.
 
-        redirect: Boolean flag to return a redirect response on-demand.
 
     Returns:
 
         RedirectResponse:
-        Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
+        Returns a badge from ``img.shields.io`` or an integer with total count based on the ``badge`` argument.
     """
     files = total_files()
-    # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
     logger.info("Total number of files: %d", files)
-    if redirect:
+    if badge:
         return RedirectResponse(
-            f"https://img.shields.io/badge/total%20files-{files:,}-blue"
+            f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{files:,}-{color}"
         )
     return files

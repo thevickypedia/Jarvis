@@ -231,8 +231,8 @@ Licensed under the [MIT License][license]
 
 [label-repo-size]: https://img.shields.io/github/repo-size/thevickypedia/Jarvis
 [label-code-size]: https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis
-[label-code-line]: http://jarvis.vigneshrao.com/line-count
-[label-file-count]: http://jarvis.vigneshrao.com/file-count
+[label-code-line]: http://jarvis.vigneshrao.com/line-count?badge=true
+[label-file-count]: http://jarvis.vigneshrao.com/file-count?badge=true
 
 [label-issues-closed]: https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis
 [label-issues-raw]: https://img.shields.io/github/issues-raw/thevickypedia/Jarvis

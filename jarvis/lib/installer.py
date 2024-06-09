@@ -187,9 +187,20 @@ class Requirements:
 
     """
 
-    pinned: str = os.path.join(env.current_dir, "version_pinned_requirements.txt")
-    locked: str = os.path.join(env.current_dir, "version_locked_requirements.txt")
-    upgrade: str = os.path.join(env.current_dir, "version_upgrade_requirements.txt")
+    def __init__(self):
+        """Instantiates the file paths for pinned, locked and upgrade-able requirements."""
+        self.pinned: str = os.path.join(
+            env.current_dir, "version_pinned_requirements.txt"
+        )
+        self.locked: str = os.path.join(
+            env.current_dir, "version_locked_requirements.txt"
+        )
+        self.upgrade: str = os.path.join(
+            env.current_dir, "version_upgrade_requirements.txt"
+        )
+
+
+requirements = Requirements()
 
 
 def os_specific_pip() -> List[str]:
@@ -253,9 +264,9 @@ def main_uninstall() -> None:
     logger.info(pretext())
     exc = thread_worker(
         [
-            f"python -m pip uninstall --no-cache-dir -r {Requirements.pinned} -y",
-            f"python -m pip uninstall --no-cache-dir -r {Requirements.locked} -y",
-            f"python -m pip uninstall --no-cache-dir -r {Requirements.upgrade} -y",
+            f"python -m pip uninstall --no-cache-dir -r {requirements.pinned} -y",
+            f"python -m pip uninstall --no-cache-dir -r {requirements.locked} -y",
+            f"python -m pip uninstall --no-cache-dir -r {requirements.upgrade} -y",
             f"python -m pip uninstall --no-cache-dir {' '.join(os_specific_pip())} -y",
         ]
     )
@@ -273,9 +284,9 @@ def os_agnostic() -> None:
     logger.info(pretext())
     thread_worker(
         [
-            f"python -m pip install --no-cache -r {Requirements.pinned}",
-            f"python -m pip install --no-cache -r {Requirements.locked}",
-            f"python -m pip install --no-cache --upgrade -r {Requirements.upgrade}",
+            f"python -m pip install --no-cache -r {requirements.pinned}",
+            f"python -m pip install --no-cache -r {requirements.locked}",
+            f"python -m pip install --no-cache --upgrade -r {requirements.upgrade}",
         ]
     )
 

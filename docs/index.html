@@ -184,21 +184,7 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Requirements</span>
 </pre></div>
 </div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.pinned">
-<span class="sig-name descname"><span class="pre">pinned</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_pinned_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.pinned" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.locked">
-<span class="sig-name descname"><span class="pre">locked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_locked_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.locked" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.upgrade">
-<span class="sig-name descname"><span class="pre">upgrade</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_upgrade_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.upgrade" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Instantiates the file paths for pinned, locked and upgrade-able requirements.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1543,6 +1529,74 @@ allow <cite>self</cite> as a field name.</p>
 <span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
 </pre></div>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">ValidColors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Valid colors for badges in img.shields.io.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ValidColors</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Source:</strong></dt><dd><p><a class="reference external" href="https://github.com/badges/buckler/blob/master/README.md#valid-colours">https://github.com/badges/buckler/blob/master/README.md#valid-colours</a></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.brightgreen">
+<span class="sig-name descname"><span class="pre">brightgreen</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'brightgreen'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.brightgreen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.green">
+<span class="sig-name descname"><span class="pre">green</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'green'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.yellowgreen">
+<span class="sig-name descname"><span class="pre">yellowgreen</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'yellowgreen'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.yellowgreen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.yellow">
+<span class="sig-name descname"><span class="pre">yellow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'yellow'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.yellow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.orange">
+<span class="sig-name descname"><span class="pre">orange</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'orange'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.orange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.red">
+<span class="sig-name descname"><span class="pre">red</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'red'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.grey">
+<span class="sig-name descname"><span class="pre">grey</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'grey'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.grey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.gray">
+<span class="sig-name descname"><span class="pre">gray</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'grey'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.gray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.lightgrey">
+<span class="sig-name descname"><span class="pre">lightgrey</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lightgrey'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.lightgrey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.lightgray">
+<span class="sig-name descname"><span class="pre">lightgray</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lightgray'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.lightgray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors.blue">
+<span class="sig-name descname"><span class="pre">blue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blue'</span></em><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors.blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stats.should_include">
 <span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">should_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.should_include" title="Permalink to this definition">¶</a></dt>
@@ -1618,14 +1672,18 @@ allow <cite>self</cite> as a field name.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stats.line_count">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">line_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.line_count" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">line_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">badge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.routers.stats.ValidColors" title="jarvis.api.routers.stats.ValidColors"><span class="pre">ValidColors</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lines</span> <span class="pre">of</span> <span class="pre">code'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.line_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get total lines of code for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>badge</strong> – Boolean flag to return a badge from <code class="docutils literal notranslate"><span class="pre">img.shields.io</span></code> as HTML.</p></li>
+<li><p><strong>color</strong> – Color for the badge.</p></li>
+<li><p><strong>text</strong> – Text to be displayed in the badge.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+<dd class="field-even"><p>Returns a badge from <code class="docutils literal notranslate"><span class="pre">img.shields.io</span></code> or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">badge</span></code> argument.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>RedirectResponse</p>
@@ -1635,14 +1693,18 @@ allow <cite>self</cite> as a field name.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stats.file_count">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">file_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.file_count" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">file_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">badge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.routers.stats.ValidColors" title="jarvis.api.routers.stats.ValidColors"><span class="pre">ValidColors</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'total</span> <span class="pre">files'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.file_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get total number of files for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>badge</strong> – Boolean flag to return a badge from <code class="docutils literal notranslate"><span class="pre">img.shields.io</span></code> as HTML.</p></li>
+<li><p><strong>color</strong> – Color for the badge.</p></li>
+<li><p><strong>text</strong> – Text to be displayed in the badge.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+<dd class="field-even"><p>Returns a badge from <code class="docutils literal notranslate"><span class="pre">img.shields.io</span></code> or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">badge</span></code> argument.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>RedirectResponse</p>
