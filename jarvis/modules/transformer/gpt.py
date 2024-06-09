@@ -279,7 +279,7 @@ class Ollama:
             static_responses.un_processable()
 
 
-if models.startup_gpt and models.env.ollama:
+if models.startup_gpt:
     if models.env.ollama_reuse_threshold:
         start = (
             f"Initiating GPT instance for {models.settings.pname!r} with a "
@@ -300,8 +300,5 @@ if models.startup_gpt and models.env.ollama:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
 else:
-    if models.startup_gpt and not models.env.ollama:
-        logger.warning(
-            "GPT has been disabled! To enable it, set the env var ollama=True"
-        )
+    logger.warning("GPT has been disabled! To enable it, set the env var ollama=True")
     instance = None

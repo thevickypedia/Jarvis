@@ -62,18 +62,18 @@ TABLES = {
 }
 KEEP_TABLES = ("vpn", "party", "listener")  # TABLES to keep from `fileio.base_db`
 startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
-if startup and env.startup_options and StartupOptions.all in env.startup_options:
+# 'startup_gpt' is required since it has to be invoked only for certain child processes
+# this will avoid running GPT instance for pre-commit as well
+if startup and StartupOptions.all in env.startup_options:
     startup_car = True
-    startup_gpt = True
+    startup_gpt = env.ollama
     startup_thermostat = True
-elif startup and env.startup_options:
+elif startup:
     startup_car = StartupOptions.car in env.startup_options
-    # Hard coded since GPT has its own trigger 'ollama' and it's not actually a background functionality
-    startup_gpt = True
+    startup_gpt = env.ollama
     startup_thermostat = StartupOptions.thermostat in env.startup_options
 else:
     startup_car = False
-    # Hard coded since GPT has its own trigger 'ollama' and it's not actually a background functionality
     startup_gpt = False
     startup_thermostat = False
 

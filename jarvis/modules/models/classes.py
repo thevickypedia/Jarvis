@@ -553,6 +553,10 @@ class EnvConfig(BaseSettings):
         Args:
             filename: Name of the env file.
 
+        See Also:
+            - Loading environment variables from files are an additional feature.
+            - Both the system's and session's env vars are processed by default.
+
         Returns:
             EnvConfig:
             Loads the ``EnvConfig`` model.
