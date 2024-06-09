@@ -25,6 +25,9 @@ fi
 brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
 echo "$brew_version"
 
+# Disable brew auto update
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 # Looks for git and installs only if git is not found in /usr/bin or /usr/local/bin (if installed using brew)
 if ! [ -x "$(command -v git)" ]; then
   echo "Installing Git CLI"

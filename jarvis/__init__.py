@@ -5,6 +5,9 @@ from typing import Callable
 
 version = "5.0.0"
 
+if current_process().name == "MainProcess":
+    current_process().name = os.environ.get("PROCESS_NAME", "JARVIS")
+
 
 def __preflight_check__() -> Callable:
     """Startup validator that imports Jarvis' main module to validate all dependencies' installation status.
@@ -14,8 +17,6 @@ def __preflight_check__() -> Callable:
         Returns the ``start`` function.
     """
     try:
-        if current_process().name == "MainProcess":
-            current_process().name = os.environ.get("PROCESS_NAME", "JARVIS")
         import pynotification  # noqa: F401
 
         from ._preexec import keywords_handler  # noqa: F401

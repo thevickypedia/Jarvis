@@ -77,10 +77,7 @@ class Settings(BaseModel):
         If the hosted device is other than Linux, macOS or Windows.
     """
 
-    if sys.stdin.isatty():
-        interactive: bool = True
-    else:
-        interactive: bool = False
+    interactive: bool = sys.stdin.isatty()
     pid: PositiveInt = os.getpid()
     pname: str = current_process().name
     ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
@@ -331,7 +328,7 @@ class StartupOptions(StrEnum):
 
     all: str = "all"
     car: str = "car"
-    gpt: str = "gpt"
+    none: str = "None"
     thermostat: str = "thermostat"
 
 
@@ -426,7 +423,7 @@ class EnvConfig(BaseSettings):
 
     # Author specific
     author_mode: bool = False
-    startup_options: StartupOptions | List[StartupOptions] = StartupOptions.all
+    startup_options: StartupOptions | List[StartupOptions] = StartupOptions.none
 
     # Third party api config
     weather_api: str | None = None
@@ -582,9 +579,11 @@ class EnvConfig(BaseSettings):
 
     @field_validator("startup_options", mode="after", check_fields=True)
     def parse_startup_options(
-        cls, value: StartupOptions | List[StartupOptions]
-    ) -> List[StartupOptions]:
+        cls, value: StartupOptions | List[StartupOptions] | None
+    ) -> List[StartupOptions] | List:
         """Validate startup options."""
+        if value == "None":
+            return []
         if isinstance(value, list):
             if StartupOptions.all in value:
                 return [StartupOptions.all]

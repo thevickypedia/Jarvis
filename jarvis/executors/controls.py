@@ -103,7 +103,7 @@ def exit_process() -> None:
         )
     support.write_screen(
         f"Memory consumed: {support.size_converter(0)}"
-        f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}"
+        f"\nTotal runtime: {support.time_converter(second=time.time() - shared.start_time)}\n"
     )
 
 

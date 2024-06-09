@@ -12,6 +12,12 @@ Jarvis - Voice-Activated Natural Language UI
 
    README
 
+Installer
+=========
+.. automodule:: jarvis.lib.install
+   :members:
+   :undoc-members:
+
 --------Preflight Tests--------
 ===============================
 Camera
