@@ -21,6 +21,7 @@ python -m pip install pywin32==305 playsound==1.2.2 pydub==0.25.1 pvporcupine==1
 # CMake must be installed to build dlib
 python -m pip uninstall --no-cache-dir cmake # Remove cmake distro installed by pip
 conda install cmake                          # Install cmake from conda
+# shellcheck disable=SC2154
 if [ "$pyversion" -eq 310 ]; then
   python -m pip install dlib==19.24.0
 fi

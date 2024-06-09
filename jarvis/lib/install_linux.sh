@@ -26,6 +26,7 @@ python -m pip install pvporcupine==1.9.5
 # CMake must be installed to build dlib
 python -m pip uninstall --no-cache-dir cmake # Remove cmake distro installed by pip
 sudo apt install cmake                       # Install cmake from apt repository
+# shellcheck disable=SC2154
 if [ "$pyversion" -eq 310 ]; then
   python -m pip install dlib==19.24.0
 fi

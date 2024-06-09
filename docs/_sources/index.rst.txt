@@ -14,7 +14,7 @@ Jarvis - Voice-Activated Natural Language UI
 
 Installer
 =========
-.. automodule:: jarvis.lib.install
+.. automodule:: jarvis.lib.installer
    :members:
    :undoc-members:
 

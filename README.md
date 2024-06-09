@@ -28,6 +28,7 @@
 ![GitHub repo size][label-repo-size]
 ![GitHub code size][label-code-size]
 ![GitHub code line][label-code-line]
+![GitHub file count][label-file-count]
 
 ![GitHub Repo issues][label-issues-closed]
 ![GitHub Repo issues][label-issues-raw]
@@ -84,15 +85,19 @@
 **Recommendations**
 
 - Install `python` [3.10] or [3.11]
-- Use an IDE like [PyCharm] or [VSCode]
-- Create a dedicated [virtual environment]
+- Use a dedicated [virtual environment]
 
-**Install**
+**Install Jarvis**
 ```shell
 python -m pip install jarvis-ironman
 ```
 
-**Initiate**
+**Install Dependencies**
+```shell
+jarvis install
+```
+
+**Initiate - IDE**
 ```python
 import jarvis
 
@@ -100,6 +105,13 @@ import jarvis
 if __name__ == '__main__':
     jarvis.start()
 ```
+
+**Initiate - CLI**
+```shell
+jarvis start
+```
+
+> Use `jarvis --help` for usage instructions.
 
 ## Prerequisites
    - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura**_
@@ -219,7 +231,8 @@ Licensed under the [MIT License][license]
 
 [label-repo-size]: https://img.shields.io/github/repo-size/thevickypedia/Jarvis
 [label-code-size]: https://img.shields.io/github/languages/code-size/thevickypedia/Jarvis
-[label-code-line]: http://jarvis.vigneshrao.com/loc
+[label-code-line]: http://jarvis.vigneshrao.com/line-count
+[label-file-count]: http://jarvis.vigneshrao.com/file-count
 
 [label-issues-closed]: https://img.shields.io/github/issues-closed-raw/thevickypedia/Jarvis
 [label-issues-raw]: https://img.shields.io/github/issues-raw/thevickypedia/Jarvis

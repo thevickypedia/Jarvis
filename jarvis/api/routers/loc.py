@@ -106,8 +106,23 @@ def total_lines_of_code(base_dir: DirectoryPath) -> PositiveInt:
     return sum(count_lines(file) for file in get_files(base_dir))
 
 
-@router.get(path="/loc", include_in_schema=True)
-async def line_of_code(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
+@cache.timed_cache(max_age=900)  # Cache for 15 minutes
+def total_files(base_dir: DirectoryPath) -> PositiveInt:
+    """Cached function to calculate the total number of files.
+
+    Args:
+        base_dir: Base directory to start the scan from.
+
+    Returns:
+        PositiveInt:
+        Total files within the base directory.
+    """
+    logger.info("Calculating total lines of code.")
+    return len(list(get_files(base_dir)))
+
+
+@router.get(path="/line-count", include_in_schema=True)
+async def line_count(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
     """Get total lines of code for Jarvis.
 
     Args:
@@ -128,3 +143,27 @@ async def line_of_code(redirect: bool = True, base_dir: DirectoryPath = "jarvis"
             f"https://img.shields.io/badge/lines%20of%20code-{total_lines:,}-blue"
         )
     return total_lines
+
+
+@router.get(path="/file-count", include_in_schema=True)
+async def file_count(redirect: bool = True, base_dir: DirectoryPath = "jarvis"):
+    """Get total number of files for Jarvis.
+
+    Args:
+
+        redirect: Boolean flag to return a redirect response on-demand.
+        base_dir: Base directory to start the scan from.
+
+    Returns:
+
+        RedirectResponse:
+        Returns the response from img.shields.io or an integer with total count based on the ``redirect`` argument.
+    """
+    files = total_files(base_dir)
+    # todo: Get GitHub repo and owner name, make this an open-source (use Redis or other caching mechanism)
+    logger.info("Total number of files: %d", files)
+    if redirect:
+        return RedirectResponse(
+            f"https://img.shields.io/badge/total%20files-{files:,}-blue"
+        )
+    return files

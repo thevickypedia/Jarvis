@@ -68,7 +68,7 @@ def thread_worker(function_to_call: Callable) -> None:
         if future.exception():
             logger.error(
                 "Thread processing for '%s' received an exception: %s",
-                iterator,
+                futures[future],
                 future.exception(),
             )
 

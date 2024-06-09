@@ -42,9 +42,18 @@ def commandline() -> None:
     """Starter function to invoke Jarvis using commandline."""
     # This is to validate that only 'jarvis' command triggers this function and not invoked by other functions
     assert sys.argv[0].endswith("jarvis"), "Invalid commandline trigger!!"
+    options = {
+        "install": "Installs the main dependencies.",
+        "dev-install": "Installs the dev dependencies.",
+        "start | run": "Initiates Jarvis.",
+        "version | -v | --version | -V": "Prints the version.",
+    }
+    # weird way to increase spacing to keep all values monotonic
+    _longest_key = len(max(options.keys()))
     _pretext = "\n\t* "
     choices = _pretext + _pretext.join(
-        ("install", "dev-install", "start | run", "version | -v | --version | -V")
+        f"{k} {'·' * (_longest_key - len(k) + 8)}→ {v}".expandtabs()
+        for k, v in options.items()
     )
     try:
         arg = sys.argv[1].lower()
@@ -53,20 +62,26 @@ def commandline() -> None:
             f"Cannot proceed without arbitrary commands. Please choose from {choices}"
         )
         exit(1)
+    from jarvis.lib import installer
+
     match arg:
         case "install":
-            from jarvis.lib import install  # noqa: F401
-
-            install.main()
+            installer.main_install()
         case "dev-install":
-            from jarvis.lib import install  # noqa: F401
-
-            install.dev()
+            installer.dev_install()
+        case "uninstall" | "cleanup":
+            installer.main_uninstall()
+        case "dev-uninstall" | "dev-cleanup":
+            installer.dev_uninstall()
         case "start" | "run":
             init = __preflight_check__()
             init()
         case "version" | "-v" | "-V" | "--version":
             print(f"Jarvis {version}")
+        case "help" | "--help":
+            print(
+                f"Usage: jarvis [arbitrary-command]\nOptions (and corresponding behavior):{choices}"
+            )
         case _:
             print(f"Unknown Option: {arg}\nArbitrary commands must be one of {choices}")
 

@@ -14,13 +14,19 @@ Warnings:
     - Running ``jarvis install`` is what actually installs all the dependent packages.
 """
 
+import logging
 import os
 import platform
 import re
 import string
 import subprocess
 import sys
-from typing import NoReturn
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import List, NoReturn
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
 
 
 def pretext() -> str:
@@ -53,9 +59,9 @@ def get_arch() -> str | NoReturn:
     elif "armv7" in machine:
         architecture: str = "armv7"
     else:
-        print(pretext())
-        print(center(f"Unknown Architecture: {machine}"))
-        print(pretext())
+        logger.info(pretext())
+        logger.info(center(f"Unknown Architecture: {machine}"))
+        logger.info(pretext())
         exit(1)
     return architecture
 
@@ -110,23 +116,23 @@ def run_subprocess(command: str) -> None:
     )
     try:
         for line in process.stdout:
-            print(line.strip())
+            logger.info(line.strip())
         process.wait()
         for line in process.stderr:
-            print(line.strip())
+            logger.error(line.strip())
         assert (
             process.returncode == 0
         ), f"{command!r} returned exit code {process.returncode}"
     except KeyboardInterrupt:
         if process.poll() is None:
             for line in process.stdout:
-                print(line.strip())
+                logger.info(line.strip())
             process.terminate()
 
 
 def windows_caveat() -> None | NoReturn:
     """Function to handle installations on Windows operating systems."""
-    print(
+    logger.info(
         """
 Make sure Git, Anaconda (or Miniconda) and VS C++ BuildTools are installed.
 Refer the below links for:
@@ -136,14 +142,13 @@ Refer the below links for:
     * Git: https://git-scm.com/download/win/
 """
     )
-    print(pretext())
-    print(pretext())
+    logger.info(pretext())
+    logger.info(pretext())
     prompt = input("Are you sure you want to continue? <Y/N> ")
     if not re.match(r"^[yY](es)?$", prompt):
-        print()
-        print(pretext())
-        print("Bye. Hope to see you soon.")
-        print(pretext())
+        logger.info(pretext())
+        logger.info("Bye. Hope to see you soon.")
+        logger.info(pretext())
         exit(0)
 
 
@@ -153,10 +158,10 @@ def unsupported_os() -> NoReturn:
     Returns:
         Returns exit code 1 if operating system is not either Linux, macOS or Windows.
     """
-    print(f"\n{pretext()}\n{pretext()}\n")
-    print(f"Current Operating System: {env.osname}")
-    print("Jarvis is currently supported only on Linux, macOS and Windows")
-    print(f"\n{pretext()}\n{pretext()}\n")
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
+    logger.warning(f"Current Operating System: {env.osname}")
+    logger.warning("Jarvis is currently supported only on Linux, macOS and Windows")
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
     exit(1)
 
 
@@ -168,10 +173,10 @@ def unsupported_arch() -> NoReturn:
     """
     # todo: include support for raspberry-pi
     # todo: possible arch (arm11, cortex-a7, cortex-a53, cortex-53-aarch64, cortex-a72, cortex-a72-aarch64)
-    print(f"\n{pretext()}\n{pretext()}\n")
-    print(f"Current Architecture: {env.architecture}")
-    print("Jarvis is currently supported only on AMD machines.")
-    print(f"\n{pretext()}\n{pretext()}\n")
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
+    logger.warning(f"Current Architecture: {env.architecture}")
+    logger.warning("Jarvis is currently supported only on AMD machines.")
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
     exit(1)
 
 
@@ -187,15 +192,91 @@ class Requirements:
     upgrade: str = os.path.join(env.current_dir, "version_upgrade_requirements.txt")
 
 
+def os_specific_pip() -> List[str]:
+    """Returns a list of pip installed packages."""
+    src = [
+        "dlib",
+        "playsound",
+        "pvporcupine",
+        "opencv-python",
+        "face-recognition",
+    ]
+    if env.osname == "windows":
+        return src + ["pydub", "pywin32"]
+    if env.osname == "linux":
+        return src + ["gobject", "PyGObject"]
+    if env.osname == "darwin":
+        return src + ["ftransc", "pyobjc-framework-CoreWLAN"]
+
+
+def thread_worker(commands: List[str]) -> bool:
+    """Thread worker that runs subprocess commands in parallel.
+
+    Args:
+        commands: List of commands to be executed simultaneously.
+
+    Returns:
+        bool:
+        Returns a boolean flag to indicate if there was a failure.
+    """
+    futures = {}
+    with ThreadPoolExecutor(max_workers=len(commands)) as executor:
+        for iterator in commands:
+            future = executor.submit(run_subprocess, iterator)
+            futures[future] = iterator
+    failed = False
+    for future in as_completed(futures):
+        if future.exception():
+            failed = True
+            logger.error(
+                f"Thread processing for {futures[future]!r} received an exception: {future.exception()!r}"
+            )
+    return failed
+
+
+def dev_uninstall() -> None:
+    """Uninstalls all the pip installed packages."""
+    init()
+    logger.info(pretext())
+    logger.info(center("Uninstalling dev dependencies"))
+    logger.info(pretext())
+    run_subprocess(
+        "python -m pip uninstall --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse -y"
+    )
+
+
+def main_uninstall() -> None:
+    """Uninstalls all the pip installed packages."""
+    init()
+    logger.info(pretext())
+    logger.info(center("Uninstalling ALL dependencies"))
+    logger.info(pretext())
+    exc = thread_worker(
+        [
+            f"python -m pip uninstall --no-cache-dir -r {Requirements.pinned} -y",
+            f"python -m pip uninstall --no-cache-dir -r {Requirements.locked} -y",
+            f"python -m pip uninstall --no-cache-dir -r {Requirements.upgrade} -y",
+            f"python -m pip uninstall --no-cache-dir {' '.join(os_specific_pip())} -y",
+        ]
+    )
+    logger.info(pretext())
+    logger.info(center("Cleanup has completed!")) if exc else logger.info(
+        center("One or many cleanup threads have failed!!")
+    )
+    logger.info(pretext())
+
+
 def os_agnostic() -> None:
     """Function to handle os-agnostic installations."""
-    print(pretext())
-    print(center("Installing OS agnostic dependencies"))
-    print(pretext())
-    run_subprocess(f"python -m pip install --no-cache -r {Requirements.pinned}")
-    run_subprocess(f"python -m pip install --no-cache -r {Requirements.locked}")
-    run_subprocess(
-        f"python -m pip install --no-cache --upgrade -r {Requirements.upgrade}"
+    logger.info(pretext())
+    logger.info(center("Installing OS agnostic dependencies"))
+    logger.info(pretext())
+    thread_worker(
+        [
+            f"python -m pip install --no-cache -r {Requirements.pinned}",
+            f"python -m pip install --no-cache -r {Requirements.locked}",
+            f"python -m pip install --no-cache --upgrade -r {Requirements.upgrade}",
+        ]
     )
 
 
@@ -211,11 +292,13 @@ def init() -> None:
         f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     )
     if sys.version_info.major == 3 and sys.version_info.minor in (10, 11):
-        print(pretext())
-        print(center(f"{env.osname}-{env.architecture} running python {pyversion}"))
-        print(pretext())
+        logger.info(pretext())
+        logger.info(
+            center(f"{env.osname}-{env.architecture} running python {pyversion}")
+        )
+        logger.info(pretext())
     else:
-        print(
+        logger.warning(
             f"Python version {pyversion} is unsupported for Jarvis. "
             "Please use any python version between 3.10.* and 3.11.*"
         )
@@ -223,26 +306,26 @@ def init() -> None:
     run_subprocess("python -m pip install --upgrade pip setuptools wheel")
 
 
-def dev() -> None:
+def dev_install() -> None:
     """Install dev dependencies."""
     init()
-    print(pretext())
-    print(center("Installing dev dependencies"))
-    print(pretext())
+    logger.info(pretext())
+    logger.info(center("Installing dev dependencies"))
+    logger.info(pretext())
     run_subprocess(
         "python -m pip install sphinx==5.1.1 pre-commit recommonmark gitverse"
     )
 
 
-def main() -> None:
+def main_install() -> None:
     """Install main dependencies."""
     init()
     install_script = os.path.join(env.current_dir, f"install_{env.osname}.sh")
-
-    print(pretext())
-    print(center(f"Installing dependencies specific to {string.capwords(env.osname)}"))
-    print(pretext())
-
+    logger.info(pretext())
+    logger.info(
+        center(f"Installing dependencies specific to {string.capwords(env.osname)}")
+    )
+    logger.info(pretext())
     if env.osname == "windows":
         windows_caveat()
     run_subprocess(install_script)

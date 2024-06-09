@@ -56,6 +56,7 @@ if awk "BEGIN {exit !($base_ver > $os_ver)}"; then
   echo ""
   python -m pip install pvporcupine==1.6.0 dlib==19.21.0 opencv-python==4.4.0.44
 else
+  # shellcheck disable=SC2154
   if [ "$pyversion" -eq 310 ]; then
     python -m pip install dlib==19.24.0
   fi

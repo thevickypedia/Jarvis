@@ -60,8 +60,8 @@
 </ul>
 </div>
 </section>
-<section id="module-jarvis.lib.install">
-<span id="installer"></span><h1>Installer<a class="headerlink" href="#module-jarvis.lib.install" title="Permalink to this heading">¶</a></h1>
+<section id="module-jarvis.lib.installer">
+<span id="installer"></span><h1>Installer<a class="headerlink" href="#module-jarvis.lib.installer" title="Permalink to this heading">¶</a></h1>
 <p>This is a special module that installs all the downstream dependencies for Jarvis.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Installer</span>
 </pre></div>
@@ -83,20 +83,20 @@
 </ul>
 </div>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.pretext">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">pretext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.install.pretext" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.pretext">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">pretext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.installer.pretext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre-text to gain reader’s attention in the terminal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.center">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.install.center" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.center">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.installer.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Aligns text to center of the terminal and returns it.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.get_arch">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">get_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.install.get_arch" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.get_arch">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">get_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.get_arch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Classify system architecture into known categories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -106,8 +106,8 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.lib.install.Env">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">Env</span></span><a class="headerlink" href="#jarvis.lib.install.Env" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.Env">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">Env</span></span><a class="headerlink" href="#jarvis.lib.installer.Env" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom configuration variables, passed on to shell scripts as env vars.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Env</span>
 </pre></div>
@@ -116,8 +116,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.run_subprocess">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">run_subprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.install.run_subprocess" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.run_subprocess">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">run_subprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.run_subprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run shell commands/scripts as subprocess including system environment variables.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -150,14 +150,14 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.windows_caveat">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">windows_caveat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.install.windows_caveat" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.windows_caveat">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">windows_caveat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.windows_caveat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle installations on Windows operating systems.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.unsupported_os">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">unsupported_os</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.install.unsupported_os" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.unsupported_os">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">unsupported_os</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.installer.unsupported_os" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle unsupported operating systems.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -167,8 +167,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.unsupported_arch">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">unsupported_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.install.unsupported_arch" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.unsupported_arch">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">unsupported_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.installer.unsupported_arch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle unsupported architecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -178,50 +178,85 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.lib.install.Requirements">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">Requirements</span></span><a class="headerlink" href="#jarvis.lib.install.Requirements" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">Requirements</span></span><a class="headerlink" href="#jarvis.lib.installer.Requirements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Install locations for pinned, locked and upgrade-able packages.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Requirements</span>
 </pre></div>
 </div>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.install.Requirements.pinned">
-<span class="sig-name descname"><span class="pre">pinned</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_pinned_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.install.Requirements.pinned" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.pinned">
+<span class="sig-name descname"><span class="pre">pinned</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_pinned_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.pinned" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.install.Requirements.locked">
-<span class="sig-name descname"><span class="pre">locked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_locked_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.install.Requirements.locked" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.locked">
+<span class="sig-name descname"><span class="pre">locked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_locked_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.locked" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.lib.install.Requirements.upgrade">
-<span class="sig-name descname"><span class="pre">upgrade</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_upgrade_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.install.Requirements.upgrade" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.Requirements.upgrade">
+<span class="sig-name descname"><span class="pre">upgrade</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/lib/version_upgrade_requirements.txt'</span></em><a class="headerlink" href="#jarvis.lib.installer.Requirements.upgrade" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.os_agnostic">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">os_agnostic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.install.os_agnostic" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.os_specific_pip">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">os_specific_pip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.os_specific_pip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of pip installed packages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.thread_worker">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.lib.installer.thread_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread worker that runs subprocess commands in parallel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>commands</strong> – List of commands to be executed simultaneously.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a boolean flag to indicate if there was a failure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.dev_uninstall">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">dev_uninstall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.dev_uninstall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uninstalls all the pip installed packages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.main_uninstall">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">main_uninstall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.main_uninstall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uninstalls all the pip installed packages.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.os_agnostic">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">os_agnostic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.os_agnostic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle os-agnostic installations.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.init">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.install.init" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.init">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs pre-flight validations and upgrades <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> and <code class="docutils literal notranslate"><span class="pre">wheel</span></code> packages.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.dev">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">dev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.install.dev" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.dev_install">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">dev_install</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.dev_install" title="Permalink to this definition">¶</a></dt>
 <dd><p>Install dev dependencies.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.install.main">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.install.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.install.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.main_install">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">main_install</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.main_install" title="Permalink to this definition">¶</a></dt>
 <dd><p>Install main dependencies.</p>
 </dd></dl>
 
@@ -1392,9 +1427,46 @@ allow <cite>self</cite> as a field name.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.api.routers.loc.line_of_code">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">line_of_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.line_of_code" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.total_files">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">total_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.api.routers.loc.total_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cached function to calculate the total number of files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>base_dir</strong> – Base directory to start the scan from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total files within the base directory.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PositiveInt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.line_count">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">line_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.line_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get total lines of code for Jarvis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>redirect</strong> – Boolean flag to return a redirect response on-demand.</p></li>
+<li><p><strong>base_dir</strong> – Base directory to start the scan from.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the response from img.shields.io or an integer with total count based on the <code class="docutils literal notranslate"><span class="pre">redirect</span></code> argument.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RedirectResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.loc.file_count">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.loc.</span></span><span class="sig-name descname"><span class="pre">file_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redirect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'jarvis'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.loc.file_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get total number of files for Jarvis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -11467,7 +11539,7 @@ response is mocked from the post request call.</p>
     <h3><a href="#">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Jarvis - Voice-Activated Natural Language UI</a></li>
-<li><a class="reference internal" href="#module-jarvis.lib.install">Installer</a></li>
+<li><a class="reference internal" href="#module-jarvis.lib.installer">Installer</a></li>
 <li><a class="reference internal" href="#preflight-tests">——–Preflight Tests——–</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.camera.camera">Camera</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.peripherals">Audio Devices</a></li>
