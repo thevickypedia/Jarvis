@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+v5.1.0 (06/09/2024)
+-------------------
+- Includes fully operational CLI functionalities.
+- Supports more than 100 repositories for GitHub account summary feature.
+- Removes GitHub cloning feature by repo name.
+- Bug fix on flaky screen output for terminal sessions.
+- Supports ``None`` for ``startup_options`` environment variable.
+- Includes endpoints to return total lines of code and total number of files as an integer or an HTML badge.
+
 v5.0.0 (06/04/2024)
 -------------------
 - Includes a pre-trained generative model using Ollama
