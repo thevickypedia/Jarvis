@@ -206,13 +206,7 @@ Routers - Stats
 
 .. automodule:: jarvis.api.routers.stats
    :members:
-   :exclude-members: Customizations
-
-====
-
-.. autoclass:: jarvis.api.routers.stats.Customizations(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
+   :exclude-members:
 
 Routers - StockMonitor
 ======================

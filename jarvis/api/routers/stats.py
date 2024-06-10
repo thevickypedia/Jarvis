@@ -20,7 +20,7 @@ from typing import List
 
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, FilePath, PositiveInt
+from pydantic import FilePath, PositiveInt
 
 import jarvis
 from jarvis.api.logger import logger
@@ -37,19 +37,7 @@ else:
 
 router = APIRouter()
 
-
-class Customizations(BaseModel):
-    """Custom exlusitions and inclusions for the scan.
-
-    >>> Customizations
-
-    """
-
-    excluded_dirs: List[str] = ["venv", "docs", "logs"]
-    file_extensions: List[str] = [".html", ".py", ".scpt", ".sh", ".xml"]
-
-
-custom = Customizations()
+FILE_EXTENSIONS: List[str] = [".html", ".py", ".scpt", ".sh", ".xml"]
 
 
 class ValidColors(StrEnum):
@@ -84,13 +72,7 @@ def should_include(filepath: FilePath) -> bool:
         bool:
         Boolean flag to indicate whether the file has to be included.
     """
-    if not any(filepath.endswith(ext) for ext in custom.file_extensions):
-        return False
-    # Check if the file is in one of the excluded directories
-    for excluded_dir in custom.excluded_dirs:
-        if excluded_dir in filepath.split(os.sep):
-            return False
-    return True
+    return any(filepath.endswith(ext) for ext in FILE_EXTENSIONS)
 
 
 def count_lines(filepath: FilePath) -> PositiveInt:
@@ -114,8 +96,6 @@ def get_files() -> Generator[FilePath]:
         Yields the file path.
     """
     for root, dirs, files in os.walk(jarvis.__path__[0]):
-        # Modify dirs in place to skip the excluded directories
-        dirs[:] = [d for d in dirs if os.path.join(root, d) not in custom.excluded_dirs]
         for file in files:
             file_path = os.path.join(root, file)
             if should_include(file_path):
