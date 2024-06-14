@@ -27,6 +27,10 @@ from typing import List, NoReturn
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
+if os.environ.get("JARVIS_VERBOSITY", "-1") == "1":
+    verbose = " --verbose"
+else:
+    verbose = ""
 
 
 def pretext() -> str:
@@ -66,6 +70,16 @@ def get_arch() -> str | NoReturn:
     return architecture
 
 
+def confirmation_prompt() -> None:
+    """Prompts a confirmation from the user to continue or exit."""
+    prompt = input("Are you sure you want to continue? <Y/N> ")
+    if not re.match(r"^[yY](es)?$", prompt):
+        logger.info(pretext())
+        logger.info("Bye. Hope to see you soon.")
+        logger.info(pretext())
+        exit(0)
+
+
 class Env:
     """Custom configuration variables, passed on to shell scripts as env vars.
 
@@ -78,7 +92,8 @@ class Env:
         self.osname: str = platform.system().lower()
         self.architecture: str = get_arch()
         self.pyversion: str = f"{sys.version_info.major}{sys.version_info.minor}"
-        self.current_dir: str = os.path.dirname(__file__)
+        self.current_dir: os.PathLike | str = os.path.dirname(__file__)
+        self.python: os.PathLike | str = sys.executable
 
 
 env = Env()
@@ -144,12 +159,7 @@ Refer the below links for:
     )
     logger.info(pretext())
     logger.info(pretext())
-    prompt = input("Are you sure you want to continue? <Y/N> ")
-    if not re.match(r"^[yY](es)?$", prompt):
-        logger.info(pretext())
-        logger.info("Bye. Hope to see you soon.")
-        logger.info(pretext())
-        exit(0)
+    confirmation_prompt()
 
 
 def unsupported_os() -> NoReturn:
@@ -178,6 +188,24 @@ def unsupported_arch() -> NoReturn:
     logger.warning("Jarvis is currently supported only on AMD machines.")
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     exit(1)
+
+
+def unsupported_env() -> None:
+    """Function to handle installations that are NOT on virtual environments."""
+    logger.info(pretext())
+    logger.info(pretext())
+    logger.info(
+        center(
+            """
+Using a virtual environment is highly recommended to avoid version conflicts in dependencies
+    * Creating Virtual Environments: https://docs.python.org/3/library/venv.html#creating-virtual-environments
+    * How Virtual Environments work: https://docs.python.org/3/library/venv.html#how-venvs-work
+"""
+        )
+    )
+    logger.info(pretext())
+    logger.info(pretext())
+    confirmation_prompt()
 
 
 class Requirements:
@@ -252,7 +280,7 @@ def dev_uninstall() -> None:
     logger.info(center("Uninstalling dev dependencies"))
     logger.info(pretext())
     run_subprocess(
-        "python -m pip uninstall --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse -y"
+        f"{env.python} -m pip uninstall{verbose} --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse -y"
     )
 
 
@@ -262,18 +290,19 @@ def main_uninstall() -> None:
     logger.info(pretext())
     logger.info(center("Uninstalling ALL dependencies"))
     logger.info(pretext())
-    exc = thread_worker(
+    exception = thread_worker(
         [
-            f"python -m pip uninstall --no-cache-dir -r {requirements.pinned} -y",
-            f"python -m pip uninstall --no-cache-dir -r {requirements.locked} -y",
-            f"python -m pip uninstall --no-cache-dir -r {requirements.upgrade} -y",
-            f"python -m pip uninstall --no-cache-dir {' '.join(os_specific_pip())} -y",
+            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.pinned} -y",
+            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.locked} -y",
+            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.upgrade} -y",
+            f"{env.python} -m pip uninstall{verbose} --no-cache-dir {' '.join(os_specific_pip())} -y",
         ]
     )
     logger.info(pretext())
-    logger.info(center("Cleanup has completed!")) if exc else logger.info(
-        center("One or many cleanup threads have failed!!")
-    )
+    if exception:
+        logger.error(center("One or more cleanup threads have failed!!"))
+    else:
+        logger.info(center("Cleanup has completed!"))
     logger.info(pretext())
 
 
@@ -282,13 +311,22 @@ def os_agnostic() -> None:
     logger.info(pretext())
     logger.info(center("Installing OS agnostic dependencies"))
     logger.info(pretext())
-    thread_worker(
+    exception = thread_worker(
         [
-            f"python -m pip install --no-cache -r {requirements.pinned}",
-            f"python -m pip install --no-cache -r {requirements.locked}",
-            f"python -m pip install --no-cache --upgrade -r {requirements.upgrade}",
+            f"{env.python} -m pip install{verbose} --no-cache -r {requirements.pinned}",
+            f"{env.python} -m pip install{verbose} --no-cache -r {requirements.locked}",
+            f"{env.python} -m pip install{verbose} --no-cache --upgrade -r {requirements.upgrade}",
         ]
     )
+    logger.info(pretext())
+    if exception:
+        logger.error(center("One or more installation threads have failed!!"))
+        logger.error(
+            center("Please set JARVIS_VERBOSITY=1 and retry to identify root cause.")
+        )
+    else:
+        logger.info(center("Installation has completed!"))
+    logger.info(pretext())
 
 
 def init() -> None:
@@ -298,6 +336,9 @@ def init() -> None:
 
     if env.architecture != "amd64":
         unsupported_arch()
+
+    if sys.prefix == sys.base_prefix:
+        unsupported_env()
 
     pyversion: str = (
         f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
@@ -314,7 +355,9 @@ def init() -> None:
             "Please use any python version between 3.10.* and 3.11.*"
         )
         exit(1)
-    run_subprocess("python -m pip install --upgrade pip setuptools wheel")
+    run_subprocess(
+        f"{env.python} -m pip install{verbose} --upgrade pip setuptools wheel"
+    )
 
 
 def dev_install() -> None:
@@ -324,7 +367,7 @@ def dev_install() -> None:
     logger.info(center("Installing dev dependencies"))
     logger.info(pretext())
     run_subprocess(
-        "python -m pip install sphinx==5.1.1 pre-commit recommonmark gitverse"
+        f"{env.python} -m pip install{verbose} sphinx==5.1.1 pre-commit recommonmark gitverse"
     )
 
 

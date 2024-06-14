@@ -77,6 +77,7 @@ def commandline() -> None:
         case "dev-uninstall" | "dev-cleanup":
             installer.dev_uninstall()
         case "start" | "run":
+            os.environ["debug"] = str(os.environ.get("JARVIS_VERBOSITY", "-1") == "1")
             init = __preflight_check__()
             init()
         case "version" | "-v" | "-V" | "--version":
