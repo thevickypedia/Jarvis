@@ -460,7 +460,15 @@ def write_screen(text: Any) -> None:
     """
     if shared.called_by_offline:
         return
-    flush_screen()
+    text = str(text).strip()
+    if models.settings.interactive:
+        term_size = os.get_terminal_size().columns
+        sys.stdout.write(f"\r{' ' * term_size}")
+        if len(text) > term_size:
+            # Get 90% of the text size and ONLY print that on screen
+            size = round(term_size * (90 / 100))
+            sys.stdout.write(f"\r{text[:size].strip()}...")
+            return
     sys.stdout.write(f"\r{text}")
 
 
@@ -471,9 +479,7 @@ def flush_screen() -> None:
         Writes new set of empty strings for the size of the terminal if ran using one.
     """
     if models.settings.interactive:
-        sys.stdout.write(
-            f"\r{' '.join(['' for _ in range(os.get_terminal_size().columns)])}"
-        )
+        sys.stdout.write(f"\r{' ' * os.get_terminal_size().columns}")
     else:
         sys.stdout.write("\r")
 
