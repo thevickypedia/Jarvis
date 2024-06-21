@@ -25,7 +25,7 @@ def audio_converter_mac() -> Callable:
         Transcode function from ftransc.
     """
     try:
-        from ftransc.core.transcoders import transcode  # noqa
+        from ftransc.core.transcoders import transcode  # noqa: F401
 
         return transcode
     except (SystemExit, ModuleNotFoundError, ImportError) as error:

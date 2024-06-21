@@ -73,7 +73,8 @@ def background_task_runner() -> None:
         for i, task in enumerate(tasks):
             # Checks a particular tasks' elapsed time
             if task_dict[i] + task.seconds <= time.time() or dry_run:
-                task_dict[i] = time.time()  # Updates that particular tasks' start time
+                # Updates that particular tasks' start time
+                task_dict[i] = time.time()
                 if now.hour in task.ignore_hours:
                     logger.debug("'%s' skipped honoring ignore hours", task)
                 else:
@@ -190,9 +191,8 @@ def background_task_runner() -> None:
             while not smart_listener.empty():
                 mutes = smart_listener.get(timeout=2)
                 logger.debug(mutes)
-                meeting_muter.append(
-                    mutes
-                )  # Write to a new list as queue will be empty after executing .get
+                # Write to a new list as queue will be empty after executing .get
+                meeting_muter.append(mutes)
             if meeting_muter := util.remove_duplicates(input_=meeting_muter):
                 for each_muter in meeting_muter:
                     for meeting_name, timing_info in each_muter.items():
@@ -204,9 +204,8 @@ def background_task_runner() -> None:
                                 meeting_name,
                                 support.time_converter(second=duration),
                             )
-                            meeting_muter.remove(
-                                each_muter
-                            )  # Remove event from new list to avoid repetition
+                            # Remove event from new list to avoid repetition
+                            meeting_muter.remove(each_muter)
                             listener_controls.put_listener_state(state=False)
                             Timer(
                                 function=listener_controls.put_listener_state,
@@ -258,9 +257,8 @@ def background_task_runner() -> None:
             logger.warning("Tasks list has been updated.")
             logger.info(DeepDiff(tasks, new_tasks, ignore_order=True))
             tasks = new_tasks
-            task_dict = {
-                i: time.time() for i in range(len(tasks))
-            }  # Re-create start time for each task
+            # Re-create start time for each task
+            task_dict = {i: time.time() for i in range(len(tasks))}
 
         # Re-check for any newly added cron_jobs with logger disabled
         new_cron_jobs: List[crontab.expression.CronExpression] = list(
@@ -270,9 +268,8 @@ def background_task_runner() -> None:
             # Don't log updated jobs since there will always be a difference when run on author mode
             cron_jobs = new_cron_jobs
         dry_run = False
-        time.sleep(
-            0.5
-        )  # Reduces CPU utilization as constant fileIO operations spike CPU %
+        # Reduces CPU utilization as constant fileIO operations spike CPU %
+        time.sleep(1)
 
 
 def ondemand_offline_automation(task: str) -> str | None:

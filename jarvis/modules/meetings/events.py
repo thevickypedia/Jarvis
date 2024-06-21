@@ -41,9 +41,8 @@ def events_writer() -> None:
     )
     with db.connection:
         cursor = db.connection.cursor()
-        cursor.execute(
-            f"DELETE FROM {models.env.event_app}"
-        )  # Use f-string or %s as table names can't be parametrized
+        # Use f-string or %s as table names can't be parametrized
+        cursor.execute(f"DELETE FROM {models.env.event_app}")
         cursor.connection.commit()
         cursor.execute(query)
         cursor.connection.commit()
@@ -116,7 +115,8 @@ def events_gatherer() -> str:
             event_app_launcher()
         if not failure:
             failure = f"[{models.env.event_app}:{error}] - {err_msg}"
-        failure = failure.replace('"', "")  # An identifier can’t go after this “"”
+        # An identifier can’t go after this “"”
+        failure = failure.replace('"', "")
         logger.error(failure)
         pynotification.pynotifier(title="Jarvis", message=failure)
         return f"I was unable to read your {models.env.event_app} {models.env.title}! Please make sure it is in sync."
@@ -191,9 +191,8 @@ def events(*args) -> None:
                 text=f"Events table is empty {models.env.title}. Please try again in a minute or two."
             )
             return
-        event = ThreadPool(processes=1).apply_async(
-            func=events_gatherer
-        )  # Runs parallely and awaits completion
+        # Runs parallely and awaits completion
+        event = ThreadPool(processes=1).apply_async(func=events_gatherer)
         speaker.speak(
             text=f"Please give me a moment {models.env.title}! Let me check your {models.env.event_app}.",
             run=True,

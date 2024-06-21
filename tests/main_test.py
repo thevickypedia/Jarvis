@@ -30,8 +30,8 @@ class TestActivator(unittest.TestCase):
         """
         mock_pvporcupine_create.return_value = MagicMock()
         mock_audio_open.return_value = MagicMock()
-
-        self.activator.__init__()  # Call the __init__() method explicitly
+        # Call the __init__() method explicitly
+        self.activator.__init__()
 
         # Assertions
         mock_pvporcupine_create.assert_called_once_with(
@@ -51,18 +51,14 @@ class TestActivator(unittest.TestCase):
         self.assertEqual(self.activator.detector, mock_pvporcupine_create.return_value)
         self.assertEqual(self.activator.audio_stream, mock_audio_open.return_value)
 
-    @patch(
-        "jarvis.modules.audio.listener.listen"
-    )  # Patch the listener.listen from jarvis.modules.audio
-    @patch(
-        "jarvis.executors.commander.initiator"
-    )  # Patch the commander.initiator from jarvis.executors
-    @patch(
-        "jarvis.modules.audio.speaker.speak"
-    )  # Patch the speaker.speak from jarvis.modules.audio
-    @patch(
-        "jarvis.main.audio_engine.close"
-    )  # Patch the audio_engine.close from jarvis.main
+    # Patch the listener.listen from jarvis.modules.audio
+    @patch("jarvis.modules.audio.listener.listen")
+    # Patch the commander.initiator from jarvis.executors
+    @patch("jarvis.executors.commander.initiator")
+    # Patch the speaker.speak from jarvis.modules.audio
+    @patch("jarvis.modules.audio.speaker.speak")
+    # Patch the audio_engine.close from jarvis.main
+    @patch("jarvis.main.audio_engine.close")
     def test_executor(
         self,
         mock_audio_close: MagicMock,
@@ -86,16 +82,14 @@ class TestActivator(unittest.TestCase):
         self.activator.executor()
 
         # Assertions
-        self.assertTrue(mock_audio_close.called)  # audio_engine.close should be called
-        mock_listen.assert_called_once_with(
-            sound=False, no_conf=True
-        )  # listener.listen should be called
-        mock_initiator.assert_called_once_with(
-            phrase=SAMPLE_PHRASE
-        )  # commander.initiator should be called with the correct phrase
-        mock_speak.assert_called_once_with(
-            run=True
-        )  # speaker.speak should be called with run=True
+        # audio_engine.close should be called
+        self.assertTrue(mock_audio_close.called)
+        # listener.listen should be called
+        mock_listen.assert_called_once_with(sound=False, no_conf=True)
+        # commander.initiator should be called with the correct phrase
+        mock_initiator.assert_called_once_with(phrase=SAMPLE_PHRASE)
+        # speaker.speak should be called with run=True
+        mock_speak.assert_called_once_with(run=True)
 
 
 if __name__ == "__main__":

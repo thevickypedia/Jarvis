@@ -28,7 +28,7 @@ class APIServer(uvicorn.Server):
 
 def ordered_load(
     stream, Loader=yaml.SafeLoader, object_pairs_hook=collections.OrderedDict  # noqa
-) -> collections.OrderedDict:  # noqa
+) -> collections.OrderedDict:
     """Custom loader for OrderedDict.
 
     Args:

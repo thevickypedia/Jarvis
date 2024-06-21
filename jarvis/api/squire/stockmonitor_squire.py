@@ -96,13 +96,15 @@ def put_daily_alerts(
     with stock_db.connection:
         cursor = stock_db.connection.cursor()
         params = [(key, *values) for param in params for key, values in param.items()]
-        cursor.execute("DELETE FROM stock_daily")  # clear all existing data
+        # clear all existing data
+        cursor.execute("DELETE FROM stock_daily")
         query = (
             f"INSERT OR REPLACE INTO stock_daily {settings.stock_monitor.alerts} VALUES "
             f"{settings.stock_monitor.alert_values};"
         )
         for param in params:
-            cursor.execute(query, param)  # write new data in db
+            # write new data in db
+            cursor.execute(query, param)
         stock_db.connection.commit()
 
 

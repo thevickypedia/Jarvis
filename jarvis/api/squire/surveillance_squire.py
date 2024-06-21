@@ -131,7 +131,8 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> None
             logger.info("Releasing camera: %s", available_cameras[index])
             cam.release()
             break
-        frame = cv2.flip(src=frame, flipCode=1)  # mirrors the frame
+        # mirrors the frame
+        frame = cv2.flip(src=frame, flipCode=1)
         ret, buffer = cv2.imencode(ext=".jpg", img=frame)
         frame = buffer.tobytes()
         manager.put(frame)

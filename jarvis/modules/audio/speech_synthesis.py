@@ -221,10 +221,10 @@ def stream_logs(client: DockerClient, container_id: str) -> NoReturn:
         follow=None,
         until=None,
     )
-    log_file = open(
-        file=models.fileio.speech_synthesis_log, mode="a", buffering=1
-    )  # 1 line buffer on file
-    os.fsync(log_file.fileno())  # Tell os module to write the buffer of the file
+    # 1 line buffer on file
+    log_file = open(file=models.fileio.speech_synthesis_log, mode="a", buffering=1)
+    # Tell os module to write the buffer of the file
+    os.fsync(log_file.fileno())
     __asterisks = "".join(["*" for _ in range(120)])
     __spaces = "".join(["-" for _ in range(47)])
     log_file.write(f"\n{__asterisks}\n")
@@ -232,7 +232,7 @@ def stream_logs(client: DockerClient, container_id: str) -> NoReturn:
     log_file.write(f"{__asterisks}\n\n")
     for line in logs:
         log_file.write(line.decode(encoding="UTF-8"))
-        log_file.flush()  # Write everything in buffer to file right away
+        log_file.flush()
     log_file.close()
 
 

@@ -162,9 +162,8 @@ async def stock_monitor_api(
     else:  # If apikey auth fails or unsupported
         sent_dict = settings.stock_monitor_helper.otp_sent
         recd_dict = settings.stock_monitor_helper.otp_recd
-        email_otp = email_otp or request.headers.get(
-            "email-otp"
-        )  # variable will be _ but headers should always be `-`
+        # variable will be _ but headers should always be `-`
+        email_otp = email_otp or request.headers.get("email-otp")
         if email_otp:
             recd_dict[input_data.email] = email_otp
         if secrets.compare_digest(
@@ -336,7 +335,8 @@ async def stock_monitor_api(
             "Please choose a lower 'Min' value or try at a later time.",
         )
 
-    stockmonitor_squire.insert_stock_userdata(params=new_entry)  # Store it in database
+    # Store it in database
+    stockmonitor_squire.insert_stock_userdata(params=new_entry)
 
     response = (
         f"Entry added to the database. Jarvis will notify you at {input_data.email!r} when a "

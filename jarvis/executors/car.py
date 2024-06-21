@@ -197,22 +197,18 @@ class Operations:
             or 1
         )
         if "hour" in phrase:
-            seconds = (
-                requested_expiry * 3_600
-            )  # Defaults to 1 hour if no numeric value in phrase
+            # Defaults to 1 hour if no numeric value in phrase
+            seconds = requested_expiry * 3_600
         elif "day" in phrase:
-            seconds = (
-                requested_expiry * 86_400
-            )  # Defaults to 1 day if no numeric value in phrase
+            # Defaults to 1 day if no numeric value in phrase
+            seconds = requested_expiry * 86_400
         elif "week" in phrase:
-            seconds = (
-                requested_expiry * 604_800
-            )  # Defaults to 1 week if no numeric value in phrase
+            # Defaults to 1 week if no numeric value in phrase
+            seconds = requested_expiry * 604_800
         else:
             seconds = 3_600  # Defaults to 1 hour if no datetime conversion was received
-        expire = int(
-            (time.time() + seconds) * 1000
-        )  # multiply by 1000 to including microseconds making it 13 digits
+        # multiply by 1000 to including microseconds making it 13 digits
+        expire = int((time.time() + seconds) * 1000)
         if response := self.object(operation="SECURE", end_time=expire):
             return response
         else:
@@ -554,9 +550,8 @@ def vehicle(
                         logger.error(lock_response)
                     else:
                         logger.info("Vehicle has been locked!")
-                        time.sleep(
-                            3
-                        )  # Wait before locking the car, so that there is no overlap in refresh token
+                        # Wait before locking the car, so that there is no overlap in refresh token
+                        time.sleep(3)
             response = control.remote_engine_start(
                 pin=models.env.car_pin, target_value=temp
             )

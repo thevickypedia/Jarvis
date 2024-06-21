@@ -27,9 +27,10 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> str 
         https://stackoverflow.com/a/49729752
     """
     logger.info("Generating price chart for '%s'", ticker)
+    # ~ 1 month
     dataframe = webull().get_bars(
         stock=ticker, interval="m60", count=bars, extendTrading=1
-    )  # ~ 1 month
+    )
     refined = dataframe[["close"]]
     if len(refined) == 0:
         refined = dataframe[["open"]]
@@ -205,7 +206,10 @@ class StockMonitor:
                     if time.time() <= alert_time + hours * 60 * 60:
                         return True
                     else:
-                        self.repeat_alerts.remove({alert_time: alert_entry})
+                        try:
+                            self.repeat_alerts.remove({alert_time: alert_entry})
+                        except ValueError as err:
+                            self.logger.error(err)
                         return False  # notification should be triggered if condition matches
 
     def send_notification(self) -> None:

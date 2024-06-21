@@ -9,9 +9,8 @@ from jarvis.modules.exceptions import InvalidArgument
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 
-LOG_FILE = os.path.join(
-    "logs", "cron_%d-%m-%Y.log"
-)  # Used by api functions that run on cron schedule
+# Used by api functions that run on cron schedule
+LOG_FILE = os.path.join("logs", "cron_%d-%m-%Y.log")
 
 
 def executor(statement: str, log_file: str = None, process_name: str = None) -> None:

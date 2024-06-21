@@ -16,12 +16,12 @@ def speaker_volume(level: int) -> None:
     Args:
         level: Takes the volume level as an argument.
     """
-    logger.info(
-        "Jarvis' volume has been set to %d" % level + "%"
-    )  # % is mandatory because of string concatenation
+    # % is mandatory because of string concatenation
+    logger.info("Jarvis' volume has been set to %d" % level + "%")
     models.AUDIO_DRIVER.setProperty("volume", level / 100)
 
 
+# noinspection PyUnresolvedReferences,PyProtectedMember
 def volume(phrase: str = None, level: int = None) -> None:
     """Controls volume from the numbers received. Defaults to 50%.
 
@@ -47,7 +47,7 @@ def volume(phrase: str = None, level: int = None) -> None:
     if level is None:
         level = models.env.volume
     phrase = phrase or ""
-    caller = sys._getframe(1).f_code.co_name  # noqa
+    caller = sys._getframe(1).f_code.co_name
     if "master" in phrase or "main" in phrase or caller in ("executor", "starter"):
         pyvolume.custom(level, logger)
         speaker_volume(level=level)

@@ -134,7 +134,8 @@ class Camera:
             Dict[str, str]:
             Returns the information of all connected cameras as a list of dictionary.
         """
-        output = list(filter(None, self.output))  # Filter null values in the list
+        # Filter null values in the list
+        output = list(filter(None, self.output))
         if not output:
             return
 

@@ -60,7 +60,8 @@ def timeout(
         process.join(timeout=1e-01)
         try:
             logger.info("Closing process: %d", process.pid) if logger else None
-            process.close()  # Close immediately instead of waiting to be garbage collected
+            # Close immediately instead of waiting to be garbage collected
+            process.close()
         except ValueError as error:
             # Expected when join timeout is insufficient. The resources will be released eventually but not immediately.
             logger.error(error) if logger else None

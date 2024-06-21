@@ -300,5 +300,4 @@ if models.startup_gpt:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
 else:
-    logger.warning("GPT has been disabled! To enable it, set the env var ollama=True")
     instance = None

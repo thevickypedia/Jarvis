@@ -219,13 +219,12 @@ def utc_to_local(utc_dt: datetime) -> datetime:
         datetime:
         Local datetime as an object.
     """
-    utc_dt = utc_dt.replace(
-        tzinfo=timezone.utc
-    )  # Tell datetime object that the tz is UTC
-    local_tz = dateutil.tz.gettz(
-        datetime.now().astimezone().tzname()
-    )  # Get local timezone
-    return utc_dt.astimezone(local_tz)  # Convert the UTC timestamp to local
+    # Tell datetime object that the tz is UTC
+    utc_dt = utc_dt.replace(tzinfo=timezone.utc)
+    # Get local timezone
+    local_tz = dateutil.tz.gettz(datetime.now().astimezone().tzname())
+    # Convert the UTC timestamp to local
+    return utc_dt.astimezone(local_tz)
 
 
 def build_lookup() -> List[str]:
@@ -604,9 +603,8 @@ def connected_to_network() -> bool:
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         if models.settings.os == models.supported_platforms.windows:
-            connection = HTTPSConnection(
-                "8.8.8.8", timeout=5
-            )  # Recreate a new connection everytime
+            # Recreate a new connection everytime
+            connection = HTTPSConnection("8.8.8.8", timeout=5)
             connection.request("HEAD", "/")
         else:
             socket_.connect(("8.8.8.8", 80))

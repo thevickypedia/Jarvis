@@ -117,9 +117,8 @@ def stop_child_processes() -> None:
             children[child]: List[int] = util.matrix_to_flat_list(
                 [list(filter(None, d)) for d in data if any(d)]
             )
-    logger.info(
-        children
-    )  # Include empty lists so logs have more information but will get skipped when looping anyway
+    # Include empty lists so logs have more information but will get skipped when looping anyway
+    logger.info(children)
     for category, pids in children.items():
         for pid in pids:
             try:

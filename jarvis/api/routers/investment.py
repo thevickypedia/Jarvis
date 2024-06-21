@@ -157,11 +157,12 @@ async def robinhood_path(request: Request, token: str = None):
         with open(models.fileio.robinhood) as static_file:
             html_content = static_file.read()
         content_type, _ = mimetypes.guess_type(html_content)
+        # serves as a static webpage
         return HTMLResponse(
             status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
             content=html_content,
             media_type=content_type,
-        )  # serves as a static webpage
+        )
     else:
         raise APIResponse(
             status_code=HTTPStatus.EXPECTATION_FAILED.real,

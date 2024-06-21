@@ -43,7 +43,7 @@ def put_frequent(data: Dict[str, int]) -> None:
     """
     with open(models.fileio.frequent, "w") as file:
         yaml.dump(data=data, stream=file, sort_keys=False)
-        file.flush()  # Write everything in buffer to file right away
+        file.flush()
 
 
 def get_location() -> DefaultDict[str, Dict | float | bool]:
@@ -89,7 +89,7 @@ def delete_secure_send(key: str) -> None:
         logger.critical("data for key [%s] was removed unprecedentedly", key)
     with open(models.fileio.secure_send, "w") as file:
         yaml.dump(data=current_data, stream=file, Dumper=yaml.Dumper)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def put_secure_send(data: Dict[str, Dict[str, Any]]):
@@ -101,7 +101,7 @@ def put_secure_send(data: Dict[str, Dict[str, Any]]):
     existing = get_secure_send()
     with open(models.fileio.secure_send, "w") as file:
         yaml.dump(data={**existing, **data}, stream=file, Dumper=yaml.Dumper)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
     logger.info(
         "Secure dict for [%s] will be cleared after 5 minutes",
         [*[*data.values()][0].keys()][0],
@@ -146,7 +146,7 @@ def put_restrictions(restrictions: List[str]) -> None:
     """
     with open(models.fileio.restrictions, "w") as file:
         yaml.dump(data=restrictions, stream=file, indent=2, sort_keys=False)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_gpt_data() -> List[Dict[str, str]]:
@@ -171,7 +171,7 @@ def put_gpt_data(data: List[Dict[str, str]]) -> None:
     """
     with open(models.fileio.gpt_data, "w") as file:
         yaml.dump(data=data, stream=file, indent=4, Dumper=yaml.Dumper)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
@@ -210,7 +210,7 @@ def put_automation(
 
     with open(models.fileio.automation, "w") as file:
         yaml.dump(data=sorted_data, stream=file, indent=2)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_smart_devices() -> dict | bool | None:
@@ -243,7 +243,7 @@ def put_smart_devices(data: dict) -> None:
     """
     with open(models.fileio.smart_devices, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_processes() -> Dict[str, List[int | List[str]]]:
@@ -284,7 +284,7 @@ def put_reminders(data: List[Dict[str, str]]):
     """
     with open(models.fileio.reminders, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_alarms() -> List[Dict[str, str | bool]]:
@@ -310,7 +310,7 @@ def put_alarms(data: List[Dict[str, str | bool]]):
     """
     with open(models.fileio.alarms, "w") as file:
         yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()  # Write buffer to file immediately
+        file.flush()
 
 
 def get_recognizer() -> classes.RecognizerSettings:

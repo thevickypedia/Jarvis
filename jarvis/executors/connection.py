@@ -21,9 +21,8 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         if models.settings.os == models.supported_platforms.windows:
-            connection = HTTPSConnection(
-                "8.8.8.8", timeout=3
-            )  # Recreate a new connection everytime
+            # Recreate a new connection everytime
+            connection = HTTPSConnection("8.8.8.8", timeout=3)
             connection.request("HEAD", "/")
         else:
             socket_.connect(("8.8.8.8", 80))
@@ -37,7 +36,8 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     except OSError as error:
         conn_object.os_errors += 1
         logger.error("OSError [%d]: %s", error.errno, error.strerror)
-        pywifi.ControlPeripheral(logger=logger).enable()  # Make sure Wi-Fi is enabled
+        # Make sure Wi-Fi is enabled
+        pywifi.ControlPeripheral(logger=logger).enable()
         connection_control = pywifi.ControlConnection(
             wifi_ssid=models.env.wifi_ssid,
             wifi_password=models.env.wifi_password,

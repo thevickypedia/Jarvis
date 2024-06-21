@@ -23,6 +23,7 @@ def is_port_in_use(port: int) -> bool:
         return sock.connect_ex(("localhost", port)) == 0
 
 
+# noinspection PyUnresolvedReferences,PyProtectedMember
 def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
     """Uses List all open files ``lsof`` to get the PID of the process that is listening on the given port and kills it.
 
@@ -56,10 +57,8 @@ def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
                 )
                 pid = int(each_split[1])
                 if pid == models.settings.pid:
-                    called_function = sys._getframe(1).f_code.co_name  # noqa
-                    called_file = sys._getframe(1).f_code.co_filename.replace(
-                        f"{os.getcwd()}/", ""
-                    )  # noqa
+                    called_function = sys._getframe(1).f_code.co_name
+                    called_file = sys._getframe(1).f_code.co_filename.replace(f"{os.getcwd()}/", "")  # fmt: skip
                     logger.warning(
                         "%s from %s tried to kill the running process.",
                         called_function,

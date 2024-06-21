@@ -298,9 +298,8 @@ class BackgroundTask(BaseModel):
         refined = []
         for multiple in v:
             if isinstance(multiple, str):
-                refined.extend(
-                    handle_multiform(multiple.split("-"))
-                )  # comes back as a list of string
+                # comes back as a list of string
+                refined.extend(handle_multiform(multiple.split("-")))
             else:
                 refined.append(multiple)
         if refined:

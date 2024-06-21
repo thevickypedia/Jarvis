@@ -47,9 +47,8 @@ def speech_synthesizer(
             logger.info("Converted %s -> %s", t_12, t_24)
             text = text.replace(t_12, t_24)
     if "IP" in text.split():
-        ip_new = "-".join([i for i in text.split(" ")[-1]]).replace(
-            "-.-", ", "
-        )  # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
+        # 192.168.1.1 -> 1-9-2, 1-6-8, 1, 1
+        ip_new = "-".join([i for i in text.split(" ")[-1]]).replace("-.-", ", ")
         text = text.replace(text.split(" ")[-1], ip_new).replace(" IP ", " I.P. ")
     # Raises UnicodeDecodeError within docker container
     text = text.replace("\N{DEGREE SIGN}F", " degrees fahrenheit")

@@ -75,9 +75,10 @@ def routes(routers: str) -> Generator[APIRouter]:
         APIRouter:
         API Router from scanned modules.
     """
+    # sort by name of the route
     entrypoints: List[Entrypoint] = sorted(
         get_entrypoints(routers=routers), key=lambda ent: ent.stem
-    )  # sort by name of the route
+    )
     for entrypoint in entrypoints:
         try:
             route = import_module(entrypoint.module)

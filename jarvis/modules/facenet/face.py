@@ -94,10 +94,10 @@ class FaceNet:
                 # generates face encoding matrix
                 if encoded := face_recognition.face_encodings(img):
                     encoded = encoded[0]
-                    self.train_faces.append(encoded)  # loads ended values to match
-                    self.train_names.append(
-                        char_dir
-                    )  # loads the names of each named subdirectories
+                    # loads ended values to match
+                    self.train_faces.append(encoded)
+                    # loads the names of each named subdirectories
+                    self.train_names.append(char_dir)
 
     def face_recognition(
         self, location: str | FilePath, retry_count: int = 20
@@ -117,18 +117,17 @@ class FaceNet:
         logger.debug("Initiating face recognition.")
         self.load_dataset(location=location)
         for _ in range(retry_count):
-            ret, img = self.validation_video.read()  # reads video from web cam
+            # reads video from web cam
+            ret, img = self.validation_video.read()
             if not ret:
                 logger.warning(
                     "Unable to read from camera index: %d", models.env.camera_index
                 )
                 continue
-            identifier = face_recognition.face_locations(
-                img, model=self.MODEL
-            )  # gets image from the video read above
-            encoded_ = face_recognition.face_encodings(
-                img, identifier
-            )  # creates an encoding for the image
+            # gets image from the video read above
+            identifier = face_recognition.face_locations(img, model=self.MODEL)
+            # creates an encoding for the image
+            encoded_ = face_recognition.face_encodings(img, identifier)
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
                 results = face_recognition.compare_faces(
@@ -167,13 +166,13 @@ class FaceNet:
             raise FileNotFoundError(cv2_cascades)
         cascade = cv2.CascadeClassifier(cv2_cascades)
         for _ in range(retry_count + 1):
-            ret, image = self.validation_video.read()  # reads video from web cam
+            # reads video from web cam
+            ret, image = self.validation_video.read()
             if not ret:
                 continue
             try:
-                img = cv2.cvtColor(
-                    image, cv2.COLOR_BGR2GRAY
-                )  # convert the captured image to grayscale
+                # convert the captured image to grayscale
+                img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             except cv2.error as error:
                 logger.error(error)
                 img = image  # proceed without performing grayscale

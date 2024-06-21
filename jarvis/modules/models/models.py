@@ -60,7 +60,8 @@ TABLES = {
     "robinhood": ("summary",),
     "listener": ("state",),
 }
-KEEP_TABLES = ("vpn", "party", "listener")  # TABLES to keep from `fileio.base_db`
+# TABLES to keep from `fileio.base_db`
+KEEP_TABLES = ("vpn", "party", "listener")
 startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
 # 'startup_gpt' is required since it has to be invoked only for certain child processes
 # this will avoid running GPT instance for pre-commit as well
@@ -284,10 +285,11 @@ def _global_validations() -> None:
     # Validate voice for speech synthesis
     try:
         # noinspection HttpUrlsUsage
+        # Set connect and read timeout explicitly
         response = requests.get(
             url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
             timeout=(3, 3),
-        )  # Set connect and read timeout explicitly
+        )
         if response.ok:
             available_voices = [
                 value.get("id").replace("/", "_")

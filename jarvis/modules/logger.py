@@ -11,7 +11,7 @@ from jarvis.modules.builtin_overrides import AddProcessName
 from jarvis.modules.models import models
 
 if not os.path.isdir("logs"):
-    os.mkdir("logs")  # Creates only logs dir if limited mode is enabled
+    os.mkdir("logs")
 
 DEFAULT_LOG_FORM = "%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s"
 DEFAULT_FORMATTER = logging.Formatter(

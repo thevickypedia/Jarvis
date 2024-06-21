@@ -81,9 +81,8 @@ def exit_process() -> None:
             speaker.speak(
                 text=f"You have {len(reminders)} pending reminders {models.env.title}!"
             )
-        speaker.speak(
-            text=util.comma_separator(reminders)
-        )  # No need for string.capwords as speaker runs in a new loop
+        # No need for string.capwords as speaker runs in a new loop
+        speaker.speak(text=util.comma_separator(reminders))
     if alarms := alarm.get_alarm_state():
         if len(alarms) == 1:
             speaker.speak(text="You have a pending alarm at ")
@@ -173,7 +172,8 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
                 speaker.speak(text="Restarting all background processes!")
                 return
             if avail := list(files.get_processes().keys()):
-                avail.remove("jarvis")  # cannot be restarted
+                # cannot be restarted
+                avail.remove("jarvis")
             else:
                 speaker.speak(
                     text="Unable to fetch background processes. Try specifying 'all'"
@@ -317,9 +317,8 @@ def delete_logs() -> None:
                 > models.env.log_retention
             ):
                 logger.debug("Deleting log file: %s", os.path.join(__path, file_))
-                os.remove(
-                    os.path.join(__path, file_)
-                )  # removes the file if it is older than log retention time
+                # removes the file if it is older than log retention time
+                os.remove(os.path.join(__path, file_))
 
 
 def delete_pycache() -> None:

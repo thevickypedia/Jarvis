@@ -10,9 +10,8 @@ from typing import List, Tuple
 
 def reverse_lookup(lookup: str, match_list: List | Tuple) -> str | None:
     """Returns the word in phrase that matches the one in given list."""
-    reverse = sum(
-        [w.lower().split() for w in match_list], []
-    )  # extract multi worded conditions in match list
+    # extract multi worded conditions in match list
+    reverse = sum([w.lower().split() for w in match_list], [])
     for word in lookup.split():  # loop through words in the phrase
         # check at least one word in phrase matches the multi worded condition
         if word in reverse:

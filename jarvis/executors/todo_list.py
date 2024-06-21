@@ -42,13 +42,11 @@ def get_todo() -> None:
     for category, item in downloaded:
         # condition below makes sure one category can have multiple items without repeating category for each item
         if category not in result:
-            result[
-                category
-            ] = item  # creates dict for category and item if category is not found in result
+            # creates dict for category and item if category is not found in result
+            result[category] = item
         else:
-            result[category] = (
-                result[category] + ", " + item
-            )  # updates category if already found in result
+            # updates category if already found in result
+            result[category] = result[category] + ", " + item
     if result:
         if shared.called_by_offline:
             speaker.speak(text=json.dumps(result))

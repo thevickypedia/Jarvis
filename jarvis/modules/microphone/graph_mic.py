@@ -201,13 +201,16 @@ def _kick_off() -> None:
     # Labels are not set, but if it is to be set, then set padding at least to 2
     # ax.set_xlabel('Time')
     # ax.set_ylabel('Frequency')
-    fig.tight_layout(pad=0)  # no padding
+    # no padding
+    fig.tight_layout(pad=0)
     plt.legend(["Microphone Amplitude"])
     fig.canvas.manager.set_window_title("Realtime Spectrum Display")
     if settings.dark_mode:
-        ax.set_facecolor("xkcd:almost black")  # https://xkcd.com/color/rgb/
+        # https://xkcd.com/color/rgb/
+        ax.set_facecolor("xkcd:almost black")
         # Takes RGB or RGBA values as arguments
-        # ax.set_facecolor((0.1, 0.1, 0.1))  # https://matplotlib.org/stable/api/colors_api.html
+        # https://matplotlib.org/stable/api/colors_api.html
+        # ax.set_facecolor((0.1, 0.1, 0.1))
 
     stream = sounddevice.InputStream(
         device=settings.device,

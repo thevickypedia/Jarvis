@@ -87,9 +87,8 @@ class ThreadExecutor:
         status = ThreadPool(processes=1).apply_async(
             func=self.thread_worker, args=(function_to_call,)
         )
-        speaker.speak(
-            run=True
-        )  # Speak the initial response when the work is happening behind the scenes
+        # Speak the initial response when the work is happening behind the scenes
+        speaker.speak(run=True)
         try:
             failed = status.get(5)
         except ThreadTimeoutError as error:

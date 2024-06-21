@@ -39,9 +39,8 @@ class Speaker:
     def __init__(self):
         """Instantiates the speaker engine and loads the voices available in the hosting machine."""
         self.engine = pyttsx3.init()
-        self.voices = self.engine.getProperty(
-            "voices"
-        )  # gets the list of voices available
+        # gets the list of voices available
+        self.voices = self.engine.getProperty("voices")
 
     # noinspection PyTypeChecker
     def get_all_voices(self) -> Generator[Dict[str, str | int]]:

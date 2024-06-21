@@ -52,9 +52,8 @@ def get_summary() -> str:
         shares_total.append(total)
         current = round(float(raw_details["last_trade_price"]), 2)
         current_total = round(shares_count * current, 2)
-        difference = round(
-            float(current_total - total), 2
-        )  # calculates difference between current and purchased total
+        # calculates difference between current and purchased total
+        difference = round(float(current_total - total), 2)
         if difference < 0:
             loss_total.append(-difference)
         else:

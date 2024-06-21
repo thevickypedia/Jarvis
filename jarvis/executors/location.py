@@ -117,7 +117,7 @@ def distance(phrase) -> None:
     Args:
         phrase:Takes the phrase spoken as an argument.
     """
-    check = phrase.split()  # str to list
+    check = phrase.split()
     places = []
     for word in check:
         # looks for words that start with uppercase
@@ -195,9 +195,8 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         speaker.speak(text=f"I don't think {destination} exists {models.env.title}!")
         return
     if models.env.distance_unit == models.DistanceUnits.MILES:
-        dist = round(
-            geodesic(start, end).miles
-        )  # calculates miles from starting point to destination
+        # calculates miles from starting point to destination
+        dist = round(geodesic(start, end).miles)
     else:
         dist = round(geodesic(start, end).kilometers)
     if shared.called["directions"]:

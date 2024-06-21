@@ -223,12 +223,10 @@ def google_home(device: str = None, file: str = None) -> None:
     with ThreadPoolExecutor(max_workers=100) as executor:
         # scans host IDs 1 to 255 (eg: 192.168.1.1 to 192.168.1.255)
         for info in executor.map(ip_scan, range(1, 101)):
-            devices.append(
-                info
-            )  # this includes all the NoneType values returned by unassigned host IDs
-    devices = dict(
-        [i for i in devices if i]
-    )  # removes None values and converts list to dictionary of name and ip pair
+            # this includes all the NoneType values returned by unassigned host IDs
+            devices.append(info)
+    # removes None values and converts list to dictionary of name and ip pair
+    devices = dict([i for i in devices if i])
 
     if not device or not file:
         support.flush_screen()
@@ -250,9 +248,8 @@ def google_home(device: str = None, file: str = None) -> None:
             )
             return
         for target in chosen:
-            file_url = serve_file(
-                file, "audio/mp3"
-            )  # serves the file on local host and generates the play url
+            # serves the file on local host and generates the play url
+            file_url = serve_file(file, "audio/mp3")
             support.flush_screen()
             with BlockPrint():
                 GoogleHome(host=target).play(file_url, "audio/mp3")

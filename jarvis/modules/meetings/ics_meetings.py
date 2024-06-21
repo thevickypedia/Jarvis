@@ -209,9 +209,8 @@ def meetings(phrase: str) -> None:
                 text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two."
             )
             return
-        meeting = ThreadPool(processes=1).apply_async(
-            func=meetings_gatherer
-        )  # Runs parallely and awaits completion
+        # Runs parallely and awaits completion
+        meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)
         speaker.speak(
             text=f"Please give me a moment {models.env.title}! I'm working on it.",
             run=True,

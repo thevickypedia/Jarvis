@@ -146,9 +146,8 @@ def locate(phrase: str) -> None:
         return
     logger.info("Locating your %s", target_device)
     target_device.play_sound()
-    before_keyword, keyword, after_keyword = str(target_device).partition(
-        ":"
-    )  # partitions the hostname info
+    # partitions the hostname info
+    before_keyword, keyword, after_keyword = str(target_device).partition(":")
     if before_keyword == "Accessory":
         after_keyword = (
             after_keyword.replace(f"{models.env.name}’s", "")
