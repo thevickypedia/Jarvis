@@ -199,7 +199,7 @@ Licensed under the [MIT License][license]
 [release-notes]: https://github.com/thevickypedia/Jarvis/blob/master/release_notes.rst
 [gha_pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment
 [gha_pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml
-[gha_md_valid]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown-validation.yml
+[gha_md_valid]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown.yml
 [gha_cleanup]: https://github.com/thevickypedia/Jarvis/actions/workflows/cleanup.yml
 [webpage]: https://vigneshrao.com/
 [webpage_contact]: https://vigneshrao.com/contact
@@ -253,7 +253,7 @@ Licensed under the [MIT License][license]
 
 [label-actions-pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg
 [label-actions-pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/python-publish.yml/badge.svg
-[label-actions-markdown]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown-validation.yml/badge.svg
+[label-actions-markdown]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown.yml/badge.svg
 [label-actions-cleanup]: https://github.com/thevickypedia/Jarvis/actions/workflows/cleanup.yml/badge.svg
 
 [label-pypi]: https://img.shields.io/pypi/v/jarvis-ironman

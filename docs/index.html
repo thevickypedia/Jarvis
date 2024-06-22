@@ -100,14 +100,14 @@
 <dd><p>Classify system architecture into known categories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns exit code 1 if architecture is unknown.</p>
+<dd class="field-odd"><p>Returns exit code 1 if no architecture was detected.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.lib.installer.confirmation_prompt">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">confirmation_prompt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.confirmation_prompt" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">confirmation_prompt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.confirmation_prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prompts a confirmation from the user to continue or exit.</p>
 </dd></dl>
 
@@ -162,30 +162,20 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.installer.unsupported_os">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">unsupported_os</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.installer.unsupported_os" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.untested_os">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">untested_os</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.untested_os" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle unsupported operating systems.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns exit code 1 if operating system is not either Linux, macOS or Windows.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.installer.unsupported_arch">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">unsupported_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.lib.installer.unsupported_arch" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.untested_arch">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">untested_arch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.untested_arch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle unsupported architecture.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns exit code 1 if architecture is not AMD.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.lib.installer.unsupported_env">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">unsupported_env</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.unsupported_env" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.lib.installer.no_venv">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">no_venv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.no_venv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to handle installations that are NOT on virtual environments.</p>
 </dd></dl>
 

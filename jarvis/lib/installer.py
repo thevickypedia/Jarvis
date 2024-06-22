@@ -47,7 +47,7 @@ def get_arch() -> str | NoReturn:
     """Classify system architecture into known categories.
 
     Returns:
-        Returns exit code 1 if architecture is unknown.
+        Returns exit code 1 if no architecture was detected.
     """
     machine: str = platform.machine().lower()
     if "aarch64" in machine or "arm64" in machine:
@@ -62,17 +62,23 @@ def get_arch() -> str | NoReturn:
         architecture: str = "armv6"
     elif "armv7" in machine:
         architecture: str = "armv7"
+    elif machine:
+        architecture: str = machine
     else:
         logger.info(pretext())
-        logger.info(center(f"Unknown Architecture: {machine}"))
+        logger.info(center("Unable to detect system architecture!!"))
         logger.info(pretext())
         exit(1)
     return architecture
 
 
-def confirmation_prompt() -> None:
+def confirmation_prompt() -> None | NoReturn:
     """Prompts a confirmation from the user to continue or exit."""
-    prompt = input("Are you sure you want to continue? <Y/N> ")
+    try:
+        prompt = input("Are you sure you want to continue? <Y/N> ")
+    except KeyboardInterrupt:
+        prompt = "N"
+        print()
     if not re.match(r"^[yY](es)?$", prompt):
         logger.info(pretext())
         logger.info("Bye. Hope to see you soon.")
@@ -157,43 +163,37 @@ Refer the below links for:
     * Git: https://git-scm.com/download/win/
 """
     )
-    logger.info(pretext())
-    logger.info(pretext())
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
     confirmation_prompt()
 
 
-def unsupported_os() -> NoReturn:
-    """Function to handle unsupported operating systems.
-
-    Returns:
-        Returns exit code 1 if operating system is not either Linux, macOS or Windows.
-    """
+def untested_os() -> None | NoReturn:
+    """Function to handle unsupported operating systems."""
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     logger.warning(f"Current Operating System: {env.osname}")
-    logger.warning("Jarvis is currently supported only on Linux, macOS and Windows")
+    logger.warning("Jarvis has currently been tested only on Linux, macOS and Windows")
+    logger.warning(
+        center("Please note that you might need to install additional dependencies.")
+    )
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
-    exit(1)
+    confirmation_prompt()
 
 
-def unsupported_arch() -> NoReturn:
-    """Function to handle unsupported architecture.
-
-    Returns:
-        Returns exit code 1 if architecture is not AMD.
-    """
-    # todo: include support for raspberry-pi
-    # todo: possible arch (arm11, cortex-a7, cortex-a53, cortex-53-aarch64, cortex-a72, cortex-a72-aarch64)
+def untested_arch() -> None | NoReturn:
+    """Function to handle unsupported architecture."""
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
-    logger.warning(f"Current Architecture: {env.architecture}")
-    logger.warning("Jarvis is currently supported only on AMD machines.")
+    logger.warning(center(f"Current Architecture: {env.architecture}"))
+    logger.warning(center("Jarvis has currently been tested only on AMD machines."))
+    logger.warning(
+        center("Please note that you might need to install additional dependencies.")
+    )
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
-    exit(1)
+    confirmation_prompt()
 
 
-def unsupported_env() -> None:
+def no_venv() -> None | NoReturn:
     """Function to handle installations that are NOT on virtual environments."""
-    logger.info(pretext())
-    logger.info(pretext())
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
     logger.info(
         center(
             """
@@ -203,8 +203,7 @@ Using a virtual environment is highly recommended to avoid version conflicts in 
 """
         )
     )
-    logger.info(pretext())
-    logger.info(pretext())
+    logger.warning(f"\n{pretext()}\n{pretext()}\n")
     confirmation_prompt()
 
 
@@ -332,13 +331,13 @@ def os_agnostic() -> None:
 def init() -> None:
     """Runs pre-flight validations and upgrades ``setuptools`` and ``wheel`` packages."""
     if env.osname not in ("darwin", "windows", "linux"):
-        unsupported_os()
+        untested_os()
 
     if env.architecture != "amd64":
-        unsupported_arch()
+        untested_arch()
 
     if sys.prefix == sys.base_prefix:
-        unsupported_env()
+        no_venv()
 
     pyversion: str = (
         f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"

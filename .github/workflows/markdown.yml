@@ -2,12 +2,13 @@ name: none-shall-pass
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    branches:
+      - master
 
 jobs:
   none-shall-pass:
-    runs-on: thevickypedia-default
+    runs-on: thevickypedia-lite
     steps:
       - uses: actions/checkout@v4
       - uses: thevickypedia/none-shall-pass@v5
