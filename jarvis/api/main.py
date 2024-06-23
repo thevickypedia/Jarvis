@@ -47,8 +47,8 @@ def enable_cors() -> None:
             "email-otp",
             "email_otp",  # One time passcode sent via email
             "access-token",
-            "access_token",
-        ],  # Access token sent via email
+            "access_token",  # Access token sent via email
+        ],
     )
 
 

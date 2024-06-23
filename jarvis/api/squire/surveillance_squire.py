@@ -4,7 +4,7 @@ from multiprocessing import Queue
 from typing import AsyncIterable, List, Tuple
 
 import cv2
-import numpy
+import numpy as np
 
 from jarvis.api.logger import logger
 from jarvis.api.models import settings
@@ -29,7 +29,7 @@ def generate_error_frame(
         - Creates a black image.
         - Gets coordinates based on boundaries of the text to center the text in image.
     """
-    image = numpy.zeros(dimension, numpy.uint8)
+    image = np.zeros(dimension, np.uint8)
 
     font = cv2.FONT_HERSHEY_DUPLEX
     font_scale = 1  # this value can be from 0 to 1 (0,1] to change the size of the text relative to the image

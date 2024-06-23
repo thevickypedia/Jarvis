@@ -1,13 +1,16 @@
 name: cleanup-workflows
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
   schedule:
     - cron: '0 6 * * 0'
       # At 6 AM every Sunday
 
 jobs:
   coronation:
-    runs-on: thevickypedia-default
+    runs-on: thevickypedia-lite
     permissions:
       actions: write
     steps:

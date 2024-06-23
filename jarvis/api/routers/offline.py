@@ -194,6 +194,9 @@ async def offline_communicator_api(
                 f"{models.env.title}!",
                 input_data=input_data,
             )
+    ollama_timeout_backed = models.env.ollama_timeout
+    # Set to a max timeout of 1 minute to allow longer text conversations
+    models.env.ollama_timeout = 60
     try:
         response = offline.offline_communicator(command=command)
     except Exception as error:
@@ -201,6 +204,7 @@ async def offline_communicator_api(
         logger.error(traceback.format_exc())
         response = error.__str__()
     logger.info("Response: %s", response)
+    models.env.ollama_timeout = ollama_timeout_backed
     if os.path.isfile(response) and response.endswith(".jpg"):
         logger.info("Response received as a file.")
         Thread(

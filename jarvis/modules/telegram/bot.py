@@ -767,6 +767,9 @@ def executor(command: str, chat: settings.Chat) -> None:
         command: Command to be executed.
         chat: Required section of the payload as Chat object.
     """
+    ollama_timeout_backed = models.env.ollama_timeout
+    # Set to a max timeout of 1 minute to allow longer text conversations
+    models.env.ollama_timeout = 60
     logger.info("Request: %s", command)
     try:
         response = offline.offline_communicator(command=command).replace(
@@ -777,6 +780,7 @@ def executor(command: str, chat: settings.Chat) -> None:
         logger.error(traceback.format_exc())
         response = f"Jarvis failed to process the request.\n\n`{error}`"
     logger.info("Response: %s", response)
+    models.env.ollama_timeout = ollama_timeout_backed
     process_response(response, chat)
 
 

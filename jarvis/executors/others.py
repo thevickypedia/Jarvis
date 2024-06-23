@@ -16,12 +16,10 @@ from googlehomepush import GoogleHome
 from googlehomepush.http_server import serve_file
 from holidays import country_holidays
 from holidays.registry import COUNTRIES
-from joke.jokes import chucknorris, geek, icanhazdad, icndb
 from newsapi import NewsApiClient, newsapi_exception
 from packaging.version import Version
 from playsound import playsound
 from pychromecast.error import ChromecastConnectionError
-from randfacts import get_fact
 
 from jarvis import version as module_version
 from jarvis.executors import (
@@ -263,11 +261,6 @@ def google_home(device: str = None, file: str = None) -> None:
             speaker.speak(text=f"Enjoy your music {models.env.title}!", run=True)
 
 
-def jokes(*args) -> None:
-    """Uses jokes lib to say chucknorris jokes."""
-    speaker.speak(text=random.choice([geek, icanhazdad, chucknorris, icndb])())
-
-
 def flip_a_coin(*args) -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound(
@@ -277,11 +270,6 @@ def flip_a_coin(*args) -> None:
         text=f"""{random.choice(['You got', 'It landed on',
                                            "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}"""
     )
-
-
-def facts(*args) -> None:
-    """Tells a random fact."""
-    speaker.speak(text=get_fact(filter_enabled=False))
 
 
 def meaning(phrase: str) -> None:

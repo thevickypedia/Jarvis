@@ -7,6 +7,7 @@
 
 ![Python][label-pyversion]
 ![Pypi-downloads][label-pypi-downloads]
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/thevickypedia/Jarvis/badge)](https://securityscorecards.dev/viewer/?uri=github.com/thevickypedia/Jarvis)
 
 **Platform Supported**
 
