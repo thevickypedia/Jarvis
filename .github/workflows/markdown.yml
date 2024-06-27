@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - '**/*.md'
+      - '!jarvis/**'
+      - '!docs/**'
+      - '!docs_gen/**'
 
 jobs:
   none-shall-pass:

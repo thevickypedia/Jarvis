@@ -2,35 +2,32 @@ fail_fast: true
 exclude: ^(notebooks/|scripts/|.github/|docs/)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
-      - id: check-byte-order-marker
       - id: check-builtin-literals
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-executables-have-shebangs
-      # - id: check-json
-      - id: check-shebang-scripts-are-executable
+      - id: check-json
       - id: check-merge-conflict
-      # - id: check-symlinks
+      - id: check-shebang-scripts-are-executable
       - id: check-toml
       - id: check-vcs-permalinks
       - id: check-xml
       - id: check-yaml
       - id: debug-statements
-      # - id: destroyed-symlinks
       - id: detect-aws-credentials
       - id: detect-private-key
       - id: end-of-file-fixer
-      # - id: file-contents-sorter
+      - id: file-contents-sorter
       - id: fix-byte-order-marker
+      - id: forbid-submodules
       - id: mixed-line-ending
       - id: name-tests-test
-      # - id: pretty-format-json
       - id: requirements-txt-fixer
-      # - id: sort-simple-yaml
+      - id: sort-simple-yaml
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
@@ -40,7 +37,7 @@ repos:
           exclude: docs_gen/
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+    rev: 7.1.0
     hooks:
       - id: flake8
         additional_dependencies:

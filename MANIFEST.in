@@ -1,4 +1,4 @@
-# MANIFEST.in is mandatory due to a wire range of filetypes
+# MANIFEST.in is mandatory due to a wide range of filetypes
 global-exclude .env
 global-exclude *.yaml
 global-exclude .DS_Store

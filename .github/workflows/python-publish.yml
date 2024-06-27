@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - jarvis/**
   workflow_dispatch:
 
 jobs:
