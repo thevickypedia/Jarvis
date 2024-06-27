@@ -5,7 +5,7 @@ from http.client import HTTPSConnection
 import pywifi
 
 from jarvis.modules.logger import logger
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import classes, enums, models
 
 
 def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
@@ -20,7 +20,7 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     """
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        if models.settings.os == models.supported_platforms.windows:
+        if models.settings.os == enums.SupportedPlatforms.windows:
             # Recreate a new connection everytime
             connection = HTTPSConnection("8.8.8.8", timeout=3)
             connection.request("HEAD", "/")

@@ -16,14 +16,12 @@ class Investment:
 
     >>> Investment
 
+    Args:
+        logger: Takes the class ``logging.Logger`` as an argument.
     """
 
     def __init__(self, logger: logging.Logger):
-        """Authenticates Robinhood object and gathers the portfolio information to store it in a variable.
-
-        Args:
-            logger: Takes the class ``logging.Logger`` as an argument.
-        """
+        """Authenticates Robinhood object and gathers the portfolio information to store it in a variable."""
         rh = Robinhood(
             username=models.env.robinhood_user,
             password=models.env.robinhood_pass,

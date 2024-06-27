@@ -15,16 +15,23 @@ from jarvis.modules.logger import logger
 
 
 class ICS:
-    """Wrapper for ics events."""
+    # noinspection PyUnresolvedReferences
+    """Wrapper for ICS events.
+
+        >>> ICS
+
+    Keyword Args:
+        summary: Summary of the meeting.
+        start: Start time (local TZ) for the meeting.
+        end: End time (local TZ) for the meeting.
+        all_day: Boolean flag to indicate an all day meeting.
+        Duration: Duration of the meeting in datetime format.
+    """
 
     __slots__ = ["summary", "start", "end", "all_day", "duration"]
 
     def __init__(self, **kwargs):
-        """Instantiates the ICS object to load all required attributes.
-
-        Args:
-            kwargs: Takes the data as dictionary to load attributes in the object.
-        """
+        """Instantiates the ICS object to load all required attributes."""
         self.summary: str = kwargs["summary"]
         self.start: datetime.datetime = kwargs["start"]
         self.end: datetime.datetime = kwargs["end"]

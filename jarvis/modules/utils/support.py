@@ -26,7 +26,7 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared
 
 ENGINE = inflect.engine()
@@ -177,7 +177,7 @@ def unrecognized_dumper(train_data: dict) -> None:
         yaml.dump(data=data, stream=writer, sort_keys=False)
 
 
-def size_converter(byte_size: int) -> str:
+def size_converter(byte_size: int | float) -> str:
     """Gets the current memory consumed and converts it to human friendly format.
 
     Args:
@@ -602,7 +602,7 @@ def connected_to_network() -> bool:
     """
     socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        if models.settings.os == models.supported_platforms.windows:
+        if models.settings.os == enums.SupportedPlatforms.windows:
             # Recreate a new connection everytime
             connection = HTTPSConnection("8.8.8.8", timeout=5)
             connection.request("HEAD", "/")

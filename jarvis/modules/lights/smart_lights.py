@@ -51,11 +51,23 @@ def calculate_checksum(bytes_: list) -> int:
 
 
 class MagicHomeApi:
-    """Wrapper for ``MagicHome`` lights.
+    """Wrapper for ``MagicHome`` lights to initialize device setup via UDP.
 
     >>> MagicHomeApi
 
-    Supports:
+    Args:
+        device_ip: Takes device IP address as argument.
+        device_type: Specific device type.
+
+    See Also:
+        Device types:
+            - 0: RGB
+            - 1: RGB+WW
+            - 2: RGB+WW+CW
+            - 3: Bulb (v.4+)
+            - 4: Bulb (v.3-)
+
+    **Supports**:
         - Bulbs (Firmware v.4 and greater)
         - Legacy Bulbs (Firmware v.3 and lower)
         - RGB Controllers
@@ -66,20 +78,7 @@ class MagicHomeApi:
     API_PORT = 5577
 
     def __init__(self, device_ip: str, device_type: int):
-        """Initialize device setup via UDP.
-
-        Args:
-            device_ip: Takes device IP address as argument.
-            device_type: Specific device type.
-
-        See Also:
-            Device types:
-                - 0: RGB
-                - 1: RGB+WW
-                - 2: RGB+WW+CW
-                - 3: Bulb (v.4+)
-                - 4: Bulb (v.3-)
-        """
+        """Initialize device setup via UDP."""
         self.device_ip = str(device_ip)
         self.device_type = device_type
         self.latest_connection = time.time()

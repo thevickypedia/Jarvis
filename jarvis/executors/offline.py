@@ -32,7 +32,7 @@ from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.meetings import events, ics_meetings
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import classes, enums, models
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
@@ -135,7 +135,7 @@ def background_task_runner() -> None:
 
         # Sync events from the event app specified (calendar/outlook)
         # Run either for macOS or during the initial run so the response gets stored in the DB
-        if dry_run or models.settings.os == models.supported_platforms.macOS:
+        if dry_run or models.settings.os == enums.SupportedPlatforms.macOS:
             if (
                 models.env.sync_events
                 and start_events + models.env.sync_events <= time.time()

@@ -7,7 +7,7 @@ from typing import Dict, List, Tuple
 from jarvis.executors import files, internet, tv_controls, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support
 from jarvis.modules.wakeonlan import wakeonlan
 
@@ -42,7 +42,7 @@ def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str:
         str:
         Returns the reachable IP address from the list.
     """
-    if models.settings.os == models.supported_platforms.windows:
+    if models.settings.os == enums.SupportedPlatforms.windows:
         command = "ping -c 1 -t 2 {IP_ADDRESS} > NUL"
     else:
         command = "ping -c 1 -t 2 {IP_ADDRESS} >/dev/null 2>&1"

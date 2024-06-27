@@ -10,7 +10,7 @@ from jarvis.executors import communicator, files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import enums, models
 from jarvis.modules.telegram import bot
 from jarvis.modules.utils import shared, support, util
 
@@ -265,15 +265,13 @@ def executor(message: str, contact: str = None) -> None:
         - Uses telegram account ID to send a message notification
         - Uses NTFY topic to send a push notification
     """
-    if classes.ReminderOptions.all in models.env.notify_reminders:
+    if enums.ReminderOptions.all in models.env.notify_reminders:
         notify_phone, notify_email, notify_telegram, ntfy = True, True, True, True
     else:
-        notify_phone = classes.ReminderOptions.phone in models.env.notify_reminders
-        notify_email = classes.ReminderOptions.email in models.env.notify_reminders
-        notify_telegram = (
-            classes.ReminderOptions.telegram in models.env.notify_reminders
-        )
-        ntfy = classes.ReminderOptions.ntfy in models.env.notify_reminders
+        notify_phone = enums.ReminderOptions.phone in models.env.notify_reminders
+        notify_email = enums.ReminderOptions.email in models.env.notify_reminders
+        notify_telegram = enums.ReminderOptions.telegram in models.env.notify_reminders
+        ntfy = enums.ReminderOptions.ntfy in models.env.notify_reminders
     title = f"REMINDER from Jarvis - {datetime.now().strftime('%c')}"
     if contact:
         contacts = files.get_contacts()

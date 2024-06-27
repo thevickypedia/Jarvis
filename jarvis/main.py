@@ -23,7 +23,7 @@ from jarvis.executors import (
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.exceptions import DependencyError, StopSignal
 from jarvis.modules.logger import custom_handler, logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
 
@@ -85,23 +85,16 @@ class Activator:
     >>> Activator
 
     See Also:
-        - Creates an input audio stream from a microphone, monitors it, and detects the specified wake word.
-        - Once detected, Jarvis triggers the ``listener.listen()`` function with an ``acknowledgement`` sound played.
-        - After processing the phrase, the converted text is sent as response to ``initiator()`` with a ``return`` flag.
-        - The ``should_return`` flag ensures, the user is not disturbed when accidentally woke up by wake work engine.
+        - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
+        - A higher sensitivity results in fewer misses at the cost of increasing the false alarm rate.
+        - sensitivity: Tolerance/Sensitivity level. Takes argument or env var ``sensitivity`` or defaults to ``0.5``
+
+    References:
+        - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
     """
 
     def __init__(self):
-        """Initiates Porcupine object for hot word detection.
-
-        See Also:
-            - Instantiates an instance of Porcupine object and monitors audio stream for occurrences of keywords.
-            - A higher sensitivity results in fewer misses at the cost of increasing the false alarm rate.
-            - sensitivity: Tolerance/Sensitivity level. Takes argument or env var ``sensitivity`` or defaults to ``0.5``
-
-        References:
-            - `Audio Overflow <https://people.csail.mit.edu/hubert/pyaudio/docs/#pyaudio.Stream.read>`__ handling.
-        """
+        """Initiates Porcupine object for hot word detection."""
         label = ", ".join(
             [
                 f"{string.capwords(wake)!r}: {sens}"
@@ -249,7 +242,7 @@ def start() -> None:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
         process_map.add({"jarvis": {models.settings.pid: ["Main Process"]}})
-        if models.settings.os != models.supported_platforms.macOS:
+        if models.settings.os != enums.SupportedPlatforms.macOS:
             shared.processes = processor.start_processes(
                 func_name="speech_synthesis_api"
             )

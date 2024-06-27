@@ -15,17 +15,16 @@ class BearerAuth(AuthBase):
 
     >>> BearerAuth
 
+    Args:
+        token: Token for bearer auth.
+
     References:
         `New Forms of Authentication <https://requests.readthedocs.io/en/latest/user/authentication/#new
         -forms-of-authentication>`__
     """
 
     def __init__(self, token: str):
-        """Initializes the class and assign object members.
-
-        Args:
-            token: Token for bearer auth.
-        """
+        """Initializes the class and assign object members."""
         self.token = token
 
     def __call__(self, request: PreparedRequest) -> PreparedRequest:

@@ -21,7 +21,7 @@ import pynotification
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import enums, models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util
 
@@ -51,7 +51,7 @@ def events_writer() -> None:
 
 def event_app_launcher() -> None:
     """Launches either Calendar or Outlook application which is required to read events."""
-    if models.env.event_app == classes.EventApp.CALENDAR.value:
+    if models.env.event_app == enums.EventApp.CALENDAR.value:
         os.system(f"osascript {models.fileio.app_launcher} Calendar")
     else:
         # Just `Outlook` works too but requires manual click to map the shortcut for the first time
@@ -73,10 +73,10 @@ def events_gatherer() -> str:
     if not models.env.event_app:
         return (
             "No event application was chosen to scan for events. "
-            f"Please specify either {classes.EventApp.CALENDAR.value} or {classes.EventApp.OUTLOOK.value} "
+            f"Please specify either {enums.EventApp.CALENDAR.value} or {enums.EventApp.OUTLOOK.value} "
             "in the environment variables."
         )
-    if models.settings.os != models.supported_platforms.macOS:
+    if models.settings.os != enums.SupportedPlatforms.macOS:
         return (
             f"Reading events from {models.env.event_app} is currently possible only on macOS, "
             f"but the host machine is currently running {models.settings.os}."

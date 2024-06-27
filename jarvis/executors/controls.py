@@ -29,7 +29,7 @@ from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
@@ -61,9 +61,9 @@ def restart(ask: bool = True) -> None:
         converted = "yes"
     if word_match.word_match(phrase=converted, match_list=keywords.keywords["ok"]):
         stop_terminals()
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             subprocess.call(["osascript", "-e", 'tell app "System Events" to restart'])
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             os.system("shutdown /r /t 1")
         else:
             os.system(f"echo {models.env.root_password} | sudo -S reboot")
@@ -294,11 +294,11 @@ def shutdown(*args, proceed: bool = False) -> None:
         converted = "yes"
     if word_match.word_match(phrase=converted, match_list=keywords.keywords["ok"]):
         stop_terminals()
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             subprocess.call(
                 ["osascript", "-e", 'tell app "System Events" to shut down']
             )
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             os.system("shutdown /s /t 1")
         else:
             os.system(f"echo {models.env.root_password} | sudo -S shutdown -P now")

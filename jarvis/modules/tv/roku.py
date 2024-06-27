@@ -18,9 +18,12 @@ from jarvis.modules.logger import logger
 
 
 class RokuECP:
-    """Wrapper for ``RokuECP`` TVs.
+    """Wrapper for ``RokuECP`` TVs that connects to the device via HTTP requests.
 
     >>> RokuECP
+
+    Args:
+        ip_address: IP address of the TV.
 
     References:
         https://developer.roku.com/docs/developer-program/debugging/external-control-api.md
@@ -30,11 +33,7 @@ class RokuECP:
     SESSION: requests.Session = requests.Session()
 
     def __init__(self, ip_address: str):
-        """Instantiates the roku tv and makes a test call.
-
-        Args:
-            ip_address: IP address of the TV.
-        """
+        """Instantiates the roku tv and makes a test call."""
         self.BASE_URL = f"http://{ip_address}:{self.PORT}"
         try:
             response = requests.get(url=self.BASE_URL)
@@ -222,14 +221,14 @@ class RokuECP:
         else:
             logger.error("%s not found in tv", app_name)
 
-    def get_apps(self, raw: bool = False) -> Generator[Dict[str, str]] | Generator[str]:
+    def get_apps(self, raw: bool = False) -> Generator[Dict[str, str] | str]:
         """Get list of applications installed on the TV.
 
         Args:
             raw: Takes a boolean flag if the entire dictionary has to be returned.
 
         Yields:
-            Generator[Dict[str, str]] | Generator[str]:
+            Generator[Dict[str, str] | str]:
             Yields of app name or information dict if requested as raw.
         """
         response = self.make_call(path="/query/apps", method="GET")

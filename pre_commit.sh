@@ -10,7 +10,9 @@ clean_docs() {
   directory="docs"
   file_to_keep="CNAME"
   if [ -e "${directory}/${file_to_keep}" ]; then
-    find "${directory}" ! -name "${file_to_keep}" -mindepth 1 -delete
+    find "${directory}" -mindepth 1 ! -name "${file_to_keep}" -exec rm -rf {} +
+  else
+    find "${directory}" -mindepth 1 -exec rm -rf {} +
   fi
 }
 

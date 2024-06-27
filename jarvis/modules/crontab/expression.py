@@ -13,10 +13,18 @@ from jarvis.modules.exceptions import InvalidArgument
 
 
 class CronExpression:
-    """Initiates CronExpression object to validate a crontab entry.
+    """Initiates CronExpression object to validate and parse a crontab entry.
 
     >>> CronExpression
 
+    Raises:
+        InvalidArgument:
+        If the given number of fields is invalid.
+
+    Notes:
+        If the epoch is defined, the UTC offset can be specified one of two ways:
+            - As the sixth element in 'epoch' or supplied in epoch_utc_offset.
+            - The epoch should be defined down to the minute sorted by descending significance.
     """
 
     DAY_NAMES = zip(("sun", "mon", "tue", "wed", "thu", "fri", "sat"), range(7))
@@ -58,17 +66,7 @@ class CronExpression:
     def __init__(
         self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0
     ):
-        """Instantiates a CronExpression object with an optionally defined epoch.
-
-        Raises:
-            InvalidArgument:
-            If the given number of fields is invalid.
-
-        Notes:
-            If the epoch is defined, the UTC offset can be specified one of two ways:
-                - As the sixth element in 'epoch' or supplied in epoch_utc_offset.
-                - The epoch should be defined down to the minute sorted by descending significance.
-        """
+        """Instantiates a CronExpression object with an optionally defined epoch."""
         self.numerical_tab = []
         for key, value in self.SUBSTITUTIONS.items():
             if line.startswith(key):

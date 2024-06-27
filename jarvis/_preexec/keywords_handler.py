@@ -6,7 +6,7 @@ import yaml
 
 from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
 from jarvis.modules.conditions import conversation, keywords
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import support
 
 
@@ -33,8 +33,8 @@ def rewrite_keywords() -> None:
         ]
     else:
         keywords_src["events"] = [
-            classes.EventApp.CALENDAR.value,
-            classes.EventApp.OUTLOOK.value,
+            enums.EventApp.CALENDAR.value,
+            enums.EventApp.OUTLOOK.value,
         ]
     if os.path.isfile(models.fileio.keywords):
         with open(models.fileio.keywords) as dst_file:

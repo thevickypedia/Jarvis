@@ -19,7 +19,7 @@ from docker.errors import APIError, ContainerError, DockerException, NotFound
 from jarvis.executors import port_handler, process_map
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 
 def find_pid_by_port(port: int) -> int:
@@ -38,7 +38,7 @@ def find_pid_by_port(port: int) -> int:
                 return conn.pid
     except psutil.Error as error:
         # network connections aren't available via psutil for macOS
-        if models.settings.os != models.supported_platforms.macOS:
+        if models.settings.os != enums.SupportedPlatforms.macOS:
             logger.error(error)
     try:
         result = subprocess.run(

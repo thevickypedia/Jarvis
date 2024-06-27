@@ -13,7 +13,7 @@ from jarvis.executors import controls, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.temperature import temperature
 from jarvis.modules.utils import shared, support, util
 
@@ -29,7 +29,7 @@ def system_info(*args) -> None:
         byte_size=psutil.virtual_memory().percent
     ).replace(" B", " %")
     system = None
-    if models.settings.os == models.supported_platforms.linux:
+    if models.settings.os == enums.SupportedPlatforms.linux:
         mapping = get_distributor_info_linux()
         if mapping.get("distributor_id") and mapping.get("release"):
             system = f"{mapping['distributor_id']} {mapping['release']}"
@@ -56,7 +56,7 @@ def system_vitals(*args) -> None:
         - If confirmed, invokes `restart <https://jarvis-docs.vigneshrao.com/#jarvis.restart>`__ function.
     """
     output = ""
-    if models.settings.os == models.supported_platforms.macOS:
+    if models.settings.os == enums.SupportedPlatforms.macOS:
         if not models.env.root_password:
             speaker.speak(
                 text=f"You haven't provided a root password for me to read system vitals {models.env.title}! "
@@ -190,14 +190,14 @@ def hosted_device_info() -> Dict[str, str]:
         dict:
         A dictionary of key-value pairs with device type, operating system, os version.
     """
-    if models.settings.os == models.supported_platforms.macOS:
+    if models.settings.os == enums.SupportedPlatforms.macOS:
         system_kernel = (
             subprocess.check_output("sysctl hw.model", shell=True)
             .decode("utf-8")
             .splitlines()
         )
         device = util.extract_str(system_kernel[0].split(":")[1])
-    elif models.settings.os == models.supported_platforms.windows:
+    elif models.settings.os == enums.SupportedPlatforms.windows:
         device = (
             subprocess.getoutput("WMIC CSPRODUCT GET VENDOR")
             .replace("Vendor", "")

@@ -39,7 +39,7 @@ from jarvis.modules.dictionary import dictionary
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet import face
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
 
 db = database.Database(database=models.fileio.base_db)
@@ -84,7 +84,7 @@ def apps(phrase: str) -> None:
     Warnings:
         macOS ventura does not display built-in applications for the ls command.
     """
-    if models.settings.os == models.supported_platforms.linux:
+    if models.settings.os == enums.SupportedPlatforms.linux:
         support.unsupported_features()
         return
 
@@ -102,7 +102,7 @@ def apps(phrase: str) -> None:
             speaker.speak(text="I didn't quite get that. Try again.")
             return
 
-    if models.settings.os == models.supported_platforms.windows:
+    if models.settings.os == enums.SupportedPlatforms.windows:
         status = os.system(f"start {keyword}")
         if status == 0:
             speaker.speak(text=f"I have opened {keyword}")
@@ -152,7 +152,7 @@ def music(phrase: str = None) -> None:
         if phrase and "speaker" in phrase:
             google_home(device=phrase, file=chosen)
         else:
-            if models.settings.os == models.supported_platforms.windows:
+            if models.settings.os == enums.SupportedPlatforms.windows:
                 os.system(f'start wmplayer "{chosen}"')
             else:
                 subprocess.call(["open", chosen])
@@ -482,7 +482,7 @@ def photo(*args) -> str:
     if os.path.isfile(filename):
         # don't show preview on screen if requested via offline
         if not shared.called_by_offline:
-            if models.settings.os != models.supported_platforms.windows:
+            if models.settings.os != enums.SupportedPlatforms.windows:
                 subprocess.call(["open", filename])
             else:
                 os.system(f"start {filename}")

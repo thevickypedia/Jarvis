@@ -15,7 +15,7 @@ from jarvis.executors import location
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support
 
 
@@ -117,7 +117,7 @@ def get_connection_info(target: str = "SSID") -> str | None:
         Wi-Fi or Ethernet SSID or Name.
     """
     try:
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             process = subprocess.Popen(
                 [
                     "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport",
@@ -125,7 +125,7 @@ def get_connection_info(target: str = "SSID") -> str | None:
                 ],
                 stdout=subprocess.PIPE,
             )
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             process = subprocess.check_output("netsh wlan show interfaces", shell=True)
         else:
             process = subprocess.check_output(
@@ -142,7 +142,7 @@ def get_connection_info(target: str = "SSID") -> str | None:
         else:
             logger.error(error)
         return
-    if models.settings.os == models.supported_platforms.macOS:
+    if models.settings.os == enums.SupportedPlatforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
             logger.error(
@@ -155,7 +155,7 @@ def get_connection_info(target: str = "SSID") -> str | None:
             for info in out.decode("utf-8").splitlines()[:-1]
             if len(info.split()) == 2
         ).get(target)
-    elif models.settings.os == models.supported_platforms.windows:
+    elif models.settings.os == enums.SupportedPlatforms.windows:
         if result := [
             i.decode().strip()
             for i in process.splitlines()

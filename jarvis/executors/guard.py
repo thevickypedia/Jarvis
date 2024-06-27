@@ -15,7 +15,7 @@ from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
 from jarvis.modules.facenet import face
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
@@ -198,7 +198,7 @@ def guard_enable(*args) -> None:
         f"posted. Have a nice {util.part_of_day()}, and enjoy yourself {models.env.title}!"
     )
     if shared.called_by_offline:
-        if models.settings.os == models.supported_platforms.linux:
+        if models.settings.os == enums.SupportedPlatforms.linux:
             pname = (models.settings.pname or "offline communicator").replace("_", " ")
             speaker.speak(
                 text=f"Security mode cannot be enabled via {pname}, as the host "

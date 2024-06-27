@@ -28,14 +28,16 @@ from jarvis.modules.exceptions import (
 )
 from jarvis.modules.models.classes import (
     AUDIO_DRIVER,
-    DistanceUnits,
     Indicators,
-    StartupOptions,
-    TemperatureUnits,
     env,
     fileio,
     settings,
-    supported_platforms,
+)
+from jarvis.modules.models.enums import (
+    DistanceUnits,
+    StartupOptions,
+    SupportedPlatforms,
+    TemperatureUnits,
 )
 from jarvis.modules.utils import util
 
@@ -117,11 +119,11 @@ def _distance_temperature_brute_force() -> None:
 
 def _set_default_voice_name() -> None:
     """Set default voice name based on the Operating System."""
-    if settings.os == supported_platforms.macOS:
+    if settings.os == SupportedPlatforms.macOS:
         env.voice_name = "Daniel"
-    elif settings.os == supported_platforms.windows:
+    elif settings.os == SupportedPlatforms.windows:
         env.voice_name = "David"
-    elif settings.os == supported_platforms.linux:
+    elif settings.os == SupportedPlatforms.linux:
         env.voice_name = "english-us"
 
 
@@ -193,7 +195,7 @@ def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
     main = True if settings.pname == "JARVIS" else False
     # Validate root password present for linux systems
-    if settings.os == supported_platforms.linux:
+    if settings.os == SupportedPlatforms.linux:
         if not env.root_password:
             raise MissingEnvVars(
                 "Linux requires the host machine's password to be set as the env var: "

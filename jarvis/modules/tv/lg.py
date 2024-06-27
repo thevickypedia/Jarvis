@@ -28,10 +28,20 @@ from jarvis.modules.utils import shared, support
 
 
 class LGWebOS:
-    """Wrapper for ``LGWebOS`` TVs.
+    """Wrapper for ``LGWebOS`` TVs that insitates the ``WebOSClient`` to collect to the TV.
 
     >>> LGWebOS
 
+    Args:
+        ip_address: IP address of the TV.
+        client_key: Client Key to authenticate connection.
+        nickname: Identifier name for the TV as stored in the yaml file.
+
+    Raises:
+        TVError:
+        - If unable to connect to the TV.
+        - If no TV was found in the IP range.
+        - If a connection timeout occurs (usually because of unstable internet or multiple connection types)
     """
 
     _init_status = False
@@ -41,17 +51,6 @@ class LGWebOS:
         """Instantiates the ``WebOSClient`` and connects to the TV.
 
         Using TV's ip makes the initial response much quicker, but it can also scan the network for the TV's ip.
-
-        Args:
-            ip_address: IP address of the TV.
-            client_key: Client Key to authenticate connection.
-            nickname: Identifier name for the TV as stored in the yaml file.
-
-        Raises:
-            TVError:
-            - If unable to connect to the TV.
-            - If no TV was found in the IP range.
-            - If a connection timeout occurs (usually because of unstable internet or multiple connection types)
         """
         store = {"client_key": client_key} if client_key else {}
 

@@ -19,15 +19,13 @@ class Database:
 
     >>> Database
 
+    Args:
+        database: Name of the database file.
+        timeout: Timeout for the connection to database.
     """
 
     def __init__(self, database: FilePath | str, timeout: int = 10):
-        """Instantiates the class ``Database`` to create a connection and a cursor.
-
-        Args:
-            database: Name of the database file.
-            timeout: Timeout for the connection to database.
-        """
+        """Instantiates the class ``Database`` to create a connection and a cursor."""
         if not database.endswith(".db"):
             database = database + ".db"
         self.datastore = database

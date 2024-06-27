@@ -46,10 +46,10 @@ def commandline() -> None:
         "install": "Installs the main dependencies.",
         "dev-install": "Installs the dev dependencies.",
         "start | run": "Initiates Jarvis.",
-        "uninstall | cleanup": "Uninstall the main dependencies",
-        "dev-uninstall | dev-cleanup": "Uninstall the dev dependencies",
-        "version | -v | --version | -V": "Prints the version.",
-        "help | --help": "Prints the help section.",
+        "uninstall": "Uninstall the main dependencies",
+        "dev-uninstall": "Uninstall the dev dependencies",
+        "--version | -v": "Prints the version.",
+        "--help | -h": "Prints the help section.",
     }
     # weird way to increase spacing to keep all values monotonic
     _longest_key = len(max(options.keys()))
@@ -72,17 +72,17 @@ def commandline() -> None:
             installer.main_install()
         case "dev-install":
             installer.dev_install()
-        case "uninstall" | "cleanup":
+        case "uninstall":
             installer.main_uninstall()
-        case "dev-uninstall" | "dev-cleanup":
+        case "dev-uninstall":
             installer.dev_uninstall()
         case "start" | "run":
             os.environ["debug"] = str(os.environ.get("JARVIS_VERBOSITY", "-1") == "1")
             init = __preflight_check__()
             init()
-        case "version" | "-v" | "-V" | "--version":
+        case "version" | "-v" | "--version":
             print(f"Jarvis {version}")
-        case "help" | "--help":
+        case "help" | "-h" | "--help":
             print(
                 f"Usage: jarvis [arbitrary-command]\nOptions (and corresponding behavior):{choices}"
             )

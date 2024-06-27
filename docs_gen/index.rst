@@ -627,6 +627,108 @@ Word Match
    :members:
    :undoc-members:
 
+----------Models----------
+==========================
+
+Classes
+=======
+
+.. automodule:: jarvis.modules.models.classes
+   :members:
+   :exclude-members: Settings, VehicleConnection, RecognizerSettings, BackgroundTask, EnvConfig, FileIO, Indicators, WiFiConnection, Thermostat
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.RecognizerSettings(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.BackgroundTask(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.EnvConfig(pydantic.BaseSettings)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.FileIO(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.Indicators(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.WiFiConnection(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.classes.Thermostat(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields
+
+Enums
+=====
+
+.. autoclass:: jarvis.modules.models.enums.SupportedPlatforms(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.enums.TemperatureUnits(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.enums.DistanceUnits(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.enums.EventApp(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.enums.SSQuality(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+Models
+======
+
+.. automodule:: jarvis.modules.models.models
+   :members:
+   :undoc-members:
+
 ----------Modules----------
 ===========================
 Audio
@@ -700,85 +802,6 @@ Crontab
 .. automodule:: jarvis.modules.crontab.expression
    :members:
    :exclude-members:
-
-Classes
-=======
-
-.. automodule:: jarvis.modules.models.classes
-   :members:
-   :exclude-members: SupportedPlatforms, Settings, VehicleConnection, RecognizerSettings, TemperatureUnits, DistanceUnits, EventApp, SSQuality, BackgroundTask, EnvConfig, FileIO, Indicators
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.SupportedPlatforms(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.RecognizerSettings(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.TemperatureUnits(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.DistanceUnits(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.EventApp(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.SSQuality(Enum)
-   :members:
-   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.BackgroundTask(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.EnvConfig(pydantic.BaseSettings)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.FileIO(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.Indicators(pydantic.BaseModel)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields
 
 Database
 ========
@@ -855,13 +878,6 @@ Meetings
 ====
 
 .. automodule:: jarvis.modules.meetings.events
-   :members:
-   :undoc-members:
-
-Models
-======
-
-.. automodule:: jarvis.modules.models.models
    :members:
    :undoc-members:
 

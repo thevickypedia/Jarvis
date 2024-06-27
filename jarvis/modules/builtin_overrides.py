@@ -115,14 +115,12 @@ class AddProcessName(logging.Filter):
 
     >>> AddProcessName
 
+    Args:
+        process_name: Takes name of the process to be added as argument.
     """
 
     def __init__(self, process_name: str):
-        """Instantiates super class.
-
-        Args:
-            process_name: Takes name of the process to be added as argument.
-        """
+        """Instantiates super class."""
         self.process_name = process_name
         super().__init__()
 

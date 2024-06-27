@@ -68,14 +68,12 @@ class StockMonitor:
 
     >>> StockMonitor
 
+    Args:
+        logger: Takes the class ``logging.Logger`` as an argument.
     """
 
     def __init__(self, logger: logging.Logger):
-        """Gathers user data in stock database, and groups user data by ``ticker`` and ``email``.
-
-        Args:
-            logger: Takes the class ``logging.Logger`` as an argument.
-        """
+        """Gathers user data in stock database, and groups user data by ``ticker`` and ``email``."""
         self.logger = logger
         self.email_grouped = collections.defaultdict(list)
         self.ticker_grouped = collections.defaultdict(list)

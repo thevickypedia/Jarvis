@@ -9,7 +9,7 @@ from collections.abc import Generator
 from typing import Dict, List
 
 from jarvis.modules.exceptions import CameraError
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 Windows = (
     """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
@@ -63,20 +63,18 @@ class Camera:
 
     >>> Camera
 
+    Raises:
+        CameraError:
+        If unable to connect to the camera.
     """
 
     def __init__(self):
-        """Instantiates the camera object to run the OS specific builtin commands to get the camera information.
-
-        Raises:
-            CameraError:
-            If unable to connect to the camera.
-        """
-        if models.settings.os == models.supported_platforms.macOS:
+        """Instantiates the camera object to run the OS specific builtin commands to get the camera information."""
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             cmd = Darwin
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             cmd = Windows
-        elif models.settings.os == models.supported_platforms.linux:
+        elif models.settings.os == enums.SupportedPlatforms.linux:
             cmd = Linux
         else:
             cmd = ""
@@ -193,9 +191,9 @@ class Camera:
             List[Dict[str, str] | str]:
             List of dictionaries.
         """
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             return list(self._get_camera_info_darwin())
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             return list(self._get_camera_info_windows())
         else:
             return list(self._get_camera_info_linux())
@@ -207,9 +205,9 @@ class Camera:
             List[str]:
             List of camera names.
         """
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             return list(self._list_cameras_darwin())
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             return list(self._list_cameras_windows())
         else:
             return list(self._list_cameras_linux())

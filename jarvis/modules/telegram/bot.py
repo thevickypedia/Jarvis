@@ -28,7 +28,7 @@ from jarvis.modules.exceptions import (
     InvalidArgument,
 )
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.telegram import audio_handler, file_handler, settings
 from jarvis.modules.utils import support, util
 
@@ -539,13 +539,13 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
         with open(filename, "wb") as file:
             file.write(bytes_obj)
         converted = False
-        if models.settings.os == models.supported_platforms.macOS:
+        if models.settings.os == enums.SupportedPlatforms.macOS:
             transcode = audio_handler.audio_converter_mac()
             if transcode and transcode(
                 input_file_name=filename, output_audio_format="flac"
             ):
                 converted = True
-        elif models.settings.os == models.supported_platforms.windows:
+        elif models.settings.os == enums.SupportedPlatforms.windows:
             if audio_handler.audio_converter_win(
                 input_filename=filename, output_audio_format="flac"
             ):

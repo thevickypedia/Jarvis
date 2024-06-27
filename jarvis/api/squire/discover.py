@@ -15,15 +15,13 @@ class Entrypoint:
 
     >>> Entrypoint
 
+    Args:
+        module: Router path in the form of a module.
+        stem: Bare name of the module.
     """
 
     def __init__(self, module: str, stem: str):
-        """Wraps entry point into an object.
-
-        Args:
-            module: Router path in the form of a module.
-            stem: Bare name of the module.
-        """
+        """Wraps entry point into an object."""
         self.module = module
         self.stem = stem
 

@@ -151,7 +151,7 @@ def run_subprocess(command: str) -> None:
             process.terminate()
 
 
-def windows_caveat() -> None | NoReturn:
+def windows_handler() -> None | NoReturn:
     """Function to handle installations on Windows operating systems."""
     logger.info(
         """
@@ -382,6 +382,6 @@ def main_install() -> None:
     )
     logger.info(pretext())
     if env.osname == "windows":
-        windows_caveat()
+        windows_handler()
     run_subprocess(install_script)
     os_agnostic()

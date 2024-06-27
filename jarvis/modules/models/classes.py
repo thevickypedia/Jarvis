@@ -43,28 +43,10 @@ from pyhtcc import Zone
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
+from jarvis.modules.models import enums
 from jarvis.modules.peripherals import channel_type, get_audio_devices
 
 AUDIO_DRIVER = pyttsx3.init()
-
-if sys.version_info.minor > 10:
-    from enum import StrEnum
-else:
-    from enum import Enum
-
-    class StrEnum(str, Enum):
-        """Override for python 3.10 due to lack of StrEnum."""
-
-
-class SupportedPlatforms(StrEnum):
-    """Supported operating systems."""
-
-    windows: str = "Windows"
-    macOS: str = "Darwin"
-    linux: str = "Linux"
-
-
-supported_platforms = SupportedPlatforms
 
 
 class Settings(BaseModel):
@@ -88,9 +70,9 @@ class Settings(BaseModel):
 
     os: str = platform.system()
     if os not in (
-        supported_platforms.macOS,
-        supported_platforms.linux,
-        supported_platforms.windows,
+        enums.SupportedPlatforms.macOS,
+        enums.SupportedPlatforms.linux,
+        enums.SupportedPlatforms.windows,
     ):
         raise UnsupportedOS(
             f"\n{''.join('*' for _ in range(80))}\n\n"
@@ -98,9 +80,9 @@ class Settings(BaseModel):
             f"\n{''.join('*' for _ in range(80))}\n"
         )
     legacy: bool = False
-    if os == supported_platforms.macOS and Version(platform.mac_ver()[0]) < Version(
-        "10.14"
-    ):
+    if os == enums.SupportedPlatforms.macOS and Version(
+        platform.mac_ver()[0]
+    ) < Version("10.14"):
         legacy: bool = True
 
 
@@ -174,51 +156,6 @@ class RecognizerSettings(BaseModel):
     phrase_threshold: PositiveInt | float = 0.1
     dynamic_energy_threshold: bool = False
     non_speaking_duration: PositiveInt | float = 2
-
-
-class TemperatureUnits(StrEnum):
-    """Types of temperature units supported by Jarvis.
-
-    >>> TemperatureUnits
-
-    """
-
-    METRIC: str = "metric"
-    IMPERIAL: str = "imperial"
-
-
-class DistanceUnits(StrEnum):
-    """Types of distance units supported by Jarvis.
-
-    >>> DistanceUnits
-
-    """
-
-    MILES: str = "miles"
-    KILOMETERS: str = "kilometers"
-
-
-class EventApp(StrEnum):
-    """Types of event applications supported by Jarvis.
-
-    >>> EventApp
-
-    """
-
-    CALENDAR = "calendar"
-    OUTLOOK = "outlook"
-
-
-class SSQuality(StrEnum):
-    """Quality modes available for speech synthesis.
-
-    >>> SSQuality
-
-    """
-
-    High_Quality = "high"
-    Medium_Quality = "medium"
-    Low_Quality = "low"
 
 
 def handle_multiform(form_list: List[str]) -> List[int]:
@@ -312,25 +249,6 @@ class BackgroundTask(BaseModel):
         return v
 
 
-class ReminderOptions(StrEnum):
-    """Supported reminder options."""
-
-    phone: str = "phone"
-    email: str = "email"
-    telegram: str = "telegram"
-    ntfy: str = "ntfy"
-    all: str = "all"
-
-
-class StartupOptions(StrEnum):
-    """Background threads to startup."""
-
-    all: str = "all"
-    car: str = "car"
-    none: str = "None"
-    thermostat: str = "thermostat"
-
-
 def channel_validator(
     value: int | PositiveInt, ch_type: str
 ) -> int | PositiveInt | None:
@@ -380,8 +298,8 @@ class EnvConfig(BaseSettings):
     """
 
     # Custom units
-    distance_unit: DistanceUnits | None = None
-    temperature_unit: TemperatureUnits | None = None
+    distance_unit: enums.DistanceUnits | None = None
+    temperature_unit: enums.TemperatureUnits | None = None
 
     # System config
     home: DirectoryPath = os.path.expanduser("~")
@@ -418,11 +336,15 @@ class EnvConfig(BaseSettings):
     ntfy_username: str | None = None
     ntfy_password: str | None = None
     ntfy_topic: str | None = None
-    notify_reminders: ReminderOptions | List[ReminderOptions] = ReminderOptions.all
+    notify_reminders: enums.ReminderOptions | List[
+        enums.ReminderOptions
+    ] = enums.ReminderOptions.all
 
     # Author specific
     author_mode: bool = False
-    startup_options: StartupOptions | List[StartupOptions] = StartupOptions.none
+    startup_options: enums.StartupOptions | List[
+        enums.StartupOptions
+    ] = enums.StartupOptions.none
 
     # Third party api config
     weather_api: str | None = None
@@ -451,7 +373,7 @@ class EnvConfig(BaseSettings):
     workers: PositiveInt = 1
 
     # Calendar events and meetings config
-    event_app: EventApp | None = None
+    event_app: enums.EventApp | None = None
     ics_url: HttpUrl | None = None
     # Set background sync limits to range: 15 minutes to 12 hours
     sync_meetings: int | None = Field(None, ge=900, le=43_200)
@@ -520,7 +442,7 @@ class EnvConfig(BaseSettings):
     # Speech synthesis config (disabled for speaker by default)
     speech_synthesis_timeout: int = 0
     speech_synthesis_voice: str = "en-us_northern_english_male-glow_tts"
-    speech_synthesis_quality: SSQuality = SSQuality.Medium_Quality
+    speech_synthesis_quality: enums.SSQuality = enums.SSQuality.Medium_Quality
     speech_synthesis_host: str = socket.gethostbyname("localhost")
     speech_synthesis_port: PositiveInt = 5002
 
@@ -572,25 +494,25 @@ class EnvConfig(BaseSettings):
 
     @field_validator("notify_reminders", mode="after", check_fields=True)
     def parse_notify_reminders(
-        cls, value: ReminderOptions | List[ReminderOptions]
-    ) -> List[ReminderOptions]:
+        cls, value: enums.ReminderOptions | List[enums.ReminderOptions]
+    ) -> List[enums.ReminderOptions]:
         """Validate reminder options."""
         if isinstance(value, list):
-            if ReminderOptions.all in value:
-                return [ReminderOptions.all]
+            if enums.ReminderOptions.all in value:
+                return [enums.ReminderOptions.all]
             return value
         return [value]
 
     @field_validator("startup_options", mode="after", check_fields=True)
     def parse_startup_options(
-        cls, value: StartupOptions | List[StartupOptions] | None
-    ) -> List[StartupOptions] | List:
+        cls, value: enums.StartupOptions | List[enums.StartupOptions] | None
+    ) -> List[enums.StartupOptions] | List:
         """Validate startup options."""
         if value == "None":
             return []
         if isinstance(value, list):
-            if StartupOptions.all in value:
-                return [StartupOptions.all]
+            if enums.StartupOptions.all in value:
+                return [enums.StartupOptions.all]
             return value
         return [value]
 

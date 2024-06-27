@@ -12,7 +12,7 @@ from jarvis.executors import files, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
 
 
@@ -376,7 +376,7 @@ def kill_alarm(phrase: str) -> None:
 def executor() -> None:
     """Runs the ``alarm.mp3`` file at max volume and reverts the volume after 3 minutes."""
     pyvolume.increase(logger)
-    if models.settings.os != models.supported_platforms.windows:
+    if models.settings.os != enums.SupportedPlatforms.windows:
         subprocess.call(["open", models.indicators.alarm])
     else:
         os.system(f"start wmplayer {models.indicators.alarm}")

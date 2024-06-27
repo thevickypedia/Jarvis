@@ -61,18 +61,16 @@ class FaceNet:
 
     >>> FaceNet
 
+    Raises:
+        CameraError:
+        If unable to connect to the camera.
     """
 
     LEARNING_RATE = 0.6  # tolerance level - keep switching this until you find perfection in recognition
     MODEL = "hog"  # model using which the images are matched
 
     def __init__(self):
-        """Instantiates the ``Processor`` object and sources the camera hardware.
-
-        Raises:
-            CameraError:
-            If unable to connect to the camera.
-        """
+        """Instantiates the ``Processor`` object and sources the camera hardware."""
         self.validation_video = cv2.VideoCapture(models.env.camera_index)
         self.train_faces, self.train_names = [], []
 

@@ -139,7 +139,7 @@ def existing_response(request: str) -> str | None:
 
 
 class Customizer:
-    """Customize prompt for the model with pre-defined instructions.
+    """Customize prompt for the model with pre-defined instructions using a ``Modelfile``.
 
     >>> Customizer
 
