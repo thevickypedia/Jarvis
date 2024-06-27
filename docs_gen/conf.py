@@ -62,6 +62,7 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+# todo: Move docstrings for __init__ methods and remove this
 # Add docstrings from __init__ method
 # Reference: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content
 autoclass_content = 'both'

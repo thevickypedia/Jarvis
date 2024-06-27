@@ -1,10 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-import pvporcupine
 import pyaudio
 
-from jarvis.main import Activator, models
+from jarvis.main import Activator, constructor, models
 from tests.constant_test import SAMPLE_PHRASE
 
 
@@ -34,12 +33,7 @@ class TestActivator(unittest.TestCase):
         self.activator.__init__()
 
         # Assertions
-        mock_pvporcupine_create.assert_called_once_with(
-            library_path=pvporcupine.LIBRARY_PATH,
-            sensitivities=models.env.sensitivity,
-            model_path=pvporcupine.MODEL_PATH,
-            keyword_paths=[pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words],
-        )
+        mock_pvporcupine_create.assert_called_once_with(**constructor())
         mock_audio_open.assert_called_once_with(
             rate=mock_pvporcupine_create.return_value.sample_rate,
             channels=1,

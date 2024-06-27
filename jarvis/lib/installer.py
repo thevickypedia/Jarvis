@@ -183,7 +183,9 @@ def untested_arch() -> None | NoReturn:
     """Function to handle unsupported architecture."""
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     logger.warning(center(f"Current Architecture: {env.architecture}"))
-    logger.warning(center("Jarvis has currently been tested only on AMD machines."))
+    logger.warning(
+        center("Jarvis has currently been tested only on AMD and ARM64 machines.")
+    )
     logger.warning(
         center("Please note that you might need to install additional dependencies.")
     )
@@ -333,7 +335,7 @@ def init() -> None:
     if env.osname not in ("darwin", "windows", "linux"):
         untested_os()
 
-    if env.architecture != "amd64":
+    if env.architecture not in ("amd64", "arm64"):
         untested_arch()
 
     if sys.prefix == sys.base_prefix:

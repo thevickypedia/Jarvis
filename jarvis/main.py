@@ -3,10 +3,12 @@ import struct
 import time
 import traceback
 from datetime import datetime
+from typing import Dict, List
 
 import pvporcupine
 import pyaudio
 import pywifi
+from packaging.version import Version
 from playsound import playsound
 
 from jarvis.executors import (
@@ -19,11 +21,43 @@ from jarvis.executors import (
     processor,
 )
 from jarvis.modules.audio import listener, speaker
-from jarvis.modules.exceptions import StopSignal
+from jarvis.modules.exceptions import DependencyError, StopSignal
 from jarvis.modules.logger import custom_handler, logger
 from jarvis.modules.models import models
 from jarvis.modules.peripherals import audio_engine
 from jarvis.modules.utils import shared, support
+
+
+# noinspection PyUnresolvedReferences
+def constructor() -> Dict[str, str | List[float] | List[str]]:
+    """Construct arguments for wake word detector.
+
+    Returns:
+        Dict[str, str | List[float] | List[str]]:
+        Arguments for wake word detector constructed as a dictionary based on the system and dependency version.
+    """
+    arguments = {
+        "sensitivities": models.env.sensitivity,
+        "keywords": models.env.wake_words,
+    }
+    if models.WAKE_WORD_DETECTOR == "1.9.5":
+        arguments["library_path"] = pvporcupine.LIBRARY_PATH
+        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
+        if models.settings.legacy:
+            arguments["model_file_path"] = pvporcupine.MODEL_PATH
+            arguments["keyword_file_paths"] = keyword_paths
+        else:
+            arguments["model_path"] = pvporcupine.MODEL_PATH
+            arguments["keyword_paths"] = keyword_paths
+    elif Version(models.WAKE_WORD_DETECTOR) >= Version("3.0.2"):
+        arguments["access_key"] = models.env.porcupine_key
+    else:
+        # this shouldn't happen by itself
+        raise DependencyError(
+            f"{pvporcupine.__name__} {models.WAKE_WORD_DETECTOR}\n\tInvalid version\n"
+            f"{models.settings.os} is only supported with porcupine versions 1.9.5 or 3.0.2 and above (requires key)"
+        )
+    return arguments
 
 
 def restart_checker() -> None:
@@ -75,21 +109,7 @@ class Activator:
             ]
         )
         logger.info("Initiating hot-word detector with sensitivity: %s", label)
-        keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
-
-        arguments = {
-            "library_path": pvporcupine.LIBRARY_PATH,
-            "sensitivities": models.env.sensitivity,
-        }
-        if models.settings.legacy:
-            arguments["keywords"] = models.env.wake_words
-            arguments["model_file_path"] = pvporcupine.MODEL_PATH
-            arguments["keyword_file_paths"] = keyword_paths
-        else:
-            arguments["model_path"] = pvporcupine.MODEL_PATH
-            arguments["keyword_paths"] = keyword_paths
-
-        self.detector = pvporcupine.create(**arguments)
+        self.detector = pvporcupine.create(**constructor())
         self.audio_stream = self.open_stream()
         if models.settings.limited:
             self.label = f"Awaiting: [{label}] - Limited Mode"
@@ -197,6 +217,8 @@ def start() -> None:
     """Starts main process to activate Jarvis after checking internet connection and initiating background processes."""
     logger.info("Current Process ID: %d", models.settings.pid)
     controls.starter()
+    # Instantiate the object here, so validations go through first
+    activator = Activator()
     if internet.ip_address() and internet.public_ip_info():
         support.write_screen(
             text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}."
@@ -237,4 +259,4 @@ def start() -> None:
     else:
         shared.processes = processor.start_processes()
     location.write_current_location()
-    Activator().start()
+    activator.start()

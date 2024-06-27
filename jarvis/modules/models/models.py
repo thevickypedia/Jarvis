@@ -9,16 +9,19 @@ import os
 import pathlib
 import platform
 import warnings
+from importlib import metadata
 
 import cv2
 import pvporcupine
 import requests
+from packaging.version import Version
 from pydantic import PositiveInt
 
 from jarvis.modules.camera import camera
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (
     CameraError,
+    DependencyError,
     EgressErrors,
     InvalidEnvVars,
     MissingEnvVars,
@@ -60,6 +63,7 @@ TABLES = {
     "robinhood": ("summary",),
     "listener": ("state",),
 }
+WAKE_WORD_DETECTOR = metadata.version(pvporcupine.__name__)
 # TABLES to keep from `fileio.base_db`
 KEEP_TABLES = ("vpn", "party", "listener")
 startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
@@ -124,6 +128,12 @@ def _set_default_voice_name() -> None:
 def _main_process_validations() -> None:
     """Validations that should happen only when the main process is triggered."""
     if settings.legacy:
+        try:
+            assert WAKE_WORD_DETECTOR == "1.6.0"
+        except AssertionError:
+            raise DependencyError(
+                "Legacy macOS is only supported with porcupine version 1.6.0"
+            )
         pvporcupine.KEYWORD_PATHS = {}
         base_path = os.path.dirname(pvporcupine.__file__)
         pvporcupine.MODEL_PATH = os.path.join(
@@ -137,6 +147,16 @@ def _main_process_validations() -> None:
         for x in os.listdir(os.path.join(base_path, "resources/keyword_files/mac/")):
             pvporcupine.KEYWORD_PATHS[x.split("_")[0]] = os.path.join(
                 base_path, f"resources/keyword_files/mac/{x}"
+            )
+    else:
+        try:
+            # 3.0.2 is the last tested version on macOS - arm64 - 14.5
+            assert WAKE_WORD_DETECTOR == "1.9.5" or Version(
+                WAKE_WORD_DETECTOR
+            ) >= Version("3.0.2")
+        except AssertionError:
+            raise DependencyError(
+                f"{settings.os} is only supported with porcupine versions 1.9.5 or 3.0.2 and above (requires key)"
             )
 
     for keyword in env.wake_words:

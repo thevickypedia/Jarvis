@@ -501,6 +501,7 @@ class EnvConfig(BaseSettings):
     sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(
         0.5, le=1, ge=0
     )
+    porcupine_key: str | None = None
     listener_timeout: PositiveFloat | PositiveInt = 3
     listener_phrase_limit: PositiveFloat | PositiveInt = 5
     recognizer_confidence: float | PositiveInt = Field(0, le=1, ge=0)

@@ -128,6 +128,14 @@ class InvalidEnvVars(ValueError):
     """
 
 
+class DependencyError(Exception):
+    """Custom base exception for dependency errors.
+
+    >>> DependencyError
+
+    """
+
+
 class MissingEnvVars(ValueError):
     """Custom ``ValueError`` to indicate missing env vars.
 

@@ -2,13 +2,28 @@ name: pypi-publish
 
 on:
   release:
-    types: [ published ]
+    types:
+      - published
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
   pypi-publisher:
     runs-on: thevickypedia-lite
     steps:
+      - name: Set dry-run
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "::notice title=DryRun::Setting dry run to true for '${{ github.event_name }}' event"
+            echo "dry_run=true" >> $GITHUB_ENV
+          else
+            echo "::notice title=DryRun::Setting dry run to false for '${{ github.event_name }}' event"
+            echo "dry_run=false" >> $GITHUB_ENV
+          fi
       - uses: thevickypedia/pypi-publisher@v3
         env:
           token: ${{ secrets.PYPI_TOKEN }}
+        with:
+          dry-run: ${{ env.dry_run }}

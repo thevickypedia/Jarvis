@@ -63,7 +63,13 @@ else
   if [ "$pyversion" -eq 311 ]; then
     python -m pip install dlib==19.24.4
   fi
-  python -m pip install pvporcupine==1.9.5 opencv-python==4.9.0.80
+  python -m pip install opencv-python==4.9.0.80
+  # shellcheck disable=SC2154
+  if [[ "$architecture" == "arm64" ]]; then
+		python -m pip install pvporcupine==3.0.2
+	else
+		python -m pip install pvporcupine==1.9.5
+	fi
 fi
 
 # Install as stand alone as face recognition depends on dlib

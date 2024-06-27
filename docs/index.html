@@ -732,6 +732,20 @@
 <section id="module-jarvis.main">
 <span id="jarvis"></span><h1>Jarvis<a class="headerlink" href="#module-jarvis.main" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.main.constructor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.main.</span></span><span class="sig-name descname"><span class="pre">constructor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.main.constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct arguments for wake word detector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Arguments for wake word detector constructed as a dictionary based on the system and dependency version.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, str | List[float] | List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.main.restart_checker">
 <span class="sig-prename descclassname"><span class="pre">jarvis.main.</span></span><span class="sig-name descname"><span class="pre">restart_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.main.restart_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Operations performed during internal/external request to restart.</p>
@@ -947,7 +961,8 @@
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal.command">
 <span class="sig-name descname"><span class="pre">command</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.command" title="Permalink to this definition">¶</a></dt>
@@ -963,12 +978,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">speech_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.speech_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.modals.OfflineCommunicatorModal.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.modals.OfflineCommunicatorModal.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -982,7 +991,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.email">
 <span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.networks.EmailStr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.email" title="Permalink to this definition">¶</a></dt>
@@ -1003,12 +1013,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">plaintext</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.plaintext" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.modals.StockMonitorModal.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.modals.StockMonitorModal.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -1022,17 +1026,12 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.modals.CameraIndexModal.index">
 <span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.CameraIndexModal.index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.modals.CameraIndexModal.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.modals.CameraIndexModal.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1047,7 +1046,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.text">
 <span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.text" title="Permalink to this definition">¶</a></dt>
@@ -1068,12 +1068,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">voice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.voice" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.modals.SpeechSynthesisModal.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.modals.SpeechSynthesisModal.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -1089,17 +1083,12 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.settings.Robinhood.token">
 <span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Hashable</span></em><a class="headerlink" href="#jarvis.api.models.settings.Robinhood.token" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.settings.Robinhood.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.settings.Robinhood.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1164,7 +1153,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor.user_info">
 <span class="sig-name descname"><span class="pre">user_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor.user_info" title="Permalink to this definition">¶</a></dt>
@@ -1184,12 +1174,6 @@ validated to form a valid model.</p>
 <dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor.alert_values">
 <span class="sig-name descname"><span class="pre">alert_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor.alert_values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitor.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitor.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -6417,7 +6401,8 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.unknown_errors">
 <span class="sig-name descname"><span class="pre">unknown_errors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.unknown_errors" title="Permalink to this definition">¶</a></dt>
@@ -6432,12 +6417,6 @@ validated to form a valid model.</p>
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection._abc_impl">
 <span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection._abc_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.WiFiConnection.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.WiFiConnection.model_config">
@@ -6465,7 +6444,8 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.device">
 <span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Zone</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.device" title="Permalink to this definition">¶</a></dt>
@@ -6493,12 +6473,6 @@ validated to form a valid model.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'arbitrary_types_allowed':</span> <span class="pre">True}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
@@ -6506,7 +6480,7 @@ validated to form a valid model.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Thermostat.model_fields">
-<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'device':</span> <span class="pre">FieldInfo(annotation=Union[Zone,</span> <span class="pre">str,</span> <span class="pre">NoneType],</span> <span class="pre">required=False,</span> <span class="pre">default=None),</span> <span class="pre">'expiration':</span> <span class="pre">FieldInfo(annotation=Union[float,</span> <span class="pre">NoneType],</span> <span class="pre">required=False,</span> <span class="pre">default=None)}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_fields" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'device':</span> <span class="pre">FieldInfo(annotation=Union[Zone,</span> <span class="pre">str,</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'expiration':</span> <span class="pre">FieldInfo(annotation=Union[float,</span> <span class="pre">NoneType],</span> <span class="pre">required=False)}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Thermostat.model_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metadata about the fields defined on the model,
 mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
 <p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
@@ -6675,7 +6649,8 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Settings.interactive">
 <span class="sig-name descname"><span class="pre">interactive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.interactive" title="Permalink to this definition">¶</a></dt>
@@ -6726,12 +6701,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">legacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.legacy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.Settings.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -6745,7 +6714,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.VehicleConnection.vin">
 <span class="sig-name descname"><span class="pre">vin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.VehicleConnection.vin" title="Permalink to this definition">¶</a></dt>
@@ -6782,12 +6752,6 @@ validated to form a valid model.</p>
 
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.VehicleConnection.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.VehicleConnection.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -6811,7 +6775,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.RecognizerSettings.energy_threshold">
 <span class="sig-name descname"><span class="pre">energy_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.RecognizerSettings.energy_threshold" title="Permalink to this definition">¶</a></dt>
@@ -6836,12 +6801,6 @@ validated to form a valid model.</p>
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.RecognizerSettings.non_speaking_duration">
 <span class="sig-name descname"><span class="pre">non_speaking_duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.RecognizerSettings.non_speaking_duration" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.RecognizerSettings.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.RecognizerSettings.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -6938,7 +6897,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.BackgroundTask.seconds">
 <span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.BackgroundTask.seconds" title="Permalink to this definition">¶</a></dt>
@@ -6966,12 +6926,6 @@ validated to form a valid model.</p>
 <dd><p>Validate each entry in ignore hours list.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.BackgroundTask.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.BackgroundTask.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -6985,7 +6939,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.distance_unit">
 <span class="sig-name descname"><span class="pre">distance_unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.classes.DistanceUnits" title="jarvis.modules.models.classes.DistanceUnits"><span class="pre">jarvis.modules.models.classes.DistanceUnits</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.distance_unit" title="Permalink to this definition">¶</a></dt>
@@ -7357,6 +7312,11 @@ validated to form a valid model.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.porcupine_key">
+<span class="sig-name descname"><span class="pre">porcupine_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.porcupine_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_timeout">
 <span class="sig-name descname"><span class="pre">listener_timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_timeout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7561,12 +7521,6 @@ validated to form a valid model.</p>
 <dd><p>Validates date value to be in DD-MM format.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -7580,7 +7534,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.root">
 <span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.root" title="Permalink to this definition">¶</a></dt>
@@ -7761,12 +7716,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">ollama_model_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.ollama_model_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <hr class="docutils" />
@@ -7780,7 +7729,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Indicators.acknowledgement">
 <span class="sig-name descname"><span class="pre">acknowledgement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Indicators.acknowledgement" title="Permalink to this definition">¶</a></dt>
@@ -7790,12 +7740,6 @@ validated to form a valid model.</p>
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Indicators.alarm">
 <span class="sig-name descname"><span class="pre">alarm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Indicators.alarm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.Indicators.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Indicators.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Indicators.coin">
@@ -7990,6 +7934,15 @@ validated to form a valid model.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidEnvVars</span></span><a class="headerlink" href="#jarvis.modules.exceptions.InvalidEnvVars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> to indicate invalid env vars.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">InvalidEnvVars</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="jarvis.modules.exceptions.DependencyError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">DependencyError</span></span><a class="headerlink" href="#jarvis.modules.exceptions.DependencyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom base exception for dependency errors.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DependencyError</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -8344,7 +8297,8 @@ Whites can have a value of None.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.logger.APIConfig.DEFAULT_LOG_LEVEL">
 <span class="sig-name descname"><span class="pre">DEFAULT_LOG_LEVEL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.logger.APIConfig.DEFAULT_LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
@@ -8374,12 +8328,6 @@ validated to form a valid model.</p>
 <dt class="sig sig-object py" id="jarvis.modules.logger.APIConfig.LOG_CONFIG">
 <span class="sig-name descname"><span class="pre">LOG_CONFIG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#jarvis.modules.logger.APIConfig.LOG_CONFIG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.logger.APIConfig.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.logger.APIConfig.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -10056,7 +10004,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Chat.message_id">
 <span class="sig-name descname"><span class="pre">message_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat.message_id" title="Permalink to this definition">¶</a></dt>
@@ -10107,12 +10056,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">language_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat.language_code" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Chat.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10122,17 +10065,12 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Text.text">
 <span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Text.text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Text.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Text.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -10143,7 +10081,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.PhotoFragment.file_id">
 <span class="sig-name descname"><span class="pre">file_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.PhotoFragment.file_id" title="Permalink to this definition">¶</a></dt>
@@ -10169,12 +10108,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.PhotoFragment.width" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.PhotoFragment.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.PhotoFragment.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10184,7 +10117,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Audio.duration">
 <span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Audio.duration" title="Permalink to this definition">¶</a></dt>
@@ -10215,12 +10149,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Audio.mime_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Audio.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Audio.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10230,7 +10158,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Voice.duration">
 <span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Voice.duration" title="Permalink to this definition">¶</a></dt>
@@ -10256,12 +10185,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Voice.mime_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Voice.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Voice.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10271,7 +10194,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Document.file_id">
 <span class="sig-name descname"><span class="pre">file_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Document.file_id" title="Permalink to this definition">¶</a></dt>
@@ -10297,12 +10221,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Document.mime_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Document.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Document.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10312,7 +10230,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.duration">
 <span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.duration" title="Permalink to this definition">¶</a></dt>
@@ -10360,7 +10279,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.Thumb.file_id">
 <span class="sig-name descname"><span class="pre">file_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumb.file_id" title="Permalink to this definition">¶</a></dt>
@@ -10386,12 +10306,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumb.width" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.Thumb.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumb.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -10401,7 +10315,8 @@ validated to form a valid model.</p>
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
+allow <cite>self</cite> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.Thumbnail.file_id">
 <span class="sig-name descname"><span class="pre">file_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumbnail.file_id" title="Permalink to this definition">¶</a></dt>
@@ -10427,18 +10342,6 @@ validated to form a valid model.</p>
 <span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumbnail.width" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.Thumbnail.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.Thumbnail.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Video.model_computed_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
 </dd></dl>
 
 </dd></dl>
