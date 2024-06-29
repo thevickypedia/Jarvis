@@ -92,7 +92,7 @@ def function_mapping() -> OrderedDict[str, Callable]:
         guard_disable=guard.guard_disable,
         flip_a_coin=others.flip_a_coin,
         voice_changer=voices.voice_changer,
-        system_vitals=system.system_vitals,
+        system_vitals=system.system_info,
         vpn_server=vpn_server.vpn_server,
         automation_handler=automation.automation_handler,
         background_task_handler=background_task.background_task_handler,

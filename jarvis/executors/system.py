@@ -1,221 +1,67 @@
-import os
-import platform
-import re
-import shutil
-import subprocess
 from datetime import datetime
-from typing import Dict
+from multiprocessing.pool import ThreadPool
 
-import packaging.version
 import psutil
 
-from jarvis.executors import controls, word_match
-from jarvis.modules.audio import listener, speaker
+from jarvis.executors import word_match
+from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.logger import logger
-from jarvis.modules.models import enums, models
-from jarvis.modules.temperature import temperature
-from jarvis.modules.utils import shared, support, util
+from jarvis.modules.models import models
+from jarvis.modules.utils import support, util
 
 
-def system_info(*args) -> None:
-    """Tells the system configuration."""
-    disk_usage = shutil.disk_usage("/")
-    total = support.size_converter(byte_size=disk_usage.total)
-    used = support.size_converter(byte_size=disk_usage.used)
-    free = support.size_converter(byte_size=disk_usage.free)
-    ram = support.size_converter(byte_size=models.settings.ram).replace(".0", "")
-    ram_used = support.size_converter(
-        byte_size=psutil.virtual_memory().percent
-    ).replace(" B", " %")
-    system = None
-    if models.settings.os == enums.SupportedPlatforms.linux:
-        mapping = get_distributor_info_linux()
-        if mapping.get("distributor_id") and mapping.get("release"):
-            system = f"{mapping['distributor_id']} {mapping['release']}"
-    if not system:
-        if not shared.hosted_device.get("os_version"):
-            hosted_device_info()
-        system = (
-            f"{shared.hosted_device.get('os_name', models.settings.os)} "
-            f"{shared.hosted_device.get('os_version', '')}"
-        )
-    speaker.speak(
-        text=f"You're running {system}, with {models.settings.physical_cores} "
-        f"physical cores, and {models.settings.logical_cores} logical cores. Your physical drive "
-        f"capacity is {total}. You have used up {used} of space. Your free space is {free}. Your "
-        f"RAM capacity is {ram}. You are currently utilizing {ram_used} of your memory."
+def system_info(phrase: str) -> None:
+    """Tells the system configuration and current statistics."""
+    vitals = word_match.word_match(
+        phrase=phrase, match_list=keywords.keywords["system_vitals"]
     )
 
+    if vitals:
+        cpu_percent = ThreadPool(processes=1).apply_async(
+            psutil.cpu_percent, kwds={"interval": 3}
+        )
 
-def system_vitals(*args) -> None:
-    """Reads system vitals.
-
-    See Also:
-        - Jarvis will suggest a reboot if the system uptime is more than 2 days.
-        - If confirmed, invokes `restart <https://jarvis-docs.vigneshrao.com/#jarvis.restart>`__ function.
-    """
-    output = ""
-    if models.settings.os == enums.SupportedPlatforms.macOS:
-        if not models.env.root_password:
-            speaker.speak(
-                text=f"You haven't provided a root password for me to read system vitals {models.env.title}! "
-                "Add the root password as an environment variable for me to read."
-            )
-            return
-
-        logger.info("Fetching system vitals")
-        cpu_temp, gpu_temp, fan_speed, output = None, None, None, ""
-
-        # Tested on 10.13, 10.14, 11.6 and 12.3 versions
-        if not shared.hosted_device.get("os_version"):
-            hosted_device_info()
-        if packaging.version.parse(
-            shared.hosted_device.get("os_version")
-        ) > packaging.version.parse("10.14"):
-            critical_info = [
-                each.strip()
-                for each in (
-                    os.popen(
-                        f"echo {models.env.root_password} | sudo -S powermetrics --samplers smc -i1 -n1"
-                    )
-                )
-                .read()
-                .split("\n")
-                if each != ""
-            ]
-            support.flush_screen()
-
-            for info in critical_info:
-                if "CPU die temperature" in info:
-                    cpu_temp = (
-                        info.strip("CPU die temperature: ").replace(" C", "").strip()
-                    )
-                if "GPU die temperature" in info:
-                    gpu_temp = (
-                        info.strip("GPU die temperature: ").replace(" C", "").strip()
-                    )
-                if "Fan" in info:
-                    fan_speed = info.strip("Fan: ").replace(" rpm", "").strip()
-        else:
-            fan_speed = subprocess.check_output(
-                f"echo {models.env.root_password} | sudo -S spindump 1 1 -file /tmp/spindump.txt > /dev/null 2>&1;grep "
-                f'"Fan speed" /tmp/spindump.txt;sudo rm /tmp/spindump.txt',
-                shell=True,
-            ).decode("utf-8")
-
-        if cpu_temp:
-            if models.env.temperature_unit == models.TemperatureUnits.METRIC:
-                cpu_temp = util.format_nos(input_=util.extract_nos(input_=cpu_temp))
-            else:
-                cpu_temp = util.format_nos(
-                    input_=temperature.c2f(arg=util.extract_nos(input_=cpu_temp))
-                )
-            cpu = f"Your current average CPU temperature is {cpu_temp}\N{DEGREE SIGN}{models.temperature_symbol}. "
-            output += cpu
-            speaker.speak(text=cpu)
-        if gpu_temp:
-            if models.env.temperature_unit == models.TemperatureUnits.METRIC:
-                gpu_temp = util.format_nos(input_=util.extract_nos(input_=gpu_temp))
-            else:
-                gpu_temp = util.format_nos(
-                    input_=temperature.c2f(arg=util.extract_nos(input_=gpu_temp))
-                )
-            gpu = f"GPU temperature is {gpu_temp}\N{DEGREE SIGN}{models.temperature_symbol}. "
-            output += gpu
-            speaker.speak(text=gpu)
-        if fan_speed:
-            fan = f"Current fan speed is {util.format_nos(util.extract_nos(fan_speed))} RPM. "
-            output += fan
-            speaker.speak(text=fan)
+    if models.settings.distro.get("distributor_id") and models.settings.distro.get(
+        "release"
+    ):
+        system = f"{models.settings.distro['distributor_id']} {models.settings.distro['release']}"
+    else:
+        system = f"{models.settings.os_name} {models.settings.os_version}"
 
     restart_time = datetime.fromtimestamp(psutil.boot_time())
     second = (datetime.now() - restart_time).total_seconds()
     restart_time = datetime.strftime(restart_time, "%A, %B %d, at %I:%M %p")
     restart_duration = support.time_converter(second=second)
-    output += f"Restarted on: {restart_time} - {restart_duration} ago from now."
-    if shared.called_by_offline:
-        speaker.speak(text=output)
-        return
-    support.write_screen(text=output)
-    speaker.speak(
-        text=f"Your {shared.hosted_device.get('device')} was last booted on {restart_time}. "
-        f"Current boot time is: {restart_duration}."
-    )
-    if second >= 259_200:  # 3 days
-        if boot_extreme := re.search("(.*) days", restart_duration):
-            warn = int(boot_extreme.group().replace(" days", "").strip())
-            speaker.speak(
-                text=f"{models.env.title}! your {shared.hosted_device.get('device')} has been running for "
-                f"more than {warn} days. You must consider a reboot for better performance. Would you "
-                f"like me to restart it for you {models.env.title}?",
-                run=True,
-            )
-            if word_match.word_match(
-                phrase=listener.listen(), match_list=keywords.keywords["ok"]
-            ):
-                logger.info("Restarting %s", shared.hosted_device.get("device"))
-                controls.restart(ask=False)
 
-
-def get_distributor_info_linux() -> Dict[str, str]:
-    """Returns distributor information (i.e., Ubuntu) for Linux based systems.
-
-    Returns:
-        dict:
-        A dictionary of key-value pairs with distributor id, name and version.
-    """
-    try:
-        result = subprocess.check_output(
-            "lsb_release -a", shell=True, stderr=subprocess.DEVNULL
-        )
-        return {
-            i.split(":")[0].strip().lower().replace(" ", "_"): i.split(":")[1].strip()
-            for i in result.decode(encoding="UTF-8").splitlines()
-            if ":" in i
-        }
-    except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
-        if isinstance(error, subprocess.CalledProcessError):
-            result = error.output.decode(encoding="UTF-8").strip()
-            logger.error("[%d]: %s", error.returncode, result)
-        else:
-            logger.error(error)
-        return {}
-
-
-def hosted_device_info() -> Dict[str, str]:
-    """Gets basic information of the hosted device.
-
-    Returns:
-        dict:
-        A dictionary of key-value pairs with device type, operating system, os version.
-    """
-    if models.settings.os == enums.SupportedPlatforms.macOS:
-        system_kernel = (
-            subprocess.check_output("sysctl hw.model", shell=True)
-            .decode("utf-8")
-            .splitlines()
-        )
-        device = util.extract_str(system_kernel[0].split(":")[1])
-    elif models.settings.os == enums.SupportedPlatforms.windows:
-        device = (
-            subprocess.getoutput("WMIC CSPRODUCT GET VENDOR")
-            .replace("Vendor", "")
-            .strip()
+    if models.settings.physical_cores == models.settings.logical_cores:
+        output = (
+            f"You're running {system}, with {models.settings.physical_cores} "
+            f"physical cores, and {models.settings.logical_cores} logical cores. "
         )
     else:
-        device = (
-            subprocess.check_output(
-                "cat /sys/devices/virtual/dmi/id/product_name", shell=True
-            )
-            .decode("utf-8")
-            .strip()
+        output = f"You're running {system}, with {models.settings.physical_cores} CPU cores. "
+
+    ram = support.size_converter(models.settings.ram)
+    disk = support.size_converter(models.settings.disk)
+
+    if vitals:
+        ram_used = support.size_converter(psutil.virtual_memory().used)
+        ram_percent = f"{util.format_nos(psutil.virtual_memory().percent)}%"
+        disk_used = support.size_converter(psutil.disk_usage("/").used)
+        disk_percent = f"{util.format_nos(psutil.disk_usage('/').percent)}%"
+        output += (
+            f"Your drive capacity is {disk}. You have used up {disk_used} at {disk_percent}. "
+            f"Your RAM capacity is {ram}. You are currently utilizing {ram_used} at {ram_percent}. "
         )
-    platform_info = platform.platform(terse=True).split("-")
-    device_data = {
-        "device": device,
-        "os_name": platform_info[0],
-        "os_version": platform_info[1],
-    }
-    shared.hosted_device = device_data
-    return device_data
+        # noinspection PyUnboundLocalVariable
+        output += f"Your CPU usage is at {cpu_percent.get()}%. "
+    else:
+        output += f"Your drive capacity is {disk}. Your RAM capacity is {ram}. "
+
+    output += (
+        f"Your {models.settings.device} was last booted on {restart_time}. "
+        f"Current boot time is: {restart_duration}. "
+    )
+
+    support.write_screen(text=output)
+    speaker.speak(text=output)

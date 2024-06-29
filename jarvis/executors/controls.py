@@ -15,15 +15,7 @@ import pybrightness
 import pywslocker
 from docker.errors import APIError, ContainerError, DockerException
 
-from jarvis.executors import (
-    alarm,
-    files,
-    listener_controls,
-    remind,
-    system,
-    volume,
-    word_match,
-)
+from jarvis.executors import alarm, files, listener_controls, remind, volume, word_match
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.database import database
@@ -52,8 +44,7 @@ def restart(ask: bool = True) -> None:
     """
     if ask:
         speaker.speak(
-            text=f"{random.choice(conversation.confirmation)} restart your "
-            f"{shared.hosted_device.get('device', 'machine')}?",
+            text=f"{random.choice(conversation.confirmation)} restart your {models.settings.device or 'machine'}?",
             run=True,
         )
         converted = listener.listen()
@@ -66,7 +57,11 @@ def restart(ask: bool = True) -> None:
         elif models.settings.os == enums.SupportedPlatforms.windows:
             os.system("shutdown /r /t 1")
         else:
-            os.system(f"echo {models.env.root_password} | sudo -S reboot")
+            if models.env.root_password:
+                os.system(f"echo {models.env.root_password} | sudo -S reboot")
+            else:
+                support.no_env_vars()
+                return
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")
@@ -197,11 +192,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
             speaker.speak(text="Invalid request to restart.")
         return
     if phrase:
-        if not shared.hosted_device.get("device"):
-            system.hosted_device_info()
-        logger.info(
-            "Restart for %s has been requested.", shared.hosted_device.get("device")
-        )
+        logger.info("Restart for %s has been requested.", models.settings.device)
         restart()
     else:
         speaker.speak(
@@ -301,7 +292,11 @@ def shutdown(*args, proceed: bool = False) -> None:
         elif models.settings.os == enums.SupportedPlatforms.windows:
             os.system("shutdown /s /t 1")
         else:
-            os.system(f"echo {models.env.root_password} | sudo -S shutdown -P now")
+            if models.env.root_password:
+                os.system(f"echo {models.env.root_password} | sudo -S shutdown -P now")
+            else:
+                support.no_env_vars()
+                return
         raise StopSignal
     else:
         speaker.speak(text=f"Machine state is left intact {models.env.title}!")

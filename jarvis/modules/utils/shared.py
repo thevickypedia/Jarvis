@@ -17,7 +17,6 @@ offline_caller = None
 tv = {}
 
 processes = {}
-hosted_device = {}
 
 called = {
     "report": False,

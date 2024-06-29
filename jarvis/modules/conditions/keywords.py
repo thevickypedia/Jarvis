@@ -70,7 +70,12 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
             "what's the time",
             "whats the time",
         ],
-        system_info=["configuration", "system config"],
+        system_info=[
+            "system configuration",
+            "system config",
+            "system info",
+            "system information",
+        ],
         ip_info=["address"],
         news=["news"],
         report=["report"],

@@ -136,14 +136,6 @@ class DependencyError(Exception):
     """
 
 
-class MissingEnvVars(ValueError):
-    """Custom ``ValueError`` to indicate missing env vars.
-
-    >>> MissingEnvVars
-
-    """
-
-
 class InvalidArgument(ValueError):
     """Custom ``ValueError`` to indicate invalid args.
 

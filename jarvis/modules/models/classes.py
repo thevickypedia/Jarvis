@@ -13,7 +13,6 @@ import platform
 import re
 import socket
 import sys
-from collections import ChainMap
 from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
@@ -43,8 +42,7 @@ from pyhtcc import Zone
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
-from jarvis.modules.models import enums
-from jarvis.modules.peripherals import channel_type, get_audio_devices
+from jarvis.modules.models import enums, squire
 
 AUDIO_DRIVER = pyttsx3.init()
 
@@ -63,22 +61,19 @@ class Settings(BaseModel):
     pid: PositiveInt = os.getpid()
     pname: str = current_process().name
     ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
+    disk: PositiveInt | PositiveFloat = psutil.disk_usage("/").total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
     limited: bool = True if physical_cores < 4 else False
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
+    _platform_info: str = platform.platform(terse=True).split("-")
+    device: str = re.sub(r"\..*", "", platform.node() or socket.gethostname())
+    os_name: str = _platform_info[0]
+    os_version: str = _platform_info[1]
+    distro: str = squire.get_distributor_info_linux()
+
     os: str = platform.system()
-    if os not in (
-        enums.SupportedPlatforms.macOS,
-        enums.SupportedPlatforms.linux,
-        enums.SupportedPlatforms.windows,
-    ):
-        raise UnsupportedOS(
-            f"\n{''.join('*' for _ in range(80))}\n\n"
-            "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
-            f"\n{''.join('*' for _ in range(80))}\n"
-        )
     legacy: bool = False
     if os == enums.SupportedPlatforms.macOS and Version(
         platform.mac_ver()[0]
@@ -88,8 +83,19 @@ class Settings(BaseModel):
 
 settings = Settings()
 # Intermittently changes to Windows_NT because of pydantic
-if settings.os.startswith("Windows"):
-    settings.os = "Windows"
+if settings.os.startswith(enums.SupportedPlatforms.windows.value):
+    settings.os = enums.SupportedPlatforms.windows.value
+
+if settings.os not in (
+    enums.SupportedPlatforms.macOS,
+    enums.SupportedPlatforms.linux,
+    enums.SupportedPlatforms.windows,
+):
+    raise UnsupportedOS(
+        f"\n{''.join('*' for _ in range(80))}\n\n"
+        "Currently Jarvis can run only on Linux, Mac and Windows OS.\n\n"
+        f"\n{''.join('*' for _ in range(80))}\n"
+    )
 
 
 class WiFiConnection(BaseModel):
@@ -158,40 +164,7 @@ class RecognizerSettings(BaseModel):
     non_speaking_duration: PositiveInt | float = 2
 
 
-def handle_multiform(form_list: List[str]) -> List[int]:
-    """Handles ignore_hours in the format 7-10.
-
-    Args:
-        form_list: Takes the split string as an argument.
-
-    Returns:
-        List[int]:
-        List of hours as integers.
-
-    Raises:
-        ValueError:
-        In case of validation errors.
-    """
-    form_list[0] = form_list[0].strip()
-    form_list[1] = form_list[1].strip()
-    try:
-        assert form_list[0].isdigit()
-        assert form_list[1].isdigit()
-    except AssertionError:
-        raise ValueError(
-            "string format can either be start-end (7-10) or just the hour by itself (7)"
-        )
-    start_hour = int(form_list[0])
-    end_hour = int(form_list[1])
-    if start_hour <= end_hour:
-        # Handle the case where the range is not wrapped around midnight
-        v = list(range(start_hour, end_hour + 1))
-    else:
-        # Handle the case where the range wraps around midnight
-        v = list(range(start_hour, 24)) + list(range(0, end_hour + 1))
-    return v
-
-
+# noinspection PyMethodParameters
 class BackgroundTask(BaseModel):
     """Custom links model."""
 
@@ -200,93 +173,18 @@ class BackgroundTask(BaseModel):
     ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = []
 
     @field_validator("task", mode="before", check_fields=True)
-    def check_empty_string(cls, v, values, **kwargs):  # noqa
+    def check_empty_string(cls, value):
         """Validate task field in tasks."""
-        if v:
-            return v
+        if value:
+            return value
         raise ValueError("bad value")
 
     @field_validator("ignore_hours", check_fields=True)
-    def check_hours_format(cls, v, values, **kwargs):  # noqa
+    def check_hours_format(cls, value) -> List[int]:
         """Validate each entry in ignore hours list."""
-        if not v:
+        if not value:
             return []
-        if isinstance(v, int):
-            if v < 0 or v > 24:
-                raise ValueError("24h format cannot be less than 0 or greater than 24")
-            v = [v]
-        elif isinstance(v, str):
-            form_list = v.split("-")
-            if len(form_list) == 1:
-                try:
-                    assert form_list[0].isdigit()
-                except AssertionError:
-                    raise ValueError(
-                        "string format can either be start-end (7-10) or just the hour by itself (7)"
-                    )
-                else:
-                    v = [int(form_list[0])]
-            elif len(form_list) == 2:
-                v = handle_multiform(form_list)
-            else:
-                raise ValueError(
-                    "string format can either be start-end (7-10) or just the hour by itself (7)"
-                )
-        refined = []
-        for multiple in v:
-            if isinstance(multiple, str):
-                # comes back as a list of string
-                refined.extend(handle_multiform(multiple.split("-")))
-            else:
-                refined.append(multiple)
-        if refined:
-            v = refined
-        for hour in v:
-            try:
-                datetime.strptime(str(hour), "%H")
-            except ValueError:
-                raise ValueError("ignore hours should be 24H format")
-        return v
-
-
-def channel_validator(
-    value: int | PositiveInt, ch_type: str
-) -> int | PositiveInt | None:
-    """Channel validator for camera and microphone index.
-
-    Args:
-        value: Index of the device.
-        ch_type: Input/output.
-
-    Returns:
-        int | PositiveInt | None:
-        Returns the validated device index.
-    """
-    if ch_type == "input":
-        channels = channel_type.input_channels
-    else:
-        channels = channel_type.output_channels
-    if not value:
-        return
-    if int(value) in list(
-        map(
-            lambda tag: tag["index"],
-            get_audio_devices(channels),
-        )
-    ):
-        return value
-    else:
-        complicated = dict(
-            ChainMap(
-                *list(
-                    map(
-                        lambda tag: {tag["index"]: tag["name"]},
-                        get_audio_devices(channels),
-                    )
-                )
-            )
-        )
-        raise InvalidEnvVars(f"value should be one of {complicated}")
+        return squire.parse_ignore_hours(value)
 
 
 # noinspection PyMethodParameters
@@ -521,13 +419,13 @@ class EnvConfig(BaseSettings):
         cls, value: int | PositiveInt
     ) -> int | PositiveInt | None:
         """Validates microphone index."""
-        return channel_validator(value, "input")
+        return squire.channel_validator(value, "input")
 
     @field_validator("speaker_index", mode="before", check_fields=True)
     def parse_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage (currently the index value is unused)
-        return channel_validator(value, "output")
+        return squire.channel_validator(value, "output")
 
     @field_validator("birthday", mode="before", check_fields=True)
     def parse_birthday(cls, value: str) -> str | None:
@@ -599,7 +497,7 @@ def env_loader(key, default) -> EnvConfig:
         return EnvConfig.from_env_file(env_file)
     else:
         raise ValueError(
-            f"\n\tUnsupported format for 'env_file', can be one of (.json, .yaml, .yml, .txt, .text, {default})"
+            f"\n\tUnsupported format for {key!r}, can be one of (.json, .yaml, .yml, .txt, .text, {default})"
         )
 
 

@@ -28,8 +28,9 @@ def get_webhook_origin(retry: int) -> str:
     """
     if models.env.bot_webhook:
         return str(models.env.bot_webhook)
+    logger.info("Attempting to connect via webhook. ETA: 60 seconds.")
     for i in range(retry):
-        if url := internet.get_tunnel():
+        if url := internet.get_tunnel(False):
             logger.info(
                 "Public URL was fetched on %s attempt", support.ENGINE.ordinal(i + 1)
             )

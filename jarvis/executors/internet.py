@@ -217,7 +217,7 @@ def speed_test(*args) -> None:
     )
 
 
-def get_tunnel() -> HttpUrl:
+def get_tunnel(log: bool = True) -> HttpUrl:
     """Checks for any active public URL tunneled using Ngrok.
 
     Returns:
@@ -236,4 +236,4 @@ def get_tunnel() -> HttpUrl:
                     if int(hosted.split(":")[-1]) == models.env.offline_port:
                         return tunnel.get("public_url")
     except EgressErrors + (requests.JSONDecodeError,) as error:
-        logger.error(error)
+        logger.error(error) if log else None

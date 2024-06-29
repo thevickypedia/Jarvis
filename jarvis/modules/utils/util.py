@@ -301,21 +301,21 @@ def extract_nos(input_: str, method: type = float) -> int | float:
     if value := re.findall(r"\d+", input_):
         if method == float:
             try:
-                return method(".".join(value))
+                return format_nos(method(".".join(value)))
             except ValueError:
                 method = int
         if method == int:
             return method("".join(value))
 
 
-def format_nos(input_: float) -> int:
+def format_nos(input_: float) -> int | float:
     """Removes ``.0`` float values.
 
     Args:
         input_: Strings or integers with ``.0`` at the end.
 
     Returns:
-        int:
+        int | float:
         Int if found, else returns the received float value.
     """
     return int(input_) if isinstance(input_, float) and input_.is_integer() else input_

@@ -24,7 +24,6 @@ from jarvis.modules.exceptions import (
     DependencyError,
     EgressErrors,
     InvalidEnvVars,
-    MissingEnvVars,
 )
 from jarvis.modules.models.classes import (
     AUDIO_DRIVER,
@@ -194,14 +193,6 @@ def _main_process_validations() -> None:
 def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
     main = True if settings.pname == "JARVIS" else False
-    # Validate root password present for linux systems
-    if settings.os == SupportedPlatforms.linux:
-        if not env.root_password:
-            raise MissingEnvVars(
-                "Linux requires the host machine's password to be set as the env var: "
-                "ROOT_PASSWORD due to terminal automations."
-            )
-
     if settings.legacy:
         warnings.warn(
             f"\nmacOS {platform.mac_ver()[0]} will be deprecated in the near future\n"

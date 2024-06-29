@@ -729,6 +729,13 @@ Models
    :members:
    :undoc-members:
 
+Squire
+======
+
+.. automodule:: jarvis.modules.models.squire
+   :members:
+   :undoc-members:
+
 ----------Modules----------
 ===========================
 Audio
