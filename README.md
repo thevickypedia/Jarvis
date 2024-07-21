@@ -113,7 +113,7 @@ jarvis start
 > Use `jarvis --help` for usage instructions.
 
 ## Prerequisites
-   - **MacOS** <br> _Tested on **macOS High Sierra, Mojave, Catalina, Big Sur, Monterey and Ventura**_
+   - **MacOS** <br> _Tested on **Mojave, Catalina, Big Sur, Monterey and Ventura**_
      - `System Preferences` → `Security & Privacy` → `Privacy`
      - Click `+` sign and add the preferred `IDE` and `Terminal` in the following sections in left pane.
        - `Microphone` - **Required** to listen and respond.

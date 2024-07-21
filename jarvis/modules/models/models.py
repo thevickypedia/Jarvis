@@ -7,7 +7,6 @@
 
 import os
 import pathlib
-import platform
 import warnings
 from importlib import metadata
 
@@ -128,37 +127,15 @@ def _set_default_voice_name() -> None:
 
 def _main_process_validations() -> None:
     """Validations that should happen only when the main process is triggered."""
-    if settings.legacy:
-        try:
-            assert WAKE_WORD_DETECTOR == "1.6.0"
-        except AssertionError:
-            raise DependencyError(
-                "Legacy macOS is only supported with porcupine version 1.6.0"
-            )
-        pvporcupine.KEYWORD_PATHS = {}
-        base_path = os.path.dirname(pvporcupine.__file__)
-        pvporcupine.MODEL_PATH = os.path.join(
-            base_path, "lib/common/porcupine_params.pv"
+    try:
+        # 3.0.2 is the last tested version on macOS - arm64 - 14.5
+        assert WAKE_WORD_DETECTOR == "1.9.5" or Version(WAKE_WORD_DETECTOR) >= Version(
+            "3.0.2"
         )
-        pvporcupine.LIBRARY_PATH = os.path.join(
-            base_path, "lib/mac/x86_64/libpv_porcupine.dylib"
+    except AssertionError:
+        raise DependencyError(
+            f"{settings.os} is only supported with porcupine versions 1.9.5 or 3.0.2 and above (requires key)"
         )
-
-        # Iterates over the available flash files, to override the object reference
-        for x in os.listdir(os.path.join(base_path, "resources/keyword_files/mac/")):
-            pvporcupine.KEYWORD_PATHS[x.split("_")[0]] = os.path.join(
-                base_path, f"resources/keyword_files/mac/{x}"
-            )
-    else:
-        try:
-            # 3.0.2 is the last tested version on macOS - arm64 - 14.5
-            assert WAKE_WORD_DETECTOR == "1.9.5" or Version(
-                WAKE_WORD_DETECTOR
-            ) >= Version("3.0.2")
-        except AssertionError:
-            raise DependencyError(
-                f"{settings.os} is only supported with porcupine versions 1.9.5 or 3.0.2 and above (requires key)"
-            )
 
     for keyword in env.wake_words:
         if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(
@@ -193,13 +170,6 @@ def _main_process_validations() -> None:
 def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
     main = True if settings.pname == "JARVIS" else False
-    if settings.legacy:
-        warnings.warn(
-            f"\nmacOS {platform.mac_ver()[0]} will be deprecated in the near future\n"
-            f"Please upgrade to 10.14 or above to continue using Jarvis",
-            DeprecationWarning,
-        )
-
     if voice_names := [__voice.name for __voice in voices]:
         if not env.voice_name:
             _set_default_voice_name()
@@ -325,10 +295,18 @@ def _global_validations() -> None:
 
 
 _global_validations()
+
 # Required at top level to let other modules access it
 if env.temperature_unit == TemperatureUnits.IMPERIAL:
     temperature_symbol = "F"
 elif env.temperature_unit == TemperatureUnits.METRIC:
     temperature_symbol = "C"
-if settings.pname in ("JARVIS", "pre_commit"):
+
+if settings.pname in (
+    "JARVIS",
+    "pre_commit",
+    "startup_script",
+    "plot_mic",
+    "crontab_executor",
+):
     _main_process_validations()

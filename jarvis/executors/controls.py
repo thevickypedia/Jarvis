@@ -341,7 +341,7 @@ def starter() -> None:
 
     Methods:
         - put_listener_state: To activate listener enabling voice conversations.
-        - volume: To default the master volume 50%.
+        - volume: To default the master volume a specific percent.
         - voices: To change the voice to default value.
         - delete_logs: To purge log files older than the set log retention time.
         - delete_pycache: To purge pycache directories.

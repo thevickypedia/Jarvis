@@ -43,12 +43,8 @@ def constructor() -> Dict[str, str | List[float] | List[str]]:
     if models.WAKE_WORD_DETECTOR == "1.9.5":
         arguments["library_path"] = pvporcupine.LIBRARY_PATH
         keyword_paths = [pvporcupine.KEYWORD_PATHS[x] for x in models.env.wake_words]
-        if models.settings.legacy:
-            arguments["model_file_path"] = pvporcupine.MODEL_PATH
-            arguments["keyword_file_paths"] = keyword_paths
-        else:
-            arguments["model_path"] = pvporcupine.MODEL_PATH
-            arguments["keyword_paths"] = keyword_paths
+        arguments["model_path"] = pvporcupine.MODEL_PATH
+        arguments["keyword_paths"] = keyword_paths
     elif Version(models.WAKE_WORD_DETECTOR) >= Version("3.0.2"):
         arguments["access_key"] = models.env.porcupine_key
     else:
@@ -149,7 +145,6 @@ class Activator:
     def start(self) -> None:
         """Runs ``audio_stream`` in a forever loop and calls ``initiator`` when the phrase ``Jarvis`` is heard."""
         try:
-            wake_len = len(models.env.wake_words)
             support.write_screen(text=self.label)
             while True:
                 result = self.detector.process(
@@ -161,14 +156,8 @@ class Activator:
                         ),
                     )
                 )
-                if models.settings.legacy:
-                    if wake_len == 1 and result:
-                        self.executor()
-                    elif wake_len > 1 and result >= 0:
-                        self.executor()
-                else:
-                    if result >= 0:
-                        self.executor()
+                if result >= 0:
+                    self.executor()
                 if models.settings.limited:
                     continue
                 restart_checker()

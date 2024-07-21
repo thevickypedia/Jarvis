@@ -61,14 +61,8 @@ if models.settings.pname == "jarvis_api":  # Avoid looping when called by subpro
         app.include_router(router)
 
 
-@app.on_event(event_type="startup")
-async def startup_func() -> None:
-    """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
-    logger.info(
-        "Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port
-    )
-    if models.env.author_mode:
-        Thread(target=stockanalysis_squire.nasdaq).start()
+def startup() -> None:
+    """Runs startup scripts (``.py``, ``.sh``, ``.zsh``) stored in ``fileio/startup`` directory."""
     if not os.path.isdir(models.fileio.startup_dir):
         return
     for startup_script in os.listdir(models.fileio.startup_dir):
@@ -102,3 +96,14 @@ async def startup_func() -> None:
             logger.warning(
                 "Unsupported file format for startup script: %s", startup_script
             )
+
+
+@app.on_event(event_type="startup")
+async def startup_func() -> None:
+    """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
+    logger.info(
+        "Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port
+    )
+    if models.env.author_mode:
+        Thread(target=stockanalysis_squire.nasdaq).start()
+    startup()

@@ -74,11 +74,13 @@ class Settings(BaseModel):
     distro: str = squire.get_distributor_info_linux()
 
     os: str = platform.system()
-    legacy: bool = False
     if os == enums.SupportedPlatforms.macOS and Version(
         platform.mac_ver()[0]
     ) < Version("10.14"):
-        legacy: bool = True
+        raise DeprecationWarning(
+            f"\nmacOS {platform.mac_ver()[0]} has been deprecated\n"
+            f"Please upgrade to 10.14 or above to continue using Jarvis",
+        )
 
 
 settings = Settings()
@@ -354,11 +356,7 @@ class EnvConfig(BaseSettings):
     wifi_password: str | None = None
     connection_retry: PositiveInt | PositiveFloat = 10
 
-    # Legacy macOS config
-    if settings.legacy:
-        wake_words: List[str] = ["alexa"]
-    else:
-        wake_words: List[str] = ["jarvis"]
+    wake_words: List[str] = ["jarvis"]
 
     class Config:
         """Environment variables configuration."""
