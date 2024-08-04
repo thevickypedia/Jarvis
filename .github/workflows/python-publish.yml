@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Set dry-run
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
+          if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "::notice title=DryRun::Setting dry run to true for '${{ github.event_name }}' event"
             echo "dry_run=true" >> $GITHUB_ENV
           else
