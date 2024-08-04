@@ -1,5 +1,8 @@
 name: pypi-publish
 
+permissions:
+  contents: read
+
 on:
   release:
     types:
@@ -9,6 +12,7 @@ on:
       - master
     paths:
       - jarvis/**
+      - 'pyproject.toml'
   workflow_dispatch:
 
 jobs:

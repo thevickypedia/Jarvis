@@ -1,5 +1,8 @@
 name: none-shall-pass
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
@@ -7,9 +10,6 @@ on:
       - master
     paths:
       - '**/*.md'
-      - '!jarvis/**'
-      - '!docs/**'
-      - '!docs_gen/**'
 
 jobs:
   none-shall-pass:
