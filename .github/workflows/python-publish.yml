@@ -12,8 +12,15 @@ on:
       - master
     paths:
       - jarvis/**
-      - 'pyproject.toml'
+      - pyproject.toml
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dry run mode
+        required: true
+        options:
+          - "true"
+          - "false"
 
 jobs:
   pypi-publisher:
@@ -21,7 +28,10 @@ jobs:
     steps:
       - name: Set dry-run
         run: |
-          if [[ "${{ github.event_name }}" == "push" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "::notice title=DryRun::Setting dry run to ${{ inputs.dry_run }} for '${{ github.event_name }}' event"
+            echo "dry_run=${{ inputs.dry_run }}" >> $GITHUB_ENV
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
             echo "::notice title=DryRun::Setting dry run to true for '${{ github.event_name }}' event"
             echo "dry_run=true" >> $GITHUB_ENV
           else

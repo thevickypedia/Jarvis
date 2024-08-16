@@ -18,7 +18,6 @@ DEFAULT_FORMATTER = logging.Formatter(
     datefmt="%b-%d-%Y %I:%M:%S %p", fmt=DEFAULT_LOG_FORM
 )
 
-importlib.reload(module=logging)
 dictConfig(
     {
         "version": 1,
@@ -50,6 +49,7 @@ def multiprocessing_logger(
         str:
         Actual log filename with datetime converted.
     """
+    importlib.reload(logging)
     logger.propagate = False
     # Remove existing handlers
     for _handler in logger.handlers:

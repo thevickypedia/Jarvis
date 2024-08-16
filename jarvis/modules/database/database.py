@@ -4,7 +4,6 @@
 
 """
 
-import importlib
 import logging
 import os
 import random
@@ -57,8 +56,6 @@ class __TestDatabase:
 
     def __init__(self):
         """Initiates all the imported modules and creates a database file named ``sample``."""
-        importlib.reload(module=logging)
-
         handler = logging.StreamHandler()
         fmt_ = logging.Formatter(
             fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",

@@ -31,6 +31,10 @@ threat
 alarm
 reminder
 
+# pip build
+build/
+jarvis_ironman.egg-info/
+
 # sphinx docs builder within docs_gen
 docs_gen/_build
 docs_gen/_static

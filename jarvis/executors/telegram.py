@@ -1,5 +1,3 @@
-import importlib
-import logging
 import os
 import time
 from urllib.parse import urljoin
@@ -10,8 +8,6 @@ from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.utils import support
-
-importlib.reload(module=logging)
 
 FAILED_CONNECTIONS = {"count": 0}
 

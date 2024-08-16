@@ -7,7 +7,7 @@
 
 ![Python][label-pyversion]
 ![Pypi-downloads][label-pypi-downloads]
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/thevickypedia/Jarvis/badge)](https://securityscorecards.dev/viewer/?uri=github.com/thevickypedia/Jarvis)
+[![OpenSSF Scorecard][label-open-ssf]][link-open-ssf]
 
 **Platform Supported**
 
@@ -267,3 +267,6 @@ Licensed under the [MIT License][license]
 [label-maintainer]: https://img.shields.io/badge/Maintained%20By-Vignesh%20Rao-blue.svg
 
 [label-askme]: https://img.shields.io/badge/SELECT%20*%20FROM-questions-1abc9c.svg
+
+[label-open-ssf]: https://api.securityscorecards.dev/projects/github.com/thevickypedia/Jarvis/badge
+[link-open-ssf]: https://securityscorecards.dev/viewer/?uri=github.com/thevickypedia/Jarvis

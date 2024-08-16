@@ -10,7 +10,6 @@ See Also:
     - Creates a multiprocessing log wrapper, and adds a filter to include custom process name in the logger format.
 """
 
-import importlib
 import logging
 import os
 import pathlib
@@ -30,7 +29,6 @@ if not os.path.isfile(api_config.DEFAULT_LOG_FILENAME):
     pathlib.Path(api_config.DEFAULT_LOG_FILENAME).touch()
 
 # Configure logging
-importlib.reload(module=logging)
 dictConfig(config=api_config.LOG_CONFIG)
 logging.getLogger(
     "uvicorn.access"

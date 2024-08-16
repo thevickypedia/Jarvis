@@ -5,16 +5,12 @@
 
 """
 
-import importlib
-import logging
 import os
 from typing import Callable
 
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger
-
-importlib.reload(module=logging)
 
 
 def audio_converter_mac() -> Callable:
