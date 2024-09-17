@@ -6,6 +6,7 @@ from typing import Callable
 version = "5.1.0"
 
 
+# todo: gather and join all processes that are triggered
 def __preflight_check__() -> Callable:
     """Startup validator that imports Jarvis' main module to validate all dependencies' installation status.
 

@@ -179,6 +179,7 @@ def run_new_container(client: DockerClient) -> str:
         # This may take a while depending on image availability
         logger.info("Spinning up a new docker container to run speech-synthesis API")
         result = client.containers.run(
+            name="speech-synthesis",
             image="thevickypedia/speech-synthesis",
             ports={"5002/tcp": models.env.speech_synthesis_port},
             environment=[f"HOME={models.env.home}"],

@@ -1,0 +1,17 @@
+services:
+  speech-synthesis:
+    image: thevickypedia/speech-synthesis:latest
+    container_name: speech-synthesis
+    restart: always
+    ports:
+      - "5002:5002"
+    environment:
+      HOME: "${HOME}"
+    working_dir: "${PWD}"
+    volumes:
+      - "${HOME}:${HOME}"
+      - /usr/share/ca-certificates:/usr/share/ca-certificates
+      - /etc/ssl/certs:/etc/ssl/certs
+    user: "${UID}:${GID}"
+    stdin_open: true
+    tty: true
