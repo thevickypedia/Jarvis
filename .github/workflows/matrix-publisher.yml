@@ -44,11 +44,8 @@ jobs:
           python update-toml.py pyproject.toml "${{ matrix.project_names }}"
         shell: bash
 
-      - name: Echo pyproject.toml
-        run: cat pyproject.toml
+      - name: Build the package
+        run: |
+          rm -rf dist/ build/ *.egg-info
+          python -m build
         shell: bash
-
-      - uses: thevickypedia/pypi-publisher@v3
-        with:
-          dry-run: ${{ env.dry_run }}
-          token: ${{ secrets.PYPI_TOKEN }}
