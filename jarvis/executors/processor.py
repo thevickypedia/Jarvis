@@ -2,8 +2,6 @@ import os
 from multiprocessing import Process
 from typing import Dict, List
 
-import psutil
-
 from jarvis.executors import process_map
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
@@ -121,14 +119,8 @@ def stop_child_processes() -> None:
     logger.info(children)
     for category, pids in children.items():
         for pid in pids:
-            try:
-                proc = psutil.Process(pid=pid)
-            except psutil.NoSuchProcess:
-                # Occurs commonly since child processes run only for a short time and `INSERT or REPLACE` leaves dupes
-                logger.debug("Process [%s] PID not found %d", category, pid)
-                continue
             logger.info("Stopping process [%s] with PID: %d", category, pid)
-            support.stop_process(pid=proc.pid)
+            support.stop_process(pid=pid)
 
 
 def stop_processes(func_name: str = None) -> None:

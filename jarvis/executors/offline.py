@@ -23,6 +23,7 @@ from jarvis.executors import (
     listener_controls,
     others,
     remind,
+    resource_tracker,
     weather_monitor,
     word_match,
 )
@@ -120,7 +121,7 @@ def background_task_runner() -> None:
             if "weather" in exec_task.lower():
                 # run as daemon and not store in children table as this won't take long
                 logger.debug("Initiating weather alert monitor")
-                Process(target=weather_monitor.monitor, daemon=True).start()
+                resource_tracker.semaphores(weather_monitor.monitor)
             else:
                 logger.debug("Executing: '%s'", exec_task)
                 try:
@@ -222,7 +223,7 @@ def background_task_runner() -> None:
                     "day", datetime.now().strftime("%A")
                 ) == datetime.now().strftime("%A"):
                     logger.info("Executing alarm: %s", alarmer)
-                    Process(target=alarm.executor).start()
+                    resource_tracker.semaphores(alarm.executor)
                     if not alarmer["repeat"]:
                         copied_alarms.remove(alarmer)
             if copied_alarms != alarms:

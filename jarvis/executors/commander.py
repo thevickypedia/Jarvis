@@ -1,7 +1,6 @@
 import random
 import time
 import traceback
-from multiprocessing import Process
 from threading import Thread
 from typing import Tuple
 
@@ -11,6 +10,7 @@ from jarvis.executors import (
     listener_controls,
     offline,
     others,
+    resource_tracker,
     word_match,
 )
 from jarvis.modules.audio import speaker
@@ -85,9 +85,9 @@ def timed_delay(phrase: str) -> Tuple[str, int | float]:
         split_ = phrase.split("after")
         if task := split_[0].strip():
             delay = util.delay_calculator(phrase=split_[1].strip())
-            Process(
-                target=delay_condition, kwargs={"phrase": task, "delay": delay}
-            ).start()
+            resource_tracker.semaphores(
+                delay_condition, kwargs={"phrase": task, "delay": delay}
+            )
             return task, delay
 
 

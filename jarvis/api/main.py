@@ -2,7 +2,6 @@ import os
 import pathlib
 import shutil
 from datetime import datetime
-from multiprocessing import Process
 from threading import Thread
 
 from fastapi import FastAPI
@@ -12,7 +11,7 @@ from jarvis import version
 from jarvis.api import routers
 from jarvis.api.logger import logger
 from jarvis.api.squire import discover, stockanalysis_squire
-from jarvis.executors import crontab
+from jarvis.executors import crontab, resource_tracker
 from jarvis.modules.models import models
 
 # Initiate API
@@ -89,9 +88,9 @@ def startup() -> None:
             log_file = datetime.now().strftime(
                 os.path.join("logs", "startup_script_%d-%m-%Y.log")
             )
-            Process(
-                target=crontab.executor, args=(script, log_file, "startup_script")
-            ).start()
+            resource_tracker.semaphores(
+                crontab.executor, (script, log_file, "startup_script")
+            )
         else:
             logger.warning(
                 "Unsupported file format for startup script: %s", startup_script

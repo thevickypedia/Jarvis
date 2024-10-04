@@ -56,6 +56,7 @@ TABLES = {
         "guard",
         "surveillance",
         "plot_mic",
+        "undefined",
     ),
     "vpn": ("state",),
     "party": ("pid",),

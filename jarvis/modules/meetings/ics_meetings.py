@@ -8,7 +8,7 @@
 import datetime
 import sqlite3
 import time
-from multiprocessing import Process, Queue
+from multiprocessing import Queue
 
 # noinspection PyProtectedMember
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
@@ -17,7 +17,7 @@ from typing import List
 
 import requests
 
-from jarvis.executors import word_match
+from jarvis.executors import resource_tracker, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
@@ -197,14 +197,14 @@ def meetings(phrase: str) -> None:
             % (meeting_status[1], datetime.datetime.now().strftime("%Y_%m_%d"))
         )
         logger.info("Starting adhoc process to update ics table.")
-        Process(target=meetings_writer).start()
+        resource_tracker.semaphores(meetings_writer)
         speaker.speak(
             text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two."
         )
     else:
         if shared.called_by_offline:
             logger.info("Starting adhoc process to get meetings from ICS.")
-            Process(target=meetings_writer).start()
+            resource_tracker.semaphores(meetings_writer)
             speaker.speak(
                 text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two."
             )

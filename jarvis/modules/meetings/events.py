@@ -10,7 +10,6 @@ import re
 import sqlite3
 import subprocess
 from datetime import datetime
-from multiprocessing import Process
 
 # noinspection PyProtectedMember
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
@@ -18,6 +17,7 @@ from multiprocessing.pool import ThreadPool
 
 import pynotification
 
+from jarvis.executors import resource_tracker
 from jarvis.modules.audio import speaker
 from jarvis.modules.database import database
 from jarvis.modules.logger import logger
@@ -177,7 +177,7 @@ def events(*args) -> None:
             datetime.now().strftime("%Y_%m_%d"),
         )
         logger.info("Starting adhoc process to update %s table.", models.env.event_app)
-        Process(target=events_writer).start()
+        resource_tracker.semaphores(events_writer)
         speaker.speak(
             text=f"Events table is outdated {models.env.title}. Please try again in a minute or two."
         )
@@ -186,7 +186,7 @@ def events(*args) -> None:
             logger.info(
                 "Starting adhoc process to get events from %s.", models.env.event_app
             )
-            Process(target=events_writer).start()
+            resource_tracker.semaphores(events_writer)
             speaker.speak(
                 text=f"Events table is empty {models.env.title}. Please try again in a minute or two."
             )

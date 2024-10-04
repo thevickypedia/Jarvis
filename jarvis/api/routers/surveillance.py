@@ -209,7 +209,9 @@ async def video_feed(request: Request, token: str = None):
             detail="Requires authentication since endpoint uses single-use token.",
         )
     settings.surveillance.token = None
-    settings.surveillance.queue_manager[settings.surveillance.client_id] = Queue()
+    settings.surveillance.queue_manager[settings.surveillance.client_id] = Queue(
+        maxsize=10
+    )
     process = Process(
         target=surveillance_squire.gen_frames,
         kwargs={
