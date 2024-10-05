@@ -1,24 +1,35 @@
 name: matrix-publisher
 
 on:
+  release:
+    types:
+      - published
+  push:
+    branches:
+      - master
+    paths:
+      - jarvis/**
+      - pyproject.toml
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dry run?"
-        type: choice
+        description: Dry run mode
+        required: true
         options:
           - "true"
           - "false"
 
 jobs:
-  publisher:
+  pypi-publisher:
     runs-on: thevickypedia-lite
     strategy:
       fail-fast: false
       matrix:
         project_names:
+          - jarvis-ironman
           - jarvis-bot
           - jarvis-nlp
+          - natural-language-ui
 
     steps:
       - name: Checkout
@@ -44,7 +55,7 @@ jobs:
           python update-toml.py pyproject.toml "${{ matrix.project_names }}"
         shell: bash
 
-      - uses: thevickypedia/pypi-publisher@v3.2
+      - uses: thevickypedia/pypi-publisher@v3
         with:
           dry-run: ${{ env.dry_run }}
           token: ${{ secrets.PYPI_TOKEN }}
