@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+v6.0.0 (10/04/2024)
+-------------------
+- Includes support for ARM based macOS machines
+- Removed support for legacy macOS machines (older than High Sierra)
+- Restructured installation process
+- Includes a resource tracker to terminate all uncaught daemon processes
+- Makes ``root_password`` optional for Linux machines
+- Includes bug fixes and minor improvements to overall coding structure
+- Improved container orchestration using Docker API and email templates
+
 v5.1.0 (06/09/2024)
 -------------------
 - Includes fully operational CLI functionalities.
