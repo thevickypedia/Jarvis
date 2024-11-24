@@ -2,7 +2,7 @@ fail_fast: true
 exclude: ^(notebooks/|scripts/|.github/|docs/)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -31,13 +31,14 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
+    # Latest version is just ugly and does the opposite of a linter
     rev: 22.3.0
     hooks:
         - id: black
           exclude: docs_gen/
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.0
+    rev: 7.1.1
     hooks:
       - id: flake8
         additional_dependencies:

@@ -114,7 +114,7 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
 
     Returns:
         Dict[str, Dict[str, str]]:
-        A unique key value pair of custom phrase as key and an embedded dict of function name and phrase.
+        A unique key value pair, of custom phrase as key and an embedded dict of function name and phrase.
     """
     try:
         with open(models.fileio.conditions) as file:

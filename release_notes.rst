@@ -10,6 +10,7 @@ v6.0.0 (10/04/2024)
 - Makes ``root_password`` optional for Linux machines
 - Includes bug fixes and minor improvements to overall coding structure
 - Improved container orchestration using Docker API and email templates
+- **Full Changelog**: https://github.com/thevickypedia/Jarvis/compare/v5.1.0...v6.0.0
 
 v5.1.0 (06/09/2024)
 -------------------
