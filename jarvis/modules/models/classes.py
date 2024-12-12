@@ -45,6 +45,7 @@ from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
 from jarvis.modules.models import enums, squire
 
 AUDIO_DRIVER = pyttsx3.init()
+platform_info: List[str] = platform.platform(terse=True).split("-")
 
 
 class Settings(BaseModel):
@@ -67,11 +68,11 @@ class Settings(BaseModel):
     limited: bool = True if physical_cores < 4 else False
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
-    _platform_info: str = platform.platform(terse=True).split("-")
     device: str = re.sub(r"\..*", "", platform.node() or socket.gethostname())
-    os_name: str = _platform_info[0]
-    os_version: str = _platform_info[1]
-    distro: str = squire.get_distributor_info_linux()
+    os_name: str = platform_info[0]
+    os_version: str = platform_info[1]
+    distro: str = Field(default=squire.get_distributor_info_linux())
+    weather_onecall: bool = False
 
     os: str = platform.system()
     if os == enums.SupportedPlatforms.macOS and Version(
@@ -172,7 +173,9 @@ class BackgroundTask(BaseModel):
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = []
+    ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = Field(
+        default_factory=list
+    )
 
     @field_validator("task", mode="before", check_fields=True)
     def check_empty_string(cls, value):
@@ -215,7 +218,9 @@ class EnvConfig(BaseSettings):
 
     # Built-in speaker config
     voice_name: str | None = None
-    speech_rate: PositiveInt | PositiveFloat = AUDIO_DRIVER.getProperty("rate")
+    speech_rate: PositiveInt | PositiveFloat = Field(
+        default=AUDIO_DRIVER.getProperty("rate")
+    )
 
     # Peripheral config
     camera_index: int | PositiveInt | None = None
@@ -230,7 +235,7 @@ class EnvConfig(BaseSettings):
     birthday: str | None = None
     title: str = "sir"
     name: str = "Vignesh"
-    website: HttpUrl | List[HttpUrl] = []
+    website: HttpUrl | List[HttpUrl] = Field(default_factory=list)
     plot_mic: bool = True
     ntfy_url: HttpUrl | None = None
     ntfy_username: str | None = None
@@ -247,9 +252,14 @@ class EnvConfig(BaseSettings):
     ] = enums.StartupOptions.none
 
     # Third party api config
-    weather_api: str | None = None
-    maps_api: str | None = None
-    news_api: str | None = None
+    weather_apikey: str | None = None
+    # https://openweathermap.org/price has different URLs for different plans
+    # This parameter gives the freedom to choose between different endpoints
+    # Jarvis' code base currently follows: https://openweathermap.org/current
+    # Legacy: "https://api.openweathermap.org/data/2.5/onecall?"
+    weather_endpoint: HttpUrl = "https://api.openweathermap.org/data/2.5/weather"
+    maps_apikey: str | None = None
+    news_apikey: str | None = None
 
     # Machine learning model config
     ollama: bool = True
@@ -280,7 +290,7 @@ class EnvConfig(BaseSettings):
     sync_events: int | None = Field(None, ge=900, le=43_200)
 
     # Stock monitor apikey
-    stock_monitor_api: Dict[EmailStr, str] = {}
+    stock_monitor_api: Dict[EmailStr, str] = Field(default_factory=dict)
 
     # Surveillance config
     surveillance_endpoint_auth: str | None = None
@@ -330,8 +340,8 @@ class EnvConfig(BaseSettings):
 
     # Telegram config
     bot_token: str | None = None
-    bot_chat_ids: List[int] = []
-    bot_users: List[str] = []
+    bot_chat_ids: List[int] = Field(default_factory=list)
+    bot_users: List[str] = Field(default_factory=list)
     # Telegram Webhook specific
     bot_webhook: HttpUrl | None = None
     bot_webhook_ip: IPv4Address | None = None
@@ -356,7 +366,7 @@ class EnvConfig(BaseSettings):
     wifi_password: str | None = None
     connection_retry: PositiveInt | PositiveFloat = 10
 
-    wake_words: List[str] = ["jarvis"]
+    wake_words: List[str] = Field(["jarvis"])
 
     class Config:
         """Environment variables configuration."""
@@ -381,15 +391,37 @@ class EnvConfig(BaseSettings):
         """
         return cls(_env_file=filename)
 
+    @field_validator("weather_endpoint", mode="after", check_fields=True)
+    def validate_weather_endpoint(cls, value: HttpUrl) -> HttpUrl:
+        """Validates the weather endpoint."""
+        pattern = r"^https:\/\/api\.openweathermap\.org\/data\/(2\.5|3\.0)\/(weather|onecall)$"
+        try:
+            assert re.match(pattern, str(value))
+            settings.weather_onecall = str(value).endswith("onecall") or str(
+                value
+            ).endswith("onecall/")
+        except AssertionError:
+            issue_link = "https://github.com/thevickypedia/Jarvis/issues/new/choose"
+            raise ValueError(
+                "\n\nInvalid URL:\n"
+                "\t1. The URL scheme must be 'https'\n"
+                "\t2. The host must be 'api.openweathermap.org'\n"
+                "\t3. Versions can either be '2.5' or '3.0'\n"
+                "\t4. Finally the bearer must be 'data' pointing to 'weather' or 'onecall'\n\n"
+                # rf'Regex pattern: r"^https:\/\/api\.openweathermap\.org\/data\/(2\.5|3\.0)\/(weather|onecall)$"'
+                f"If you think, this is a mistake, please raise a bug report at: {issue_link}\n"
+            )
+        return value
+
     @field_validator("website", mode="after", check_fields=True)
-    def parse_websites(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
+    def validate_websites(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
         """Validate websites."""
         if isinstance(value, list):
             return value
         return [value]
 
     @field_validator("notify_reminders", mode="after", check_fields=True)
-    def parse_notify_reminders(
+    def validate_notify_reminders(
         cls, value: enums.ReminderOptions | List[enums.ReminderOptions]
     ) -> List[enums.ReminderOptions]:
         """Validate reminder options."""
@@ -400,7 +432,7 @@ class EnvConfig(BaseSettings):
         return [value]
 
     @field_validator("startup_options", mode="after", check_fields=True)
-    def parse_startup_options(
+    def validate_startup_options(
         cls, value: enums.StartupOptions | List[enums.StartupOptions] | None
     ) -> List[enums.StartupOptions] | List:
         """Validate startup options."""
@@ -413,20 +445,22 @@ class EnvConfig(BaseSettings):
         return [value]
 
     @field_validator("microphone_index", mode="before", check_fields=True)
-    def parse_microphone_index(
+    def validate_microphone_index(
         cls, value: int | PositiveInt
     ) -> int | PositiveInt | None:
         """Validates microphone index."""
         return squire.channel_validator(value, "input")
 
     @field_validator("speaker_index", mode="before", check_fields=True)
-    def parse_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
+    def validate_speaker_index(
+        cls, value: int | PositiveInt
+    ) -> int | PositiveInt | None:
         """Validates speaker index."""
         # TODO: Create an OS agnostic model for usage (currently the index value is unused)
         return squire.channel_validator(value, "output")
 
     @field_validator("birthday", mode="before", check_fields=True)
-    def parse_birthday(cls, value: str) -> str | None:
+    def validate_birthday(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
             return
@@ -450,7 +484,7 @@ class EnvConfig(BaseSettings):
             )
 
     @field_validator("weather_alert", mode="before", check_fields=True)
-    def parse_weather_alert(cls, value: str) -> str | None:
+    def validate_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
             return

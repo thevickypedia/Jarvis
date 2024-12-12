@@ -31,11 +31,11 @@ def make_request(lat: float, lon: float) -> Dict | None:
             lat=lat,
             lon=lon,
             exclude="minutely,hourly",
-            appid=models.env.weather_api,
+            appid=models.env.weather_apikey,
             units=models.env.temperature_unit.value,
         )
     )
-    url = "https://api.openweathermap.org/data/2.5/onecall?" + query_string
+    url = str(models.env.weather_endpoint) + "?" + query_string
     try:
         response = requests.get(url=url)
         if response.ok:
@@ -44,6 +44,118 @@ def make_request(lat: float, lon: float) -> Dict | None:
             response.raise_for_status()
     except EgressErrors + (requests.JSONDecodeError,) as error:
         logger.error(error)
+
+
+def weather_with_specifics(
+    phrase: str, response: Dict[str, Any], weather_location: str
+) -> None:
+    """Parses the weather information in depth when requested for a specific timeline.
+
+    Args:
+        phrase: Takes the phrase spoken as an argument.
+        response: Response payload from openweather API.
+        weather_location: Weather location parsed from the phrase.
+    """
+    if "tonight" in phrase:
+        idx = 0
+        tell = "tonight"
+    elif "day after" in phrase:
+        idx = 2
+        tell = "day after tomorrow"
+    elif "tomorrow" in phrase:
+        idx = 1
+        tell = "tomorrow"
+    elif "next week" in phrase:
+        idx = -1
+        next_week = datetime.fromtimestamp(response["daily"][-1]["dt"]).strftime(
+            "%A, %B %d"
+        )
+        tell = f"on {' '.join(next_week.split()[:-1])} {support.ENGINE.ordinal(next_week.split()[-1])}"
+    else:
+        idx = 0
+        tell = "today"
+
+    # which part of the day (after noon or noon is considered as full day as midday values range same as full day)
+    if "morning" in phrase:
+        when = "morn"
+        tell += " morning"
+    elif "evening" in phrase:
+        when = "eve"
+        tell += " evening"
+    elif "tonight" in phrase:
+        when = "night"
+    elif "night" in phrase:
+        when = "night"
+        tell += " night"
+    else:
+        when = "day"
+        tell += ""
+
+    if "alerts" in response:
+        alerts = response["alerts"][0]["event"]
+        start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime(
+            "%I:%M %p"
+        )
+        end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime(
+            "%I:%M %p"
+        )
+    else:
+        alerts, start_alert, end_alert = None, None, None
+    indexed_response = response["daily"][idx]
+    condition = indexed_response["weather"][0]["description"]
+    high = int(indexed_response["temp"]["max"])
+    low = int(indexed_response["temp"]["min"])
+    temp_f = int(indexed_response["temp"][when])
+    temp_feel_f = int(indexed_response["feels_like"][when])
+    sunrise = datetime.fromtimestamp(indexed_response["sunrise"]).strftime("%I:%M %p")
+    sunset = datetime.fromtimestamp(indexed_response["sunset"]).strftime("%I:%M %p")
+    if (
+        "sunrise" in phrase
+        or "sun rise" in phrase
+        or ("sun" in phrase and "rise" in phrase)
+    ):
+        if datetime.strptime(
+            datetime.today().strftime("%I:%M %p"), "%I:%M %p"
+        ) >= datetime.strptime(sunrise, "%I:%M %p"):
+            tense = "will be"
+        else:
+            tense = "was"
+        speaker.speak(
+            text=f"{tell} in {weather_location}, sunrise {tense} at {sunrise}."
+        )
+        return
+    if (
+        "sunset" in phrase
+        or "sun set" in phrase
+        or ("sun" in phrase and "set" in phrase)
+    ):
+        if datetime.strptime(
+            datetime.today().strftime("%I:%M %p"), "%I:%M %p"
+        ) >= datetime.strptime(sunset, "%I:%M %p"):
+            tense = "will be"
+        else:
+            tense = "was"
+        speaker.speak(text=f"{tell} in {weather_location}, sunset {tense} at {sunset}")
+        return
+    output = (
+        f"The weather in {weather_location} {tell} would be "
+        f"{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, "
+        f"with a high of {high}, and a low of {low}. "
+    )
+    if temp_feel_f != temp_f and condition not in (
+        "clear sky",
+        "broken clouds",
+        "fog",
+        "few clouds",
+    ):
+        output += (
+            f"But due to {condition} it will fee like it is "
+            f"{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}. "
+        )
+    output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
+    if alerts and start_alert and end_alert:
+        output += f"There is a weather alert for {alerts} between {start_alert} and {end_alert}"
+    speaker.speak(text=output)
 
 
 def weather(
@@ -60,7 +172,7 @@ def weather(
         phrase: Takes the phrase spoken as an argument.
         monitor: Takes a boolean value to simply return the weather response.
     """
-    if not models.env.weather_api:
+    if not models.env.weather_apikey:
         logger.warning("Weather apikey not found.")
         support.no_env_vars()
         return
@@ -118,7 +230,7 @@ def weather(
         f"{city} {state}".replace("None", "") if city != state else city or state
     )
 
-    if word_match.word_match(
+    not_current = word_match.word_match(
         phrase=phrase,
         match_list=(
             "tomorrow",
@@ -128,121 +240,36 @@ def weather(
             "afternoon",
             "evening",
         ),
-    ):
-        # when the weather info was requested
-        if "tonight" in phrase:
-            key = 0
-            tell = "tonight"
-        elif "day after" in phrase:
-            key = 2
-            tell = "day after tomorrow"
-        elif "tomorrow" in phrase:
-            key = 1
-            tell = "tomorrow"
-        elif "next week" in phrase:
-            key = -1
-            next_week = datetime.fromtimestamp(response["daily"][-1]["dt"]).strftime(
-                "%A, %B %d"
-            )
-            tell = f"on {' '.join(next_week.split()[:-1])} {support.ENGINE.ordinal(next_week.split()[-1])}"
-        else:
-            key = 0
-            tell = "today"
-
-        # which part of the day (after noon or noon is considered as full day as midday values range same as full day)
-        if "morning" in phrase:
-            when = "morn"
-            tell += " morning"
-        elif "evening" in phrase:
-            when = "eve"
-            tell += " evening"
-        elif "tonight" in phrase:
-            when = "night"
-        elif "night" in phrase:
-            when = "night"
-            tell += " night"
-        else:
-            when = "day"
-            tell += ""
-
-        if "alerts" in response:
-            alerts = response["alerts"][0]["event"]
-            start_alert = datetime.fromtimestamp(
-                response["alerts"][0]["start"]
-            ).strftime("%I:%M %p")
-            end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime(
-                "%I:%M %p"
-            )
-        else:
-            alerts, start_alert, end_alert = None, None, None
-        during_key = response["daily"][key]
-        condition = during_key["weather"][0]["description"]
-        high = int(during_key["temp"]["max"])
-        low = int(during_key["temp"]["min"])
-        temp_f = int(during_key["temp"][when])
-        temp_feel_f = int(during_key["feels_like"][when])
-        sunrise = datetime.fromtimestamp(during_key["sunrise"]).strftime("%I:%M %p")
-        sunset = datetime.fromtimestamp(during_key["sunset"]).strftime("%I:%M %p")
-        if (
-            "sunrise" in phrase
-            or "sun rise" in phrase
-            or ("sun" in phrase and "rise" in phrase)
-        ):
-            if datetime.strptime(
-                datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-            ) >= datetime.strptime(sunrise, "%I:%M %p"):
-                tense = "will be"
-            else:
-                tense = "was"
-            speaker.speak(
-                text=f"{tell} in {weather_location}, sunrise {tense} at {sunrise}."
-            )
-            return
-        if (
-            "sunset" in phrase
-            or "sun set" in phrase
-            or ("sun" in phrase and "set" in phrase)
-        ):
-            if datetime.strptime(
-                datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-            ) >= datetime.strptime(sunset, "%I:%M %p"):
-                tense = "will be"
-            else:
-                tense = "was"
-            speaker.speak(
-                text=f"{tell} in {weather_location}, sunset {tense} at {sunset}"
-            )
-            return
-        output = (
-            f"The weather in {weather_location} {tell} would be "
-            f"{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, "
-            f"with a high of {high}, and a low of {low}. "
+    )
+    if not_current and models.settings.weather_onecall:
+        weather_with_specifics(phrase, response, weather_location)
+        return
+    elif not_current:
+        speaker.speak(
+            f"I'm sorry {models.env.title}! The API endpoint is only set to retrieve the current weather."
         )
-        if temp_feel_f != temp_f and condition not in (
-            "clear sky",
-            "broken clouds",
-            "fog",
-            "few clouds",
-        ):
-            output += (
-                f"But due to {condition} it will fee like it is "
-                f"{temp_feel_f}\N{DEGREE SIGN}{models.temperature_symbol}. "
-            )
-        output += f"Sunrise at {sunrise}. Sunset at {sunset}. "
-        if alerts and start_alert and end_alert:
-            output += f"There is a weather alert for {alerts} between {start_alert} and {end_alert}"
-        speaker.speak(text=output)
         return
 
-    condition = response["current"]["weather"][0]["description"]
-    high = int(response["daily"][0]["temp"]["max"])
-    low = int(response["daily"][0]["temp"]["min"])
-    temp_f = int(response["current"]["temp"])
-    temp_feel_f = int(response["current"]["feels_like"])
-    sunrise = datetime.fromtimestamp(response["daily"][0]["sunrise"]).strftime(
-        "%I:%M %p"
-    )
-    sunset = datetime.fromtimestamp(response["daily"][0]["sunset"]).strftime("%I:%M %p")
+    # todo: the onecall endpoint is untested
+    if models.settings.weather_onecall:
+        condition = response["current"]["weather"][0]["description"]
+        high = int(response["daily"][0]["temp"]["max"])
+        low = int(response["daily"][0]["temp"]["min"])
+        temp_f = int(response["current"]["temp"])
+        temp_feel_f = int(response["current"]["feels_like"])
+        sunrise = datetime.fromtimestamp(response["daily"][0]["sunrise"]).strftime(
+            "%I:%M %p"
+        )
+    else:
+        condition = response["weather"][0]["description"]
+        high = int(response["main"]["temp_max"])
+        low = int(response["main"]["temp_min"])
+        temp_f = int(response["main"]["temp"])
+        temp_feel_f = int(response["main"]["feels_like"])
+        sunrise = datetime.fromtimestamp(response["sys"]["sunrise"]).strftime(
+            "%I:%M %p"
+        )
+    sunset = datetime.fromtimestamp(response["sys"]["sunset"]).strftime("%I:%M %p")
     if monitor:
         if "alerts" in response:
             alerts = response["alerts"][0]["event"]

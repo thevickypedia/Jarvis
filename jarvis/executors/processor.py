@@ -119,7 +119,7 @@ def stop_child_processes() -> None:
     logger.info(children)
     for category, pids in children.items():
         for pid in pids:
-            logger.info("Stopping process [%s] with PID: %d", category, pid)
+            logger.debug("Stopping process [%s] with PID: %d", category, pid)
             support.stop_process(pid=pid)
 
 

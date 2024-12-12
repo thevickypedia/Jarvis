@@ -337,12 +337,12 @@ def news(news_source: str = "fox") -> None:
     Args:
         news_source: Source from where the news has to be fetched. Defaults to ``fox``.
     """
-    if not models.env.news_api:
+    if not models.env.news_apikey:
         logger.warning("News apikey not found.")
         support.no_env_vars()
         return
 
-    news_client = NewsApiClient(api_key=models.env.news_api)
+    news_client = NewsApiClient(api_key=models.env.news_apikey)
     try:
         all_articles = news_client.get_top_headlines(sources=f"{news_source}-news")
     except newsapi_exception.NewsAPIException as error:

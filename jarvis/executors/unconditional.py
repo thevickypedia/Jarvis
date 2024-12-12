@@ -25,13 +25,13 @@ def google_maps(query: str) -> bool:
         bool:
         Boolean True if Google's maps API is unable to fetch consumable results.
     """
-    if not models.env.maps_api:
+    if not models.env.maps_apikey:
         return False
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     try:
         response = requests.get(
-            maps_url + "query=" + query + "&key=" + models.env.maps_api
+            maps_url + "query=" + query + "&key=" + models.env.maps_apikey
         )
     except EgressErrors as error:
         logger.error(error)

@@ -1,34 +1,26 @@
-import sys
+import os
 
 import toml
 
+FILE_PATH = os.environ.get("FILE_PATH", "pyproject.toml")
+PROJECT_NAME = os.environ.get("PROJECT_NAME", "jarvis-ironman")
 
-def update_name_in_pyproject(file_path, project_name):
-    """Update project name handler in pyproject.toml.
 
-    Args:
-        file_path: Source filepath.
-        project_name: New project name.
-    """
-    try:
-        with open(file_path, "r") as file:
-            data = toml.load(file)
-    except FileNotFoundError:
-        print(f"TOML file {file_path!r} not found!")
-        return
+def update_name_in_pyproject() -> None:
+    """Update project name handler in metadata."""
+    with open(FILE_PATH) as file:
+        data = toml.load(file)
 
     # Update the 'name' in the '[project]' section
-    if "project" in data:
-        data["project"]["name"] = project_name
-        print(f"Updated 'name' to {project_name!r} in [project]")
-    else:
-        print("[project] section not found in TOML file!")
-        return
+    data["project"]["name"] = PROJECT_NAME
 
     # Write the updated content back to the TOML file
-    with open(file_path, "w") as file:
+    with open(FILE_PATH, "w") as file:
         toml.dump(data, file)
+        file.flush()
+
+    print(f"Updated 'name' to {PROJECT_NAME!r} in [project]")
 
 
 if __name__ == "__main__":
-    update_name_in_pyproject(sys.argv[1], sys.argv[2])
+    update_name_in_pyproject()

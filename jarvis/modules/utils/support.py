@@ -591,7 +591,9 @@ def stop_process(pid: int) -> None:
         time.sleep(0.5)
         if proc.is_running():
             proc.kill()
-    except (psutil.NoSuchProcess, psutil.AccessDenied) as error:
+    except psutil.NoSuchProcess as error:
+        logger.debug(error)
+    except psutil.AccessDenied as error:
         logger.error(error)
 
 
