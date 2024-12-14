@@ -74,13 +74,14 @@ def public_ip_info() -> Dict[str, str]:
         dict:
         Public IP information.
     """
+    # todo: Identify usage and try to use looping and try several hosts
     try:
-        return json.load(urllib.request.urlopen(url="https://ipinfo.io/json"))
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        return json.load(urllib.request.urlopen(url="https://ipinfo.io/json", timeout=3))
+    except Exception as error:
         logger.error(error)
     try:
-        return json.loads(urllib.request.urlopen(url="http://ip.jsontest.com").read())
-    except (urllib.error.HTTPError, urllib.error.URLError) as error:
+        return json.loads(urllib.request.urlopen(url="http://ip.jsontest.com", timeout=3).read())
+    except Exception as error:
         logger.error(error)
 
 
