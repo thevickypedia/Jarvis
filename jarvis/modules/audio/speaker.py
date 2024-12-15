@@ -9,6 +9,7 @@ import re
 import sys
 from datetime import datetime
 from threading import Thread
+from urllib.parse import urljoin
 
 import pynotification
 import requests
@@ -54,8 +55,13 @@ def speech_synthesizer(
     text = text.replace("\N{DEGREE SIGN}F", " degrees fahrenheit")
     text = text.replace("\N{DEGREE SIGN}C", " degrees celsius")
     try:
+        if models.env.speech_synthesis_api:
+            url = urljoin(str(models.env.speech_synthesis_api), "/api/tts")
+        else:
+            # noinspection HttpUrlsUsage
+            url = f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts"
         response = requests.post(
-            url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts",
+            url=url,
             headers={"Content-Type": "text/plain"},
             params={"voice": voice, "vocoder": quality},
             data=text,
@@ -68,13 +74,7 @@ def speech_synthesizer(
                 file.write(response.content)
                 file.flush()
             return True
-        logger.error(
-            "{code}::http://{host}:{port}/api/tts".format(
-                code=response.status_code,
-                host=models.env.speech_synthesis_host,
-                port=models.env.speech_synthesis_port,
-            )
-        )
+        logger.error("%s::%s", response.status_code, url)
         return False
     except UnicodeError as error:
         logger.error(error)

@@ -352,9 +352,10 @@ class EnvConfig(BaseSettings):
     # Speech synthesis config (disabled for speaker by default)
     speech_synthesis_timeout: int = 0
     speech_synthesis_voice: str = "en-us_northern_english_male-glow_tts"
-    speech_synthesis_quality: enums.SSQuality = enums.SSQuality.Medium_Quality
+    speech_synthesis_quality: enums.SSQuality = enums.SSQuality.Medium
     speech_synthesis_host: str = socket.gethostbyname("localhost")
     speech_synthesis_port: PositiveInt = 5002
+    speech_synthesis_api: HttpUrl | None = None
 
     # Background tasks
     weather_alert: str | datetime | None = None

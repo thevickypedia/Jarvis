@@ -83,6 +83,6 @@ class SSQuality(StrEnum):
 
     """
 
-    High_Quality = "high"
-    Medium_Quality = "medium"
-    Low_Quality = "low"
+    High = "high"
+    Medium = "medium"
+    Low = "low"

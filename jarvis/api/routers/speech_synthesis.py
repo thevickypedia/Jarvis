@@ -2,6 +2,7 @@ import os
 from http import HTTPStatus
 from json import JSONDecodeError
 from threading import Thread
+from urllib.parse import urljoin
 
 import requests
 from fastapi import APIRouter
@@ -28,11 +29,13 @@ async def speech_synthesis_voices():
         - 200: If call to speech synthesis endpoint was successful.
         - 500: If call to speech synthesis fails.
     """
+    if models.env.speech_synthesis_api:
+        url = urljoin(str(models.env.speech_synthesis_api), "/api/voices")
+    else:
+        # noinspection HttpUrlsUsage
+        url = f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/voices"
     try:
-        response = requests.get(
-            url=f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/voices",
-            timeout=3,
-        )
+        response = requests.get(url=url, timeout=3)
     except EgressErrors as error:
         logger.error(error)
         raise APIResponse(

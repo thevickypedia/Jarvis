@@ -58,6 +58,22 @@ def find_pid_by_port(port: int) -> int:
             logger.error(error)
 
 
+def check_external() -> bool:
+    """Checks for speech synthesis API running externally.
+
+    Returns:
+        bool:
+        A boolean flag to indicate API usability.
+    """
+    if models.env.speech_synthesis_api:
+        try:
+            response = requests.get(models.env.speech_synthesis_api)
+            response.raise_for_status()
+            return True
+        except EgressErrors as error:
+            logger.error(error)
+
+
 def check_existing() -> bool:
     """Checks for existing connection.
 
@@ -244,6 +260,9 @@ def speech_synthesis_api() -> None:
         docker_client = docker.from_env()
     except DockerException as error:
         logger.critical(error.__str__())
+        return
+    if check_external():
+        logger.info("Speech synthesis API is running externally. Connection validated.")
         return
     if check_existing():  # Test call to speech synthesis API successful
         # Map existing API session with docker

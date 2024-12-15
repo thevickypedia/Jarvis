@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import UTC, datetime
 
 # noinspection PyProtectedMember
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
@@ -378,7 +378,7 @@ def report(
         str:
         Response to the user.
     """
-    default_dt_string = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+0000")
+    default_dt_string = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S+0000")
     report_time = convert_dt_report(
         dt_string=status_data.get("lastUpdatedTime", default_dt_string)
     )

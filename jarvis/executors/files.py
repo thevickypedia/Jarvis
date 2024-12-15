@@ -71,12 +71,12 @@ def get_contacts() -> Dict[str, Dict[str, str]] | DefaultDict[str, Dict[str, str
 
 
 def get_frequent() -> Dict[str, int]:
-    """Support getting frequently used keywords' mapping file."""
+    """Retrieve frequently used keywords' mapping file."""
     return _loader(models.fileio.frequent, default={})
 
 
 def put_frequent(data: Dict[str, int]) -> None:
-    """Support writing frequently used keywords' mapping file.
+    """Writes frequently used keywords into a mapping file.
 
     Args:
         data: Takes the mapping dictionary as an argument.
@@ -96,12 +96,7 @@ def get_location() -> DefaultDict[str, Dict | float | bool]:
 
 
 def get_secure_send() -> Dict[str, Dict[str, Any]]:
-    """Get existing secure string information from the mapping file.
-
-    Returns:
-        Dict[str, Dict[str, Any]]:
-        Dictionary of secure send data.
-    """
+    """Get existing secure-send information from the mapping file."""
     return _loader(models.fileio.secure_send, default={})
 
 
@@ -136,22 +131,12 @@ def put_secure_send(data: Dict[str, Dict[str, Any]]) -> None:
 
 
 def get_custom_conditions() -> Dict[str, Dict[str, str]]:
-    """Custom conditions to map specific keywords to one or many functions.
-
-    Returns:
-        Dict[str, Dict[str, str]]:
-        A unique key value pair, of custom phrase as key and an embedded dict of function name and phrase.
-    """
+    """Custom conditions to map specific keywords to one or many functions."""
     return _loader(models.fileio.conditions)
 
 
 def get_restrictions() -> List[str]:
-    """Function level restrictions to restrict certain keywords via offline communicator.
-
-    Returns:
-        List[str]:
-        A list of function names that has to be restricted.
-    """
+    """Function level restrictions to restrict certain keywords via offline communicator."""
     return _loader(models.fileio.restrictions, default=[])
 
 
@@ -165,12 +150,7 @@ def put_restrictions(restrictions: List[str]) -> None:
 
 
 def get_gpt_data() -> List[Dict[str, str]]:
-    """Get history from Jarvis -> Ollama conversation.
-
-    Returns:
-        List[Dict[str, str]]:
-        A list of dictionaries with request and response key-value pairs.
-    """
+    """Get history from Jarvis -> Ollama conversation."""
     return _loader(models.fileio.gpt_data)
 
 
@@ -184,12 +164,7 @@ def put_gpt_data(data: List[Dict[str, str]]) -> None:
 
 
 def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
-    """Load automation data from feed file.
-
-    Returns:
-        Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
-        Returns the automation data in the feed file.
-    """
+    """Load automation data from feed file."""
     return _loader(models.fileio.automation, default={})
 
 
@@ -216,12 +191,7 @@ def put_automation(
 
 
 def get_smart_devices() -> dict | bool | None:
-    """Load smart devices' data from feed file.
-
-    Returns:
-        dict | bool | None:
-        Returns the smart devices' data in the feed file.
-    """
+    """Load smart devices' data from feed file."""
     # fixme: Change the logic to NOT look for False specifically
     try:
         with open(models.fileio.smart_devices) as file:
@@ -248,22 +218,12 @@ def put_smart_devices(data: dict) -> None:
 
 
 def get_processes() -> Dict[str, List[int | List[str]]]:
-    """Get the processes' mapping from stored map file.
-
-    Returns:
-        Dict[str, List[int | List[str]]]:
-        Processes' mapping data.
-    """
+    """Get the processes' mapping from stored map file."""
     return _loader(models.fileio.processes, default={})
 
 
 def get_reminders() -> List[Dict[str, str]]:
-    """Get all reminders stored.
-
-    Returns:
-        List[Dict[str, str]]:
-        Returns a list of dictionary of information for stored reminders.
-    """
+    """Get all reminders stored."""
     return _loader(models.fileio.reminders, default=[])
 
 
@@ -277,12 +237,7 @@ def put_reminders(data: List[Dict[str, str]]) -> None:
 
 
 def get_alarms() -> List[Dict[str, str | bool]]:
-    """Get all alarms stored.
-
-    Returns:
-        Dict[str, str | bool]:
-        Returns a dictionary of information for stored alarms.
-    """
+    """Get all alarms stored."""
     return _loader(models.fileio.alarms, default=[])
 
 
@@ -296,12 +251,7 @@ def put_alarms(data: List[Dict[str, str | bool]]) -> None:
 
 
 def get_recognizer() -> classes.RecognizerSettings:
-    """Get the stored settings for speech recognition.
-
-    Returns:
-        RecognizerSettings:
-        Returns the parsed recognizer settings or default.
-    """
+    """Get the stored settings for speech recognition."""
     try:
         rec_data = _loader(models.fileio.recognizer, default={})
         return classes.RecognizerSettings(**rec_data)
@@ -311,12 +261,7 @@ def get_recognizer() -> classes.RecognizerSettings:
 
 
 def get_crontab() -> List[str]:
-    """Get the stored crontab settings.
-
-    Returns:
-        List[str]:
-        List of crontab entries.
-    """
+    """Get list of stored crontab settings."""
     try:
         data = _loader(models.fileio.crontab, default=[])
         assert isinstance(data, list)
@@ -329,12 +274,7 @@ def get_crontab() -> List[str]:
 
 
 def get_ip_info() -> Dict[str, Any]:
-    """Get IP information from a stored yaml file.
-
-    Returns:
-        Dict[str, Any]:
-        Returns the public IP info.
-    """
+    """Get IP information from a stored yaml file."""
     return _loader(models.fileio.ip_info, default={})
 
 
@@ -342,7 +282,7 @@ def put_ip_info(data: Dict[str, Any]) -> None:
     """Store IP address information in a mapping file.
 
     Args:
-        data: Data to store.
+        data: IP information to be stored.
     """
     data["timestamp"] = int(time.time())
     if not data.get("loc") and data.get("lat") and data.get("lon"):

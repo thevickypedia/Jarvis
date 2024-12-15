@@ -9,6 +9,7 @@ import os
 import pathlib
 import warnings
 from importlib import metadata
+from urllib.parse import urljoin
 
 import cv2
 import pvporcupine
@@ -152,20 +153,16 @@ def _main_process_validations() -> None:
         env.sensitivity = [env.sensitivity] * len(env.wake_words)
 
     # Create all necessary DB tables during startup
-    if not os.path.isdir(fileio.root):
-        os.mkdir(fileio.root)
+    os.makedirs(fileio.root, exist_ok=True)
     db = database.Database(database=fileio.base_db)
     for table, column in TABLES.items():
         db.create_table(table_name=table, columns=column)
     # Create required file for alarms
-    if not os.path.isfile(fileio.alarms):
-        pathlib.Path(fileio.alarms).touch()
+    pathlib.Path(fileio.alarms).touch(exist_ok=True)
     # Create required file for reminders
-    if not os.path.isfile(fileio.reminders):
-        pathlib.Path(fileio.reminders).touch()
+    pathlib.Path(fileio.reminders).touch(exist_ok=True)
     # Create required directory for uploads
-    if not os.path.isdir(fileio.uploads):
-        os.mkdir(fileio.uploads)
+    os.makedirs(fileio.uploads, exist_ok=True)
 
 
 def _global_validations() -> None:
@@ -199,7 +196,9 @@ def _global_validations() -> None:
             env.ics_url = None
             warnings.warn("'ICS_URL' should end with .ics")
 
-    if env.speech_synthesis_port == env.offline_port:
+    if (env.speech_synthesis_port == env.offline_port) and (
+        env.speech_synthesis_host == env.offline_host
+    ):
         if main:
             raise InvalidEnvVars(
                 "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
@@ -270,10 +269,11 @@ def _global_validations() -> None:
     try:
         # noinspection HttpUrlsUsage
         # Set connect and read timeout explicitly
-        response = requests.get(
-            url=f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices",
-            timeout=(3, 3),
-        )
+        if env.speech_synthesis_api:
+            url = urljoin(str(env.speech_synthesis_api), "/api/voices")
+        else:
+            url = f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices"
+        response = requests.get(url=url, timeout=(3, 3))
         if response.ok:
             available_voices = [
                 value.get("id").replace("/", "_")
@@ -281,13 +281,14 @@ def _global_validations() -> None:
             ]
             if env.speech_synthesis_voice not in available_voices:
                 if main:
+                    print_voices = "\n\t".join(available_voices).replace("/", "_")
                     raise InvalidEnvVars(
-                        f"{env.speech_synthesis_voice} is not available.\n"
-                        f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
+                        f"{env.speech_synthesis_voice!r} is not available.\n"
+                        f"Available Voices for Speech Synthesis: \n\t{print_voices}"
                     )
                 else:
                     warnings.warn(
-                        f"{env.speech_synthesis_voice} is not available.\n"
+                        f"{env.speech_synthesis_voice!r} is not available.\n"
                         f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
                     )
     except EgressErrors:

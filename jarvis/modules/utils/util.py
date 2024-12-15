@@ -13,7 +13,7 @@ import re
 import socket
 import string
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Dict, Hashable, List, Tuple
 
 
@@ -24,7 +24,7 @@ def get_timezone() -> str:
         str:
         Returns local timezone abbreviation.
     """
-    return datetime.utcnow().astimezone().tzname()
+    return datetime.now(UTC).astimezone().tzname()
 
 
 def epoch_to_datetime(
