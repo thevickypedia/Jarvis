@@ -3544,6 +3544,43 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <span id="files"></span><h1>Files<a class="headerlink" href="#module-jarvis.executors.files" title="Permalink to this heading">¶</a></h1>
 <p>Wrapper for frequently used mapping files.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files._loader">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filepath:</span> <span class="pre">~pydantic.v1.types.FilePath,</span> <span class="pre">default:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">typing.Union[typing.List[typing.Any],</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Any],</span> <span class="pre">typing.OrderedDict,</span> <span class="pre">typing.DefaultDict],</span> <span class="pre">loader:</span> <span class="pre">~yaml.loader.Loader</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'yaml.loader.FullLoader'&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files._loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the given yaml file and returns the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – YAML filepath to load.</p></li>
+<li><p><strong>default</strong> – Default value if loading failed or file missing.</p></li>
+<li><p><strong>loader</strong> – YAML loader object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the YAML data as a list or dict.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Any] | Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files._dumper">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">_dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FilePath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">OrderedDict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files._dumper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the data into the given yaml filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Filepath to dump.</p></li>
+<li><p><strong>data</strong> – Data to dump.</p></li>
+<li><p><strong>indent</strong> – Indentation to maintain.</p></li>
+<li><p><strong>sort_keys</strong> – Boolean flag to sort the keys.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.get_contacts">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_contacts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the contact file and returns the data.</p>
@@ -3599,7 +3636,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.put_secure_send">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_secure_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.files.put_secure_send" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_secure_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_secure_send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a particular secure key dictionary to the mapping file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3752,7 +3789,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.put_reminders">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_reminders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.files.put_reminders" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_reminders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_reminders" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dumps the reminder data into the respective yaml file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3777,7 +3814,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files.put_alarms">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_alarms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.files.put_alarms" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_alarms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_alarms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dumps the alarm data into the respective yaml file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3810,6 +3847,31 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.get_ip_info">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">get_ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files.get_ip_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get IP information from a stored yaml file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the public IP info.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.put_ip_info">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">put_ip_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.put_ip_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store IP address information in a mapping file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Data to store.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3978,6 +4040,57 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.internet.check_ip_version">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">check_ip_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.internet.check_ip_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if IP address is a valid IPv5 notation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ip_addr</strong> – IP address as string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a boolean flag to indicate validity.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.internet.get_public_ip">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_public_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.get_public_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves public IP address from various sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Retrieved public IP address.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.internet.get_and_store_ip_data">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_and_store_ip_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip_addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.internet.get_and_store_ip_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve IP information and store it in YAML mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – URL to request IP data from.</p></li>
+<li><p><strong>ip_addr</strong> – IP address retrieved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Public IP information.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.internet.public_ip_info">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">public_ip_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.internet.public_ip_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get public IP information.</p>
@@ -3986,7 +4099,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p>Public IP information.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>Dict[str, str]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6558,6 +6671,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.contacts">
 <span class="sig-name descname"><span class="pre">contacts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.contacts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.ip_info">
+<span class="sig-name descname"><span class="pre">ip_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span></em><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.ip_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

@@ -1,6 +1,9 @@
+import ipaddress
 import json
+import re
 import socket
 import subprocess
+import time
 import urllib.error
 import urllib.request
 from multiprocessing import Process
@@ -11,7 +14,7 @@ import requests
 from pydantic import HttpUrl
 from speedtest import ConfigRetrievalError, Speedtest
 
-from jarvis.executors import location
+from jarvis.executors import files, location
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
@@ -67,22 +70,95 @@ def vpn_checker() -> bool | str:
         return False
 
 
+def check_ip_version(ip_addr: str) -> bool:
+    """Check if IP address is a valid IPv5 notation.
+
+    Args:
+        ip_addr: IP address as string.
+
+    Returns:
+        bool:
+        Returns a boolean flag to indicate validity.
+    """
+    try:
+        ip_obj = ipaddress.ip_address(ip_addr)
+        if ip_obj.version == 4:
+            return True
+    except ValueError:
+        logger.error("Invalid IP address: %s", ip_addr)
+    return False
+
+
+def get_public_ip() -> str | None:
+    """Retrieves public IP address from various sources.
+
+    Returns:
+        str:
+        Retrieved public IP address.
+    """
+    opt1 = lambda fa: fa.text.strip()  # noqa: E731
+    opt2 = lambda fa: fa.json()["origin"].strip()  # noqa: E731
+    mapping = {
+        "https://checkip.amazonaws.com/": opt1,
+        "https://api.ipify.org/": opt1,
+        "https://ipinfo.io/ip/": opt1,
+        "https://v4.ident.me/": opt1,
+        "https://httpbin.org/ip": opt2,
+        "https://myip.dnsomatic.com/": opt1,
+    }
+    # noinspection LongLine
+    ip_regex = re.compile(
+        r"""^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$"""  # noqa: E501
+    )
+    for url, func in mapping.items():
+        try:
+            with requests.get(url) as response:
+                ip_addr = ip_regex.findall(func(response))[0]
+                if check_ip_version(ip_addr):
+                    return ip_addr
+        except (requests.RequestException, re.error, IndexError):
+            continue
+
+
+def get_and_store_ip_data(url: str, ip_addr: str) -> Dict[str, str]:
+    """Retrieve IP information and store it in YAML mapping.
+
+    Args:
+        url: URL to request IP data from.
+        ip_addr: IP address retrieved.
+
+    Returns:
+        Dict[str, str]:
+        Public IP information.
+    """
+    try:
+        ip_data = json.load(urllib.request.urlopen(url, timeout=3))
+        # Ensure 'ip' key is always present
+        ip_data["ip"] = ip_addr
+        files.put_ip_info(ip_data)
+        return ip_data
+    except Exception as error:
+        logger.error(error)
+
+
 def public_ip_info() -> Dict[str, str]:
     """Get public IP information.
 
     Returns:
-        dict:
+        Dict[str, str]:
         Public IP information.
     """
-    # todo: Identify usage and try to use looping and try several hosts
-    try:
-        return json.load(urllib.request.urlopen(url="https://ipinfo.io/json", timeout=3))
-    except Exception as error:
-        logger.error(error)
-    try:
-        return json.loads(urllib.request.urlopen(url="http://ip.jsontest.com", timeout=3).read())
-    except Exception as error:
-        logger.error(error)
+    if ip_data := files.get_ip_info():
+        current_ts = int(time.time())
+        timestamp = ip_data.get("timestamp", current_ts)
+        if current_ts - timestamp < 86_400:
+            return ip_data
+    ip_addr = get_public_ip()
+    return (
+        get_and_store_ip_data("https://ipinfo.io/json", ip_addr)
+        or get_and_store_ip_data(f"http://ip-api.com/json/{ip_addr}", ip_addr)
+        or get_and_store_ip_data(f"https://ipinfo.io/{ip_addr}/json", ip_addr)
+    )
 
 
 def ip_info(phrase: str) -> None:

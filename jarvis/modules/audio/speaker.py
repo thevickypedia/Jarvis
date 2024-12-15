@@ -98,9 +98,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
     """
     if not models.AUDIO_DRIVER:
         models.env.speech_synthesis_timeout = 10
-    caller = sys._getframe(  # noqa: PyProtectedMember,PyUnresolvedReferences
-        1
-    ).f_code.co_name
+    caller = sys._getframe(1).f_code.co_name  # noqa
     # function where all the magic happens
     if caller not in (
         "conditions",

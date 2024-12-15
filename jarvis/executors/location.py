@@ -32,8 +32,8 @@ def get_coordinates_from_ip() -> Tuple[float, float] | Tuple[float, ...]:
         tuple:
         Returns latitude and longitude as a tuple.
     """
-    if (info := internet.public_ip_info()) and info.get("lcc"):
-        return tuple(map(float, info.get("loc").split(",")))
+    if (info := internet.public_ip_info()) and info.get("loc"):
+        return tuple(map(float, info["loc"].split(",")))
     try:
         if results := Speedtest().results:
             return float(results.client["lat"]), float(results.client["lon"])

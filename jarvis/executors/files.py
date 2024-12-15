@@ -2,37 +2,77 @@
 
 import collections
 import os
+import sys
+import time
 import warnings
 from datetime import datetime
 from threading import Timer
-from typing import Any, DefaultDict, Dict, List
+from typing import Any, DefaultDict, Dict, List, OrderedDict
 
 import yaml
 from pydantic import ValidationError
+from pydantic.v1 import FilePath
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
 
 
-def get_contacts() -> Dict[str, Dict[str, str]] | DefaultDict[str, Dict[str, str]]:
-    """Reads the contact file and returns the data."""
+def _loader(
+    filepath: FilePath,
+    default: Any = List[Any] | Dict[str, Any] | OrderedDict | DefaultDict,
+    loader: yaml.Loader = yaml.FullLoader,
+) -> List[Any] | Dict[str, Any]:
+    """Loads the given yaml file and returns the data.
+
+    Args:
+        filepath: YAML filepath to load.
+        default: Default value if loading failed or file missing.
+        loader: YAML loader object.
+
+    Returns:
+        List[Any] | Dict[str, Any]:
+        Returns the YAML data as a list or dict.
+    """
+    caller = sys._getframe(1).f_code.co_name  # noqa
     try:
-        with open(models.fileio.contacts) as file:
-            if contacts := yaml.load(stream=file, Loader=yaml.FullLoader):
-                return contacts
+        with open(filepath) as file:
+            return yaml.load(stream=file, Loader=loader) or default
     except (yaml.YAMLError, FileNotFoundError) as error:
         logger.debug(error)
-    return collections.defaultdict(lambda: {}, phone={}, email={})
+        logger.debug("Caller: %s", caller)
+    return default
+
+
+def _dumper(
+    filepath: FilePath,
+    data: List[Any] | Dict[str, Any] | OrderedDict | DefaultDict,
+    indent: int = 2,
+    sort_keys: bool = False,
+) -> None:
+    """Dumps the data into the given yaml filepath.
+
+    Args:
+        filepath: Filepath to dump.
+        data: Data to dump.
+        indent: Indentation to maintain.
+        sort_keys: Boolean flag to sort the keys.
+    """
+    with open(filepath, "w") as file:
+        yaml.dump(data=data, stream=file, sort_keys=sort_keys, indent=indent)
+        file.flush()
+
+
+def get_contacts() -> Dict[str, Dict[str, str]] | DefaultDict[str, Dict[str, str]]:
+    """Reads the contact file and returns the data."""
+    return _loader(
+        models.fileio.contacts,
+        default=collections.defaultdict(lambda: {}, phone={}, email={}),
+    )
 
 
 def get_frequent() -> Dict[str, int]:
     """Support getting frequently used keywords' mapping file."""
-    try:
-        with open(models.fileio.frequent) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return {}
+    return _loader(models.fileio.frequent, default={})
 
 
 def put_frequent(data: Dict[str, int]) -> None:
@@ -41,22 +81,17 @@ def put_frequent(data: Dict[str, int]) -> None:
     Args:
         data: Takes the mapping dictionary as an argument.
     """
-    with open(models.fileio.frequent, "w") as file:
-        yaml.dump(data=data, stream=file, sort_keys=False)
-        file.flush()
+    _dumper(models.fileio.frequent, data)
 
 
 def get_location() -> DefaultDict[str, Dict | float | bool]:
     """Reads the location file and returns the location data."""
-    try:
-        with open(models.fileio.location) as file:
-            if location := yaml.load(stream=file, Loader=yaml.FullLoader):
-                return location
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
     # noinspection PyTypeChecker
-    return collections.defaultdict(
-        lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False
+    return _loader(
+        models.fileio.location,
+        default=collections.defaultdict(
+            lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False
+        ),
     )
 
 
@@ -67,12 +102,7 @@ def get_secure_send() -> Dict[str, Dict[str, Any]]:
         Dict[str, Dict[str, Any]]:
         Dictionary of secure send data.
     """
-    try:
-        with open(models.fileio.secure_send) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return {}
+    return _loader(models.fileio.secure_send, default={})
 
 
 def delete_secure_send(key: str) -> None:
@@ -87,21 +117,17 @@ def delete_secure_send(key: str) -> None:
         del current_data[key]
     else:
         logger.critical("data for key [%s] was removed unprecedentedly", key)
-    with open(models.fileio.secure_send, "w") as file:
-        yaml.dump(data=current_data, stream=file, Dumper=yaml.Dumper)
-        file.flush()
+    _dumper(models.fileio.secure_send, current_data)
 
 
-def put_secure_send(data: Dict[str, Dict[str, Any]]):
+def put_secure_send(data: Dict[str, Dict[str, Any]]) -> None:
     """Add a particular secure key dictionary to the mapping file.
 
     Args:
         data: Data dict that has to be added.
     """
     existing = get_secure_send()
-    with open(models.fileio.secure_send, "w") as file:
-        yaml.dump(data={**existing, **data}, stream=file, Dumper=yaml.Dumper)
-        file.flush()
+    _dumper(models.fileio.secure_send, {**existing, **data})
     logger.info(
         "Secure dict for [%s] will be cleared after 5 minutes",
         [*[*data.values()][0].keys()][0],
@@ -116,11 +142,7 @@ def get_custom_conditions() -> Dict[str, Dict[str, str]]:
         Dict[str, Dict[str, str]]:
         A unique key value pair, of custom phrase as key and an embedded dict of function name and phrase.
     """
-    try:
-        with open(models.fileio.conditions) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader)
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
+    return _loader(models.fileio.conditions)
 
 
 def get_restrictions() -> List[str]:
@@ -130,12 +152,7 @@ def get_restrictions() -> List[str]:
         List[str]:
         A list of function names that has to be restricted.
     """
-    try:
-        with open(models.fileio.restrictions) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader)
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return []
+    return _loader(models.fileio.restrictions, default=[])
 
 
 def put_restrictions(restrictions: List[str]) -> None:
@@ -144,9 +161,7 @@ def put_restrictions(restrictions: List[str]) -> None:
     Args:
         restrictions: A list of function names that has to be restricted.
     """
-    with open(models.fileio.restrictions, "w") as file:
-        yaml.dump(data=restrictions, stream=file, indent=2, sort_keys=False)
-        file.flush()
+    _dumper(models.fileio.restrictions, restrictions)
 
 
 def get_gpt_data() -> List[Dict[str, str]]:
@@ -156,11 +171,7 @@ def get_gpt_data() -> List[Dict[str, str]]:
         List[Dict[str, str]]:
         A list of dictionaries with request and response key-value pairs.
     """
-    try:
-        with open(models.fileio.gpt_data) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader)
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
+    return _loader(models.fileio.gpt_data)
 
 
 def put_gpt_data(data: List[Dict[str, str]]) -> None:
@@ -169,9 +180,7 @@ def put_gpt_data(data: List[Dict[str, str]]) -> None:
     Args:
         data: List of dictionaries that have to be saved for future reference.
     """
-    with open(models.fileio.gpt_data, "w") as file:
-        yaml.dump(data=data, stream=file, indent=4, Dumper=yaml.Dumper)
-        file.flush()
+    _dumper(models.fileio.gpt_data, data, indent=4)
 
 
 def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
@@ -181,12 +190,7 @@ def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | 
         Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]:
         Returns the automation data in the feed file.
     """
-    try:
-        with open(models.fileio.automation) as read_file:
-            return yaml.load(stream=read_file, Loader=yaml.FullLoader) or {}
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return {}
+    return _loader(models.fileio.automation, default={})
 
 
 def put_automation(
@@ -208,9 +212,7 @@ def put_automation(
         logger.error("Writing automation data without sorting")
         sorted_data = data
 
-    with open(models.fileio.automation, "w") as file:
-        yaml.dump(data=sorted_data, stream=file, indent=2)
-        file.flush()
+    _dumper(models.fileio.automation, sorted_data)
 
 
 def get_smart_devices() -> dict | bool | None:
@@ -220,6 +222,7 @@ def get_smart_devices() -> dict | bool | None:
         dict | bool | None:
         Returns the smart devices' data in the feed file.
     """
+    # fixme: Change the logic to NOT look for False specifically
     try:
         with open(models.fileio.smart_devices) as file:
             if smart_devices := yaml.load(stream=file, Loader=yaml.FullLoader):
@@ -241,9 +244,7 @@ def put_smart_devices(data: dict) -> None:
     Args:
         data: Data that has to be dumped into the smart devices' feed file.
     """
-    with open(models.fileio.smart_devices, "w") as file:
-        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()
+    _dumper(models.fileio.smart_devices, data)
 
 
 def get_processes() -> Dict[str, List[int | List[str]]]:
@@ -253,12 +254,7 @@ def get_processes() -> Dict[str, List[int | List[str]]]:
         Dict[str, List[int | List[str]]]:
         Processes' mapping data.
     """
-    try:
-        with open(models.fileio.processes) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or {}
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return {}
+    return _loader(models.fileio.processes, default={})
 
 
 def get_reminders() -> List[Dict[str, str]]:
@@ -268,23 +264,16 @@ def get_reminders() -> List[Dict[str, str]]:
         List[Dict[str, str]]:
         Returns a list of dictionary of information for stored reminders.
     """
-    try:
-        with open(models.fileio.reminders) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or []
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return []
+    return _loader(models.fileio.reminders, default=[])
 
 
-def put_reminders(data: List[Dict[str, str]]):
+def put_reminders(data: List[Dict[str, str]]) -> None:
     """Dumps the reminder data into the respective yaml file.
 
     Args:
         data: Data to be dumped.
     """
-    with open(models.fileio.reminders, "w") as file:
-        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()
+    _dumper(models.fileio.reminders, data)
 
 
 def get_alarms() -> List[Dict[str, str | bool]]:
@@ -294,23 +283,16 @@ def get_alarms() -> List[Dict[str, str | bool]]:
         Dict[str, str | bool]:
         Returns a dictionary of information for stored alarms.
     """
-    try:
-        with open(models.fileio.alarms) as file:
-            return yaml.load(stream=file, Loader=yaml.FullLoader) or []
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        logger.debug(error)
-    return []
+    return _loader(models.fileio.alarms, default=[])
 
 
-def put_alarms(data: List[Dict[str, str | bool]]):
+def put_alarms(data: List[Dict[str, str | bool]]) -> None:
     """Dumps the alarm data into the respective yaml file.
 
     Args:
         data: Data to be dumped.
     """
-    with open(models.fileio.alarms, "w") as file:
-        yaml.dump(data=data, stream=file, indent=2, sort_keys=False)
-        file.flush()
+    return _dumper(models.fileio.alarms, data)
 
 
 def get_recognizer() -> classes.RecognizerSettings:
@@ -321,10 +303,9 @@ def get_recognizer() -> classes.RecognizerSettings:
         Returns the parsed recognizer settings or default.
     """
     try:
-        with open(models.fileio.recognizer) as file:
-            rec_data = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        rec_data = _loader(models.fileio.recognizer, default={})
         return classes.RecognizerSettings(**rec_data)
-    except (yaml.YAMLError, FileNotFoundError, TypeError, ValidationError) as error:
+    except (TypeError, ValidationError) as error:
         logger.debug(error)
     return classes.RecognizerSettings()
 
@@ -337,14 +318,34 @@ def get_crontab() -> List[str]:
         List of crontab entries.
     """
     try:
-        with open(models.fileio.crontab) as file:
-            data = yaml.load(stream=file, Loader=yaml.FullLoader) or []
-            assert isinstance(data, list)
-            return data
-    except FileNotFoundError as error:
-        logger.debug(error)
-    except (yaml.YAMLError, AssertionError) as error:
+        data = _loader(models.fileio.crontab, default=[])
+        assert isinstance(data, list)
+        return data
+    except AssertionError as error:
         logger.error(error)
         os.rename(src=models.fileio.crontab, dst=models.fileio.tmp_crontab)
         warnings.warn("CRONTAB :: Invalid file format.")
     return []
+
+
+def get_ip_info() -> Dict[str, Any]:
+    """Get IP information from a stored yaml file.
+
+    Returns:
+        Dict[str, Any]:
+        Returns the public IP info.
+    """
+    return _loader(models.fileio.ip_info, default={})
+
+
+def put_ip_info(data: Dict[str, Any]) -> None:
+    """Store IP address information in a mapping file.
+
+    Args:
+        data: Data to store.
+    """
+    data["timestamp"] = int(time.time())
+    if not data.get("loc") and data.get("lat") and data.get("lon"):
+        logger.debug("Writing loc info to IP data.")
+        data["loc"] = f"{data['lat']},{data['lon']}"
+    _dumper(models.fileio.ip_info, data)

@@ -389,6 +389,7 @@ class EnvConfig(BaseSettings):
             EnvConfig:
             Loads the ``EnvConfig`` model.
         """
+        # noinspection PyArgumentList
         return cls(_env_file=filename)
 
     @field_validator("weather_endpoint", mode="after", check_fields=True)
@@ -558,6 +559,7 @@ class FileIO(BaseModel):
     tmp_background_tasks: FilePath = os.path.join(root, "tmp_background_tasks.yaml")
     smart_devices: FilePath = os.path.join(root, "smart_devices.yaml")
     contacts: FilePath = os.path.join(root, "contacts.yaml")
+    ip_info: FilePath = os.path.join(root, "ip_info.yaml")
 
     # Alarms and Reminders
     alarms: FilePath = os.path.join(root, "alarms.yaml")
