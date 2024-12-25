@@ -190,22 +190,9 @@ def put_automation(
     _dumper(models.fileio.automation, sorted_data)
 
 
-def get_smart_devices() -> dict | bool | None:
+def get_smart_devices() -> dict | None:
     """Load smart devices' data from feed file."""
-    # fixme: Change the logic to NOT look for False specifically
-    try:
-        with open(models.fileio.smart_devices) as file:
-            if smart_devices := yaml.load(stream=file, Loader=yaml.FullLoader):
-                return smart_devices
-            else:
-                logger.warning("'%s' is empty.", models.fileio.smart_devices)
-    except (yaml.YAMLError, FileNotFoundError) as error:
-        if isinstance(error, FileNotFoundError):
-            logger.warning("%s not found.", models.fileio.smart_devices)
-            return
-        else:
-            logger.debug(error)
-            return False
+    return _loader(models.fileio.smart_devices)
 
 
 def put_smart_devices(data: dict) -> None:

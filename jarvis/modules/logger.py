@@ -5,7 +5,7 @@ from datetime import datetime
 from logging import Formatter
 from logging.config import dictConfig
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from jarvis.modules.builtin_overrides import AddProcessName
 from jarvis.modules.models import models
@@ -84,53 +84,55 @@ class APIConfig(BaseModel):
     )
     ERROR_LOG_FORMAT: str = "%(levelname)s\t %(message)s"
 
-    LOG_CONFIG: dict = {
-        "version": 1,
-        "disable_existing_loggers": True,
-        "formatters": {
-            "default": {
-                "()": "uvicorn.logging.DefaultFormatter",
-                "fmt": DEFAULT_LOG_FORM,
-                "use_colors": False,
+    LOG_CONFIG: dict = Field(
+        {
+            "version": 1,
+            "disable_existing_loggers": True,
+            "formatters": {
+                "default": {
+                    "()": "uvicorn.logging.DefaultFormatter",
+                    "fmt": DEFAULT_LOG_FORM,
+                    "use_colors": False,
+                },
+                "access": {
+                    "()": "uvicorn.logging.AccessFormatter",
+                    "fmt": ACCESS_LOG_FORMAT,
+                    "use_colors": False,
+                },
+                "error": {
+                    "()": "uvicorn.logging.DefaultFormatter",
+                    "fmt": ERROR_LOG_FORMAT,
+                    "use_colors": False,
+                },
             },
-            "access": {
-                "()": "uvicorn.logging.AccessFormatter",
-                "fmt": ACCESS_LOG_FORMAT,
-                "use_colors": False,
+            "handlers": {
+                "default": {
+                    "formatter": "default",
+                    "class": "logging.FileHandler",
+                    "filename": DEFAULT_LOG_FILENAME,
+                },
+                "access": {
+                    "formatter": "access",
+                    "class": "logging.FileHandler",
+                    "filename": ACCESS_LOG_FILENAME,
+                },
+                "error": {
+                    "formatter": "error",
+                    "class": "logging.FileHandler",
+                    "filename": DEFAULT_LOG_FILENAME,
+                },
             },
-            "error": {
-                "()": "uvicorn.logging.DefaultFormatter",
-                "fmt": ERROR_LOG_FORMAT,
-                "use_colors": False,
+            "loggers": {
+                "uvicorn": {"handlers": ["default"], "level": DEFAULT_LOG_LEVEL},
+                "uvicorn.access": {"handlers": ["access"], "level": DEFAULT_LOG_LEVEL},
+                "uvicorn.error": {
+                    "handlers": ["error"],
+                    "level": DEFAULT_LOG_LEVEL,
+                    "propagate": True,  # Since FastAPI is threaded
+                },
             },
-        },
-        "handlers": {
-            "default": {
-                "formatter": "default",
-                "class": "logging.FileHandler",
-                "filename": DEFAULT_LOG_FILENAME,
-            },
-            "access": {
-                "formatter": "access",
-                "class": "logging.FileHandler",
-                "filename": ACCESS_LOG_FILENAME,
-            },
-            "error": {
-                "formatter": "error",
-                "class": "logging.FileHandler",
-                "filename": DEFAULT_LOG_FILENAME,
-            },
-        },
-        "loggers": {
-            "uvicorn": {"handlers": ["default"], "level": DEFAULT_LOG_LEVEL},
-            "uvicorn.access": {"handlers": ["access"], "level": DEFAULT_LOG_LEVEL},
-            "uvicorn.error": {
-                "handlers": ["error"],
-                "level": DEFAULT_LOG_LEVEL,
-                "propagate": True,  # Since FastAPI is threaded
-            },
-        },
-    }
+        }
+    )
 
 
 def log_file(filename: str) -> str:

@@ -123,16 +123,15 @@ def lights(phrase: str) -> None:
     if not internet.vpn_checker():
         return
 
-    smart_devices = files.get_smart_devices()
-    if smart_devices is False:
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to read the source information."
-        )
-        return
-    if smart_devices and (lights_map := get_lights(data=smart_devices)):
+    if (smart_devices := files.get_smart_devices()) and (
+        lights_map := get_lights(data=smart_devices)
+    ):
         logger.debug(lights_map)
     else:
-        logger.warning("%s is empty for lights.", models.fileio.smart_devices)
+        logger.warning(
+            "Smart devices are not configured for lights in %s",
+            models.fileio.smart_devices,
+        )
         support.no_env_vars()
         return
 
