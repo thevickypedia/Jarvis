@@ -78,7 +78,6 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
         Returns a process object if a function name is passed, otherwise a mapping of function name and process objects.
 
     See Also:
-        - speech_synthesis_api: Initiates docker container for speech synthesis.
         - telegram_api: Initiates polling Telegram API to execute offline commands (if no webhook config is available)
         - jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.

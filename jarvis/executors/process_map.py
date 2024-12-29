@@ -8,7 +8,6 @@ import yaml
 
 from jarvis.api.server import jarvis_api
 from jarvis.executors import crontab, offline, telegram
-from jarvis.modules.audio import speech_synthesis
 from jarvis.modules.logger import logger
 from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import models
@@ -46,11 +45,6 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
                 "Cron jobs",
                 "Background tasks",
             ],
-        },
-        # process map will be removed if speech_synthesis is disabled
-        speech_synthesis.speech_synthesis_api.__name__: {
-            "process": Process(target=speech_synthesis.speech_synthesis_api),
-            "impact": ["Speech Synthesis"],
         },
         # process map will be removed if telegram bot is hosted via Jarvis API
         telegram.telegram_api.__name__: {

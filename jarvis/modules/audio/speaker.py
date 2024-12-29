@@ -28,11 +28,11 @@ def speech_synthesizer(
     quality: str = models.env.speech_synthesis_quality,
     voice: str = models.env.speech_synthesis_voice,
 ) -> bool:
-    """Makes a post call to docker container for speech synthesis.
+    """Makes a post call to the speech-synthesis API for text-to-speech.
 
     Args:
         text: Takes the text that has to be spoken as an argument.
-        timeout: Time to wait for the docker image to process text-to-speech request.
+        timeout: Time to wait for the speech-synthesis API to process the text-to-speech request.
         quality: Quality at which the conversion is to be done.
         voice: Voice for speech synthesis.
 
@@ -55,11 +55,7 @@ def speech_synthesizer(
     text = text.replace("\N{DEGREE SIGN}F", " degrees fahrenheit")
     text = text.replace("\N{DEGREE SIGN}C", " degrees celsius")
     try:
-        if models.env.speech_synthesis_api:
-            url = urljoin(str(models.env.speech_synthesis_api), "/api/tts")
-        else:
-            # noinspection HttpUrlsUsage
-            url = f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/tts"
+        url = urljoin(str(models.env.speech_synthesis_api), "/api/tts")
         response = requests.post(
             url=url,
             headers={"Content-Type": "text/plain"},
@@ -116,6 +112,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
         support.write_screen(text=text)
         if (
             models.env.speech_synthesis_timeout
+            and models.env.speech_synthesis_api
             and speech_synthesizer(text=text)
             and os.path.isfile(models.fileio.speech_synthesis_wav)
         ):

@@ -85,7 +85,7 @@ class Camera:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         ).communicate()
-        if error := err.decode(encoding="UTF-8"):
+        if not self.output and (error := err.decode(encoding="UTF-8")):
             raise CameraError(error)
         self.output = self.output.decode(encoding="UTF-8").splitlines()
 

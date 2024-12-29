@@ -29,11 +29,12 @@ async def speech_synthesis_voices():
         - 200: If call to speech synthesis endpoint was successful.
         - 500: If call to speech synthesis fails.
     """
-    if models.env.speech_synthesis_api:
-        url = urljoin(str(models.env.speech_synthesis_api), "/api/voices")
-    else:
-        # noinspection HttpUrlsUsage
-        url = f"http://{models.env.speech_synthesis_host}:{models.env.speech_synthesis_port}/api/voices"
+    if not models.env.speech_synthesis_api:
+        raise APIResponse(
+            status_code=HTTPStatus.NOT_FOUND.real,
+            detail="Speech synthesis API endpoint is unavailable",
+        )
+    url = urljoin(str(models.env.speech_synthesis_api), "/api/voices")
     try:
         response = requests.get(url=url, timeout=3)
     except EgressErrors as error:
@@ -68,7 +69,7 @@ async def speech_synthesis_voices():
 async def speech_synthesis(
     input_data: modals.SpeechSynthesisModal, raise_for_status: bool = True
 ):
-    """Process request to convert text to speech if docker container is running.
+    """Process request to convert text to speech using the speech-synthesis API endpoint.
 
     Args:
 

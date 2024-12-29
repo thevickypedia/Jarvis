@@ -3,7 +3,6 @@ aiohttp==3.9.*
 bs4==0.0.*
 certifi  # Follows year based versioning
 deepdiff==7.0.*
-docker==7.1.*
 fastapi==0.111.*
 geopy==2.4.*
 httpcore==1.0.*

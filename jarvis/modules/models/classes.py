@@ -353,8 +353,6 @@ class EnvConfig(BaseSettings):
     speech_synthesis_timeout: int = 0
     speech_synthesis_voice: str = "en-us_northern_english_male-glow_tts"
     speech_synthesis_quality: enums.SSQuality = enums.SSQuality.Medium
-    speech_synthesis_host: str = socket.gethostbyname("localhost")
-    speech_synthesis_port: PositiveInt = 5002
     speech_synthesis_api: HttpUrl | None = None
 
     # Background tasks

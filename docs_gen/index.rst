@@ -736,6 +736,13 @@ Squire
    :members:
    :undoc-members:
 
+Validators
+==========
+
+.. automodule:: jarvis.modules.models.validators
+   :members:
+   :undoc-members:
+
 ----------Modules----------
 ===========================
 Audio
@@ -748,12 +755,6 @@ Audio
 ====
 
 .. automodule:: jarvis.modules.audio.listener
-   :members:
-   :undoc-members:
-
-====
-
-.. automodule:: jarvis.modules.audio.speech_synthesis
    :members:
    :undoc-members:
 

@@ -9,22 +9,12 @@ import os
 import pathlib
 import warnings
 from importlib import metadata
-from urllib.parse import urljoin
 
-import cv2
 import pvporcupine
-import requests
-from packaging.version import Version
 from pydantic import PositiveInt
 
-from jarvis.modules.camera import camera
 from jarvis.modules.database import database
-from jarvis.modules.exceptions import (
-    CameraError,
-    DependencyError,
-    EgressErrors,
-    InvalidEnvVars,
-)
+from jarvis.modules.exceptions import InvalidEnvVars
 from jarvis.modules.models.classes import (
     AUDIO_DRIVER,
     Indicators,
@@ -38,7 +28,7 @@ from jarvis.modules.models.enums import (
     SupportedPlatforms,
     TemperatureUnits,
 )
-from jarvis.modules.utils import util
+from jarvis.modules.models.validators import Validator
 
 # Shared across other modules
 voices = AUDIO_DRIVER.getProperty("voices")
@@ -129,24 +119,8 @@ def _set_default_voice_name() -> None:
 
 def _main_process_validations() -> None:
     """Validations that should happen only when the main process is triggered."""
-    try:
-        # 3.0.2 is the last tested version on macOS - arm64 - 14.5
-        assert WAKE_WORD_DETECTOR == "1.9.5" or Version(WAKE_WORD_DETECTOR) >= Version(
-            "3.0.2"
-        )
-    except AssertionError:
-        raise DependencyError(
-            f"{settings.os} is only supported with porcupine versions 1.9.5 or 3.0.2 and above (requires key)"
-        )
-
-    for keyword in env.wake_words:
-        if not pvporcupine.KEYWORD_PATHS.get(keyword) or not os.path.isfile(
-            pvporcupine.KEYWORD_PATHS[keyword]
-        ):
-            raise InvalidEnvVars(
-                f"Detecting {keyword!r} is unsupported!\n"
-                f"Available keywords are: {', '.join(list(pvporcupine.KEYWORD_PATHS.keys()))}"
-            )
+    validator = Validator(True, env)
+    validator.validate_wake_words(WAKE_WORD_DETECTOR, settings.os)
 
     # If sensitivity is an integer or float, converts it to a list
     if isinstance(env.sensitivity, float) or isinstance(env.sensitivity, PositiveInt):
@@ -167,21 +141,10 @@ def _main_process_validations() -> None:
 
 def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
-    main = True if settings.pname == "JARVIS" else False
-    if voice_names := [__voice.name for __voice in voices]:
-        if not env.voice_name:
-            _set_default_voice_name()
-        elif env.voice_name not in voice_names:
-            if main:
-                raise InvalidEnvVars(
-                    f"{env.voice_name!r} is not available.\n"
-                    f"Available voices are: {', '.join(voice_names)}"
-                )
-            else:
-                _set_default_voice_name()
-                warnings.warn(
-                    f"{env.voice_name!r} is not available. Defaulting to {env.voice_name!r}"
-                )
+    main: bool = settings.pname == "JARVIS"
+    validator = Validator(main=main, env=env)
+    if validator.validate_builtin_voices(voices):
+        _set_default_voice_name()
 
     if not all((env.open_gmail_user, env.open_gmail_pass)):
         env.open_gmail_user = env.gmail_user
@@ -196,20 +159,6 @@ def _global_validations() -> None:
             env.ics_url = None
             warnings.warn("'ICS_URL' should end with .ics")
 
-    if (env.speech_synthesis_port == env.offline_port) and (
-        env.speech_synthesis_host == env.offline_host
-    ):
-        if main:
-            raise InvalidEnvVars(
-                "Speech synthesizer and offline communicator cannot run simultaneously on the same port number."
-            )
-        else:
-            env.speech_synthesis_port = util.get_free_port()
-            warnings.warn(
-                "Speech synthesizer and offline communicator cannot run on same port number. "
-                f"Defaulting to {env.speech_synthesis_port}"
-            )
-
     # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
     if env.limited:
         settings.limited = True
@@ -223,76 +172,8 @@ def _global_validations() -> None:
             "'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode."
         )
 
-    # Validate if able to read camera only if a camera env var is set,
-    try:
-        if env.camera_index is None:
-            cameras = []
-        else:
-            cameras = camera.Camera().list_cameras()
-    except CameraError:
-        cameras = []
-    if cameras:
-        if env.camera_index >= len(cameras):
-            if main:
-                raise InvalidEnvVars(
-                    f"Camera index # {env.camera_index} unavailable.\n"
-                    "Camera index cannot exceed the number of available cameras.\n"
-                    f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
-                )
-            else:
-                warnings.warn(
-                    f"Camera index # {env.camera_index} unavailable.\n"
-                    "Camera index cannot exceed the number of available cameras.\n"
-                    f"{len(cameras)} available cameras: {', '.join([f'{i}: {c}' for i, c in enumerate(cameras)])}"
-                )
-                env.camera_index = None
-    else:
-        env.camera_index = None
-
-    if env.camera_index is None:
-        env.camera_index = 0  # Set default but skip validation
-    else:
-        cam = cv2.VideoCapture(env.camera_index)
-        if cam is None or not cam.isOpened() or cam.read() == (False, None):
-            if main:
-                raise CameraError(
-                    f"Unable to read the camera - {cameras[env.camera_index]}"
-                )
-            else:
-                warnings.warn(
-                    f"Unable to read the camera - {cameras[env.camera_index]}"
-                )
-                env.camera_index = None
-        cam.release()
-
-    # Validate voice for speech synthesis
-    try:
-        # noinspection HttpUrlsUsage
-        # Set connect and read timeout explicitly
-        if env.speech_synthesis_api:
-            url = urljoin(str(env.speech_synthesis_api), "/api/voices")
-        else:
-            url = f"http://{env.speech_synthesis_host}:{env.speech_synthesis_port}/api/voices"
-        response = requests.get(url=url, timeout=(3, 3))
-        if response.ok:
-            available_voices = [
-                value.get("id").replace("/", "_")
-                for key, value in response.json().items()
-            ]
-            if env.speech_synthesis_voice not in available_voices:
-                if main:
-                    print_voices = "\n\t".join(available_voices).replace("/", "_")
-                    raise InvalidEnvVars(
-                        f"{env.speech_synthesis_voice!r} is not available.\n"
-                        f"Available Voices for Speech Synthesis: \n\t{print_voices}"
-                    )
-                else:
-                    warnings.warn(
-                        f"{env.speech_synthesis_voice!r} is not available.\n"
-                        f"Available Voices for Speech Synthesis: {', '.join(available_voices).replace('/', '_')}"
-                    )
-    except EgressErrors:
-        pass
+    env.camera_index = validator.validate_camera_indices()
+    validator.validate_speech_synthesis_voices()
     _distance_temperature_brute_force()
 
 

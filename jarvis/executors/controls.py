@@ -9,11 +9,9 @@ from datetime import timedelta
 from threading import Thread, Timer
 from typing import NoReturn
 
-import docker
 import psutil
 import pybrightness
 import pywslocker
-from docker.errors import APIError, ContainerError, DockerException
 
 from jarvis.executors import alarm, files, listener_controls, remind, volume, word_match
 from jarvis.modules.audio import listener, speaker, voices
@@ -212,47 +210,8 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
             support.stop_process(pid=proc.pid)
 
 
-def delete_docker_container() -> None:
-    """Deletes the docker container spun up (if any) for speech synthesis.
-
-    See Also:
-        - | If the intention is to keep docker running forever, start the
-          | docker container with the command in README before starting Jarvis.
-    """
-    if not os.path.isfile(models.fileio.speech_synthesis_cid):
-        return
-    with open(models.fileio.speech_synthesis_cid) as file:
-        container_id = file.read()
-    with open(models.fileio.speech_synthesis_log, "a") as log_file:
-        try:
-            client = docker.from_env()
-        except DockerException as error:
-            log_file.write(error.__str__() + "\n")
-            return
-        try:
-            log_file.write(f"Stopping running container {container_id!r}\n")
-            client.api.kill(container_id)
-            log_file.write(f"Removing existing container {container_id!r}\n")
-            client.api.remove_container(container_id)
-        except ContainerError as error:
-            err = f": {error.stderr}" if error.stderr else ""
-            log_file.write(
-                f"Command '{error.command}' in image '{error.image}' "
-                f"returned non-zero exit status {error.exit_status}{err}\n"
-            )
-        except APIError as error:
-            log_file.write(f"{error.response.status_code} - {error.response.text}")
-        else:
-            log_file.write(
-                f"Removing cid file {models.fileio.speech_synthesis_cid!r}\n"
-            )
-            os.remove(models.fileio.speech_synthesis_cid)
-
-
 def terminator() -> NoReturn:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc."""
-    logger.info("Removing docker container")
-    delete_docker_container()
     if os.path.isfile(models.fileio.processes):
         logger.info("Removing %s", models.fileio.processes)
         os.remove(models.fileio.processes)

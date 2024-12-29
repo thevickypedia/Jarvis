@@ -1463,7 +1463,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.speech_synthesis.speech_synthesis">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.api.models.modals.SpeechSynthesisModal" title="jarvis.api.models.modals.SpeechSynthesisModal"><span class="pre">SpeechSynthesisModal</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_for_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.speech_synthesis.speech_synthesis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process request to convert text to speech if docker container is running.</p>
+<dd><p>Process request to convert text to speech using the speech-synthesis API endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -3347,22 +3347,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.controls.delete_docker_container">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">delete_docker_container</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.controls.delete_docker_container" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the docker container spun up (if any) for speech synthesis.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul>
-<li><div class="line-block">
-<div class="line">If the intention is to keep docker running forever, start the</div>
-<div class="line">docker container with the command in README before starting Jarvis.</div>
-</div>
-</li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.controls.terminator">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">terminator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.controls.terminator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc.</p>
@@ -4850,7 +4834,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p>speech_synthesis_api: Initiates docker container for speech synthesis.</p></li>
 <li><p>telegram_api: Initiates polling Telegram API to execute offline commands (if no webhook config is available)</p></li>
 <li><p>jarvis_api: Initiates uvicorn server to process API requests, stock monitor and robinhood report generation.</p></li>
 <li><p>background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.</p></li>
@@ -6377,16 +6360,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.speech_synthesis_host">
-<span class="sig-name descname"><span class="pre">speech_synthesis_host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_synthesis_host" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.speech_synthesis_port">
-<span class="sig-name descname"><span class="pre">speech_synthesis_port</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_synthesis_port" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.speech_synthesis_api">
 <span class="sig-name descname"><span class="pre">speech_synthesis_api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.speech_synthesis_api" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7023,6 +6996,69 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.modules.models.validators">
+<span id="validators"></span><h1>Validators<a class="headerlink" href="#module-jarvis.modules.models.validators" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.validators.Validator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.validators.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig" title="jarvis.modules.models.classes.EnvConfig"><span class="pre">EnvConfig</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.validators.Validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object to run various startup validations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Validator</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.validators.Validator.validate_wake_words">
+<span class="sig-name descname"><span class="pre">validate_wake_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operating_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.validators.Validator.validate_wake_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate wake words and wake word detector installation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detector_version</strong> – Dependent library version.</p></li>
+<li><p><strong>operating_system</strong> – Operating system of the host machine.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.validators.Validator.validate_builtin_voices">
+<span class="sig-name descname"><span class="pre">validate_builtin_voices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Voice</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.validators.Validator.validate_builtin_voices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the builtin voices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>voices</strong> – List of available voices.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns an optional boolean flag to set the default voice.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[bool]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.validators.Validator.validate_camera_indices">
+<span class="sig-name descname"><span class="pre">validate_camera_indices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.validators.Validator.validate_camera_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate if the camera index is readable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the index of the camera.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.models.validators.Validator.validate_speech_synthesis_voices">
+<span class="sig-name descname"><span class="pre">validate_speech_synthesis_voices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.validators.Validator.validate_speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate given voice for speech synthesis.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="modules">
 <h1>———-Modules———-<a class="headerlink" href="#modules" title="Permalink to this heading">¶</a></h1>
 </section>
@@ -7035,12 +7071,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.audio.speaker.speech_synthesizer">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speaker.</span></span><span class="sig-name descname"><span class="pre">speech_synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SSQuality.Medium</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us_northern_english_male-glow_tts'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speaker.speech_synthesizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a post call to docker container for speech synthesis.</p>
+<dd><p>Makes a post call to the speech-synthesis API for text-to-speech.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> – Takes the text that has to be spoken as an argument.</p></li>
-<li><p><strong>timeout</strong> – Time to wait for the docker image to process text-to-speech request.</p></li>
+<li><p><strong>timeout</strong> – Time to wait for the speech-synthesis API to process the text-to-speech request.</p></li>
 <li><p><strong>quality</strong> – Quality at which the conversion is to be done.</p></li>
 <li><p><strong>voice</strong> – Voice for speech synthesis.</p></li>
 </ul>
@@ -7135,123 +7171,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="module-jarvis.modules.audio.speech_synthesis"></span><p>Module for speech-synthesis running on a docker container.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SpeechSynthesis</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.find_pid_by_port">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">find_pid_by_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.find_pid_by_port" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the PID of the process using a specific port number.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>port</strong> – Port number that the process is listening to.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>ID of the process that’s listening to the port.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.check_external">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">check_external</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.check_external" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for speech synthesis API running externally.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A boolean flag to indicate API usability.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.check_existing">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">check_existing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.check_existing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks for existing connection.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A boolean flag whether a valid connection is present.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.run_existing_container">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">run_existing_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verified</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.run_existing_container" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tries to run the container if a container ID is present in the CID file in fileio directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – DockerClient object.</p></li>
-<li><p><strong>verified</strong> – Boolean flag to simply validate the container ID and return it.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>.cid file should exist with a valid container ID to tun speech synthesis</p></li>
-<li><p>Checks if the container state has been exited, not running and not dead.</p></li>
-<li><p>If at least one of the condition doesn’t match, removes the container.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Container ID.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.run_new_container">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">run_new_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.run_new_container" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spins up a new docker container for speech-synthesis. Pulls the image if not found locally.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client</strong> – DockerClient object.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Container ID.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.stream_logs">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">stream_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DockerClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.stream_logs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stream logs into the log file specific for speech synthesis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – DockerClient object.</p></li>
-<li><p><strong>container_id</strong> – Container ID.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.audio.speech_synthesis.speech_synthesis_api">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.audio.speech_synthesis.</span></span><span class="sig-name descname"><span class="pre">speech_synthesis_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.speech_synthesis.speech_synthesis_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates speech synthesis API using docker.</p>
 </dd></dl>
 
 <hr class="docutils" />
@@ -11494,6 +11413,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#enums">Enums</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.squire">Squire</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.models.validators">Validators</a></li>
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.auth_bearer">Auth Bearer</a></li>
