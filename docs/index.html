@@ -5664,8 +5664,51 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </pre></div>
 </div>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.env_loader">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">env_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig" title="jarvis.modules.models.classes.EnvConfig"><span class="pre">EnvConfig</span></a></span></span><a class="headerlink" href="#jarvis.modules.models.classes.env_loader" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.get_env">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">get_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.classes.get_env" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get environment variables with case insensitivity.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.json_parser">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">json_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.json_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON parser for environment variables passed via VaultAPI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>secret</strong> – Receives secret as a string from Vault.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the JSON parsed value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.env_vault_loader">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">env_vault_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig" title="jarvis.modules.models.classes.EnvConfig"><span class="pre">jarvis.modules.models.classes.EnvConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.env_vault_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load env config by retrieving a DB table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Table name env var to look for.</p></li>
+<li><p><strong>default</strong> – Default value if table name env var is not found.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a reference to the <code class="docutils literal notranslate"><span class="pre">EnvConfig</span></code> object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig" title="jarvis.modules.models.classes.EnvConfig">EnvConfig</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.env_file_loader">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.classes.</span></span><span class="sig-name descname"><span class="pre">env_file_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig" title="jarvis.modules.models.classes.EnvConfig"><span class="pre">EnvConfig</span></a></span></span><a class="headerlink" href="#jarvis.modules.models.classes.env_file_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads environment variables based on filetypes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

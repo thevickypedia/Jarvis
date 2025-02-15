@@ -16,7 +16,7 @@ import sys
 from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 import jlrpy
@@ -39,6 +39,7 @@ from pydantic import (
 )
 from pydantic_settings import BaseSettings
 from pyhtcc import Zone
+from vaultapi import VaultAPIClient
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
@@ -496,7 +497,51 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be '%I:%M %p'")
 
 
-def env_loader(key, default) -> EnvConfig:
+def get_env(key: str, default: Any = None):
+    """Get environment variables with case insensitivity."""
+    for _key, _value in os.environ.items():
+        if _key.lower() == key.lower():
+            return _value
+    return default
+
+
+def json_parser(secret: str) -> Any:
+    """JSON parser for environment variables passed via VaultAPI.
+
+    Args:
+        secret: Receives secret as a string from Vault.
+
+    Returns:
+        Any:
+        Returns the JSON parsed value.
+    """
+    try:
+        value = json.loads(secret)
+        if isinstance(value, int):
+            return str(value)
+        return value
+    except json.JSONDecodeError:
+        return secret
+
+
+def env_vault_loader(key, default) -> EnvConfig | None:
+    """Load env config by retrieving a DB table.
+
+    Args:
+        key: Table name env var to look for.
+        default: Default value if table name env var is not found.
+
+    Returns:
+        EnvConfig:
+        Returns a reference to the ``EnvConfig`` object.
+    """
+    if vault_env_vars := VaultAPIClient().get_table(table_name=get_env(key, default)):
+        return EnvConfig(
+            **{k.lower(): json_parser(v) for k, v in vault_env_vars.items()}
+        )
+
+
+def env_file_loader(key, default) -> EnvConfig:
     """Loads environment variables based on filetypes.
 
     Args:
@@ -507,10 +552,8 @@ def env_loader(key, default) -> EnvConfig:
         EnvConfig:
         Returns a reference to the ``EnvConfig`` object.
     """
-    for _key, _value in os.environ.items():
-        if _key.lower() == key.lower():
-            env_file = pathlib.Path(_value)
-            break
+    if env_file_r := get_env(key, default):
+        env_file = pathlib.Path(env_file_r)
     else:
         env_file = pathlib.Path(default)
     if env_file.suffix.lower() == ".json":
@@ -533,7 +576,12 @@ def env_loader(key, default) -> EnvConfig:
         )
 
 
-env = env_loader(key="env_file", default=".env")
+# noinspection PyBroadException
+try:
+    # todo: Parse when loading secrets into vault
+    env = env_vault_loader(key="vault_table", default="jarvis")
+except Exception:
+    env = env_file_loader(key="env_file", default=".env")
 
 
 class FileIO(BaseModel):

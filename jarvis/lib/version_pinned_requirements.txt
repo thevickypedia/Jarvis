@@ -19,6 +19,7 @@ pydantic==2.7.*
 pydantic-settings==2.3.*
 PyJWT==2.8.*
 python-dateutil==2.9.*
+python-dotenv==1.0.*
 python-multipart==0.0.*
 pytz  # Follows year based versioning
 PyYAML==6.0.*
