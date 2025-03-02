@@ -176,12 +176,10 @@ def google_home(device: str = None, file: str = None) -> None:
         - This error occurs when one end of the connection tries sending data while the other has closed the connection.
         - This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).
 
-        .. code-block:: python
-
-            except IOError as error:
-                import errno
-                if error.errno != errno.EPIPE:
-                    support.write_screen(error)
+        >>> except IOError as error:
+        >>>     import errno
+        >>>     if error.errno != errno.EPIPE:
+        >>>         support.write_screen(error)
 
     Args:
         device: Name of the Google home device on which the music has to be played.

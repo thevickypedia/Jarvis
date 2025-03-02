@@ -18,9 +18,11 @@ import logging
 import os
 import platform
 import re
+import shutil
 import string
 import subprocess
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, NoReturn
 
@@ -31,6 +33,130 @@ if os.environ.get("JARVIS_VERBOSITY", "-1") == "1":
     verbose = " --verbose"
 else:
     verbose = ""
+uv_install = {
+    "option": os.environ.get("UV_INSTALL", "-1").lower() in ("1", "true", "yes")
+}
+
+
+def convert_seconds(seconds: int | float, n_elem: int = 2) -> str:
+    """Calculate years, months, days, hours, minutes, seconds, and milliseconds from given input.
+
+    Args:
+        seconds: Number of seconds to convert (supports float values).
+        n_elem: Number of elements required from the converted list.
+
+    Returns:
+        str:
+        Returns a humanized string notion of the number of seconds.
+    """
+    if not seconds:
+        return "0s"
+    elif seconds < 1:
+        return f"{seconds * 1000:.0f}ms"
+
+    seconds_in_year = 365 * 24 * 3600
+    seconds_in_month = 30 * 24 * 3600
+
+    years = seconds // seconds_in_year
+    seconds %= seconds_in_year
+
+    months = seconds // seconds_in_month
+    seconds %= seconds_in_month
+
+    days = seconds // (24 * 3600)
+    seconds %= 24 * 3600
+
+    hours = seconds // 3600
+    seconds %= 3600
+
+    minutes = seconds // 60
+    seconds %= 60
+
+    milliseconds = round((seconds % 1) * 1000)
+    seconds = int(seconds)  # Convert remaining seconds to int for display
+
+    time_parts = []
+
+    if years > 0:
+        time_parts.append(f"{int(years)} year{'s' if years > 1 else ''}")
+    if months > 0:
+        time_parts.append(f"{int(months)} month{'s' if months > 1 else ''}")
+    if days > 0:
+        time_parts.append(f"{int(days)} day{'s' if days > 1 else ''}")
+    if hours > 0:
+        time_parts.append(f"{int(hours)} hour{'s' if hours > 1 else ''}")
+    if minutes > 0:
+        time_parts.append(f"{int(minutes)} minute{'s' if minutes > 1 else ''}")
+    if seconds > 0 or milliseconds > 0:
+        if seconds > 0 and milliseconds > 0:
+            time_parts.append(f"{seconds + milliseconds / 1000:.1f}s")
+        elif seconds > 0:
+            time_parts.append(f"{seconds}s")
+        else:
+            time_parts.append(f"{milliseconds}ms")
+
+    if len(time_parts) == 1:
+        return time_parts[0]
+
+    list_ = time_parts[:n_elem]
+    return ", and ".join(
+        [", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_
+    )
+
+
+class Runtime:
+    """A context manager that captures runtime for a given execution.
+
+    Using context manager:
+        >>> with Runtime() as runtime:
+        >>>     bin(2018)
+        >>> print(runtime.get())
+
+    Manually:
+        >>> runtime = Runtime()
+        >>> runtime.start()
+        >>> time.sleep(10)
+        >>> runtime.stop()
+        >>> print(runtime.get())
+    """
+
+    def __init__(self, breakout: int = 2):
+        """Instantiates the Runtime object."""
+        self.breakout = breakout
+        self.start_time = None
+        self.end_time = None
+
+    def __enter__(self) -> "Runtime":
+        """Entrypoint for context manager.
+
+        Returns:
+            Runtime:
+            Returns a reference to the self object.
+        """
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        """Exit function for context manager."""
+        self.stop()
+
+    def start(self) -> None:
+        """Manually start the timer."""
+        self.start_time = time.time()
+
+    def stop(self) -> None | NoReturn:
+        """Manually stop the timer."""
+        if self.start_time is None:
+            raise ValueError("Timer was never started.")
+        self.end_time = time.time()
+
+    def get(self) -> None | NoReturn:
+        """Retrieve the elapsed time."""
+        if not all((self.start_time, self.end_time)):
+            raise ValueError(
+                "Runtime not captured. Ensure you call `stop()` before `get()`."
+            )
+        return convert_seconds(self.end_time - self.start_time, n_elem=self.breakout)
 
 
 def pretext() -> str:
@@ -99,7 +225,20 @@ class Env:
         self.architecture: str = get_arch()
         self.pyversion: str = f"{sys.version_info.major}{sys.version_info.minor}"
         self.current_dir: os.PathLike | str = os.path.dirname(__file__)
-        self.python: os.PathLike | str = sys.executable
+        self.exec: os.PathLike | str = sys.executable
+
+    def install_uv(self) -> None | NoReturn:
+        """Installs ``uv`` package manager."""
+        run_subprocess(f"{env.exec} -m pip install uv")
+        self.exec = shutil.which("uv")
+        try:
+            installer = sys.argv[0].split(os.path.sep)[-1]
+        except Exception as err:
+            logger.warning(err)
+            installer = "jarvis"
+        assert (
+            self.exec
+        ), f"\n\tFailed to install package manager. Try to rerun '{installer} {sys.argv[1]}'"
 
 
 env = Env()
@@ -130,7 +269,7 @@ def run_subprocess(command: str) -> None:
         command,
         text=True,
         shell=True,
-        env={**os.environ, **env_vars},
+        env={k: v for k, v in {**os.environ, **env_vars}.items() if k and v},
         universal_newlines=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -202,11 +341,13 @@ def no_venv() -> None | NoReturn:
 Using a virtual environment is highly recommended to avoid version conflicts in dependencies
     * Creating Virtual Environments: https://docs.python.org/3/library/venv.html#creating-virtual-environments
     * How Virtual Environments work: https://docs.python.org/3/library/venv.html#how-venvs-work
+    * Set UV_INSTALL=0, since uv package manager cannot be used for a system interpreter.
 """
         )
     )
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     confirmation_prompt()
+    uv_install["option"] = False
 
 
 class Requirements:
@@ -280,9 +421,13 @@ def dev_uninstall() -> None:
     logger.info(pretext())
     logger.info(center("Uninstalling dev dependencies"))
     logger.info(pretext())
-    run_subprocess(
-        f"{env.python} -m pip uninstall{verbose} --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse -y"
-    )
+    with Runtime() as runtime:
+        run_subprocess(
+            f"{env.exec} pip uninstall{verbose} --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse"
+        )
+    logger.info(pretext())
+    logger.info(center(f"Cleanup completed in {runtime.get()}!"))
+    logger.info(pretext())
 
 
 def main_uninstall() -> None:
@@ -291,19 +436,20 @@ def main_uninstall() -> None:
     logger.info(pretext())
     logger.info(center("Uninstalling ALL dependencies"))
     logger.info(pretext())
-    exception = thread_worker(
-        [
-            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.pinned} -y",
-            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.locked} -y",
-            f"{env.python} -m pip uninstall{verbose} --no-cache-dir -r {requirements.upgrade} -y",
-            f"{env.python} -m pip uninstall{verbose} --no-cache-dir {' '.join(os_specific_pip())} -y",
-        ]
-    )
+    with Runtime() as runtime:
+        exception = thread_worker(
+            [
+                f"{env.exec} pip uninstall{verbose} --no-cache-dir -r {requirements.pinned}",
+                f"{env.exec} pip uninstall{verbose} --no-cache-dir -r {requirements.locked}",
+                f"{env.exec} pip uninstall{verbose} --no-cache-dir -r {requirements.upgrade}",
+                f"{env.exec} pip uninstall{verbose} --no-cache-dir {' '.join(os_specific_pip())}",
+            ]
+        )
     logger.info(pretext())
     if exception:
         logger.error(center("One or more cleanup threads have failed!!"))
     else:
-        logger.info(center("Cleanup has completed!"))
+        logger.info(center(f"Cleanup completed in {runtime.get()}!"))
     logger.info(pretext())
 
 
@@ -312,13 +458,14 @@ def os_agnostic() -> None:
     logger.info(pretext())
     logger.info(center("Installing OS agnostic dependencies"))
     logger.info(pretext())
-    exception = thread_worker(
-        [
-            f"{env.python} -m pip install{verbose} --no-cache -r {requirements.pinned}",
-            f"{env.python} -m pip install{verbose} --no-cache -r {requirements.locked}",
-            f"{env.python} -m pip install{verbose} --no-cache --upgrade -r {requirements.upgrade}",
-        ]
-    )
+    with Runtime() as runtime:
+        exception = thread_worker(
+            [
+                f"{env.exec} pip install{verbose} --no-cache -r {requirements.pinned}",
+                f"{env.exec} pip install{verbose} --no-cache -r {requirements.locked}",
+                f"{env.exec} pip install{verbose} --no-cache --upgrade -r {requirements.upgrade}",
+            ]
+        )
     logger.info(pretext())
     if exception:
         logger.error(center("One or more installation threads have failed!!"))
@@ -326,7 +473,7 @@ def os_agnostic() -> None:
             center("Please set JARVIS_VERBOSITY=1 and retry to identify root cause.")
         )
     else:
-        logger.info(center("Installation has completed!"))
+        logger.info(center(f"Installation completed in {runtime.get()}"))
     logger.info(pretext())
 
 
@@ -356,9 +503,11 @@ def init() -> None:
             "Please use any python version between 3.10.* and 3.11.*"
         )
         exit(1)
-    run_subprocess(
-        f"{env.python} -m pip install{verbose} --upgrade pip setuptools wheel"
-    )
+    if uv_install["option"]:
+        env.install_uv()
+    else:
+        env.exec += " -m"
+    run_subprocess(f"{env.exec} pip install{verbose} --upgrade pip setuptools wheel")
 
 
 def dev_install() -> None:
@@ -367,9 +516,13 @@ def dev_install() -> None:
     logger.info(pretext())
     logger.info(center("Installing dev dependencies"))
     logger.info(pretext())
-    run_subprocess(
-        f"{env.python} -m pip install{verbose} sphinx==5.1.1 pre-commit recommonmark gitverse"
-    )
+    with Runtime() as runtime:
+        run_subprocess(
+            f"{env.exec} pip install{verbose} sphinx==5.1.1 pre-commit recommonmark gitverse"
+        )
+    logger.info(pretext())
+    logger.info(center(f"Installation completed in {runtime.get()}"))
+    logger.info(pretext())
 
 
 def main_install() -> None:
@@ -383,5 +536,6 @@ def main_install() -> None:
     logger.info(pretext())
     if env.osname == "windows":
         windows_handler()
+    os.environ["PY_EXECUTABLE"] = env.exec
     run_subprocess(install_script)
     os_agnostic()

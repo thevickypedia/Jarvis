@@ -25,10 +25,8 @@ def list_splitter(original_list: List[str], delimiter: str) -> List[List[str]]:
         delimiter: This value should be final value where the initial list must be split.
 
     See Also:
-        .. code-block:: python
-
-            main_list = ['First Name', 'Vignesh', 'Last Name', 'Rao', 'Drives', 'Jaguar',
-                         'First Name', 'Tony', 'Last Name', 'Stark', 'Drives', 'Mark III']
+        >>> main_list = ['First Name', 'Vignesh', 'Last Name', 'Rao', 'Drives', 'Jaguar',
+        >>>              'First Name', 'Tony', 'Last Name', 'Stark', 'Drives', 'Mark III']
 
         - delimiter should be ``Drives`` since that's where the main list has to be split.
 

@@ -21,23 +21,23 @@ sudo apt install -y pkg-config libcairo2-dev gcc python3-dev libgirepository1.0-
 sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 
 # Install Linux specifics
-python -m pip install pvporcupine==1.9.5
+${PY_EXECUTABLE} pip install pvporcupine==1.9.5
 
 # CMake must be installed to build dlib
 python -m pip uninstall --no-cache-dir cmake # Remove cmake distro installed by pip
 sudo apt install cmake                       # Install cmake from apt repository
 # shellcheck disable=SC2154
 if [ "$pyversion" -eq 310 ]; then
-  python -m pip install dlib==19.24.0
+  ${PY_EXECUTABLE} pip install dlib==19.24.0
 fi
 if [ "$pyversion" -eq 311 ]; then
-  python -m pip install dlib==19.24.4
+  ${PY_EXECUTABLE} pip install dlib==19.24.4
 fi
 
 # Install as stand alone as face recognition depends on dlib
-python -m pip install opencv-python==4.9.0.80 face-recognition==1.3.0
+${PY_EXECUTABLE} pip install opencv-python==4.9.0.80 face-recognition==1.3.0
 
-python -m pip install gobject==0.1.0 PyGObject==3.48.2
+${PY_EXECUTABLE} pip install gobject==0.1.0 PyGObject==3.48.2
 
 # Install as stand alone as playsound depends on gobject
-python -m pip install playsound==1.3.0
+${PY_EXECUTABLE} pip install playsound==1.3.0

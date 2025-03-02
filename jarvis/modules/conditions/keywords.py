@@ -18,12 +18,11 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         - Keywords should have both singular and plural forms wherever possible.
         - An alternate is to use
 
-        .. code-block:: python
-
-            import inflect
-            engine = inflect.engine()
-            engine.plural(phrase)
-            engine.singular_noun(phrase)
+        >>> import inflect
+        >>> phrase = inflect.Word("penny")
+        >>> engine = inflect.engine()
+        >>> engine.plural(phrase)
+        >>> engine.singular_noun(phrase)
 
         - But the approach is time taking and inconsistent.
 

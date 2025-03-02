@@ -83,6 +83,66 @@
 </ul>
 </div>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.convert_seconds">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">convert_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_elem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.installer.convert_seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate years, months, days, hours, minutes, seconds, and milliseconds from given input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> – Number of seconds to convert (supports float values).</p></li>
+<li><p><strong>n_elem</strong> – Number of elements required from the converted list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a humanized string notion of the number of seconds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.lib.installer.Runtime">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">Runtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.lib.installer.Runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>A context manager that captures runtime for a given execution.</p>
+<dl>
+<dt>Using context manager:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Runtime</span><span class="p">()</span> <span class="k">as</span> <span class="n">runtime</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">bin</span><span class="p">(</span><span class="mi">2018</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">runtime</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd>
+<dt>Manually:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">runtime</span> <span class="o">=</span> <span class="n">Runtime</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">runtime</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">runtime</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">runtime</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.lib.installer.Runtime.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.Runtime.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually start the timer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.lib.installer.Runtime.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.Runtime.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually stop the timer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.lib.installer.Runtime.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.Runtime.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the elapsed time.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.lib.installer.pretext">
 <span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">pretext</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.lib.installer.pretext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre-text to gain reader’s attention in the terminal.</p>
@@ -118,6 +178,12 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Env</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.lib.installer.Env.install_uv">
+<span class="sig-name descname"><span class="pre">install_uv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.Env.install_uv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Installs <code class="docutils literal notranslate"><span class="pre">uv</span></code> package manager.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -264,8 +330,8 @@
 <p>delimiter: This value should be final value where the initial list must be split.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">main_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Vignesh&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Rao&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Jaguar&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Tony&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Stark&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Mark III&#39;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">main_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Vignesh&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Rao&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Jaguar&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="s1">&#39;First Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Tony&#39;</span><span class="p">,</span> <span class="s1">&#39;Last Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Stark&#39;</span><span class="p">,</span> <span class="s1">&#39;Drives&#39;</span><span class="p">,</span> <span class="s1">&#39;Mark III&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -4562,10 +4628,10 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This error occurs when one end of the connection tries sending data while the other has closed the connection.</p></li>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
-    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
-        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7466,10 +7532,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
-<span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
-<span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
-<span class="n">engine</span><span class="o">.</span><span class="n">singular_noun</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phrase</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;penny&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">singular_noun</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
