@@ -4563,7 +4563,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">errno</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
     <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
         <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
@@ -7466,7 +7466,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">inflect</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
 <span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 <span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
 <span class="n">engine</span><span class="o">.</span><span class="n">singular_noun</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
@@ -10475,33 +10475,16 @@ Whites can have a value of None.</p>
 </dl>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">Customizer</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Customize prompt for the model with pre-defined instructions using a <code class="docutils literal notranslate"><span class="pre">Modelfile</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Customizer</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs the customizer with SDK as the primary option and CLI as secondary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the model name.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.create_model_file">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">create_model_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.create_model_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates <code class="docutils literal notranslate"><span class="pre">Modelfile</span></code> if not found.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Customizer.customize_model">
-<span class="sig-name descname"><span class="pre">customize_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Customizer.customize_model" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.customize_model">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">customize_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.customize_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the CLI to customize the model.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -11082,14 +11065,8 @@ mac address given as a parameter.</p>
 <section id="test-cases">
 <h1>———-Test Cases———-<a class="headerlink" href="#test-cases" title="Permalink to this heading">¶</a></h1>
 </section>
-<section id="module-tests.api_test">
-<span id="testapi"></span><h1>TestAPI<a class="headerlink" href="#module-tests.api_test" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="tests.api_test.server">
-<span class="sig-prename descclassname"><span class="pre">tests.api_test.</span></span><span class="sig-name descname"><span class="pre">server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.api_test.server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run pytest on APIServer which runs in a thread.</p>
-</dd></dl>
-
+<section id="testapi">
+<h1>TestAPI<a class="headerlink" href="#testapi" title="Permalink to this heading">¶</a></h1>
 </section>
 <section id="module-tests.listener_test">
 <span id="testlistener"></span><h1>TestListener<a class="headerlink" href="#module-tests.listener_test" title="Permalink to this heading">¶</a></h1>
@@ -11483,7 +11460,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.tv.lg">TV Connector</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.wakeonlan.wakeonlan">WakeOnLAN</a></li>
 <li><a class="reference internal" href="#test-cases">———-Test Cases———-</a></li>
-<li><a class="reference internal" href="#module-tests.api_test">TestAPI</a></li>
+<li><a class="reference internal" href="#testapi">TestAPI</a></li>
 <li><a class="reference internal" href="#module-tests.listener_test">TestListener</a></li>
 <li><a class="reference internal" href="#module-tests.main_test">TestMain</a></li>
 <li><a class="reference internal" href="#module-tests.speaker_test">TestSpeaker</a></li>

@@ -138,53 +138,36 @@ def existing_response(request: str) -> str | None:
             return response_ratio[0]
 
 
-class Customizer:
-    """Customize prompt for the model with pre-defined instructions using a ``Modelfile``.
+def create_model_file() -> None:
+    """Creates ``Modelfile`` if not found."""
+    if not os.path.isfile(models.fileio.ollama_model_file):
+        logger.info(
+            "'%s' not found, creating one at '%s'",
+            os.path.basename(models.fileio.ollama_model_file),
+            os.path.basename(models.fileio.root),
+        )
+        logger.info(
+            "Feel free to modify this file in the future for custom instructions"
+        )
+        template = jinja2.Template(source=templates.llama.modelfile)
+        rendered = template.render(MODEL_NAME=models.env.ollama_model)
+        with open(models.fileio.ollama_model_file, "w") as file:
+            file.write(rendered)
+            file.flush()
 
-    >>> Customizer
 
-    """
-
-    def __init__(self):
-        """Initializes the custom model name and the ``Modelfile`` used to customize it."""
-        self.model_name = "jarvis"
-        if not os.path.isfile(models.fileio.ollama_model_file):
-            logger.info(
-                "'%s' not found, creating one at '%s'",
-                os.path.basename(models.fileio.ollama_model_file),
-                os.path.basename(models.fileio.root),
-            )
-            logger.info(
-                "Feel free to modify this file in the future for custom instructions"
-            )
-            template = jinja2.Template(source=templates.llama.modelfile)
-            rendered = template.render(MODEL_NAME=models.env.ollama_model)
-            with open(models.fileio.ollama_model_file, "w") as file:
-                file.write(rendered)
-                file.flush()
-
-    def run(self) -> str:
-        """Runs the customizer with SDK as the primary option and CLI as secondary.
-
-        Returns:
-            str:
-            Returns the model name.
-        """
-        try:
-            self.customize_model()
-            return self.model_name
-        except ollama.ResponseError as error:
-            logger.error(error)
-        return models.env.ollama_model
-
-    def customize_model(self) -> None:
-        """Uses the CLI to customize the model."""
+def customize_model() -> None:
+    """Uses the CLI to customize the model."""
+    create_model_file()
+    try:
         for res in ollama.create(
-            model=self.model_name,
+            model=models.env.ollama_model,
             path=models.fileio.ollama_model_file,
             stream=True,
         ):
             logger.info(res["status"])
+    except ollama.ResponseError as error:
+        logger.error(error)
 
 
 class Ollama:
@@ -205,7 +188,7 @@ class Ollama:
             )
             raise ValueError
         for model in self.models:
-            if model.get("name") == f"{models.env.ollama_model}:latest":
+            if model.get("name") == models.env.ollama_model:
                 logger.info(f"Model {models.env.ollama_model!r} found")
                 break
         else:
@@ -221,7 +204,7 @@ class Ollama:
                     UserWarning,
                 )
                 raise ValueError
-        self.model_name = Customizer().run()
+        customize_model()
         self.client = ollama.Client()
 
     def request_model(self, request: str) -> Generator[str]:
@@ -234,7 +217,7 @@ class Ollama:
             Streaming response from the model.
         """
         for res in self.client.generate(
-            model=self.model_name,
+            model=models.env.ollama_model,
             prompt=request,
             stream=True,
             options=ollama.Options(num_predict=100),
