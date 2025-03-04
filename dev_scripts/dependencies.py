@@ -110,11 +110,15 @@ def get_package_and_version(
     # Define the pattern for splitting at special characters and capturing the version
     pattern = r"([=<>#@])"
     split_result = re.split(pattern, input_string, maxsplit=1)
-    # Now extract the version from the remaining part of the string
-    # noinspection RegExpUnnecessaryNonCapturingGroup,RegExpRedundantEscape,RegExpSimplifiable
-    version_match = re.search(r"[\d]+\.[\d]+(?:\.[\d]+)?(?:[\.\*]*)", input_string)
-    version = version_match.group(0) if version_match else None
-    return dict(package_name=split_result[0].strip(), current_version=version)
+    pkg_name = split_result[0].strip()
+    if split_result[1] == ">":
+        version = ".".join(split_result[-1].lstrip("=").split(".")[:-1]) + ".*"
+    else:
+        # Now extract the version from the remaining part of the string
+        # noinspection RegExpUnnecessaryNonCapturingGroup,RegExpRedundantEscape,RegExpSimplifiable
+        version_match = re.search(r"[\d]+\.[\d]+(?:\.[\d]+)?(?:[\.\*]*)", input_string)
+        version = version_match.group(0) if version_match else None
+    return dict(package_name=pkg_name, current_version=version)
 
 
 def read_requirements(

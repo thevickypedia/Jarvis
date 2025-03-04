@@ -14,7 +14,7 @@ on:
       - ".github/workflows/version.yml"
 
 jobs:
-  check-python-version:
+  dependencies:
     runs-on: thevickypedia-lite
     steps:
       - uses: actions/checkout@v4
