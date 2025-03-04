@@ -10,6 +10,7 @@ on:
       - master
     paths:
       - '**/*.txt'
+      - ".github/workflows/version.yml"
 
 jobs:
   check-python-version:
@@ -18,4 +19,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: python dependencies.py
         working-directory: dev_scripts
-        shell: python
+        shell: bash
