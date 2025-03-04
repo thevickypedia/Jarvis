@@ -13,8 +13,8 @@ from importlib.metadata import PackageNotFoundError, distribution
 from typing import Any, Callable, Dict, Iterable, List
 from urllib.error import HTTPError
 
-from dev_scripts.display import echo
-from dev_scripts.version import Version
+from display import echo
+from version import Version
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -189,7 +189,7 @@ def entrypoint():
     )
 
     for versioned in versioned_requirements:
-        if not versioned.current_version:
+        if all((not gha, not versioned.current_version)):
             try:
                 version = distribution(versioned.package_name)
             except PackageNotFoundError:

@@ -18,6 +18,5 @@ jobs:
     runs-on: thevickypedia-lite
     steps:
       - uses: actions/checkout@v4
-      - run: python dependencies.py
-        working-directory: dev_scripts
+      - run: python dev_scripts/dependencies.py
         shell: bash
