@@ -38,6 +38,20 @@ class PackageInfo(dict):
     latest_version: str = None
 
 
+def get_icon_color(overall: int, outdated: int) -> str:
+    """Calculates the percentage of outdated values, and returns an icon as a response."""
+    match (outdated / overall) * 100:
+        case percentage if percentage <= 10:
+            return "⚪"
+        case percentage if 10 < percentage <= 25:
+            return "🟡"
+        case percentage if percentage >= 50:
+            return "🔴"
+        case _:
+            # Default case, for percentages between 25% and 50%
+            return "🟡"
+
+
 def get_latest_version(package_name, retries=5) -> str:
     """Get latest version of a package from pypi repository.
 
@@ -179,11 +193,7 @@ def write_gh_summary(filepath: str, text: str) -> None:
         text: Text to write to summary.
     """
     with open(filepath, "a") as file:
-        file.write("```")
-        file.write(text)
-        file.write("```")
-        file.write("\n")
-        file.flush()
+        file.write(f"{text}\n")
 
 
 def entrypoint():
@@ -203,8 +213,10 @@ def entrypoint():
     versioned_requirements: Generator[PackageInfo] = thread_worker(
         get_version, requirements
     )
-
+    overall = 0
+    outdated = 0
     for versioned in versioned_requirements:
+        overall += 1
         if gha and not versioned.current_version:
             # Since the requirements will not be installed in GHA
             continue
@@ -222,13 +234,22 @@ def entrypoint():
             current_version = versioned.current_version
             latest_version = versioned.latest_version
         if Version(latest_version) > Version(current_version):
+            outdated += 1
             version_dict = versioned.__dict__
             version_dict.pop("filepath", 1)
             if gha:
-                write_gh_summary(gha_summary, json.dumps(version_dict, indent=4))
-                print(f"::warning title=Outdated Version::{version_dict}", file=sys.stderr)
+                print(
+                    f"::warning title=Outdated Version::{version_dict}", file=sys.stderr
+                )
             else:
                 echo.warning(json.dumps(version_dict, indent=4))
+    if gha and gha_summary:
+        write_gh_summary(
+            gha_summary,
+            f"Overall packages: {overall}\n"
+            f"Outdated packages: {outdated}\n"
+            f"Status: {get_icon_color(overall, outdated)}",
+        )
 
 
 if __name__ == "__main__":
