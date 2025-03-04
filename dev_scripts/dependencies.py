@@ -179,7 +179,11 @@ def write_gh_summary(filepath: str, text: str) -> None:
         text: Text to write to summary.
     """
     with open(filepath, "a") as file:
+        file.write("```")
         file.write(text)
+        file.write("```")
+        file.write("\n")
+        file.flush()
 
 
 def entrypoint():
@@ -220,12 +224,11 @@ def entrypoint():
         if Version(latest_version) > Version(current_version):
             version_dict = versioned.__dict__
             version_dict.pop("filepath", 1)
-            string = json.dumps(version_dict, indent=4)
             if gha:
-                write_gh_summary(gha_summary, string)
-                print(f"::warning title=Outdated Version::{string}", file=sys.stderr)
+                write_gh_summary(gha_summary, json.dumps(version_dict, indent=4))
+                print(f"::warning title=Outdated Version::{version_dict}", file=sys.stderr)
             else:
-                echo.warning(string)
+                echo.warning(json.dumps(version_dict, indent=4))
 
 
 if __name__ == "__main__":
