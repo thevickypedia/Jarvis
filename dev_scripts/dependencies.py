@@ -10,7 +10,7 @@ from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, distribution
-from typing import Any, Callable, Dict, Iterable, List, LiteralString
+from typing import Any, Callable, Dict, Iterable, List
 from urllib.error import HTTPError
 
 from dev_scripts.display import echo
@@ -81,14 +81,14 @@ def get_latest_version(package_name, retries=5) -> str:
 
 def get_package_and_version(
     input_string: str,
-) -> Dict[str, str | LiteralString | None] | None:
+) -> Dict[str, str | None] | None:
     """Parses a package specified in the requirements file to retrieve package name and version.
 
     Args:
         input_string: Input line from the requirements file.
 
     Returns:
-        Dict[str, str | LiteralString | None]:
+        Dict[str, str | None]:
         Returns key-value pairs with package name and version.
     """
     if not input_string or input_string.startswith("#"):
@@ -105,14 +105,14 @@ def get_package_and_version(
 
 def read_requirements(
     filepath: str,
-) -> Generator[Dict[str, str | LiteralString | None]]:
+) -> Generator[Dict[str, str | None]]:
     """Reads the requirements file and yields the package information.
 
     Args:
         filepath: Takes the filepath as an argument.
 
     Yields:
-        Dict[str, str | LiteralString | None]:
+        Dict[str, str | None]:
         Returns key-value pairs with package name and version.
     """
     with open(filepath) as file:
