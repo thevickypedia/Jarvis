@@ -189,7 +189,11 @@ def entrypoint():
     )
 
     for versioned in versioned_requirements:
-        if all((not gha, not versioned.current_version)):
+        if gha and not versioned.current_version:
+            # Since the requirements will not be installed in GHA
+            continue
+        elif not versioned.current_version:
+            # Check locally installed version in case it's missing in requirements.txt
             try:
                 version = distribution(versioned.package_name)
             except PackageNotFoundError:
