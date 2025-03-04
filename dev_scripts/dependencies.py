@@ -171,11 +171,23 @@ def get_version(package: Dict[str, str]) -> PackageInfo:
     )
 
 
+def write_gh_summary(filepath: str, text: str) -> None:
+    """Writes output to GitHub step summary.
+
+    Args:
+        filepath: GitHub summary filepath.
+        text: Text to write to summary.
+    """
+    with open(filepath, "a") as file:
+        file.write(text)
+
+
 def entrypoint():
     """Entrypoint function to read all the requirements file and callout packages that are outdated."""
     root_dir = pathlib.Path(__file__).parent.parent
     base_dir = os.path.join(root_dir, "jarvis", "lib")
     gha = os.getenv("GITHUB_ACTIONS") == "true"
+    gha_summary = os.environ.get("GITHUB_STEP_SUMMARY")
     requirement_files = [
         os.path.join(base_dir, file)
         for file in os.listdir(base_dir)
@@ -206,11 +218,14 @@ def entrypoint():
             current_version = versioned.current_version
             latest_version = versioned.latest_version
         if Version(latest_version) > Version(current_version):
+            version_dict = versioned.__dict__
+            version_dict.pop("filepath", 1)
+            string = json.dumps(version_dict, indent=4)
             if gha:
-                print(f"::warning title=Outdated Version::{versioned}", file=sys.stderr)
+                write_gh_summary(gha_summary, string)
+                print(f"::warning title=Outdated Version::{string}", file=sys.stderr)
             else:
-                version_dict = versioned.__dict__
-                echo.warning(json.dumps(version_dict, indent=4))
+                echo.warning(string)
 
 
 if __name__ == "__main__":
