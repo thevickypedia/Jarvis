@@ -1,0 +1,21 @@
+name: package-resolver
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '**/*.txt'
+
+jobs:
+  check-python-version:
+    runs-on: thevickypedia-lite
+    steps:
+      - uses: actions/checkout@v4
+      - run: python dependencies.py
+        working-directory: dev_scripts
+        shell: python

@@ -60,7 +60,7 @@ jobs:
           FILE_PATH: "pyproject.toml"
           PROJECT_NAME: "${{ matrix.project_name }}"
 
-      - uses: thevickypedia/pypi-publisher@v3
+      - uses: thevickypedia/pypi-publisher@v4
         with:
           dry-run: ${{ env.dry_run }}
           token: ${{ secrets.PYPI_TOKEN }}

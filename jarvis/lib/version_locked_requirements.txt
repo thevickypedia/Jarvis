@@ -3,7 +3,7 @@ holidays==0.51
 icalendar==5.0.13
 jlrpy==1.7.1
 newsapi-python==0.2.7
-packaging==23.2
+packaging==24.2
 PyAudio==0.2.14
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyhtcc==0.1.56
