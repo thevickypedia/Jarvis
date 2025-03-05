@@ -1,18 +1,18 @@
 googlehomepush==0.1.0
-holidays==0.51
-icalendar==5.0.13
+holidays==0.68
+icalendar==6.1.1
 jlrpy==1.7.1
 newsapi-python==0.2.7
 packaging==24.2
 PyAudio==0.2.14
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
-pyhtcc==0.1.56
+pyhtcc==0.1.57
 pyicloud==1.0.0
 pyrh @ git+https://github.com/robinhood-unofficial/pyrh.git@e301e8018abc1f8afe5d7aeaebdfa188783a4772
 pywebostv==0.8.9
 sounddevice==0.4.6
 SpeechRecognition==3.10.4
 speedtest-cli==2.1.3
-timezonefinder==6.2.0
-webcolors==1.13
+timezonefinder==6.5.8
+webcolors==24.11.1
 webull==0.6.1

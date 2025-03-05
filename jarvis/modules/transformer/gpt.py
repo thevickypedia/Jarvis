@@ -162,7 +162,7 @@ def customize_model() -> None:
     try:
         for res in ollama.create(
             model=models.env.ollama_model,
-            path=models.fileio.ollama_model_file,
+            from_=models.fileio.ollama_model_file,
             stream=True,
         ):
             logger.info(res["status"])

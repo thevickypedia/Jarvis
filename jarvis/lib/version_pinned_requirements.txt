@@ -1,8 +1,8 @@
-aiofiles==23.2.*
+aiofiles==24.1.*
 aiohttp==3.9.*
 bs4==0.0.*
 certifi  # Follows year based versioning
-deepdiff==7.0.*
+deepdiff==8.2.*
 fastapi==0.111.*
 geopy==2.4.*
 httpcore==1.0.*
@@ -12,7 +12,7 @@ Jinja2==3.1.*
 lxml==5.2.*
 matplotlib==3.9.*
 numpy==1.26.*
-ollama==0.2.*
+ollama==0.4.*
 Pillow==10.3.*
 psutil==6.0.*
 pydantic==2.7.*
