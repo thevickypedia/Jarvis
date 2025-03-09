@@ -10,8 +10,8 @@ pyhtcc==0.1.57
 pyicloud==1.0.0
 pyrh @ git+https://github.com/robinhood-unofficial/pyrh.git@e301e8018abc1f8afe5d7aeaebdfa188783a4772
 pywebostv==0.8.9
-sounddevice==0.4.6
-SpeechRecognition==3.10.4
+sounddevice==0.5.1
+SpeechRecognition==3.14.1
 speedtest-cli==2.1.3
 timezonefinder==6.5.8
 webcolors==24.11.1
