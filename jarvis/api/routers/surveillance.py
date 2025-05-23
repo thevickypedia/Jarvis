@@ -105,7 +105,7 @@ async def authenticate_surveillance(cam: modals.CameraIndexModal):
         )
 
 
-@router.get("/surveillance")
+@router.get(path="/surveillance")
 async def monitor(token: str = None):
     """Serves the monitor page's frontend after updating it with video origin and websocket origins.
 
@@ -164,7 +164,7 @@ async def monitor(token: str = None):
         )
 
 
-@router.get("/video-feed", include_in_schema=False)
+@router.get(path="/video-feed", include_in_schema=False)
 async def video_feed(request: Request, token: str = None):
     """Authenticates the request, and returns the frames generated as a StreamingResponse.
 
@@ -238,7 +238,7 @@ async def video_feed(request: Request, token: str = None):
     )
 
 
-@router.websocket("/ws/{client_id}")
+@router.websocket(path="/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
     """Initiates a websocket connection.
 

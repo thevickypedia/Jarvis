@@ -224,11 +224,12 @@ class StockMonitor:
         )
 
         for email_addr, corresponding_alerts in self.email_grouped.items():
+            # unique datastore for each user
             datastore = {
                 "text_gathered": [],
                 "removals": [],
                 "attachments": [],
-            }  # unique datastore for each user
+            }
             for trigger in corresponding_alerts:
                 ticker = trigger[0]
                 maximum = trigger[1]
