@@ -1,18 +1,13 @@
 import os
 from http import HTTPStatus
 
-from fastapi import APIRouter
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse
 
 from jarvis.api.logger import logger
-from jarvis.api.models import authenticator
 from jarvis.modules.conditions import keywords as keywords_mod
 from jarvis.modules.exceptions import APIResponse
 
-router = APIRouter()
 
-
-@router.get(path="/", response_class=RedirectResponse, include_in_schema=False)
 async def redirect_index():
     """Redirect to docs in read-only mode.
 
@@ -24,7 +19,6 @@ async def redirect_index():
     return "/redoc"
 
 
-@router.get(path="/health", include_in_schema=False)
 async def health():
     """Health Check for OfflineCommunicator.
 
@@ -35,7 +29,6 @@ async def health():
     raise APIResponse(status_code=HTTPStatus.OK, detail=HTTPStatus.OK.phrase)
 
 
-@router.get(path="/favicon.ico", include_in_schema=False)
 async def get_favicon():
     """Gets the favicon.ico and adds to the API endpoint.
 
@@ -57,7 +50,6 @@ async def get_favicon():
     )
 
 
-@router.get(path="/keywords", dependencies=authenticator.OFFLINE_PROTECTOR)
 async def keywords():
     """Converts the keywords and conversations into a dictionary of key-value pairs.
 

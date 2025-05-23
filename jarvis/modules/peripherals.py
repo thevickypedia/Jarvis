@@ -8,7 +8,7 @@
 import platform
 import sys
 from collections.abc import Generator
-from typing import Dict
+from typing import Mapping
 
 import pyaudio
 
@@ -39,14 +39,14 @@ class ChannelType(StrEnum):
 
     """
 
-    input_channels: str = "maxInputChannels"
-    output_channels: str = "maxOutputChannels"
+    input_channels = "maxInputChannels"
+    output_channels = "maxOutputChannels"
 
 
 channel_type = ChannelType
 
 
-def get_audio_devices(channels: str) -> Generator[Dict[str, str | int | float]]:
+def get_audio_devices(channels: str) -> Generator[Mapping[str, str | int | float]]:
     """Iterates over all devices and yields the device that has input channels.
 
     Args:

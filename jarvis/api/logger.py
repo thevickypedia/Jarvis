@@ -20,7 +20,6 @@ from jarvis.modules.logger import APIConfig, multiprocessing_logger
 api_config = APIConfig()
 multiprocessing_logger(filename=api_config.DEFAULT_LOG_FILENAME)
 
-
 # Creates log files
 if not os.path.isfile(api_config.ACCESS_LOG_FILENAME):
     pathlib.Path(api_config.ACCESS_LOG_FILENAME).touch()

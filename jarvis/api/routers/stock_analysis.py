@@ -4,17 +4,13 @@ from http import HTTPStatus
 from typing import Callable
 
 import pandas
-from fastapi import APIRouter
 from webull import paper_webull, webull
 
 from jarvis.api.logger import logger
 from jarvis.api.models import settings
 from jarvis.modules.exceptions import APIResponse
 
-router = APIRouter()
 
-
-@router.get(path="/get-signals")
 async def get_signals(symbol: str, bar_count: int = 100, data_dict: bool = False):
     """Get buy, sell and hold signals for a particular stock or all tickers supported by webull.
 

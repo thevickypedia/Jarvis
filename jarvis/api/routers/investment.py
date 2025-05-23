@@ -7,23 +7,18 @@ from threading import Timer
 
 import gmailconnector
 import jinja2
-from fastapi import APIRouter, Request
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 
 from jarvis.api.logger import logger
-from jarvis.api.models import authenticator, settings
+from jarvis.api.models import settings
 from jarvis.api.squire import timeout_otp
 from jarvis.modules.exceptions import CONDITIONAL_ENDPOINT_RESTRICTION, APIResponse
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
 
-router = APIRouter()
 
-
-@router.post(
-    path="/robinhood-authenticate", dependencies=authenticator.ROBINHOOD_PROTECTOR
-)
 async def authenticate_robinhood():
     """Authenticates the request and generates single use token.
 
@@ -90,7 +85,6 @@ async def authenticate_robinhood():
         )
 
 
-@router.get(path="/investment", response_class=HTMLResponse)
 async def robinhood_path(request: Request, token: str = None):
     """Serves static file.
 

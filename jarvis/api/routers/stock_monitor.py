@@ -8,7 +8,7 @@ from typing import Optional
 import gmailconnector
 import jinja2
 import jwt
-from fastapi import APIRouter, Header, Request
+from fastapi import Header, Request
 from pydantic import EmailStr
 from webull import webull
 
@@ -19,8 +19,6 @@ from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
-
-router = APIRouter()
 
 
 async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 300):
@@ -75,7 +73,6 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
         )
 
 
-@router.post(path="/stock-monitor")
 async def stock_monitor_api(
     request: Request,
     input_data: modals.StockMonitorModal,

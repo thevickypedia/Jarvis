@@ -4,11 +4,11 @@ import traceback
 from http import HTTPStatus
 from threading import Thread
 
-from fastapi import APIRouter, Request
+from fastapi import Request
 from fastapi.responses import FileResponse
 
 from jarvis.api.logger import logger
-from jarvis.api.models import authenticator, modals
+from jarvis.api.models import modals
 from jarvis.api.routers import speech_synthesis
 from jarvis.executors import commander, offline, others, restrictions, word_match
 from jarvis.modules.audio import tts_stt
@@ -18,7 +18,6 @@ from jarvis.modules.exceptions import APIResponse, InvalidArgument
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
-router = APIRouter()
 db = database.Database(database=models.fileio.base_db)
 
 
@@ -78,7 +77,6 @@ async def process_ok_response(
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-@router.post(path="/offline-communicator", dependencies=authenticator.OFFLINE_PROTECTOR)
 async def offline_communicator_api(
     request: Request, input_data: modals.OfflineCommunicatorModal
 ):

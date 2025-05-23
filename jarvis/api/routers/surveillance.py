@@ -9,11 +9,11 @@ from threading import Thread, Timer
 
 import gmailconnector
 import jinja2
-from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
+from fastapi import Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 
 from jarvis.api.logger import logger
-from jarvis.api.models import authenticator, modals, settings
+from jarvis.api.models import modals, settings
 from jarvis.api.squire import surveillance_squire, timeout_otp
 from jarvis.modules.database import database
 from jarvis.modules.exceptions import (
@@ -25,15 +25,11 @@ from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
 
-router = APIRouter()
 db = database.Database(database=models.fileio.base_db)
 # Get websocket loaded
 ws_manager = settings.ConnectionManager()
 
 
-@router.post(
-    path="/surveillance-authenticate", dependencies=authenticator.SURVEILLANCE_PROTECTOR
-)
 async def authenticate_surveillance(cam: modals.CameraIndexModal):
     """Tests the given camera index, generates a token for the endpoint to authenticate.
 
@@ -105,7 +101,6 @@ async def authenticate_surveillance(cam: modals.CameraIndexModal):
         )
 
 
-@router.get(path="/surveillance")
 async def monitor(token: str = None):
     """Serves the monitor page's frontend after updating it with video origin and websocket origins.
 
@@ -164,7 +159,6 @@ async def monitor(token: str = None):
         )
 
 
-@router.get(path="/video-feed", include_in_schema=False)
 async def video_feed(request: Request, token: str = None):
     """Authenticates the request, and returns the frames generated as a StreamingResponse.
 
@@ -238,7 +232,6 @@ async def video_feed(request: Request, token: str = None):
     )
 
 
-@router.websocket(path="/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
     """Initiates a websocket connection.
 

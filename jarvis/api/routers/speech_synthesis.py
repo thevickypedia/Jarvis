@@ -5,22 +5,16 @@ from threading import Thread
 from urllib.parse import urljoin
 
 import requests
-from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
 from jarvis.api.logger import logger
-from jarvis.api.models import authenticator, modals
+from jarvis.api.models import modals
 from jarvis.modules.audio import speaker
 from jarvis.modules.exceptions import APIResponse, EgressErrors
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
-router = APIRouter()
 
-
-@router.get(
-    path="/speech-synthesis-voices", dependencies=authenticator.OFFLINE_PROTECTOR
-)
 async def speech_synthesis_voices():
     """Get all available voices in speech synthesis.
 
@@ -61,11 +55,6 @@ async def speech_synthesis_voices():
         raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
-@router.post(
-    path="/speech-synthesis",
-    response_class=FileResponse,
-    dependencies=authenticator.OFFLINE_PROTECTOR,
-)
 async def speech_synthesis(
     input_data: modals.SpeechSynthesisModal, raise_for_status: bool = True
 ):

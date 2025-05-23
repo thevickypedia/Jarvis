@@ -18,7 +18,6 @@ import urllib.parse
 from collections.abc import Generator
 from typing import List
 
-from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 from pydantic import FilePath, PositiveInt
 
@@ -35,8 +34,6 @@ else:
         """Override for python 3.10 due to lack of StrEnum."""
 
 
-router = APIRouter()
-
 FILE_EXTENSIONS: List[str] = [".html", ".py", ".scpt", ".sh", ".xml"]
 
 
@@ -49,17 +46,17 @@ class ValidColors(StrEnum):
         https://github.com/badges/buckler/blob/master/README.md#valid-colours
     """
 
-    brightgreen: str = "brightgreen"
-    green: str = "green"
-    yellowgreen: str = "yellowgreen"
-    yellow: str = "yellow"
-    orange: str = "orange"
-    red: str = "red"
-    grey: str = "grey"
-    gray: str = "grey"
-    lightgrey: str = "lightgrey"
-    lightgray: str = "lightgray"
-    blue: str = "blue"
+    brightgreen = "brightgreen"
+    green = "green"
+    yellowgreen = "yellowgreen"
+    yellow = "yellow"
+    orange = "orange"
+    red = "red"
+    grey = "grey"
+    gray = "grey"
+    lightgrey = "lightgrey"
+    lightgray = "lightgray"
+    blue = "blue"
 
 
 def should_include(filepath: FilePath) -> bool:
@@ -89,7 +86,7 @@ def count_lines(filepath: FilePath) -> PositiveInt:
         return sum(1 for _ in file)
 
 
-def get_files() -> Generator[FilePath]:
+def get_files() -> Generator[str]:
     """Walk through the directory and collect all relevant files.
 
     Yields:
@@ -126,9 +123,10 @@ def total_files() -> PositiveInt:
     return len(list(get_files()))
 
 
-@router.get(path="/line-count", include_in_schema=True)
 async def line_count(
-    badge: bool = False, color: ValidColors = "blue", text: str = "lines of code"
+    badge: bool = False,
+    color: ValidColors = ValidColors.blue,
+    text: str = "lines of code",
 ):
     """Get total lines of code for Jarvis.
 
@@ -151,9 +149,10 @@ async def line_count(
     return total_lines
 
 
-@router.get(path="/file-count", include_in_schema=True)
 async def file_count(
-    badge: bool = False, color: ValidColors = "blue", text: str = "total files"
+    badge: bool = False,
+    color: ValidColors = ValidColors.blue,
+    text: str = "total files",
 ):
     """Get total number of files for Jarvis.
 

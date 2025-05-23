@@ -19,28 +19,28 @@ else:
 class SupportedPlatforms(StrEnum):
     """Supported operating systems."""
 
-    windows: str = "Windows"
-    macOS: str = "Darwin"
-    linux: str = "Linux"
+    windows = "Windows"
+    macOS = "Darwin"
+    linux = "Linux"
 
 
 class ReminderOptions(StrEnum):
     """Supported reminder options."""
 
-    phone: str = "phone"
-    email: str = "email"
-    telegram: str = "telegram"
-    ntfy: str = "ntfy"
-    all: str = "all"
+    phone = "phone"
+    email = "email"
+    telegram = "telegram"
+    ntfy = "ntfy"
+    all = "all"
 
 
 class StartupOptions(StrEnum):
     """Background threads to startup."""
 
-    all: str = "all"
-    car: str = "car"
-    none: str = "None"
-    thermostat: str = "thermostat"
+    all = "all"
+    car = "car"
+    none = "None"
+    thermostat = "thermostat"
 
 
 class TemperatureUnits(StrEnum):
@@ -50,8 +50,8 @@ class TemperatureUnits(StrEnum):
 
     """
 
-    METRIC: str = "metric"
-    IMPERIAL: str = "imperial"
+    METRIC = "metric"
+    IMPERIAL = "imperial"
 
 
 class DistanceUnits(StrEnum):
@@ -61,8 +61,8 @@ class DistanceUnits(StrEnum):
 
     """
 
-    MILES: str = "miles"
-    KILOMETERS: str = "kilometers"
+    MILES = "miles"
+    KILOMETERS = "kilometers"
 
 
 class EventApp(StrEnum):

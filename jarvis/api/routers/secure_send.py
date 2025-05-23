@@ -2,17 +2,14 @@ import os
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi import APIRouter, Header, Request
+from fastapi import Header, Request
 
 from jarvis.api.logger import logger
 from jarvis.executors import files
 from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 
-router = APIRouter()
 
-
-@router.post(path="/secure-send")
 async def secure_send_api(request: Request, access_token: Optional[str] = Header(None)):
     """API endpoint to share/retrieve secrets.
 

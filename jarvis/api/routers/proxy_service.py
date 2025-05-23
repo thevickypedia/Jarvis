@@ -2,13 +2,11 @@ import re
 from http import HTTPStatus
 
 import requests
-from fastapi import APIRouter, Request, Response
+from fastapi import Request, Response
 from pydantic import HttpUrl
 
 from jarvis.api.logger import logger
 from jarvis.modules.exceptions import APIResponse, EgressErrors
-
-router = APIRouter()
 
 
 def is_valid_media_type(media_type: str) -> bool:
@@ -25,7 +23,6 @@ def is_valid_media_type(media_type: str) -> bool:
     return bool(re.match(media_type_pattern, media_type))
 
 
-@router.get(path="/proxy")
 async def proxy_service_api(request: Request, origin: HttpUrl, output: str):
     """API endpoint to act as a proxy for GET calls.
 

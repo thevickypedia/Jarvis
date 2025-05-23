@@ -4,13 +4,10 @@ from json.decoder import JSONDecodeError
 
 from fastapi.exceptions import HTTPException
 from fastapi.requests import Request
-from fastapi.routing import APIRouter
 
 from jarvis.api.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import bot
-
-router = APIRouter()
 
 
 def two_factor(request: Request) -> bool:
@@ -34,7 +31,6 @@ def two_factor(request: Request) -> bool:
         return True
 
 
-@router.post(path=models.env.bot_endpoint)
 async def telegram_webhook(request: Request):
     """Invoked when a new message is received from Telegram API.
 
