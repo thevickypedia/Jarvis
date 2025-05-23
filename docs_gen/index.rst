@@ -81,6 +81,13 @@ API - Application
    :members:
    :undoc-members:
 
+API - Entrypoint
+================
+
+.. automodule:: jarvis.api.entrypoint
+   :members:
+   :undoc-members:
+
 API - Logger
 ============
 
@@ -149,6 +156,13 @@ Models - Settings
 ====
 
 .. automodule:: jarvis.api.models.settings.ConnectionManager
+   :members:
+   :undoc-members:
+
+Routers - Routes
+================
+
+.. automodule:: jarvis.api.routers.routes
    :members:
    :undoc-members:
 
