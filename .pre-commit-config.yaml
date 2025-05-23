@@ -1,5 +1,5 @@
 fail_fast: true
-exclude: ^(notebooks/|scripts/|.github/|docs/|dev_scripts/version.py)
+exclude: ^(notebooks/|scripts/|.github/|docs/|dev_scripts/)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

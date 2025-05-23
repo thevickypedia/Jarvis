@@ -52,7 +52,6 @@ jobs:
 
       - name: "Update metadata: ${{ matrix.project_name }}"
         run: |
-          python -m pip install --upgrade pip
           python -m pip install toml
           python update-toml.py
         shell: bash

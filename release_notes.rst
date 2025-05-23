@@ -3,212 +3,209 @@ Release Notes
 
 v6.0.0 (10/04/2024)
 -------------------
-- Release `v6.0.0`
+- Includes support for ARM based macOS machines
+- Removed support for legacy macOS machines (older than High Sierra)
+- Restructured installation process
+- Includes a resource tracker to terminate all uncaught daemon processes
+- Makes ``root_password`` optional for Linux machines
+- Includes bug fixes and minor improvements to overall coding structure
+- Improved container orchestration using Docker API and email templates
+- **Full Changelog**: https://github.com/thevickypedia/Jarvis/compare/v5.1.0...v6.0.0
 
 v5.1.0 (06/09/2024)
 -------------------
-- Release `v5.1.0`
+- Includes fully operational CLI functionalities.
+- Supports more than 100 repositories for GitHub account summary feature.
+- Removes GitHub cloning feature by repo name.
+- Bug fix on flaky screen output for terminal sessions.
+- Supports ``None`` for ``startup_options`` environment variable.
+- Includes endpoints to return total lines of code and total number of files as an integer or an HTML badge.
 
 v5.0.0 (06/04/2024)
 -------------------
-- Release `v5.0.0`
+- Includes a pre-trained generative model using Ollama
+- Bug fix for Roku TV's turn on functionality
+- Supports JSON and YAML files for environment variables
 
 v4.5.1 (05/29/2024)
 -------------------
-- Remove `wikipedia` feature integration
-- Fix bug on invalid return type
-- Release micro version
+- Removes `wikipedia` feature integration
+- Includes break fix for an invalid return type
 
 v4.5 (05/28/2024)
 -----------------
-- Release `v4.5`
-- Upgrade GH actions for `none-shall-pass` and `pypi-publish`
+- Includes stability improvements for IOT devices
+- Improved installation experience focused to support only python 3.10 and 3.11
+- Includes a new feature to host a proxy server for `GET` requests
+- Onboard a new tool for notifications - `ntfy`
+- Allows multiple websites for CORS origins
+- Includes bug fixes and improved linting across the project
+- Enables multiple notification channels for reminders
+- Replaces in house module for car controls with `jlrpy`
+- Includes frozen pypi packages for all supported devices
 
 v4.4.2 (02/03/2024)
 -------------------
-- Release `v4.4.2`
+- Bug fix on flaky response when all the lights fail to connect
 
 v4.4.1 (02/01/2024)
 -------------------
-- Release `v4.4.1`
+- Crash fix VPN server config and adapt to new changes
+- Minor improvements in one-time passcode settings
 
 v4.4 (11/30/2023)
 -----------------
-- Release `v4.4`
+- Removes garage feature due to `Chamberlain blockade <https://chamberlaingroup.com/press/a-message-about-our-decision-to-prevent-unauthorized-usage-of-myq>`_
+- Improved failure response for light controls
+- Fix bug on ``subprocess`` trigger interpreted as ``MainProcess``
+- Rework dockerized ``speech-synthesis`` and desperate attempt for container logging
+- Fix bug on port mapping between docker and localhost
 
 v4.3 (11/27/2023)
 -----------------
-- Release `v4.3`
+- Includes bug fixes and performance improvements
+- ``wifi_connector`` now runs along side background tasks to reduce resource consumption
+- ``crontab`` schedule and ``recognizer_settings`` have been moved from env vars to YAML file mapping
+- More efficient logging and less unwanted information at info level logging
 
 v4.2 (11/23/2023)
 -----------------
-- Release `v4.2`
+- Includes a new feature to control `HoneyWell` thermostat
+- Includes a bug fix to handle conflict with broken webhook for `TelegramAPI`
+- Includes a bug fix for failed weather monitoring in background tasks
 
 v4.0 (10/22/2023)
 -----------------
-- Update dependencies on pyproject.toml
+- Includes a new feature to check confidence score on speech recognition
+- Adds different options for ``ignore_hours`` in background tasks
+- Adds an exclude/except feature when controlling ``all`` lights
+- Includes more detailed response for failed lights due to unresolved hostnames
+- Includes bug fix on garage controls
+- Improvements in overall stability and accuracy
+- Improved linting and documentation
 
 v3.9 (10/02/2023)
 -----------------
-- Release `v3.9`
-- Remove unnecessary thread binding for audio driver
-- Redo imports during startup
+- Includes a new feature to host telegram API via webhooks
+- This feature avoid long polling telegram API (pull model) and uses webhooks (push model) instead
+- Improved accuracy in figuring out the light location
+- Minor bug fixes when interacting with FileIO
+- Improved startup time
 
 3.7.2 (09/28/2023)
 ------------------
-- Release `v3.7.2`
+- Includes a new feature to run start up scripts
+- Includes dependent module updates for startup validations
 
 v3.7.1 (09/11/2023)
 -------------------
-- Release v3.7.1
+- Includes a feature to upload any file to the server via Jarvis API or Telegram bot
+- Unrecognized functions now have an offline option with stored GPT history
+- Improved stability in speech recognition
+- Fixes minor inconsistencies specific to volume controls on RokuTV
+- Improves overall file structure
 
 v3.7 (08/29/2023)
 -----------------
-- Release version 3.7
+- Includes a new feature to setup daily alerts for ``stock-monitor``
+- Addtionally Jarvis can also list existing reminders now
+- Improve overall stability and error handling for FileIO operations
 
 v3.6 (08/22/2023)
 -----------------
-- Implement a feature to check for overlap in alarms
-- Add a feature to get existing alarms
-- Handle deletion of more than one alarms
-- Remove env var for pre-commit
-- Remove filtering process name for pre-commit
-- Fix broken docs
+- Redefines the way how alarms and reminders work
+- Includes a new feature to get existing alarms
+- Provides an option to choose between GPT models for OpenAI
 
 v3.5.1 (08/18/2023)
 -------------------
-- Use ``block-stdout`` to block print statements
-- Re-use ``inspect.engine()`` element from support.py
-- Add a feature to get holidays in any country at any time
-- Update dependencies in version_locked_requirements.txt
+- Adds a new feature to request holidays on any date/day
+- Minor improvements in stability
 
 v3.5 (08/10/2023)
 -----------------
-- Onboard `gitverse` for release notes
-- Allow retry module to accept multiple exceptions
-- Implement retry logic for garage door controls
-- Fix inconsistencies in shutting down LG TV
-- Fix frequently used commands' storage
-- Resort keywords.py
-- Enable restart processes via offline communicators
-- Remove stripping special characters for offline commands
-- Remove unused arguments
+- Adds a new feature to place functional restrictions on offline commands
+- Bug fixes for TV and garage door controls
+- Includes a retry logic for garage controls making it more reliable
 
 v3.4 (07/31/2023)
 -----------------
-- Change response for ``ChatGPT``'s failed authentication
-- Fix secret access via offline communicator
+- Includes bug fixes and startup improvements
+- Updates keyword mapping
+- Updates to standalone test modules
 
 v3.3 (07/28/2023)
 -----------------
-- Brute force ``timeout`` on ``ChatGPT`` instance creation
-- Fix some random start up errors and delays
-- Create an option to get stock tickers as a dict
-- Update docs page for API endpoint
-- Release v3.3
+- Adds a feature to get all stock tickers via API
+- Includes bug fixes and startup improvements
 
 v3.2 (07/22/2023)
 -----------------
-- Implement a new feature to analyze stocks
-- Remove unwanted ticker gathering methods
-- Release version 3.2
+- Adds a new feature to analyze stocks
 
 v3.1.3 (07/19/2023)
 -------------------
-- Multiple tasks to run simultaneously in automation
-- Add low and high threshold for weather alerts
-- Update README.md and bump sub-version
+- Allow multiple tasks to run simultaneously in automation
+- Allow high and low threshold for weather alerts
 
 v3.1.2 (07/12/2023)
 -------------------
-- Fix flaky response for failed lights
+- Includes bug fixes on response to failed to lights' response
 
 v3.1.1 (07/11/2023)
 -------------------
-- Allow ``secure-send`` to work via UI
-- Better way to distinguish smart devices
-- Reduce redundancy and re-use variables
-- Add more keywords for secure send
-- Update CORS allowance for headers
-- Update README.md and type hints
-- Bump version
+- Includes a new feature to allow ``secure-send`` via UI
+- Implements a better approach to distinguish smart devices
+- Minor performance and stability improvements
 
 v3.1 (07/01/2023)
 -----------------
-- Fix flaky connection reset in car module
-- Allow restart via ``automation.yaml``
-- Log vehicle auth expiration
-- Fix missing hosted device information in logs
-- Add inline comments
-- Instantiate vehicle objects
+- Includes bug fixes on vehicle connections
+- Includes a new feature to set timed restarts via automation
+- Improved logging for better visibility
 
 v3.0 (06/27/2023)
 -----------------
-- Enable custom keywords to functions mapping
-- Remove redundancy in weather alert trigger
-- Set weather alert trigger via background tasks
-- Keep weather alert time format consistent
-- Add an option to manually enable the listener
-- Add automation and smart devices to files.py
-- Cleanup keywords_handler.py
-- Rename timeout and phrase_limit to more sensible ones
-- Auto store LG tv's client key in smart_devices.yaml
+- Includes a new feature to have a custom keyword mapping
+- Removes redundancy in weather alerts
+- Now there is no manual intervention required to store LG tv's client key
 
 v3.0a (05/08/2023)
 ------------------
-- Optimize memory usage and remove globals
-- Reduce top level variable declarations
-- Create function mapping dict in place of globals
-- Reuse stock report for robinhood summarization
+- Optimized memory usage and less redundant stuff
 
 v2.7 (05/05/2023)
 -----------------
-- Fix inconsistent offline compatibles
-- Remove todo for NLTK since compute time is high
+- Adds a new feature to share local env vars and AWS secrets via secure endpoint
+- Reduces break time on Telegram API by introducing retry logic
+- Runs all cron jobs once during startup
+- Includes support for different units for temperature and distance
+- Improved logging
+- Includes minor bug fixes on offline commands
 
 v2.7a (05/04/2023)
 ------------------
-- Create a feature to send env vars/secrets securely
-- Create a retry logic in TelegramAPI for parsing errors
-- Kick off all cron jobs during startup
-- Fix a bug in location request failing for offline process
-- Support different units for temperature and distance
-- Add *args to functions associated to conditions
-- Avoid converting to dict for APIResponse
-- Convert Thread to Timer for reset OTPs
-- Remove revaluation of CronExpression
-- Change headers to use hyphen instead of underscore
-- Add more logging towards unrecognized models
-- Add todos for next release
-- Update .gitignore and docs
-- Release alpha version
+- Alpha version
 
 2.5 (04/26/2023)
 ----------------
-- Run `py3-tts` test on current python `bin`
-- Run pre-checks on meetings in background tasks
+- Improved reliability and stability
 
 2.4 (04/22/2023)
 ----------------
-- Feature improvements and bug fixes on `JarvisAPI`
+- Includes feature improvements and bug fixes on ``JarvisAPI``
 - Support audio responses for multiple and timed tasks
-- Exhaust all audio options before returning string
-- Resolve edge case scenario in pyttsx3
-- Enable speech-synthesis if audio driver fails
-- Create weather alert monitor to notify harsh weather
-- Remove redundant template
+- Includes ``speech-synthesis`` as a backup when audio driver fails
+- Includes a new feature to create weather alert monitor to notify harsh weather
 
 2.3 (04/17/2023)
 ----------------
-- Create apikey authentication for stock monitor
-- Use constant-time compare for authentication
-- Update docs and bump version
+- Includes a new feature to authenticate stock monitor endpoint via apikey
 
 2.1 (04/10/2023)
 ----------------
-- Replace string to `enum` for condition on linux OS
-- Update release notes
+- Minor bug fix for Linux OS
 
 2.0 (04/09/2023)
 ----------------
-- Disable security mode trigger via offline on Linux
+- Disables security mode trigger via offline on Linux to improve stability
