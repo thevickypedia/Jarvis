@@ -30,7 +30,11 @@ app = FastAPI(
     "**Contact:** [https://vigneshrao.com/contact](https://vigneshrao.com/contact)",
     version=version,
     lifespan=lifespan,
-    routes=routes.API_ROUTES,
 )
 
-app.add_middleware(**entrypoint.get_cors_params())
+# Include all the routers
+# WATCH OUT: for changes in function name
+if models.settings.pname == "jarvis_api":  # Avoid looping when called by subprocesses
+    # Cannot add middleware after an application has started
+    app.add_middleware(**entrypoint.get_cors_params())
+    app.routes.extend(routes.get_all_routes())
