@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v6.0.1 (06/15/2025)
+-------------------
+- Bug fix on openweathermap API, and occasional launch errors
+- **Full Changelog**: https://github.com/thevickypedia/Jarvis/compare/v6.0.0...v6.0.1
+
 v6.0.0 (10/04/2024)
 -------------------
 - Includes support for ARM based macOS machines
