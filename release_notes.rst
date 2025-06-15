@@ -1,6 +1,22 @@
 Release Notes
 =============
 
+v7.0.0 (06/15/2025)
+-------------------
+- feature: Allow speech-synthesis containers to be hosted externally and remove internal trigger
+- fix: ``AVCaptureDeviceTypeExternal`` warning from ``opencv`` due to ``Continuity Camera`` in iOS
+- feature: Includes an option to load env vars from ``VaultAPI``
+- refactor: Restructure ollama model name and model file usage
+- build (deps): Upgraded installer to improve speed and user experience with ``uv``
+- build (deps): Upgraded dependencies
+- refactor: Replace all API decorators with routing objects
+- **Full Changelog**: https://github.com/thevickypedia/Jarvis/compare/v6.0.1...v7.0.0
+
+v6.0.1 (06/15/2025)
+-------------------
+- Bug fix on openweathermap API, and occasional launch errors
+- **Full Changelog**: https://github.com/thevickypedia/Jarvis/compare/v6.0.0...v6.0.1
+
 v6.0.0 (10/04/2024)
 -------------------
 - Includes support for ARM based macOS machines
