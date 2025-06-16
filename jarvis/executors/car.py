@@ -39,10 +39,7 @@ def create_connection() -> None:
             )
             logger.info("Using password to create a connection with JLR API")
         connection.connect()
-    except EgressErrors as error:
-        logger.error(error)
-        connection = None
-    except Exception as error:
+    except (*EgressErrors, Exception) as error:
         logger.error(error)
         connection = None
     if connection and connection.head:

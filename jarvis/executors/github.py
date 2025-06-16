@@ -4,6 +4,7 @@ from typing import Dict
 import requests
 
 from jarvis.modules.audio import speaker
+from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
@@ -17,11 +18,12 @@ def get_repos() -> Generator[Dict[str, str | bool]]:
         Generator[Dict[str, str | bool]]:
         Yields each repository information.
     """
+    session = requests.Session()
+    session.auth = BearerAuth(token=models.env.git_token)
     i = 1
     while True:
-        response = requests.get(
-            f"https://api.github.com/user/repos?type=all&page={i}&per_page=100",
-            headers={"Authorization": f"Bearer {models.env.git_token}"},
+        response = session.get(
+            f"https://api.github.com/user/repos?type=all&page={i}&per_page=100"
         )
         response.raise_for_status()
         assert response.ok

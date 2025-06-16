@@ -1553,6 +1553,65 @@
 </dd></dl>
 
 </section>
+<section id="module-jarvis.api.routers.listener_spectrum">
+<span id="routers-listener-spectrum"></span><h1>Routers - Listener Spectrum<a class="headerlink" href="#module-jarvis.api.routers.listener_spectrum" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.load_index">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">load_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.load_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the HTML index path for listener spectrum file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the HTML response for listener spectrum.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>HTMLResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.get_listener_spectrum_js">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_listener_spectrum_js</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.get_listener_spectrum_js" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the JavaScript for listener spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the loaded JavaScript as FileResponse.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>FileResponse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.websocket_endpoint">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">websocket_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.websocket_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Websocket endpoint for listener spectrum display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>websocket</strong> – Websocket object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.send_wave_command">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">send_wave_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.send_wave_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to send wave commands to ‘start’ or ‘stop’ the spectrum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> – Start or Stop command.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a key-value pair with status.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.api.routers.offline">
 <span id="routers-offline"></span><h1>Routers - Offline<a class="headerlink" href="#module-jarvis.api.routers.offline" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
@@ -3713,14 +3772,13 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <p>Wrapper for frequently used mapping files.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.files._loader">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filepath:</span> <span class="pre">~pydantic.v1.types.FilePath,</span> <span class="pre">default:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">typing.Union[typing.List[typing.Any],</span> <span class="pre">typing.Dict[str,</span> <span class="pre">typing.Any],</span> <span class="pre">typing.OrderedDict,</span> <span class="pre">typing.DefaultDict],</span> <span class="pre">loader:</span> <span class="pre">~yaml.loader.Loader</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'yaml.loader.FullLoader'&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files._loader" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FilePath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">OrderedDict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DefaultDict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.files._loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the given yaml file and returns the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filepath</strong> – YAML filepath to load.</p></li>
 <li><p><strong>default</strong> – Default value if loading failed or file missing.</p></li>
-<li><p><strong>loader</strong> – YAML loader object.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -5179,6 +5237,25 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Uses NTFY topic to send a push notification</p></li>
 </ul>
 </div>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.resource_tracker">
+<span id="resource-tracker"></span><h1>Resource Tracker<a class="headerlink" href="#module-jarvis.executors.resource_tracker" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.resource_tracker.semaphores">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.resource_tracker.</span></span><span class="sig-name descname"><span class="pre">semaphores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daemon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.resource_tracker.semaphores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resource tracker to store undefined process IDs in the base database and cleanup at shutdown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – Function to start multiprocessing for.</p></li>
+<li><p><strong>args</strong> – Optional arguments to pass.</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments to pass.</p></li>
+<li><p><strong>daemon</strong> – Boolean flag to set daemon mode.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -11588,6 +11665,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
+<li><a class="reference internal" href="#module-jarvis.api.routers.listener_spectrum">Routers - Listener Spectrum</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.offline">Routers - Offline</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.proxy_service">Routers - Proxy Engine</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
@@ -11637,6 +11715,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.processor">Processor</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.process_map">Process Map</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.remind">Remind</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.resource_tracker">Resource Tracker</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.restrictions">Restrictions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.simulator">Simulator</a></li>

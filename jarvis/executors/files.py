@@ -19,15 +19,13 @@ from jarvis.modules.models import classes, models
 
 def _loader(
     filepath: FilePath,
-    default: Any = List[Any] | Dict[str, Any] | OrderedDict | DefaultDict,
-    loader: yaml.Loader = yaml.FullLoader,
+    default: List[Any] | Dict[str, Any] | OrderedDict | DefaultDict = None,
 ) -> List[Any] | Dict[str, Any]:
     """Loads the given yaml file and returns the data.
 
     Args:
         filepath: YAML filepath to load.
         default: Default value if loading failed or file missing.
-        loader: YAML loader object.
 
     Returns:
         List[Any] | Dict[str, Any]:
@@ -36,7 +34,7 @@ def _loader(
     caller = sys._getframe(1).f_code.co_name  # noqa
     try:
         with open(filepath) as file:
-            return yaml.load(stream=file, Loader=loader) or default
+            return yaml.load(stream=file, Loader=yaml.FullLoader) or default
     except (yaml.YAMLError, FileNotFoundError) as error:
         logger.debug(error)
         logger.debug("Caller: %s", caller)

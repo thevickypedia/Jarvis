@@ -42,7 +42,7 @@ def make_request(lat: float, lon: float) -> Dict | None:
             return response.json()
         else:
             response.raise_for_status()
-    except EgressErrors + (requests.JSONDecodeError,) as error:
+    except (EgressErrors, requests.JSONDecodeError) as error:
         logger.error(error)
 
 

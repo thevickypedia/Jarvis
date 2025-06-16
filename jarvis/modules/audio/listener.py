@@ -16,13 +16,14 @@ from speech_recognition import (
 )
 
 from jarvis.executors import files, word_match
-from jarvis.modules.audio import speaker
+from jarvis.modules.audio import speaker, wave
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import shared, support
 
 recognizer = Recognizer()
+spectrum = wave.Spectrum()
 microphone = Microphone(device_index=models.env.microphone_index)
 
 if models.settings.pname == "JARVIS":
@@ -54,15 +55,13 @@ def listen(
     """
     with microphone as source:
         try:
-            playsound(sound=models.indicators.start, block=False) if sound else None
-            support.write_screen(
-                text=f"Listener activated [{timeout}: {phrase_time_limit}]"
+            spectrum.activate(
+                sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit
             )
             listened = recognizer.listen(
                 source=source, timeout=timeout, phrase_time_limit=phrase_time_limit
             )
-            playsound(sound=models.indicators.end, block=False) if sound else None
-            support.flush_screen()
+            spectrum.deactivate(sound=sound)
             recognized, confidence = recognizer.recognize_google(
                 audio_data=listened, with_confidence=True
             )

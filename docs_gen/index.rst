@@ -187,6 +187,13 @@ Routers - Investment
    :members:
    :undoc-members:
 
+Routers - Listener Spectrum
+===========================
+
+.. automodule:: jarvis.api.routers.listener_spectrum
+   :members:
+   :undoc-members:
+
 Routers - Offline
 =================
 
@@ -528,6 +535,13 @@ Remind
 ======
 
 .. automodule:: jarvis.executors.remind
+   :members:
+   :undoc-members:
+
+Resource Tracker
+================
+
+.. automodule:: jarvis.executors.resource_tracker
    :members:
    :undoc-members:
 

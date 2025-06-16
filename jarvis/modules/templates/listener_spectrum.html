@@ -55,7 +55,7 @@
     function startWave() {
         siriWave.setAmplitude(2);
         siriWave.start();
-        setStatus("Listener activated");
+        setStatus("Listener active");
     }
 
     function stopWave() {
@@ -63,7 +63,7 @@
         siriWave.setAmplitude(0);
         siriWave.start();
         setTimeout(() => siriWave.setAmplitude(0), 100);
-        setStatus("Listener stopped");
+        setStatus("Listener inactive");
     }
 
     function setStatus(text) {
@@ -76,7 +76,9 @@
 
     function checkReload() {
         const currentStatus = getStatus();
-        return currentStatus === "Listener stopped" || currentStatus === "Waiting for command...";
+        return currentStatus === "Listener inactive" ||
+            currentStatus === "Waiting for command..." ||
+            currentStatus === "✅ WebSocket connected";
     }
 
     let ws;

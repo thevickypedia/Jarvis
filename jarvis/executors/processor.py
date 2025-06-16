@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from multiprocessing import Process
 from typing import Dict, List
 
@@ -109,11 +110,14 @@ def stop_child_processes() -> None:
     with db.connection:
         cursor = db.connection.cursor()
         for child in models.TABLES["children"]:
-            # Use f-string or %s as condition cannot be parametrized
-            data = cursor.execute(f"SELECT {child} FROM children").fetchall()
-            children[child]: List[int] = util.matrix_to_flat_list(
-                [list(filter(None, d)) for d in data if any(d)]
-            )
+            try:
+                # Use f-string or %s as condition cannot be parametrized
+                data = cursor.execute(f"SELECT {child} FROM children").fetchall()
+                children[child]: List[int] = util.matrix_to_flat_list(
+                    [list(filter(None, d)) for d in data if any(d)]
+                )
+            except sqlite3.OperationalError as error:
+                logger.warning(error)
     # Include empty lists so logs have more information but will get skipped when looping anyway
     logger.info(children)
     for category, pids in children.items():

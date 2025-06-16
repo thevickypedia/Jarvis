@@ -312,5 +312,5 @@ def get_tunnel(log: bool = True) -> HttpUrl:
                 if hosted := tunnel.get("config", {}).get("addr"):
                     if int(hosted.split(":")[-1]) == models.env.offline_port:
                         return tunnel.get("public_url")
-    except EgressErrors + (requests.JSONDecodeError,) as error:
+    except (*EgressErrors, requests.JSONDecodeError) as error:
         logger.error(error) if log else None
