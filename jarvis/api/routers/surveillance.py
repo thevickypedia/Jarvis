@@ -26,8 +26,6 @@ from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
 
 db = database.Database(database=models.fileio.base_db)
-# Get websocket loaded
-ws_manager = settings.ConnectionManager()
 
 
 async def authenticate_surveillance(cam: modals.CameraIndexModal):
@@ -252,7 +250,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
     """
     if not models.env.surveillance_endpoint_auth:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
-    await ws_manager.connect(websocket)
+    await settings.ws_manager.connect(websocket)
     try:
         while True:
             try:
@@ -303,9 +301,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
                 ).start()
                 raise WebSocketDisconnect  # Raise error to release camera after a failed read
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
+        await settings.ws_manager.disconnect(websocket)
         logger.info("Client [%d] disconnected.", client_id)
-        if ws_manager.active_connections:
+        if settings.ws_manager.active_connections:
             if process := settings.surveillance.processes.get(int(client_id)):
                 support.stop_process(pid=process.pid)
         else:

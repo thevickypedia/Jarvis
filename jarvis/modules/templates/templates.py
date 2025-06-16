@@ -89,7 +89,19 @@ class Llama:
             modelfile = file.read()
 
 
+class ListenerSpectrum:
+    """Load template paths for listener spectrum functionality.
+
+    >>> ListenerSpectrum
+
+    """
+
+    html = os.path.join(os.path.dirname(__file__), "listener_spectrum.html")
+    javascript = os.path.join(os.path.dirname(__file__), "siriwave.umd.min.js")
+
+
 email = EmailTemplates
 generic = GenericTemplates
 endpoint = EndpointTemplates
 llama = Llama
+listener_spectrum = ListenerSpectrum

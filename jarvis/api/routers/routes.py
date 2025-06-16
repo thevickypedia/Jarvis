@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.routing import APIRoute, APIWebSocketRoute
 
 
-class Endpoints(StrEnum):
+class APIPath(StrEnum):
     """Endpoint for each API endpoint."""
 
     root = "/"
@@ -24,12 +24,19 @@ class Endpoints(StrEnum):
     favicon_ico = "/favicon.ico"
     surveillance = "/surveillance"
     stock_monitor = "/stock-monitor"
-    surveillance_ws = "/ws/{client_id}"
     speech_synthesis = "/speech-synthesis"
     offline_communicator = "/offline-communicator"
+    surveillance_ws = "/ws/surveillance/{client_id}"
     robinhood_authenticate = "/robinhood-authenticate"
     speech_synthesis_voices = "/speech-synthesis-voices"
     surveillance_authenticate = "/surveillance-authenticate"
+
+    listener_spectrum_ws = "/ws/listener_spectrum"
+    listener_spectrum_index = "/listener_spectrum"
+    listener_spectrum_js = "/listener_spectrum_wave.js"
+    listener_spectrum_wave = "/wave/{command}"
+    # todo: include dependencies for websocket endpoints
+    #   unsure if it is do-able for surveillance endpoint
 
 
 def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
@@ -44,6 +51,7 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
         basics,
         fileio,
         investment,
+        listener_spectrum,
         offline,
         proxy_service,
         secure_send,
@@ -60,38 +68,38 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
         APIRoute(
             endpoint=surveillance.authenticate_surveillance,
             methods=["POST"],
-            path=Endpoints.surveillance_authenticate,
+            path=APIPath.surveillance_authenticate,
             dependencies=authenticator.SURVEILLANCE_PROTECTOR,
         ),
         APIRoute(
-            endpoint=surveillance.monitor, methods=["GET"], path=Endpoints.surveillance
+            endpoint=surveillance.monitor, methods=["GET"], path=APIPath.surveillance
         ),
         APIRoute(
             endpoint=surveillance.video_feed,
             methods=["GET"],
-            path=Endpoints.video_feed,
+            path=APIPath.video_feed,
             include_in_schema=False,
         ),
         APIWebSocketRoute(
-            endpoint=surveillance.websocket_endpoint, path=Endpoints.surveillance_ws
+            endpoint=surveillance.websocket_endpoint, path=APIPath.surveillance_ws
         ),
         APIRoute(
             endpoint=speech_synthesis.speech_synthesis_voices,
             methods=["GET"],
-            path=Endpoints.speech_synthesis_voices,
+            path=APIPath.speech_synthesis_voices,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=speech_synthesis.speech_synthesis,
             methods=["POST"],
-            path=Endpoints.speech_synthesis,
+            path=APIPath.speech_synthesis,
             response_class=FileResponse,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=stock_monitor.stock_monitor_api,
             methods=["POST"],
-            path=Endpoints.stock_monitor,
+            path=APIPath.stock_monitor,
         ),
         APIRoute(
             endpoint=telegram.telegram_webhook,
@@ -101,80 +109,100 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
         APIRoute(
             endpoint=investment.authenticate_robinhood,
             methods=["POST"],
-            path=Endpoints.robinhood_authenticate,
+            path=APIPath.robinhood_authenticate,
             dependencies=authenticator.ROBINHOOD_PROTECTOR,
         ),
         APIRoute(
             endpoint=investment.robinhood_path,
             methods=["GET"],
-            path=Endpoints.investment,
+            path=APIPath.investment,
             response_class=HTMLResponse,
         ),
         APIRoute(
             endpoint=offline.offline_communicator_api,
             methods=["POST"],
-            path=Endpoints.offline_communicator,
+            path=APIPath.offline_communicator,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=secure_send.secure_send_api,
             methods=["POST"],
-            path=Endpoints.secure_send,
+            path=APIPath.secure_send,
         ),
-        APIRoute(endpoint=stats.line_count, methods=["GET"], path=Endpoints.line_count),
-        APIRoute(endpoint=stats.file_count, methods=["GET"], path=Endpoints.file_count),
+        APIRoute(endpoint=stats.line_count, methods=["GET"], path=APIPath.line_count),
+        APIRoute(endpoint=stats.file_count, methods=["GET"], path=APIPath.file_count),
         APIRoute(
             endpoint=stock_analysis.get_signals,
             methods=["GET"],
-            path=Endpoints.get_signals,
+            path=APIPath.get_signals,
         ),
         APIRoute(
             endpoint=proxy_service.proxy_service_api,
             methods=["GET"],
-            path=Endpoints.proxy,
+            path=APIPath.proxy,
         ),
         APIRoute(
             endpoint=basics.redirect_index,
             methods=["GET"],
-            path=Endpoints.root,
+            path=APIPath.root,
             response_class=RedirectResponse,
             include_in_schema=False,
         ),
         APIRoute(
             endpoint=basics.health,
             methods=["GET"],
-            path=Endpoints.health,
+            path=APIPath.health,
             include_in_schema=False,
         ),
         APIRoute(
             endpoint=basics.get_favicon,
             methods=["GET"],
-            path=Endpoints.favicon_ico,
+            path=APIPath.favicon_ico,
             include_in_schema=False,
         ),
         APIRoute(
             endpoint=basics.keywords,
             methods=["GET"],
-            path=Endpoints.keywords,
+            path=APIPath.keywords,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=fileio.list_files,
             methods=["GET"],
-            path=Endpoints.list_files,
+            path=APIPath.list_files,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=fileio.get_file,
             methods=["GET"],
-            path=Endpoints.get_file,
+            path=APIPath.get_file,
             response_class=FileResponse,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
         APIRoute(
             endpoint=fileio.put_file,
             methods=["POST"],
-            path=Endpoints.put_file,
+            path=APIPath.put_file,
             dependencies=authenticator.OFFLINE_PROTECTOR,
+        ),
+        APIRoute(
+            endpoint=listener_spectrum.load_index,
+            methods=["GET"],
+            path=APIPath.listener_spectrum_index,
+        ),
+        APIRoute(
+            endpoint=listener_spectrum.get_listener_spectrum_js,
+            methods=["GET"],
+            path=APIPath.listener_spectrum_js,
+        ),
+        APIRoute(
+            endpoint=listener_spectrum.send_wave_command,
+            methods=["POST"],
+            path=APIPath.listener_spectrum_wave,
+            dependencies=authenticator.LISTENER_SPECTRUM_PROTECTOR,
+        ),
+        APIWebSocketRoute(
+            endpoint=listener_spectrum.websocket_endpoint,
+            path=APIPath.listener_spectrum_ws,
         ),
     ]

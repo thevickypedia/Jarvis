@@ -119,10 +119,24 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.append(websocket)
 
-    def disconnect(self, websocket: WebSocket) -> None:
+    async def disconnect(self, websocket: WebSocket) -> None:
         """Remove socket from active connections.
 
         Args:
             websocket: Websocket.
         """
         self.active_connections.remove(websocket)
+
+    async def send_message(self, message: str, ws_path: str) -> None:
+        """Send message to an active connection with match websocket path.
+
+        Args:
+            message: Message to send.
+            ws_path: Websocket path.
+        """
+        for connection in self.active_connections:
+            if connection.url.path == ws_path:
+                await connection.send_text(message)
+
+
+ws_manager = ConnectionManager()

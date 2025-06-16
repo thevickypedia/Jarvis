@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Siri Wave with WebSocket Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- JS to kick off siri wave pattern -->
+    <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"
+            onerror="this.onerror=null; this.src='/siriwave.js'"></script>
+
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+            color: white;
+        }
+
+        #siri-wave {
+            width: 100%;
+            height: 300px;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="siri-wave"></div>
+<div class="status" id="status">Waiting for command...</div>
+
+<script>
+    const siriWave = new SiriWave({
+        container: document.getElementById("siri-wave"),
+        width: window.innerWidth,
+        height: 300,
+        style: "ios9",
+        speed: 0.2,
+        amplitude: 0,
+        frequency: 6,
+        color: "#ffffff",
+        autostart: true,
+        cover: true,
+    });
+
+    function startWave() {
+        siriWave.setAmplitude(2);
+        siriWave.start();
+        setStatus("Listener activated");
+    }
+
+    function stopWave() {
+        siriWave.stop();
+        siriWave.setAmplitude(0);
+        siriWave.start();
+        setTimeout(() => siriWave.setAmplitude(0), 100);
+        setStatus("Listener stopped");
+    }
+
+    function setStatus(text) {
+        document.getElementById("status").textContent = text;
+    }
+
+    let ws;
+    let reconnectCheckInterval;
+
+    function connectWebSocket() {
+        // WebSocket setup
+        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const webSocketUrl = `${wsProtocol}//${location.host}/ws/listener_spectrum`
+        console.log("Connecting to: " + webSocketUrl)
+        ws = new WebSocket(webSocketUrl);
+        ws.onopen = () => {
+            setStatus("✅ WebSocket connected");
+            console.log("✅ WebSocket connected");
+            clearInterval(reconnectCheckInterval);
+        };
+        ws.onmessage = (event) => {
+            console.log("📨 Message:", event.data);
+            const command = event.data.trim().toLowerCase();
+            if (command === "start") {
+                startWave();
+            } else if (command === "stop") {
+                stopWave();
+            } else {
+                setStatus(`⚠️ Unknown command: ${command}`);
+            }
+        };
+        ws.onclose = () => {
+            console.warn("⚠️ WebSocket closed");
+            setStatus("⚠️ WebSocket closed");
+            scheduleReconnect();
+        };
+        ws.onerror = (err) => {
+            console.error("❌ WebSocket error", err);
+            setStatus("❌ WebSocket error");
+            console.error(err);
+        };
+    }
+
+    function scheduleReconnect() {
+        if (!reconnectCheckInterval) {
+            reconnectCheckInterval = setInterval(() => {
+                if (!ws || ws.readyState === WebSocket.CLOSED) {
+                    console.log("🔁 WebSocket still closed. Reloading page...");
+                    location.reload();
+                }
+            }, 30000); // 30 seconds
+        }
+    }
+
+    // Wait until page fully loads (styles, images, etc.)
+    window.addEventListener("load", () => {
+        connectWebSocket();
+    });
+
+</script>
+</body>
+</html>

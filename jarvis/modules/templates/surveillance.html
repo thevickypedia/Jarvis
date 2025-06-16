@@ -28,9 +28,9 @@
     var scheme = arr[0].replace(':', '')
     var fqdn = arr[2]
     if ( scheme == 'https' ) {
-        var wss_origin = "wss://" + fqdn + "/ws/"
+        var wss_origin = "wss://" + fqdn + "/ws/surveillance/"
     } else {
-        var wss_origin = "ws://" + fqdn + "/ws/"
+        var wss_origin = "ws://" + fqdn + "/ws/surveillance/"
     }
     var video_origin = url.split('/surveillance').slice(0, 3).join('/video-feed');
     document.getElementById("imageID").src=video_origin;
