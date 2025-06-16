@@ -85,7 +85,7 @@ async def listener_spectrum_has_access(
         - 401: If authorization is invalid.
     """
     auth = token.dict().get("credentials")
-    if secrets.compare_digest(auth, models.env.listener_spectrum):
+    if secrets.compare_digest(auth, models.env.listener_spectrum_key):
         return
     raise APIResponse(
         status_code=HTTPStatus.UNAUTHORIZED.real, detail=HTTPStatus.UNAUTHORIZED.phrase

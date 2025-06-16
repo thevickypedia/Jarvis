@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Jarvis - Voice-Activated Natural Language UI &#8212; Jarvis  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -1009,6 +1009,23 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.models.authenticator.listener_spectrum_has_access">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.authenticator.</span></span><span class="sig-name descname"><span class="pre">listener_spectrum_has_access</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPBasicCredentials</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(HTTPBearer)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.authenticator.listener_spectrum_has_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the token if mentioned as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> – Takes the authorization header token as an argument.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#jarvis.modules.exceptions.APIResponse" title="jarvis.modules.exceptions.APIResponse"><strong>APIResponse</strong></a> – </p></li>
+<li><p><strong>- 401</strong> – If authorization is invalid.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="models-modals">
 <h1>Models - Modals<a class="headerlink" href="#models-modals" title="Permalink to this heading">¶</a></h1>
@@ -1219,117 +1236,137 @@
 <section id="module-jarvis.api.routers.routes">
 <span id="routers-routes"></span><h1>Routers - Routes<a class="headerlink" href="#module-jarvis.api.routers.routes" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.routes.</span></span><span class="sig-name descname"><span class="pre">Endpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.routes.</span></span><span class="sig-name descname"><span class="pre">APIPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.routes.APIPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for each API endpoint.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.root">
-<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.root" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.root">
+<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.root" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.proxy">
-<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/proxy'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.proxy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.proxy">
+<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/proxy'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.proxy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.health">
-<span class="sig-name descname"><span class="pre">health</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/health'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.health" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.health">
+<span class="sig-name descname"><span class="pre">health</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/health'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.health" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.keywords">
-<span class="sig-name descname"><span class="pre">keywords</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/keywords'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.keywords" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.keywords">
+<span class="sig-name descname"><span class="pre">keywords</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/keywords'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.keywords" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.get_file">
-<span class="sig-name descname"><span class="pre">get_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-file'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.get_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.get_file">
+<span class="sig-name descname"><span class="pre">get_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-file'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.get_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.put_file">
-<span class="sig-name descname"><span class="pre">put_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/put-file'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.put_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.put_file">
+<span class="sig-name descname"><span class="pre">put_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/put-file'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.put_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.video_feed">
-<span class="sig-name descname"><span class="pre">video_feed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/video-feed'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.video_feed" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.video_feed">
+<span class="sig-name descname"><span class="pre">video_feed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/video-feed'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.video_feed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.investment">
-<span class="sig-name descname"><span class="pre">investment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/investment'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.investment" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.investment">
+<span class="sig-name descname"><span class="pre">investment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/investment'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.investment" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.line_count">
-<span class="sig-name descname"><span class="pre">line_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/line-count'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.line_count" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.line_count">
+<span class="sig-name descname"><span class="pre">line_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/line-count'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.line_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.file_count">
-<span class="sig-name descname"><span class="pre">file_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/file-count'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.file_count" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.file_count">
+<span class="sig-name descname"><span class="pre">file_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/file-count'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.file_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.list_files">
-<span class="sig-name descname"><span class="pre">list_files</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/list-files'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.list_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.list_files">
+<span class="sig-name descname"><span class="pre">list_files</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/list-files'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.list_files" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.secure_send">
-<span class="sig-name descname"><span class="pre">secure_send</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/secure-send'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.secure_send" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.secure_send">
+<span class="sig-name descname"><span class="pre">secure_send</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/secure-send'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.secure_send" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.get_signals">
-<span class="sig-name descname"><span class="pre">get_signals</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-signals'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.get_signals" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.get_signals">
+<span class="sig-name descname"><span class="pre">get_signals</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-signals'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.get_signals" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.favicon_ico">
-<span class="sig-name descname"><span class="pre">favicon_ico</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/favicon.ico'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.favicon_ico" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.favicon_ico">
+<span class="sig-name descname"><span class="pre">favicon_ico</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/favicon.ico'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.favicon_ico" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.surveillance">
-<span class="sig-name descname"><span class="pre">surveillance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.surveillance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.surveillance">
+<span class="sig-name descname"><span class="pre">surveillance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.surveillance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.stock_monitor">
-<span class="sig-name descname"><span class="pre">stock_monitor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/stock-monitor'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.stock_monitor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.stock_monitor">
+<span class="sig-name descname"><span class="pre">stock_monitor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/stock-monitor'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.stock_monitor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.surveillance_ws">
-<span class="sig-name descname"><span class="pre">surveillance_ws</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/ws/{client_id}'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.surveillance_ws" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.speech_synthesis">
+<span class="sig-name descname"><span class="pre">speech_synthesis</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.speech_synthesis" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.speech_synthesis">
-<span class="sig-name descname"><span class="pre">speech_synthesis</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.speech_synthesis" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.offline_communicator">
+<span class="sig-name descname"><span class="pre">offline_communicator</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/offline-communicator'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.offline_communicator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.offline_communicator">
-<span class="sig-name descname"><span class="pre">offline_communicator</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/offline-communicator'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.offline_communicator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.surveillance_ws">
+<span class="sig-name descname"><span class="pre">surveillance_ws</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/ws/surveillance/{client_id}'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.surveillance_ws" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.robinhood_authenticate">
-<span class="sig-name descname"><span class="pre">robinhood_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/robinhood-authenticate'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.robinhood_authenticate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.robinhood_authenticate">
+<span class="sig-name descname"><span class="pre">robinhood_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/robinhood-authenticate'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.robinhood_authenticate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.speech_synthesis_voices">
-<span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis-voices'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.speech_synthesis_voices">
+<span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis-voices'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.speech_synthesis_voices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.routers.routes.Endpoints.surveillance_authenticate">
-<span class="sig-name descname"><span class="pre">surveillance_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance-authenticate'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.Endpoints.surveillance_authenticate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.surveillance_authenticate">
+<span class="sig-name descname"><span class="pre">surveillance_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance-authenticate'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.surveillance_authenticate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.listener_spectrum_ws">
+<span class="sig-name descname"><span class="pre">listener_spectrum_ws</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/ws/listener_spectrum'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.listener_spectrum_ws" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.listener_spectrum_index">
+<span class="sig-name descname"><span class="pre">listener_spectrum_index</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/listener_spectrum'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.listener_spectrum_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.listener_spectrum_js">
+<span class="sig-name descname"><span class="pre">listener_spectrum_js</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/listener_spectrum_wave.js'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.listener_spectrum_js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.listener_spectrum_wave">
+<span class="sig-name descname"><span class="pre">listener_spectrum_wave</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/wave/{command}'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.listener_spectrum_wave" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4710,7 +4747,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span> <span class="nn">errno</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
@@ -6490,6 +6527,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_spectrum_key">
+<span class="sig-name descname"><span class="pre">listener_spectrum_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_spectrum_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.recognizer_confidence">
 <span class="sig-name descname"><span class="pre">recognizer_confidence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.recognizer_confidence" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7613,7 +7655,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inflect</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phrase</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;penny&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
@@ -10477,6 +10519,25 @@ Whites can have a value of None.</p>
 </div>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">ListenerSpectrum</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load template paths for listener spectrum functionality.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ListenerSpectrum</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.html">
+<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.javascript">
+<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.email">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.email" title="Permalink to this definition">¶</a></dt>
@@ -10499,6 +10560,12 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.llama">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">llama</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.llama" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.Llama" title="jarvis.modules.templates.templates.Llama"><code class="xref py py-class docutils literal notranslate"><span class="pre">Llama</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.templates.templates.listener_spectrum">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">listener_spectrum</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.listener_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.ListenerSpectrum" title="jarvis.modules.templates.templates.ListenerSpectrum"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerSpectrum</span></code></a></p>
 </dd></dl>
 
 </section>

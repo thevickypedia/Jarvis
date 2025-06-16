@@ -337,7 +337,7 @@ class EnvConfig(BaseSettings):
     porcupine_key: str | None = None
     listener_timeout: PositiveFloat | PositiveInt = 3
     listener_phrase_limit: PositiveFloat | PositiveInt = 5
-    listener_spectrum: str | None = None
+    listener_spectrum_key: str | None = None
     recognizer_confidence: float | PositiveInt = Field(0, le=1, ge=0)
 
     # Telegram config

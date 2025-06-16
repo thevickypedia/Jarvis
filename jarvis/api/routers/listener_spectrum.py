@@ -17,7 +17,7 @@ async def load_index() -> HTMLResponse:
         HTMLResponse:
         Returns the HTML response for listener spectrum.
     """
-    if not models.env.listener_spectrum:
+    if not models.env.listener_spectrum_key:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     with open(templates.listener_spectrum.html, "r", encoding="utf-8") as file:
         html = file.read()
@@ -31,7 +31,7 @@ async def get_listener_spectrum_js() -> FileResponse:
         FileResponse:
         Returns the loaded JavaScript as FileResponse.
     """
-    if not models.env.listener_spectrum:
+    if not models.env.listener_spectrum_key:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     logger.warning("Responding to JS file request")
     return FileResponse(
@@ -45,7 +45,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     Args:
         websocket: Websocket object.
     """
-    if not models.env.listener_spectrum:
+    if not models.env.listener_spectrum_key:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     await settings.ws_manager.connect(websocket)
     try:
@@ -68,11 +68,13 @@ async def send_wave_command(command: str) -> Dict[str, str]:
         Dict[str, str]:
         Returns a key-value pair with status.
     """
-    if not models.env.listener_spectrum:
+    if not models.env.listener_spectrum_key:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     from jarvis.api.routers.routes import APIPath
 
     if command not in ("start", "stop"):
         return {"error": "Invalid command"}
-    await settings.ws_manager.send_message(message=command, ws_path=APIPath.listener_spectrum_ws)
+    await settings.ws_manager.send_message(
+        message=command, ws_path=APIPath.listener_spectrum_ws
+    )
     return {"status": f"Command '{command}' sent."}

@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Siri Wave with WebSocket Control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- JS to kick off siri wave pattern -->
+    <!-- JS for siri wave pattern -->
     <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"
             onerror="this.onerror=null; this.src='/siriwave.js'"></script>
 
@@ -48,7 +48,7 @@
         amplitude: 0,
         frequency: 6,
         color: "#ffffff",
-        autostart: true,
+        autostart: false,
         cover: true,
     });
 
@@ -70,6 +70,15 @@
         document.getElementById("status").textContent = text;
     }
 
+    function getStatus() {
+        return document.getElementById("status").textContent;
+    }
+
+    function checkReload() {
+        const currentStatus = getStatus();
+        return currentStatus === "Listener stopped" || currentStatus === "Waiting for command...";
+    }
+
     let ws;
     let reconnectCheckInterval;
 
@@ -85,7 +94,7 @@
             clearInterval(reconnectCheckInterval);
         };
         ws.onmessage = (event) => {
-            console.log("📨 Message:", event.data);
+            console.debug("📨 Message:", event.data);
             const command = event.data.trim().toLowerCase();
             if (command === "start") {
                 startWave();
@@ -107,20 +116,34 @@
         };
     }
 
+    // Schedule a reconnect check every 60s
+    // This will help reload the UI after API restarts
     function scheduleReconnect() {
         if (!reconnectCheckInterval) {
             reconnectCheckInterval = setInterval(() => {
                 if (!ws || ws.readyState === WebSocket.CLOSED) {
-                    console.log("🔁 WebSocket still closed. Reloading page...");
+                    console.debug("🔁 WebSocket still closed. Reloading page...");
                     location.reload();
                 }
-            }, 30000); // 30 seconds
+            }, 60000); // 60 seconds
         }
+    }
+
+    // Timed reload every 30s if listener is inactive
+    // This will help kick off the wave spectrum
+    function timedReload() {
+        setInterval(() => {
+            if (checkReload()) {
+                console.debug("🔁 Listener inactive. Reloading page...");
+                location.reload();
+            }
+        }, 30000); // 30s
     }
 
     // Wait until page fully loads (styles, images, etc.)
     window.addEventListener("load", () => {
         connectWebSocket();
+        timedReload();
     });
 
 </script>

@@ -1,6 +1,15 @@
 fail_fast: true
 exclude: ^(notebooks/|scripts/|.github/|docs/|dev_scripts/)
 repos:
+  - repo: local
+    hooks:
+      - id: install pre-commit
+        name: install pre-commit
+        entry: python -m pip install -q sphinx==5.1.1 pre-commit recommonmark gitverse
+        language: system
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -34,8 +43,8 @@ repos:
     # Latest version is just ugly and does the opposite of a linter
     rev: 22.3.0
     hooks:
-        - id: black
-          exclude: docs_gen/
+      - id: black
+        exclude: docs_gen/
 
   - repo: https://github.com/PyCQA/flake8
     rev: 7.1.1
