@@ -212,9 +212,8 @@ def stop_terminals(apps: tuple = ("iterm", "terminal")) -> None:
 
 def terminator() -> NoReturn:
     """Exits the process with specified status without calling cleanup handlers, flushing stdio buffers, etc."""
-    if os.path.isfile(models.fileio.processes):
-        logger.info("Removing %s", models.fileio.processes)
-        os.remove(models.fileio.processes)
+    files.delete(path=models.fileio.processes)
+    files.delete(path=models.fileio.secure_send)
     proc = psutil.Process(pid=models.settings.pid)
     process_info = proc.as_dict()
     if process_info.get("environ"):

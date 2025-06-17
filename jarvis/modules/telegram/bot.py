@@ -12,12 +12,13 @@ import secrets
 import sys
 import time
 import traceback
+import warnings
 from typing import Dict, List
 
 import requests
 from pydantic import FilePath
 
-from jarvis.executors import commander, offline, others, restrictions, word_match
+from jarvis.executors import commander, offline, restrictions, secure_send, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -613,6 +614,7 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
     else:
         send_message(chat_id=chat.id, response="Un-processable payload")
         return
+    # todo: Create a new class for PreProcessor and handle it with conditions there
     if data_class.text.lower() == "help":
         send_message(
             chat_id=chat.id,
@@ -706,18 +708,26 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
     ) and word_match.word_match(
         phrase=data_class.text, match_list=("list", "get", "send", "create", "share")
     ):
-        res = others.secrets(phrase=data_class.text)
-        if len(res.split()) == 1:
+        secret = secure_send.secrets(phrase=data_class.text)
+        if secret.token:
             res = (
                 "The secret requested can be accessed from '_secure-send_' endpoint using the token below.\n\n"
                 "*Note* that the secret cannot be retrieved again using the same token and the token will "
-                f"expire in 5 minutes.\n\n{res}"
+                f"expire in 5 minutes.\n\n{secret.token}"
             )
             send_message(chat_id=chat.id, response=res)
+        elif secret.response:
+            send_message(chat_id=chat.id, response=secret.response, parse_mode=None)
         else:
-            send_message(chat_id=chat.id, response=res, parse_mode=None)
+            warnings.warn(f"secret appears to be empty: {secret.model_dump()}")
+            # SafetyNet: Should never reach this
+            send_message(
+                chat_id=chat.id,
+                response="Something went wrong! Please check the logs for more information.",
+                parse_mode=None,
+            )
         return
-    jarvis(data_class.text, chat)
+    jarvis(command=data_class.text, chat=chat)
 
 
 def jarvis(command: str, chat: settings.Chat) -> None:

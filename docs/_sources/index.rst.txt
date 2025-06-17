@@ -559,6 +559,13 @@ Robinhood
    :members:
    :undoc-members:
 
+SecureSend
+==========
+
+.. automodule:: jarvis.executors.secure_send
+   :members:
+   :undoc-members:
+
 Simulator
 =========
 

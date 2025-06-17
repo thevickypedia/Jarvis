@@ -4006,6 +4006,17 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.files.delete">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.files.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.v1.types.FilePath</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pydantic.v1.types.DirectoryPath</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.files.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a file or directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – File or directory path to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.functions">
 <span id="functions"></span><h1>Functions<a class="headerlink" href="#module-jarvis.executors.functions" title="Permalink to this heading">¶</a></h1>
@@ -4805,7 +4816,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span> <span class="nn">errno</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
@@ -4863,7 +4874,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.others.celebrate">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.others.celebrate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">celebrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.others.celebrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to look if the current date is a holiday or a birthday.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4905,7 +4916,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.others.pypi_versions">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">pypi_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.pypi_versions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">pypi_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.pypi_versions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all available versions from pypi.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4924,57 +4935,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.others.version">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.others.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaks the version information along with the current version on GitHub.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.others.get_aws_secrets">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">get_aws_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.get_aws_secrets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get secrets from AWS secretsmanager.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> – Get name of the particular secret.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the value of the secret or list of all secrets’ names.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str | List[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.others.get_aws_params">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">get_aws_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.others.get_aws_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get SSM parameters from AWS.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>name</strong> – Get name of the particular parameter.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the value of the parameter or list of all parameter names.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str | List[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.others.secrets">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.others.secrets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle getting secrets from AWS or local env vars.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response to the user.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
@@ -5346,6 +5306,127 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dt class="sig sig-object py" id="jarvis.executors.robinhood.robinhood">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">robinhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.robinhood.robinhood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets investment details from robinhood API.</p>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.secure_send">
+<span id="securesend"></span><h1>SecureSend<a class="headerlink" href="#module-jarvis.executors.secure_send" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.get_aws_secrets">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">get_aws_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.get_aws_secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get secrets from AWS secretsmanager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Get name of the particular secret.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the value of the secret or list of all secrets’ names.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.get_aws_params">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">get_aws_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.get_aws_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get SSM parameters from AWS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Get name of the particular parameter.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the value of the parameter or list of all parameter names.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.format_secret">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">format_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.format_secret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format secrets into primitive and non-primitive data types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Secret value of any data type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the formatted secret.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list | dict | str | int | float | bool | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.store_secret">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">store_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.store_secret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the secret in the secure-send yaml file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Key for payload.</p></li>
+<li><p><strong>value</strong> – Value for payload.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the generate key that is used as identifier for the payload.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">SecretResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base model to store secret response from the server.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SecretResponse</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.response">
+<span class="sig-name descname"><span class="pre">response</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse._abc_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.model_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.secrets">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jarvis.executors.secure_send.SecretResponse" title="jarvis.executors.secure_send.SecretResponse"><span class="pre">jarvis.executors.secure_send.SecretResponse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle getting secrets from AWS or local env vars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response the SecretResponse object with the server response and the token.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jarvis.executors.secure_send.SecretResponse" title="jarvis.executors.secure_send.SecretResponse">SecretResponse</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -7732,7 +7813,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inflect</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phrase</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;penny&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
@@ -10605,12 +10686,12 @@ Whites can have a value of None.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.html">
-<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.javascript">
-<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11718,6 +11799,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.resource_tracker">Resource Tracker</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.restrictions">Restrictions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.secure_send">SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.simulator">Simulator</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.static_responses">StaticResponses</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.system">System</a></li>

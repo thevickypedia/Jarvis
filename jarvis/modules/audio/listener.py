@@ -65,7 +65,7 @@ def listen(
             recognized, confidence = recognizer.recognize_google(
                 audio_data=listened, with_confidence=True
             )
-            # Should never meet the condition for called by offline but just a safety net
+            # SafetyNet: Should never meet the condition for called by offline
             if no_conf or shared.called_by_offline:
                 logger.info(recognized)
                 return recognized

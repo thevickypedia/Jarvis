@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from jarvis.api.logger import logger
 from jarvis.api.models import modals
 from jarvis.api.routers import speech_synthesis
-from jarvis.executors import commander, offline, others, restrictions, word_match
+from jarvis.executors import commander, offline, restrictions, secure_send, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.database import database
@@ -148,14 +148,15 @@ async def offline_communicator_api(
     ) and word_match.word_match(
         phrase=command, match_list=("list", "get", "send", "create", "share")
     ):
-        response = others.secrets(phrase=command)
-        if len(response.split()) == 1:
+        secret = secure_send.secrets(phrase=command)
+        if secret.token:
             response = (
                 "The secret requested can be accessed from 'secure-send' endpoint using the token below.\n"
                 "Note that the secret cannot be retrieved again using the same token and the token will "
-                f"expire in 5 minutes.\n\n{response}"
+                f"expire in 5 minutes.\n\n{secret.token}"
             )
         else:
+            response = secret.response
             logger.error("Response: %s", response)
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 

@@ -2,6 +2,7 @@
 
 import collections
 import os
+import shutil
 import sys
 import time
 import warnings
@@ -11,7 +12,7 @@ from typing import Any, DefaultDict, Dict, List, OrderedDict
 
 import yaml
 from pydantic import ValidationError
-from pydantic.v1 import FilePath
+from pydantic.v1 import DirectoryPath, FilePath
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, models
@@ -274,3 +275,18 @@ def put_ip_info(data: Dict[str, Any]) -> None:
         logger.debug("Writing loc info to IP data.")
         data["loc"] = f"{data['lat']},{data['lon']}"
     _dumper(models.fileio.ip_info, data)
+
+
+def delete(path: FilePath | DirectoryPath) -> None:
+    """Delete a file or directory.
+
+    Args:
+        path: File or directory path to be removed.
+    """
+    logger.info("Removing %s", path)
+    if os.path.isfile(path):
+        os.remove(path)
+    elif os.path.isdir(path):
+        shutil.rmtree(path)
+    else:
+        logger.warning("No such file or directory: %s", path.__str__())
