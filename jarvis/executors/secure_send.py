@@ -3,7 +3,7 @@ from typing import Any, List
 import boto3
 from pydantic import BaseModel
 
-from jarvis.executors import files
+from jarvis.executors import ciphertext, files
 from jarvis.modules.exceptions import InvalidArgument
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
@@ -54,31 +54,31 @@ def get_aws_params(name: str = None) -> str | List[str]:
     return [page["Name"] for page in page_results["Parameters"]]
 
 
-def format_secret(value: Any) -> list | dict | str | int | float | bool | None:
+def format_secret(secret: Any) -> list | dict | str | int | float | bool | None:
     """Format secrets into primitive and non-primitive data types.
 
     Args:
-        value: Secret value of any data type.
+        secret: Secret value of any data type.
 
     Returns:
         list | dict | str | int | float | bool | None:
         Returns the formatted secret.
     """
-    if isinstance(value, dict):
-        return {str(k): format_secret(v) for k, v in value.items()}
-    elif isinstance(value, list):
-        return [format_secret(item) for item in value]
-    elif isinstance(value, (str, int, float, bool)) or value is None:
-        return value
-    # elif hasattr(value, '__dict__'):
-    #     return format_secret(vars(value))
-    elif hasattr(value, "__str__") and not isinstance(value, (str, bytes)):
-        return str(value)
-    elif hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
-        return [format_secret(item) for item in value]
+    if isinstance(secret, dict):
+        return {str(k): format_secret(v) for k, v in secret.items()}
+    elif isinstance(secret, list):
+        return [format_secret(item) for item in secret]
+    elif isinstance(secret, (str, int, float, bool)) or secret is None:
+        return secret
+    # elif hasattr(secret, '__dict__'):
+    #     return format_secret(vars(secret))
+    elif hasattr(secret, "__str__") and not isinstance(secret, (str, bytes)):
+        return str(secret)
+    elif hasattr(secret, "__iter__") and not isinstance(secret, (str, bytes)):
+        return [format_secret(item) for item in secret]
     else:
         # Fallback: convert unknown types to string
-        return str(value)
+        return str(secret)
 
 
 def store_secret(key: str, value: Any) -> str:
@@ -97,7 +97,9 @@ def store_secret(key: str, value: Any) -> str:
         logger.warning("Received a null value for '%s'", key)
         raise InvalidArgument(f"Received a null value for {key!r}")
     keygen = util.keygen_uuid()
-    files.put_secure_send(data={keygen: {key: format_secret(value)}})
+    formatted_secret = format_secret(secret=value)
+    encrypted_secret = ciphertext.encrypt(payload=formatted_secret)
+    files.put_secure_send(data={keygen: {key: encrypted_secret}})
     return keygen
 
 

@@ -16,7 +16,7 @@ import sys
 from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NoReturn, Optional
 from uuid import UUID
 
 import jlrpy
@@ -458,7 +458,7 @@ class EnvConfig(BaseSettings):
         cls, value: int | PositiveInt
     ) -> int | PositiveInt | None:
         """Validates speaker index."""
-        # TODO: Create an OS agnostic model for usage (currently the index value is unused)
+        # fixme: Create an OS agnostic model for usage (currently the index value is unused)
         return squire.channel_validator(value, "output")
 
     @field_validator("birthday", mode="before", check_fields=True)
@@ -473,7 +473,7 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be 'DD-MM'")
 
     @field_validator("vpn_password", mode="before", check_fields=True)
-    def validate_vpn_password(cls, v: str) -> str:
+    def validate_vpn_password(cls, v: str) -> str | NoReturn:
         """Validates vpn_password as per the required regex."""
         if v:
             if re.match(
@@ -579,7 +579,7 @@ def env_file_loader(key, default) -> EnvConfig:
 
 # noinspection PyBroadException
 try:
-    # todo: Parse when loading secrets into vault
+    # fixme: Parse when loading secrets into vault
     env = env_vault_loader(key="vault_table", default="jarvis")
 except Exception:
     env = env_file_loader(key="env_file", default=".env")

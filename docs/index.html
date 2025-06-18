@@ -1721,12 +1721,13 @@
 <span id="routers-securesend"></span><h1>Routers - SecureSend<a class="headerlink" href="#module-jarvis.api.routers.secure_send" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.secure_send.secure_send_api">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.secure_send.</span></span><span class="sig-name descname"><span class="pre">secure_send_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.secure_send.secure_send_api" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.secure_send.</span></span><span class="sig-name descname"><span class="pre">secure_send_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Header(None)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.secure_send.secure_send_api" title="Permalink to this definition">¶</a></dt>
 <dd><p>API endpoint to share/retrieve secrets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>request</strong> – FastAPI request module.</p></li>
+<li><p><strong>key</strong> – Secret key to be retrieved.</p></li>
 <li><p><strong>access_token</strong> – Access token for the secret to be retrieved.</p></li>
 </ul>
 </dd>
@@ -3217,6 +3218,43 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.executors.ciphertext">
+<span id="ciphertext"></span><h1>Ciphertext<a class="headerlink" href="#module-jarvis.executors.ciphertext" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.ciphertext.encrypt">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.ciphertext.</span></span><span class="sig-name descname"><span class="pre">encrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.ciphertext.encrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encrypts the payload using Fernet symmetric encryption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>payload</strong> – Payload to be encrypted, can be of any data type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Encrypted payload as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.ciphertext.decrypt">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.ciphertext.</span></span><span class="sig-name descname"><span class="pre">decrypt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_payload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#jarvis.executors.ciphertext.decrypt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrypts the encrypted payload using Fernet symmetric encryption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>encrypted_payload</strong> – Encrypted payload as bytes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Decrypted payload, which can be of any data type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4816,7 +4854,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span> <span class="nn">errno</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
@@ -5347,11 +5385,11 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.secure_send.format_secret">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">format_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.format_secret" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">format_secret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.format_secret" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format secrets into primitive and non-primitive data types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – Secret value of any data type.</p>
+<dd class="field-odd"><p><strong>secret</strong> – Secret value of any data type.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Returns the formatted secret.</p>
@@ -6875,7 +6913,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.validate_vpn_password">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_vpn_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_vpn_password" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_vpn_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_vpn_password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validates vpn_password as per the required regex.</p>
 </dd></dl>
 
@@ -7284,6 +7322,34 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Models</span>
 </pre></div>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.models.models._set_fernet_key">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.models.</span></span><span class="sig-name descname"><span class="pre">_set_fernet_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.models.models._set_fernet_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a new Fernet key in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns 32 url-safe base64-encoded bytes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.models.models.get_fernet_key">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.models.</span></span><span class="sig-name descname"><span class="pre">get_fernet_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.modules.models.models.get_fernet_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Fernet key from the database, if it does not exist, create a new one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns 32 url-safe base64-encoded bytes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.models.models._distance_temperature_brute_force">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.models.</span></span><span class="sig-name descname"><span class="pre">_distance_temperature_brute_force</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.models.models._distance_temperature_brute_force" title="Permalink to this definition">¶</a></dt>
@@ -7813,7 +7879,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inflect</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phrase</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;penny&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
@@ -10686,12 +10752,12 @@ Whites can have a value of None.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.html">
-<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.javascript">
-<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11769,6 +11835,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.automation">Automation</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.background_task">Background Task</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.car">Car</a></li>
+<li><a class="reference internal" href="#module-jarvis.executors.ciphertext">Ciphertext</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.communicator">Communicator</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.comm_squire">Communicator Squire</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.connection">Connection</a></li>

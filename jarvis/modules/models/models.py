@@ -11,6 +11,7 @@ import warnings
 from importlib import metadata
 
 import pvporcupine
+from cryptography.fernet import Fernet
 from pydantic import PositiveInt
 
 from jarvis.modules.database import database
@@ -33,7 +34,13 @@ from jarvis.modules.models.validators import Validator
 # Shared across other modules
 voices = AUDIO_DRIVER.getProperty("voices")
 indicators = Indicators()
+
+# Database connection for base db
+# todo: reuse this for all other modules that require database connection
+#   replace with a singleton pattern or similar approach
+db = database.Database(database=fileio.base_db)
 # TABLES to be created in `fileio.base_db`
+# todo: Set primary keys for each table so INSERT OR REPLACE works as expected
 TABLES = {
     env.event_app: ("info", "date"),
     "ics": ("info", "date"),
@@ -54,6 +61,7 @@ TABLES = {
     "guard": ("state", "trigger"),
     "robinhood": ("summary",),
     "listener": ("state",),
+    "fernet": ("key",),
 }
 WAKE_WORD_DETECTOR = metadata.version(pvporcupine.__name__)
 # TABLES to keep from `fileio.base_db`
@@ -73,6 +81,38 @@ else:
     startup_car = False
     startup_gpt = False
     startup_thermostat = False
+
+
+def _set_fernet_key() -> str:
+    """Set a new Fernet key in the database.
+
+    Returns:
+        str:
+        Returns 32 url-safe base64-encoded bytes.
+    """
+    fernet_key = Fernet.generate_key().decode()
+    with db.connection:
+        cursor = db.connection.cursor()
+        cursor.execute("DELETE FROM fernet")
+        cursor.execute("INSERT INTO fernet (key) VALUES (?);", (fernet_key,))
+        db.connection.commit()
+    return fernet_key
+
+
+def get_fernet_key() -> str:
+    """Get the Fernet key from the database, if it does not exist, create a new one.
+
+    Returns:
+        str:
+        Returns 32 url-safe base64-encoded bytes.
+    """
+    with db.connection:
+        cursor = db.connection.cursor()
+        data = cursor.execute("SELECT key FROM fernet;")
+        keys = data.fetchall()
+        if len(keys) == 1:
+            return keys[0][0]
+    return _set_fernet_key()
 
 
 def _distance_temperature_brute_force() -> None:
@@ -128,9 +168,9 @@ def _main_process_validations() -> None:
 
     # Create all necessary DB tables during startup
     os.makedirs(fileio.root, exist_ok=True)
-    db = database.Database(database=fileio.base_db)
     for table, column in TABLES.items():
         db.create_table(table_name=table, columns=column)
+    _set_fernet_key()
     # Create required file for alarms
     pathlib.Path(fileio.alarms).touch(exist_ok=True)
     # Create required file for reminders

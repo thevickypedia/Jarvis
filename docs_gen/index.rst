@@ -343,6 +343,13 @@ Car
    :members:
    :undoc-members:
 
+Ciphertext
+==========
+
+.. automodule:: jarvis.executors.ciphertext
+   :members:
+   :undoc-members:
+
 Communicator
 ============
 

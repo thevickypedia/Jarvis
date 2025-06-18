@@ -32,7 +32,7 @@ async def get_signals(symbol: str, bar_count: int = 100, data_dict: bool = False
                 status_code=HTTPStatus.OK.real,
                 detail=json.dumps(settings.trader.stock_list),
             )
-            # TODO: repeated URL errors, no luck with traditional loop
+            # fixme: repeated URL errors, no luck with traditional loop
             # thread_worker(function_to_call=get_signals_per_ticker)
             # result = {
             #     k: '\n'.join(v) for k, v in settings.trader.result.items()

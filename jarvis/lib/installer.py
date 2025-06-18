@@ -507,7 +507,7 @@ def init() -> None:
         env.install_uv()
     else:
         env.exec += " -m"
-    # todo: Pinned version of setuptools to avoid deprecation warning due to import pkg_resources in dlib
+    # fixme: Pinned version of setuptools to avoid deprecation warning due to import pkg_resources in dlib
     #   Future plan is to replace face recognition script with docker container (enable remote evaluation)
     run_subprocess(f"{env.exec} pip install{verbose} setuptools==76.0.0")
     run_subprocess(f"{env.exec} pip install{verbose} --upgrade pip wheel")
