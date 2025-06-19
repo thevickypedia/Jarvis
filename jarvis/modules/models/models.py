@@ -36,8 +36,6 @@ voices = AUDIO_DRIVER.getProperty("voices")
 indicators = Indicators()
 
 # Database connection for base db
-# todo: reuse this for all other modules that require database connection
-#   replace with a singleton pattern or similar approach
 db = database.Database(database=fileio.base_db)
 # TABLES to be created in `fileio.base_db`
 # todo: Set primary keys for each table so INSERT OR REPLACE works as expected
@@ -91,11 +89,11 @@ def _set_fernet_key() -> str:
         Returns 32 url-safe base64-encoded bytes.
     """
     fernet_key = Fernet.generate_key().decode()
-    with db.connection:
-        cursor = db.connection.cursor()
+    with db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM fernet")
         cursor.execute("INSERT INTO fernet (key) VALUES (?);", (fernet_key,))
-        db.connection.commit()
+        connection.commit()
     return fernet_key
 
 
@@ -106,8 +104,8 @@ def get_fernet_key() -> str:
         str:
         Returns 32 url-safe base64-encoded bytes.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with db.connection as connection:
+        cursor = connection.cursor()
         data = cursor.execute("SELECT key FROM fernet;")
         keys = data.fetchall()
         if len(keys) == 1:

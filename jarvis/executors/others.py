@@ -33,15 +33,12 @@ from jarvis.executors import (
 )
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.dictionary import dictionary
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet import face
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def repeat(phrase: str) -> None:

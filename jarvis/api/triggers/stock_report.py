@@ -231,13 +231,13 @@ class Investment:
         self.logger.info(
             "Static file '%s' has been generated.", models.fileio.robinhood
         )
-        with db.connection:
-            cursor = db.connection.cursor()
+        with models.db.connection as connection:
+            cursor = connection.cursor()
             cursor.execute("DELETE FROM robinhood;")
             cursor.execute(
                 "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
             )
-            db.connection.commit()
+            connection.commit()
         self.logger.info("Stored summary in database.")
 
     def report_gatherer(self) -> None:
@@ -256,7 +256,6 @@ if __name__ == "__main__":
 
     current_process().name = "StockReport"
     from jarvis.executors import crontab
-    from jarvis.modules.database import database
     from jarvis.modules.exceptions import EgressErrors
     from jarvis.modules.logger import logger as main_logger
     from jarvis.modules.logger import multiprocessing_logger
@@ -267,5 +266,5 @@ if __name__ == "__main__":
     # Remove process name filter
     for log_filter in main_logger.filters:
         main_logger.removeFilter(filter=log_filter)
-    db = database.Database(database=models.fileio.base_db)
+
     Investment(logger=main_logger).report_gatherer()

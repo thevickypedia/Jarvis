@@ -8,7 +8,7 @@ if ! [ -x "$(command -v python)" ]; then
 fi
 
 # Looks for xcode installation and installs only if xcode is not found already
-which xcodebuild > tmp_xcode && xcode_check=$(cat tmp_xcode) && rm tmp_xcode
+which xcodebuild >tmp_xcode && xcode_check=$(cat tmp_xcode) && rm tmp_xcode
 if [[ "$xcode_check" == "/usr/bin/xcodebuild" ]] || [[ $HOST == "/*" ]]; then
   xcode_version=$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | grep version)
   echo "xcode $xcode_version"
@@ -22,7 +22,7 @@ if ! [ -x "$(command -v brew)" ]; then
   echo "Installing Homebrew"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
-brew -v > tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
+brew -v >tmp_brew && brew_version=$(head -n 1 tmp_brew) && rm tmp_brew
 echo "$brew_version"
 
 # Disable brew auto update, cleanup and env hints

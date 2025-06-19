@@ -12,14 +12,12 @@ import jinja2
 from jarvis.executors import communicator, word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.facenet import face
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import shared, support, util
 
-db = database.Database(database=models.fileio.base_db)
 TRACE = {"status": False}
 
 
@@ -33,8 +31,8 @@ def get_state(log: bool = True) -> Tuple[int, str]:
         int:
         0 or 1 to indicate if the security mode is enabled.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         state = cursor.execute("SELECT state, trigger FROM guard").fetchone()
     if state:
         logger.info("Security mode is currently enabled") if log else None
@@ -49,8 +47,8 @@ def put_state(state: bool) -> None:
     Args:
         state: True or False flag to stop the security mode.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         if state is True:
             if shared.called_by_offline:
                 trigger = "GUARD_OFFLINE"
@@ -64,7 +62,7 @@ def put_state(state: bool) -> None:
         else:
             logger.info("Disabling security mode.")
             cursor.execute("DELETE FROM guard WHERE state = 1")
-        db.connection.commit()
+        connection.commit()
     time.sleep(0.5)
 
 
@@ -207,13 +205,13 @@ def guard_enable(*args) -> None:
             return
         process = Process(target=security_runner)
         process.start()
-        with db.connection:
-            cursor = db.connection.cursor()
+        with models.db.connection as connection:
+            cursor = connection.cursor()
             cursor.execute("UPDATE children SET guard=null")
             cursor.execute(
                 "INSERT or REPLACE INTO children (guard) VALUES (?);", (process.pid,)
             )
-            db.connection.commit()
+            connection.commit()
         return
     TRACE["status"] = True
     speaker.speak(run=True)

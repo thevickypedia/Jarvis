@@ -15,7 +15,6 @@ from jarvis.executors import (
     automation,
     background_task,
     conditions,
-    connection,
     controls,
     crontab,
     files,
@@ -29,14 +28,11 @@ from jarvis.executors import (
 )
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, enums, models
 from jarvis.modules.utils import shared, support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def background_tasks() -> None:
@@ -99,13 +95,13 @@ def background_task_runner() -> None:
                     logger.debug("Executing cron job: '%s'", job.comment)
                     cron_process = Process(target=crontab.executor, args=(job.comment,))
                     cron_process.start()
-                    with db.connection:
-                        cursor = db.connection.cursor()
+                    with models.db.connection as connection:
+                        cursor = connection.cursor()
                         cursor.execute(
                             "INSERT or REPLACE INTO children (crontab) VALUES (?);",
                             (cron_process.pid,),
                         )
-                        db.connection.commit()
+                        connection.commit()
 
         # Trigger wifi checker
         if wifi_checker and (
@@ -147,14 +143,14 @@ def background_task_runner() -> None:
                     "Getting events from %s.", models.env.event_app
                 ) if dry_run else None
                 event_process.start()
-                with db.connection:
-                    cursor = db.connection.cursor()
+                with models.db.connection as connection:
+                    cursor = connection.cursor()
                     cursor.execute("UPDATE children SET events=null")
                     cursor.execute(
                         "INSERT or REPLACE INTO children (events) VALUES (?);",
                         (event_process.pid,),
                     )
-                    db.connection.commit()
+                    connection.commit()
 
         # Sync meetings from the ICS url provided
         # Run either when an ICS url is present or during the initial run so the response gets stored in the DB
@@ -178,14 +174,14 @@ def background_task_runner() -> None:
                 )
                 logger.info("Getting meetings from ICS.") if dry_run else None
                 meeting_process.start()
-                with db.connection:
-                    cursor = db.connection.cursor()
+                with models.db.connection as connection:
+                    cursor = connection.cursor()
                     cursor.execute("UPDATE children SET meetings=null")
                     cursor.execute(
                         "INSERT or REPLACE INTO children (meetings) VALUES (?);",
                         (meeting_process.pid,),
                     )
-                    db.connection.commit()
+                    connection.commit()
 
         # Mute during meetings
         if models.env.mute_for_meetings and models.env.ics_url:

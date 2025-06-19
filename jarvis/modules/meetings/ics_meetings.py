@@ -19,15 +19,12 @@ import requests
 
 from jarvis.executors import resource_tracker, word_match
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.meetings import ics
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, support
-
-db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
@@ -40,8 +37,8 @@ def meetings_writer(queue: Queue = None) -> None:
         queue: Multiprocessing queue in case mute for meetings is enabled.
     """
     info = meetings_gatherer(queue=queue)
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM ics")
         cursor.connection.commit()
         cursor.execute(
@@ -184,8 +181,8 @@ def meetings(phrase: str) -> None:
         phrase=phrase, match_list=("tomorrow", "yesterday", "last", "this", "next")
     ) and custom_meetings(phrase=phrase):
         return
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
     if meeting_status and meeting_status[1] == datetime.datetime.now().strftime(
         "%Y_%m_%d"

@@ -16,13 +16,10 @@ import pywslocker
 from jarvis.executors import alarm, files, listener_controls, remind, volume, word_match
 from jarvis.modules.audio import listener, speaker, voices
 from jarvis.modules.conditions import conversation, keywords
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import StopSignal
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def restart(ask: bool = True) -> None:
@@ -132,8 +129,8 @@ def db_restart_entry(caller: str) -> None:
     Args:
         caller: Name of the process that has to be restarted.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute(
             "INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);",
             (True, caller),

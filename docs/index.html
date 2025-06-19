@@ -4854,7 +4854,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>This can simply be ignored or handled adding the code below in socket module (NOT PREFERRED).</p></li>
 </ul>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span> <span class="nn">errno</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EPIPE</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">support</span><span class="o">.</span><span class="n">write_screen</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </pre></div>
@@ -7879,7 +7879,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <li><p>Keywords should have both singular and plural forms wherever possible.</p></li>
 <li><p>An alternate is to use</p></li>
 </ul>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inflect</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phrase</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s2">&quot;penny&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">engine</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">phrase</span><span class="p">)</span>
@@ -8074,7 +8074,7 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.Database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a connection to the base DB.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
@@ -8087,6 +8087,20 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </ul>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="jarvis.modules.database.database.Database.connection">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connection</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Connection</span></em><a class="headerlink" href="#jarvis.modules.database.database.Database.connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a database connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a <code class="docutils literal notranslate"><span class="pre">sqlite3.Connection</span></code> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>sqlite3.Connection</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database.create_table">
 <span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.database.database.Database.create_table" title="Permalink to this definition">¶</a></dt>
@@ -10752,12 +10766,12 @@ Whites can have a value of None.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.html">
-<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/listener_spectrum.html'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.html" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum.javascript">
-<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vsivanandharao/Desktop/gitpersonal/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">javascript</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/vicky/Desktop/git/Jarvis/jarvis/modules/templates/siriwave.umd.min.js'</span></em><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

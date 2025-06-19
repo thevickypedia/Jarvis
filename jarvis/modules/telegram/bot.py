@@ -21,7 +21,6 @@ from pydantic import FilePath
 from jarvis.executors import commander, offline, restrictions, secure_send, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import (
     BotInUse,
     BotWebhookConflict,
@@ -32,8 +31,6 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.telegram import audio_handler, file_handler, settings
 from jarvis.modules.utils import support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 USER_TITLE = {}
 BASE_URL = f"https://api.telegram.org/bot{models.env.bot_token}"
@@ -467,8 +464,8 @@ def verify_stop(chat: settings.Chat, data_class: settings.Text) -> bool:
         reply_to(
             chat, f"Shutting down now {models.env.title}!\n{support.exit_message()}"
         )
-        with db.connection:
-            cursor = db.connection.cursor()
+        with models.db.connection as connection:
+            cursor = connection.cursor()
             cursor.execute(
                 "INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);",
                 (True, "TelegramAPI"),

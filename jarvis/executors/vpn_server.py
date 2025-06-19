@@ -7,12 +7,10 @@ import vpn
 
 from jarvis.executors import communicator
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
-db = database.Database(database=models.fileio.base_db)
 available_regions = {"regions": []}
 
 
@@ -64,8 +62,8 @@ def vpn_server(phrase: str) -> None:
         )
         return
 
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         state = cursor.execute("SELECT state FROM vpn").fetchone()
     if state:
         speaker.speak(
@@ -154,10 +152,10 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
         success_subject = "VPN Server has been configured successfully!"
         fail_subject = "Failed to create VPN Server!"
     vpn_object = vpn.VPNServer(**kwargs)
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("INSERT or REPLACE INTO vpn (state) VALUES (?);", (operation,))
-        db.connection.commit()
+        connection.commit()
     if operation == "enabled":
         if vpn_data := vpn_object.create_vpn_server():
             entrypoint = vpn_data.get("entrypoint") or vpn_data.get("public_dns")
@@ -179,7 +177,7 @@ def vpn_server_switch(operation: str, custom_region: str = None) -> None:
             )
     elif operation == "disabled":
         vpn_object.delete_vpn_server()
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM vpn WHERE state=?", (operation,))
-        db.connection.commit()
+        connection.commit()

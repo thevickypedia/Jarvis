@@ -35,8 +35,8 @@ def todo(phrase: str) -> None:
 
 def get_todo() -> None:
     """Says the item and category stored in the to-do list."""
-    with tdb.connection:
-        cursor = tdb.connection.cursor()
+    with tdb.connection as connection:
+        cursor = connection.cursor()
         downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
     result = {}
     for category, item in downloaded:
@@ -84,8 +84,8 @@ def add_todo() -> None:
     if word_match.word_match(phrase=category, match_list=keywords.keywords["exit_"]):
         speaker.speak(text=f"Your to-do list has been left intact {models.env.title}.")
         return
-    with tdb.connection:
-        cursor = tdb.connection.cursor()
+    with tdb.connection as connection:
+        cursor = connection.cursor()
         downloaded = cursor.execute("SELECT category, item FROM tasks").fetchall()
     if downloaded:
         for c, i in downloaded:  # browses through all categories and items
@@ -95,8 +95,8 @@ def add_todo() -> None:
                     text=f"Looks like you already have the item: {item} added in, {category} category"
                 )
                 return
-    with tdb.connection:
-        cursor = tdb.connection.cursor()
+    with tdb.connection as connection:
+        cursor = connection.cursor()
         cursor.execute(
             "INSERT or REPLACE INTO tasks (category, item) VALUES (?,?)",
             (category, item),
@@ -122,8 +122,8 @@ def delete_todo_items() -> None:
     ):
         speaker.speak(text=f"Your to-do list has been left intact {models.env.title}.")
         return
-    with tdb.connection:
-        cursor = tdb.connection.cursor()
+    with tdb.connection as connection:
+        cursor = connection.cursor()
         cursor.execute(
             "DELETE FROM tasks WHERE item=:item OR category=:category",
             {"item": word, "category": word},
@@ -134,8 +134,8 @@ def delete_todo_items() -> None:
 
 def delete_todo() -> None:
     """Deletes all the data from the table ``tasks`` in the database."""
-    with tdb.connection:
-        cursor = tdb.connection.cursor()
+    with tdb.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM tasks")
         cursor.connection.commit()
     speaker.speak(

@@ -15,7 +15,6 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from jarvis.api.logger import logger
 from jarvis.api.models import modals, settings
 from jarvis.api.squire import surveillance_squire, timeout_otp
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import (
     CONDITIONAL_ENDPOINT_RESTRICTION,
     APIResponse,
@@ -24,8 +23,6 @@ from jarvis.modules.exceptions import (
 from jarvis.modules.models import models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 async def authenticate_surveillance(cam: modals.CameraIndexModal):
@@ -216,12 +213,12 @@ async def video_feed(request: Request, token: str = None):
     )
     process.start()
     # Insert process IDs into the children table to kill it in case, Jarvis is stopped during an active session
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute(
             "INSERT INTO children (surveillance) VALUES (?);", (process.pid,)
         )
-        db.connection.commit()
+        connection.commit()
     settings.surveillance.processes[settings.surveillance.client_id] = process
     return StreamingResponse(
         content=surveillance_squire.streamer(),

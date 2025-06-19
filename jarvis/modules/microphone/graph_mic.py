@@ -117,14 +117,14 @@ def plot_mic(
     multiprocessing_logger(filename=os.path.join("logs", "mic_plotter_%d-%m-%Y.log"))
     subprocess_id = os.getpid()
     logger.info("Updating process ID [%d] in [plot_mic] children table.", subprocess_id)
-    db = database.Database(database=models.fileio.base_db)
-    with db.connection:
-        cursor = db.connection.cursor()
+
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("UPDATE children SET plot_mic=null")
         cursor.execute(
             "INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,)
         )
-        db.connection.commit()
+        connection.commit()
     logger.info(
         "Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id
     )
@@ -239,7 +239,6 @@ if __name__ == "__main__":
 
     current_process().name = "PlotMic"
     from jarvis.executors import process_map
-    from jarvis.modules.database import database
     from jarvis.modules.logger import logger, multiprocessing_logger
     from jarvis.modules.models import models
 

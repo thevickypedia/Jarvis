@@ -13,18 +13,15 @@ from jarvis.api.routers import speech_synthesis
 from jarvis.executors import commander, offline, restrictions, secure_send, word_match
 from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.exceptions import APIResponse, InvalidArgument
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
-db = database.Database(database=models.fileio.base_db)
-
 
 def kill_power() -> None:
     """Inserts a flag into stopper table in base database."""
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute(
             "INSERT or REPLACE INTO stopper (flag, caller) VALUES (?,?);",
             (True, "FastAPI"),

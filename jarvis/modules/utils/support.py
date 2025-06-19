@@ -24,7 +24,6 @@ from dateutil import parser, relativedelta
 from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, util
@@ -40,7 +39,6 @@ days_in_week = (
     "Saturday",
     "Sunday",
 )
-db = database.Database(database=models.fileio.base_db)
 
 
 def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
@@ -203,11 +201,11 @@ def check_restart() -> List[str]:
         list:
         Returns the flag, caller from the restart table.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         flag = cursor.execute("SELECT flag, caller FROM restart").fetchone()
         cursor.execute("DELETE FROM restart")
-        db.connection.commit()
+        connection.commit()
     return flag
 
 
@@ -393,11 +391,11 @@ def check_stop() -> List[str]:
         list:
         Returns the flag, caller from the stopper table.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
         cursor.execute("DELETE FROM stopper")
-        db.connection.commit()
+        connection.commit()
     return flag
 
 

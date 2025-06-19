@@ -4,13 +4,10 @@ from multiprocessing import Process
 from typing import Dict, List
 
 from jarvis.executors import process_map
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, support, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, warn=True)
@@ -26,8 +23,8 @@ def delete_db() -> None:
 
 def clear_db() -> None:
     """Deletes entries from all databases except for the tables assigned to hold data forever."""
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         for table, column in models.TABLES.items():
             if table in models.KEEP_TABLES:
                 continue
@@ -107,8 +104,8 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
 def stop_child_processes() -> None:
     """Stops sub processes (for meetings and events) triggered by child processes."""
     children: Dict[str, List[int]] = {}
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         for child in models.TABLES["children"]:
             try:
                 # Use f-string or %s as condition cannot be parametrized

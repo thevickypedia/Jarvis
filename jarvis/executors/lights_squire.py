@@ -4,12 +4,10 @@ from multiprocessing import Process
 from typing import List
 
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.lights import preset_values, smart_lights
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
 
-db = database.Database(database=models.fileio.base_db)
 word_map = {
     "turn_on": ["turn on", "cool", "white"],
     "turn_off": ["turn off"],
@@ -95,18 +93,18 @@ def check_status() -> str | int | None:
         Process.pid:
         Process ID if party mode is enabled.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         state = cursor.execute("SELECT pid FROM party").fetchone()
     return state
 
 
 def remove_status() -> None:
     """Removes all entries from the ``party`` table."""
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM party")
-        db.connection.commit()
+        connection.commit()
 
 
 def update_status(process: Process) -> None:
@@ -115,14 +113,14 @@ def update_status(process: Process) -> None:
     Args:
         process: Process for which the PID has to be stored in database.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("UPDATE children SET party=null")
         cursor.execute("INSERT or REPLACE INTO party (pid) VALUES (?);", (process.pid,))
         cursor.execute(
             "INSERT or REPLACE INTO children (party) VALUES (?);", (process.pid,)
         )
-        db.connection.commit()
+        connection.commit()
 
 
 def party_mode(host: List[str], phrase: str) -> bool:

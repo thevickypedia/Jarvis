@@ -19,13 +19,10 @@ import pynotification
 
 from jarvis.executors import resource_tracker
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util
-
-db = database.Database(database=models.fileio.base_db)
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
@@ -39,8 +36,8 @@ def events_writer() -> None:
         f"INSERT or REPLACE INTO {models.env.event_app} (info, date) VALUES "
         f"{(info, datetime.now().strftime('%Y_%m_%d'))}"
     )
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         # Use f-string or %s as table names can't be parametrized
         cursor.execute(f"DELETE FROM {models.env.event_app}")
         cursor.connection.commit()
@@ -162,8 +159,8 @@ def events_gatherer() -> str:
 
 def events(*args) -> None:
     """Controller for events."""
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         # Use f-string or %s as table names cannot be parametrized
         event_status = cursor.execute(
             f"SELECT info, date FROM {models.env.event_app}"

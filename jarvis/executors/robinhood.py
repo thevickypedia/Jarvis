@@ -6,12 +6,9 @@ from pyrh import Robinhood
 from pyrh.exceptions import AuthenticationError, PyrhException
 
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def get_summary() -> str:
@@ -89,8 +86,8 @@ def robinhood(*args) -> None:
         return
 
     # Tries to get information from DB from the hourly CRON job for stock report
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         state = cursor.execute("SELECT summary FROM robinhood").fetchone()
     if state and state[0]:
         logger.info("Retrieved previously stored summary")
@@ -111,11 +108,11 @@ def robinhood(*args) -> None:
         )
         return
     speaker.speak(text=summary)
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM robinhood;")
         cursor.execute(
             "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
         )
-        db.connection.commit()
+        connection.commit()
     logger.info("Stored summary in database.")

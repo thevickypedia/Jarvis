@@ -1,10 +1,7 @@
 from multiprocessing import Process
 from typing import Any, Callable, Dict, Tuple
 
-from jarvis.modules.database import database
 from jarvis.modules.models import models
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def semaphores(
@@ -23,7 +20,7 @@ def semaphores(
     """
     process = Process(target=fn, args=args or (), kwargs=kwargs or {}, daemon=daemon)
     process.start()
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("INSERT INTO children (undefined) VALUES (?);", (process.pid,))
-        db.connection.commit()
+        connection.commit()

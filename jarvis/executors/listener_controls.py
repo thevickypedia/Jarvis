@@ -1,12 +1,9 @@
 import sqlite3
 
 from jarvis.modules.audio import speaker
-from jarvis.modules.database import database
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.retry import retry
-
-db = database.Database(database=models.fileio.base_db)
 
 
 def listener_control(phrase: str) -> None:
@@ -42,8 +39,8 @@ def get_listener_state() -> bool:
     Returns:
         bool: A boolean flag to indicate if the listener is active.
     """
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         state = cursor.execute("SELECT state FROM listener").fetchone()
     if state and state[0]:
         logger.debug("Listener is currently enabled")
@@ -61,8 +58,8 @@ def put_listener_state(state: bool) -> None:
     """
     logger.info("Current listener status: '%s'", get_listener_state())
     logger.info("Updating listener status to %s", state)
-    with db.connection:
-        cursor = db.connection.cursor()
+    with models.db.connection as connection:
+        cursor = connection.cursor()
         cursor.execute("DELETE FROM listener")
         if state:
             cursor.execute(
@@ -71,4 +68,4 @@ def put_listener_state(state: bool) -> None:
             cursor.execute("UPDATE listener SET state=(?)", (state,))
         else:
             cursor.execute("UPDATE listener SET state=null")
-        db.connection.commit()
+        connection.commit()
