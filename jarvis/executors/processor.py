@@ -25,11 +25,12 @@ def clear_db() -> None:
     """Deletes entries from all databases except for the tables assigned to hold data forever."""
     with models.db.connection as connection:
         cursor = connection.cursor()
-        for table, column in models.TABLES.items():
-            if table in models.KEEP_TABLES:
+        for attr in models.tables.model_fields:
+            table = getattr(models.tables, attr)
+            if table.keep:
                 continue
             # Use f-string or %s as table names cannot be parametrized
-            data = cursor.execute(f"SELECT * FROM {table}").fetchall()
+            data = cursor.execute(f"SELECT * FROM {table.name}").fetchall()
             logger.info(
                 "Deleting data from %s: %s",
                 table,
@@ -37,7 +38,7 @@ def clear_db() -> None:
                     [list(filter(None, d)) for d in data if any(d)]
                 ),
             )
-            cursor.execute(f"DELETE FROM {table}")
+            cursor.execute(f"DELETE FROM {table.name}")
 
 
 # noinspection LongLine

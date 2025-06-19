@@ -29,7 +29,10 @@ from jarvis.modules.models.enums import (
     SupportedPlatforms,
     TemperatureUnits,
 )
+from jarvis.modules.models.tables import tables
 from jarvis.modules.models.validators import Validator
+
+WAKE_WORD_DETECTOR = metadata.version(pvporcupine.__name__)
 
 # Shared across other modules
 voices = AUDIO_DRIVER.getProperty("voices")
@@ -37,33 +40,7 @@ indicators = Indicators()
 
 # Database connection for base db
 db = database.Database(database=fileio.base_db)
-# TABLES to be created in `fileio.base_db`
-# todo: Set primary keys for each table so INSERT OR REPLACE works as expected
-TABLES = {
-    env.event_app: ("info", "date"),
-    "ics": ("info", "date"),
-    "stopper": ("flag", "caller"),
-    "restart": ("flag", "caller"),
-    "children": (
-        "meetings",
-        "events",
-        "crontab",
-        "party",
-        "guard",
-        "surveillance",
-        "plot_mic",
-        "undefined",
-    ),
-    "vpn": ("state",),
-    "party": ("pid",),
-    "guard": ("state", "trigger"),
-    "robinhood": ("summary",),
-    "listener": ("state",),
-    "fernet": ("key",),
-}
-WAKE_WORD_DETECTOR = metadata.version(pvporcupine.__name__)
-# TABLES to keep from `fileio.base_db`
-KEEP_TABLES = ("vpn", "party", "listener")
+
 startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
 # 'startup_gpt' is required since it has to be invoked only for certain child processes
 # this will avoid running GPT instance for pre-commit as well
@@ -166,8 +143,11 @@ def _main_process_validations() -> None:
 
     # Create all necessary DB tables during startup
     os.makedirs(fileio.root, exist_ok=True)
-    for table, column in TABLES.items():
-        db.create_table(table_name=table, columns=column)
+    for attr in tables.model_fields:
+        table = getattr(tables, attr)
+        db.create_table(
+            table_name=table.name, columns=table.columns, primary_key=table.pkey
+        )
     _set_fernet_key()
     # Create required file for alarms
     pathlib.Path(fileio.alarms).touch(exist_ok=True)

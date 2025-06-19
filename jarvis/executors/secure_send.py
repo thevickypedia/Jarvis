@@ -92,7 +92,6 @@ def store_secret(key: str, value: Any) -> str:
         str:
         Returns the generate key that is used as identifier for the payload.
     """
-    # todo: secrets should be encrypted and decrypted automatically
     if value is None:
         logger.warning("Received a null value for '%s'", key)
         raise InvalidArgument(f"Received a null value for {key!r}")

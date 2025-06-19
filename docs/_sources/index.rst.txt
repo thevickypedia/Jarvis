@@ -764,6 +764,25 @@ Enums
    :members:
    :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
+Tables
+======
+
+.. automodule:: jarvis.modules.models.tables
+   :members:
+   :exclude-members: Table, Tables
+
+====
+
+.. autoclass:: jarvis.modules.models.tables.Table(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.tables.Tables(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
 Models
 ======
 

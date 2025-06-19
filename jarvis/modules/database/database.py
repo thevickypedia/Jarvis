@@ -47,13 +47,25 @@ class Database:
             database=self.datastore, check_same_thread=False, timeout=self.timeout
         )
 
-    def create_table(self, table_name: str, columns: List[str] | Tuple[str]) -> None:
+    def create_table(
+        self, table_name: str, columns: List[str] | Tuple[str], primary_key: str = None
+    ) -> None:
         """Creates the table with the required columns.
 
         Args:
             table_name: Name of the table that has to be created.
             columns: List of columns that has to be created.
+            primary_key: Primary key.
         """
+        if primary_key:
+            # Ensure the column exists by name
+            assert (
+                primary_key in columns
+            ), f"{primary_key!r} should be one of the columns"
+            # Rebuild the column definition with PRIMARY KEY
+            columns = [
+                f"{col} PRIMARY KEY" if col == primary_key else col for col in columns
+            ]
         with self.connection as connection:
             cursor = connection.cursor()
             # Use f-string or %s as table names cannot be parametrized
@@ -87,7 +99,9 @@ class __TestDatabase:
 
     def random_single(self) -> None:
         """Example using a single column."""
-        self.db.create_table(table_name="TestDatabase", columns=["column"])
+        self.db.create_table(
+            table_name="TestDatabase", columns=["column"], primary_key="column"
+        )
         with self.db.connection as connection:
             cursor_ = connection.cursor()
             cursor_.execute("INSERT INTO TestDatabase (column) VALUES (?);", (True,))

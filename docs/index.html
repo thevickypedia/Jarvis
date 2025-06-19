@@ -7316,6 +7316,105 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
+<section id="module-jarvis.modules.models.tables">
+<span id="tables"></span><h1>Tables<a class="headerlink" href="#module-jarvis.modules.models.tables" title="Permalink to this heading">¶</a></h1>
+<p>Tables to create in the base DB. SQLite is a “typeless” database, so the column types are inferred with affinity.</p>
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Table">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.tables.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.tables.Table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object to store table information.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Table.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.tables.Table.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Table.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.tables.Table.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Table.pkey">
+<span class="sig-name descname"><span class="pre">pkey</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.modules.models.tables.Table.pkey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Table.keep">
+<span class="sig-name descname"><span class="pre">keep</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#jarvis.modules.models.tables.Table.keep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.tables.</span></span><span class="sig-name descname"><span class="pre">Tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.tables.Tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table objects to be created in the base DB.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Tables</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.party">
+<span class="sig-name descname"><span class="pre">party</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.party" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.fernet">
+<span class="sig-name descname"><span class="pre">fernet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.fernet" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.ics">
+<span class="sig-name descname"><span class="pre">ics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.ics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.vpn">
+<span class="sig-name descname"><span class="pre">vpn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.vpn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.guard">
+<span class="sig-name descname"><span class="pre">guard</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.guard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.robinhood">
+<span class="sig-name descname"><span class="pre">robinhood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.robinhood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.restart">
+<span class="sig-name descname"><span class="pre">restart</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.stopper">
+<span class="sig-name descname"><span class="pre">stopper</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.stopper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.listener">
+<span class="sig-name descname"><span class="pre">listener</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.listener" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.events">
+<span class="sig-name descname"><span class="pre">events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.children">
+<span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></em><a class="headerlink" href="#jarvis.modules.models.tables.Tables.children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-jarvis.modules.models.models">
 <span id="id1"></span><h1>Models<a class="headerlink" href="#module-jarvis.modules.models.models" title="Permalink to this heading">¶</a></h1>
 <p>This is a space where all the validated environment variables are loaded and evalued as per requirements.</p>
@@ -8103,13 +8202,14 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database.create_table">
-<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.database.database.Database.create_table" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.database.database.Database.create_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the table with the required columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>table_name</strong> – Name of the table that has to be created.</p></li>
 <li><p><strong>columns</strong> – List of columns that has to be created.</p></li>
+<li><p><strong>primary_key</strong> – Primary key.</p></li>
 </ul>
 </dd>
 </dl>
@@ -11896,6 +11996,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#models">———-Models———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.classes">Classes</a></li>
 <li><a class="reference internal" href="#enums">Enums</a></li>
+<li><a class="reference internal" href="#module-jarvis.modules.models.tables">Tables</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.models">Models</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.squire">Squire</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.models.validators">Validators</a></li>
