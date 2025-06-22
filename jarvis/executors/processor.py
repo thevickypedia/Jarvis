@@ -107,7 +107,7 @@ def stop_child_processes() -> None:
     children: Dict[str, List[int]] = {}
     with models.db.connection as connection:
         cursor = connection.cursor()
-        for child in models.TABLES["children"]:
+        for child in models.tables.children.columns:
             try:
                 # Use f-string or %s as condition cannot be parametrized
                 data = cursor.execute(f"SELECT {child} FROM children").fetchall()

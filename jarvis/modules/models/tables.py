@@ -6,8 +6,6 @@ from pydantic import BaseModel
 
 from jarvis.modules.models.classes import env
 
-# todo: Remove hard coded references to all table names and replace it with table objects
-
 
 class Table(BaseModel):
     """Object to store table information.

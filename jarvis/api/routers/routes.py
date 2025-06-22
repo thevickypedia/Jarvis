@@ -31,12 +31,10 @@ class APIPath(StrEnum):
     speech_synthesis_voices = "/speech-synthesis-voices"
     surveillance_authenticate = "/surveillance-authenticate"
 
+    listener_index = "/listener"
     listener_spectrum_ws = "/ws/listener_spectrum"
-    listener_spectrum_index = "/listener_spectrum"
     listener_spectrum_js = "/listener_spectrum_wave.js"
     listener_spectrum_wave = "/wave/{command}"
-    # todo: include dependencies for websocket endpoints
-    #   unsure if it is do-able for surveillance endpoint
 
 
 def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
@@ -188,7 +186,7 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
         APIRoute(
             endpoint=listener_spectrum.load_index,
             methods=["GET"],
-            path=APIPath.listener_spectrum_index,
+            path=APIPath.listener_index,
         ),
         APIRoute(
             endpoint=listener_spectrum.get_listener_spectrum_js,

@@ -24,19 +24,14 @@
 </div>
 <script>
     var url = window.location.href
-    var arr = url.split('/');
-    var scheme = arr[0].replace(':', '')
-    var fqdn = arr[2]
-    if ( scheme == 'https' ) {
-        var wss_origin = "wss://" + fqdn + "/ws/surveillance/"
-    } else {
-        var wss_origin = "ws://" + fqdn + "/ws/surveillance/"
-    }
+    // WebSocket setup
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const webSocketUrl = `${wsProtocol}//${location.host}/ws/surveillance/`
     var video_origin = url.split('/surveillance').slice(0, 3).join('/video-feed');
     document.getElementById("imageID").src=video_origin;
 </script>
 <script type="text/javascript">
-    var origin = wss_origin + {{ CLIENT_ID }}
+    var origin = webSocketUrl + {{ CLIENT_ID }}
     var ws = new WebSocket(origin);
     function sendMessage() {
         ws.send("Healthy")

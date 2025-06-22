@@ -611,20 +611,12 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
     else:
         send_message(chat_id=chat.id, response="Un-processable payload")
         return
-    # todo: Create a new class for PreProcessor and handle it with conditions there
-    if data_class.text.lower() == "help":
-        send_message(
-            chat_id=chat.id,
-            response=f"{greeting()} {chat.first_name}!\n"
-            f"Good {util.part_of_day()}! {intro()}\n\n"
-            "Please reach out at https://vigneshrao.com/contact for more info.",
-        )
-        return
     if not verify_stop(chat, data_class):
         return
     data_class.text = data_class.text.replace("override", "").replace("OVERRIDE", "")
+    text_lower = data_class.text.lower()
     if match_word := word_match.word_match(
-        phrase=data_class.text.lower(),
+        phrase=text_lower,
         match_list=(
             "hey",
             "hola",
@@ -649,9 +641,6 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
                 f"Good {util.part_of_day()}! How can I be of service today?",
             )
             return
-    if data_class.text == "/start":
-        send_message(chat.id, f"{greeting()} {chat.first_name}! {intro()}")
-        return
     if data_class.text.startswith("/"):
         # Auto-complete can be setup using "/" commands so ignore if "_" is present
         if "_" not in data_class.text:
@@ -663,9 +652,20 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
         data_class.text = (
             data_class.text.lstrip("/").replace("jarvis", "").replace("_", " ").strip()
         )
+    if text_lower == "start":
+        send_message(chat.id, f"{greeting()} {chat.first_name}! {intro()}")
+        return
+    if text_lower == "help":
+        send_message(
+            chat_id=chat.id,
+            response=f"{greeting()} {chat.first_name}!\n"
+            f"Good {util.part_of_day()}! {intro()}\n\n"
+            "Please reach out at https://vigneshrao.com/contact for more info.",
+        )
+        return
     if not data_class.text:
         return
-    split_text = data_class.text.lower().split()
+    split_text = text_lower.split()
     if ("file" in split_text or "files" in split_text) and (
         "send" in split_text or "get" in split_text or "list" in split_text
     ):

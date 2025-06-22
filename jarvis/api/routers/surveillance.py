@@ -132,7 +132,7 @@ async def monitor(token: str = None):
             status_code=HTTPStatus.UNAUTHORIZED.real,
             detail=HTTPStatus.UNAUTHORIZED.phrase,
         )
-    # token might be present because its added as headers but surveillance.token will be cleared after one time auth
+    # token might be present because it's added as headers but surveillance.token will be cleared after one time auth
     if settings.surveillance.token and secrets.compare_digest(
         token, settings.surveillance.token
     ):

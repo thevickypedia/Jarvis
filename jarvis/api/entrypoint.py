@@ -1,6 +1,7 @@
 import os
 import pathlib
 import shutil
+import socket
 from datetime import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,15 +11,19 @@ from jarvis.executors import crontab, resource_tracker
 from jarvis.modules.models import models
 
 
+# noinspection HttpUrlsUsage
 def get_cors_params() -> dict:
     """Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API."""
     logger.info("Setting CORS policy.")
     origins = [
-        "http://localhost.com",
-        "https://localhost.com",
+        f"http://localhost:{models.env.offline_port}",
+        f"http://0.0.0.0:{models.env.offline_port}",
+        f"http://{socket.gethostname()}:{models.env.offline_port}",
+        f"http://{socket.gethostbyname('localhost')}:{models.env.offline_port}",
     ]
     for website in models.env.website:
         origins.extend([f"http://{website.host}", f"https://{website.host}"])
+    logger.info("Allowed origins: %s", ", ".join(origins))
 
     return dict(
         middleware_class=CORSMiddleware,
