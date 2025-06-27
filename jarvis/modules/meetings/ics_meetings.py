@@ -49,7 +49,6 @@ def meetings_writer(queue: Queue = None) -> None:
             ),
         )
         cursor.connection.commit()
-    return
 
 
 def meetings_gatherer(

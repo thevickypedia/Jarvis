@@ -16,9 +16,10 @@ import sys
 from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
-from typing import Any, Dict, List, NoReturn, Optional
+from typing import Dict, List, NoReturn, Optional
 from uuid import UUID
 
+import dotenv
 import jlrpy
 import psutil
 import pyttsx3
@@ -39,11 +40,10 @@ from pydantic import (
 )
 from pydantic_settings import BaseSettings
 from pyhtcc import Zone
-from vaultapi import VaultAPIClient
 
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
-from jarvis.modules.models import enums, squire
+from jarvis.modules.models import enums, env_file, squire
 
 AUDIO_DRIVER = pyttsx3.init()
 platform_info: List[str] = platform.platform(terse=True).split("-")
@@ -498,91 +498,89 @@ class EnvConfig(BaseSettings):
             raise InvalidEnvVars("format should be '%I:%M %p'")
 
 
-def get_env(key: str, default: Any = None):
-    """Get environment variables with case insensitivity."""
-    for _key, _value in os.environ.items():
-        if _key.lower() == key.lower():
-            return _value
-    return default
-
-
-def json_parser(secret: str) -> Any:
-    """JSON parser for environment variables passed via VaultAPI.
-
-    Args:
-        secret: Receives secret as a string from Vault.
-
-    Returns:
-        Any:
-        Returns the JSON parsed value.
-    """
-    try:
-        value = json.loads(secret)
-        if isinstance(value, int):
-            return str(value)
-        return value
-    except json.JSONDecodeError:
-        return secret
-
-
-def env_vault_loader(key, default) -> EnvConfig | None:
+def env_vault_loader() -> EnvConfig | None:
     """Load env config by retrieving a DB table.
 
-    Args:
-        key: Table name env var to look for.
-        default: Default value if table name env var is not found.
+    Notes:
+        Looks for the environment variable ``vault_env`` or ``env_file``
+        Defaults to ``.vault.env`` to load env vars specific to vault.
 
     Returns:
         EnvConfig:
         Returns a reference to the ``EnvConfig`` object.
     """
-    if vault_env_vars := VaultAPIClient().get_table(table_name=get_env(key, default)):
-        return EnvConfig(
-            **{k.lower(): json_parser(v) for k, v in vault_env_vars.items()}
-        )
+    if not env_file.vault:
+        # noinspection PyArgumentList
+        return EnvConfig()
+
+    dotenv.load_dotenv(env_file.vault.filepath, override=True)
+
+    import vaultapi
+
+    env_vars = vaultapi.VaultAPIClient().get_table(
+        table_name=env_file.get_env(["vault_table_name", "table_name"], "jarvis")
+    )
+
+    # Load all secrets as env vars
+    for key, value in env_vars.items():
+        os.environ[key] = value
+
+    # noinspection PyArgumentList
+    env_config = EnvConfig()
+
+    # Remove all secrets from env vars
+    for key, value in env_vars.items():
+        os.environ.pop(key)
+
+    return env_config
 
 
-def env_file_loader(key, default) -> EnvConfig:
+def env_file_loader() -> EnvConfig:
     """Loads environment variables based on filetypes.
 
-    Args:
-        key: Key for the filename from where env vars have to be loaded.
-        default: Default file to load env vars from.
+    Notes:
+        Looks for the environment variable ``jarvis_env`` or ``env_file``
+        Defaults to ``.env`` to load env vars specific to Jarvis.
 
     Returns:
         EnvConfig:
         Returns a reference to the ``EnvConfig`` object.
     """
-    if env_file_r := get_env(key, default):
-        env_file = pathlib.Path(env_file_r)
-    else:
-        env_file = pathlib.Path(default)
-    if env_file.suffix.lower() == ".json":
-        with open(env_file) as stream:
+    if not env_file.jarvis:
+        # noinspection PyArgumentList
+        return EnvConfig()
+
+    if env_file.jarvis.filepath.suffix.lower() == ".json":
+        with open(env_file.jarvis.filepath) as stream:
             env_data = json.load(stream)
         return EnvConfig(**{k.lower(): v for k, v in env_data.items()})
-    elif env_file.suffix.lower() in (".yaml", ".yml"):
-        with open(env_file) as stream:
+    elif env_file.jarvis.filepath.suffix.lower() in (".yaml", ".yml"):
+        with open(env_file.jarvis.filepath) as stream:
             env_data = yaml.load(stream, yaml.FullLoader)
         return EnvConfig(**{k.lower(): v for k, v in env_data.items()})
-    elif not env_file.suffix or env_file.suffix.lower() in (
-        ".text",
-        ".txt",
-        default,
+    elif (
+        not env_file.jarvis.filepath.suffix
+        or env_file.jarvis.filepath.suffix.lower()
+        in (
+            ".text",
+            ".txt",
+            ".env",
+            "",
+        )
     ):
-        return EnvConfig.from_env_file(env_file)
+        return EnvConfig.from_env_file(env_file.jarvis.filepath)
     else:
         raise ValueError(
-            f"\n\tUnsupported format for {key!r}, can be one of (.json, .yaml, .yml, .txt, .text, {default})"
+            f"\n\tUnsupported format for {env_file.jarvis.filepath!r}, "
+            "can be one of (.json, .yaml, .yml, .txt, .text, .env)"
         )
 
 
 # noinspection PyBroadException
 try:
-    # fixme: Parse when loading secrets into vault
-    env = env_vault_loader(key="vault_table", default="jarvis")
+    env = env_vault_loader()
 except Exception:
-    env = env_file_loader(key="env_file", default=".env")
+    env = env_file_loader()
 
 
 class FileIO(BaseModel):

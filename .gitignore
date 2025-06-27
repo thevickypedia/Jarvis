@@ -41,6 +41,7 @@ docs_gen/_static
 
 # credentials stored locally
 .env
+*.env
 *.json
 *.yaml
 
@@ -53,6 +54,7 @@ ffmpeg
 # future work
 hidden
 temp*.*
+temp*/*
 
 # pypi package files
 dist
