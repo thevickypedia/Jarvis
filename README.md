@@ -57,6 +57,7 @@
 [![pages][label-actions-pages]][gha_pages]
 [![pypi][label-actions-pypi]][gha_pypi]
 [![markdown][label-actions-markdown]][gha_md_valid]
+[![update-release-notes][label-actions-release]][gha_release_notes]
 
 [![Pypi][label-pypi]][pypi]
 [![Pypi-format][label-pypi-format]][pypi-files]
@@ -199,6 +200,7 @@ Licensed under the [MIT License][license]
 [gha_pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment
 [gha_pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/matrix-publisher.yml
 [gha_md_valid]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown.yml
+[gha_release_notes]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml
 [webpage]: https://vigneshrao.com/
 [webpage_contact]: https://vigneshrao.com/contact
 [Anaconda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
@@ -252,6 +254,7 @@ Licensed under the [MIT License][license]
 [label-actions-pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg
 [label-actions-pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/matrix-publisher.yml/badge.svg
 [label-actions-markdown]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown.yml/badge.svg
+[label-actions-release]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml/badge.svg?branch=master
 
 [label-pypi]: https://img.shields.io/pypi/v/jarvis-ironman
 [label-pypi-format]: https://img.shields.io/pypi/format/jarvis-ironman
