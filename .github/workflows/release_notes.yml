@@ -1,0 +1,17 @@
+name: update-release-notes
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+jobs:
+  release-notes:
+    runs-on: thevickypedia-lite
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: thevickypedia/update-release-notes@v1
+        env:
+          git_token: ${{ secrets.GIT_TOKEN }}
