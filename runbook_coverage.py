@@ -45,6 +45,7 @@ class Colors:
 EXCLUSIONS = [
     "__pycache__",
     "__init__.py",
+    "exceptions.py",
     "version.py",
 ]
 
@@ -79,8 +80,25 @@ def get_missing(entrypoint: str) -> Generator[str]:
                     yield automodule
 
 
+def check_autodoc() -> Generator[str]:
+    """Check if autoclass is documented in the index.rst file."""
+    for line in rst_text.splitlines():
+        if "autoclass" in line and "(" not in line:
+            yield line
+        if "automodule" in line and "(" in line:
+            yield line
+
+
 def main(entrypoint: str) -> None:
     """Main function to run the script."""
+    if invalid := list(check_autodoc()):
+        msg = "The following modules are misconfigured::"
+        print(f"{Colors.RED}{Format.BOLD}ERROR:{'':<2}{msg}{Colors.END}\n")
+        for module in invalid:
+            print(f"\t• {Format.BOLD}{Format.ITALIC}{module}{Format.END}")
+        msg = f"Please fix them in {rst_file.__str__()!r}"
+        print(f"\n{Colors.YELLOW}{Format.ITALIC}{msg}{Colors.END}\n")
+        exit(1)
     if missing := list(get_missing(entrypoint)):
         msg = "The following modules are missing from the rubook:"
         print(f"{Colors.RED}{Format.BOLD}ERROR:{'':<2}{msg}{Colors.END}\n")
