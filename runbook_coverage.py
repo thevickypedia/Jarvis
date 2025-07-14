@@ -1,5 +1,6 @@
 import os
 import pathlib
+import re
 import sys
 from collections.abc import Generator
 
@@ -48,6 +49,19 @@ EXCLUSIONS = [
 ]
 
 
+def inheritance(filepath: str, module: str) -> Generator[str]:
+    """Check for inheritance."""
+    with open(filepath) as file:
+        lines = file.readlines()
+    for line in lines:
+        if line.startswith("class") and "(" in line and ")" in line:
+            if match := re.search(r"class\s+(\w+)", line.strip()):
+                class_name = match.group(1)
+                autoclass = module + "." + class_name
+                if autoclass not in rst_text:
+                    yield autoclass
+
+
 def get_missing(entrypoint: str) -> Generator[str]:
     """Get modules that are not documented in the index.rst file."""
     for src, dir__, files__ in os.walk(root / entrypoint):
@@ -55,12 +69,14 @@ def get_missing(entrypoint: str) -> Generator[str]:
             continue
         for file in files__:
             if file.endswith(".py") and file not in EXCLUSIONS:
-                filepath = os.path.join(src, file).split(entrypoint, 1)[1]
-                module = entrypoint + filepath.replace(".py", "").replace(
+                src_file = os.path.join(src, file)
+                filepath = src_file.split(entrypoint, 1)[1]
+                automodule = entrypoint + filepath.replace(".py", "").replace(
                     os.path.sep, "."
                 )
-                if module not in rst_text:
-                    yield module
+                yield from inheritance(src_file, automodule)
+                if automodule not in rst_text:
+                    yield automodule
 
 
 def main(entrypoint: str) -> None:
