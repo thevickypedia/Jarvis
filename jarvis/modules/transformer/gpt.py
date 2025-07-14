@@ -39,7 +39,7 @@ from collections.abc import Generator
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import List
+from typing import List, NoReturn
 
 import httpcore
 import httpx
@@ -170,6 +170,36 @@ def customize_model() -> None:
         logger.error(error)
 
 
+def setup_local_instance() -> None | NoReturn:
+    """Attempts to set up ollama with a local instance."""
+    try:
+        llama_models = ollama.list().get("models")
+    except (httpcore.ConnectError, httpx.ConnectError) as error:
+        logger.error(error)
+        logger.error(
+            "Ollama client is either not installed or not running, refer: https://ollama.com/download"
+        )
+        raise ValueError
+    for model in llama_models:
+        if model.get("name") == models.env.ollama_model:
+            logger.info(f"Model {models.env.ollama_model!r} found")
+            break
+    else:
+        # To run manually: ollama run llama2
+        logger.info(f"Downloading {models.env.ollama_model!r}")
+        try:
+            ollama.pull(models.env.ollama_model)
+        except ollama.ResponseError as error:
+            logger.error(error)
+            warnings.warn(
+                f"\n\tInvalid model name: {models.env.ollama_model}\n"
+                "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
+                UserWarning,
+            )
+            raise ValueError
+    customize_model()
+
+
 class Ollama:
     """Wrapper for Ollama client that initiates the private AI.
 
@@ -179,33 +209,20 @@ class Ollama:
 
     def __init__(self):
         """Instantiates the model and runs it locally."""
-        try:
-            self.models = ollama.list().get("models")
-        except (httpcore.ConnectError, httpx.ConnectError) as error:
-            logger.error(error)
-            logger.error(
-                "Ollama client is either not installed or not running, refer: https://ollama.com/download"
-            )
-            raise ValueError
-        for model in self.models:
-            if model.get("name") == models.env.ollama_model:
-                logger.info(f"Model {models.env.ollama_model!r} found")
-                break
+        if models.env.ollama_server:
+            self.client = ollama.Client(host=models.env.ollama_server)
         else:
-            # To run manually: ollama run llama2
-            logger.info(f"Downloading {models.env.ollama_model!r}")
-            try:
-                ollama.pull(models.env.ollama_model)
-            except ollama.ResponseError as error:
-                logger.error(error)
-                warnings.warn(
-                    f"\n\tInvalid model name: {models.env.ollama_model}\n"
-                    "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
-                    UserWarning,
-                )
-                raise ValueError
-        customize_model()
-        self.client = ollama.Client()
+            setup_local_instance()
+            self.client = ollama.Client()
+        try:
+            self.client.list()
+        except (
+            httpx.HTTPError,
+            httpx.ConnectTimeout,
+            httpx.ConnectError,
+            httpx.TransportError,
+        ) as error:
+            logger.error(error)
 
     def request_model(self, request: str) -> Generator[str]:
         """Interacts with the model with a request and yields the response.

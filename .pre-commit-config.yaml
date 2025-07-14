@@ -63,6 +63,15 @@ repos:
 
   - repo: local
     hooks:
+      - id: runbook-coverage
+        name: runbook-coverage
+        entry: python runbook_coverage.py jarvis
+        language: python
+        pass_filenames: false
+        always_run: true
+
+  - repo: local
+    hooks:
       - id: pytest_docs
         name: run pytest and generate runbook
         entry: /bin/bash pre_commit.sh

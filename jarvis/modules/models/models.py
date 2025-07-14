@@ -46,11 +46,11 @@ startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
 # this will avoid running GPT instance for pre-commit as well
 if startup and StartupOptions.all in env.startup_options:
     startup_car = True
-    startup_gpt = env.ollama
+    startup_gpt = True
     startup_thermostat = True
 elif startup:
     startup_car = StartupOptions.car in env.startup_options
-    startup_gpt = env.ollama
+    startup_gpt = StartupOptions.gpt in env.startup_options
     startup_thermostat = StartupOptions.thermostat in env.startup_options
 else:
     startup_car = False

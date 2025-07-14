@@ -842,6 +842,12 @@ Audio
    :members:
    :undoc-members:
 
+====
+
+.. automodule:: jarvis.modules.audio.wave
+   :members:
+   :undoc-members:
+
 Auth Bearer
 ===========
 

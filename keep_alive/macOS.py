@@ -38,10 +38,12 @@ LOGGER = logging.getLogger(__name__)
 os.makedirs(LOGS_PATH, exist_ok=True)
 LOGFILE_PATH = datetime.now().strftime(os.path.join(LOGS_PATH, "jarvis_%d-%m-%Y.log"))
 handler = logging.FileHandler(filename=LOGFILE_PATH)
-handler.setFormatter(fmt=logging.Formatter(
-    datefmt='%b-%d-%Y %I:%M:%S %p',
-    fmt='%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s'
-))
+handler.setFormatter(
+    fmt=logging.Formatter(
+        datefmt="%b-%d-%Y %I:%M:%S %p",
+        fmt="%(asctime)s - %(levelname)s - [%(module)s:%(lineno)d] - %(funcName)s - %(message)s",
+    )
+)
 LOGGER.setLevel(logging.DEBUG)
 LOGGER.addHandler(handler)
 
@@ -77,8 +79,8 @@ def check_running_processes() -> bool:
         bool:
         Returns a boolean flag to indicate if Jarvis' entrypoint is running.
     """
-    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        if 'python' in proc.info['name'].lower():
+    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+        if "python" in proc.info["name"].lower():
             if ENTRYPOINT in proc.info["cmdline"]:
                 LOGGER.info(f"JARVIS [{proc.pid}] is running. Source: {ENTRYPOINT!r}")
                 return True
@@ -88,9 +90,11 @@ def check_running_processes() -> bool:
 def run_in_terminal() -> None:
     """Triggers the entrypoint in a new terminal."""
     LOGGER.info("Initiating Jarvis.")
-    python = shutil.which('python') or sys.executable
-    initiate = f'cd {BASE_PATH} && {python} {ENTRYPOINT}'
-    os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
+    python = shutil.which("python") or sys.executable
+    initiate = f"cd {BASE_PATH} && {python} {ENTRYPOINT}"
+    os.system(
+        f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null"""
+    )
 
 
 def main() -> None:
@@ -103,9 +107,9 @@ def main() -> None:
         return
     LOGGER.info("Initiating Jarvis")
     run_in_terminal()
-    with open(LOGFILE_PATH, 'a') as file:
+    with open(LOGFILE_PATH, "a") as file:
         file.write("\n\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -39,6 +39,7 @@ class StartupOptions(StrEnum):
 
     all = "all"
     car = "car"
+    gpt = "gpt"
     none = "None"
     thermostat = "thermostat"
 
