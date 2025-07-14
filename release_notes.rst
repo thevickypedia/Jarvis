@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+v7.1.1.post1 (07/14/2025)
+-------------------------
+- b400686 chore: (release) ``v7.1.1.post1``
+
+v7.1.1 (07/14/2025)
+-------------------
+- 484a805 chore: (release) ``v7.1.1``
+- e37bde1 docs: Include missing modules in runbook
+- d38b329 dev: Validate ``autoclass`` vs `automodule`` using runbook code coverage
+- 5cc715b dev: Update runbook code coverage to include inheritance check
+- e698ce9 docs: Remove unconventional labels from README.md
+- c89551f test: Run speaker test without speech synthesis API
+
 v7.1.0 (07/13/2025)
 -------------------
 - 222d437 chore: Release `v7.1.0`
