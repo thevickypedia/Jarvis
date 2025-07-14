@@ -155,12 +155,28 @@ Models - Settings
 
 ====
 
-.. automodule:: jarvis.api.models.settings.ConnectionManager
+.. autoclass:: jarvis.api.models.settings.StockMonitorHelper(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.api.models.settings.Trader(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. automodule:: jarvis.api.models.settings
+   :members:
+   :exclude-members: Robinhood, Surveillance, StockMonitor, StockMonitorHelper, Trader
 
 Routers - Routes
 ================
+
+.. autoclass:: jarvis.api.routers.routes.APIPath(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
 
 .. automodule:: jarvis.api.routers.routes
    :members:
@@ -225,9 +241,13 @@ Routers - SpeechSynthesis
 Routers - Stats
 ===============
 
+.. autoclass:: jarvis.api.routers.stats.ValidColors(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
 .. automodule:: jarvis.api.routers.stats
    :members:
-   :exclude-members:
+   :exclude-members: ValidColors
 
 Routers - StockMonitor
 ======================
@@ -569,9 +589,13 @@ Robinhood
 SecureSend
 ==========
 
+.. autoclass:: jarvis.executors.secure_send.SecretResponse(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
 .. automodule:: jarvis.executors.secure_send
    :members:
-   :undoc-members:
+   :exclude-members: SecretResponse
 
 Simulator
 =========
@@ -736,6 +760,18 @@ Classes
 Enums
 =====
 
+.. autoclass:: jarvis.modules.models.enums.ReminderOptions(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
+.. autoclass:: jarvis.modules.models.enums.StartupOptions(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
 .. autoclass:: jarvis.modules.models.enums.SupportedPlatforms(Enum)
    :members:
    :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
@@ -853,14 +889,26 @@ Auth Bearer
 
 .. automodule:: jarvis.modules.auth_bearer
    :members:
+   :exclude-members: BearerAuth
+
+.. autoclass:: jarvis.modules.auth_bearer.BearerAuth(requests.auth.AuthBase)
+   :members:
    :undoc-members:
 
 Built-In Overrides
 ==================
 
-.. automodule:: jarvis.modules.builtin_overrides
+.. autoclass:: jarvis.modules.builtin_overrides.AddProcessName(logging.Filter)
    :members:
    :undoc-members:
+
+.. autoclass:: jarvis.modules.builtin_overrides.APIServer(uvicorn.Server)
+   :members:
+   :undoc-members:
+
+.. automodule:: jarvis.modules.builtin_overrides
+   :members:
+   :exclude-members: AddProcessName, APIServer
 
 Cache - LRU
 ===========
@@ -1016,15 +1064,52 @@ Telegram
 
 ====
 
-.. automodule:: jarvis.modules.telegram.settings
+.. automodule:: jarvis.modules.telegram.webhook
+   :members:
+   :undoc-members:
+
+Telegram - Models
+=================
+
+.. autoclass:: jarvis.modules.telegram.settings.Chat(pydantic.BaseModel)
    :members:
    :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
 
 ====
 
-.. automodule:: jarvis.modules.telegram.webhook
+.. autoclass:: jarvis.modules.telegram.settings.Text(pydantic.BaseModel)
    :members:
-   :undoc-members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.telegram.settings.PhotoFragment(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.telegram.settings.Audio(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.telegram.settings.Voice(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.telegram.settings.Document(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.telegram.settings.Video(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
 
 Temperature
 ===========

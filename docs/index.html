@@ -1226,18 +1226,99 @@
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.api.models.settings.ConnectionManager"></span><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitorHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">StockMonitorHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.settings.StockMonitorHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">StockMonitorHelper</span></code> object to handle members across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StockMonitorHelper</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitorHelper.otp_sent">
+<span class="sig-name descname"><span class="pre">otp_sent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Hashable</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitorHelper.otp_sent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.StockMonitorHelper.otp_recd">
+<span class="sig-name descname"><span class="pre">otp_recd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">EmailStr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Hashable</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.StockMonitorHelper.otp_recd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Trader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">Trader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.models.settings.Trader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">Trader</span></code> object to handle members across modules.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Trader</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Trader.stock_list">
+<span class="sig-name descname"><span class="pre">stock_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.Trader.stock_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.Trader.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.api.models.settings.Trader.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<span class="target" id="module-jarvis.api.models.settings"></span><dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.ConnectionManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.models.settings.</span></span><span class="sig-name descname"><span class="pre">ConnectionManager</span></span><a class="headerlink" href="#jarvis.api.models.settings.ConnectionManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates <code class="docutils literal notranslate"><span class="pre">ConnectionManager</span></code> object to handle multiple connections using <code class="docutils literal notranslate"><span class="pre">WebSockets</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ConnectionManager</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
 <p><a class="reference external" href="https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients">https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.ConnectionManager.connect">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.settings.ConnectionManager.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accepts the websocket connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>websocket</strong> – Websocket.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.ConnectionManager.disconnect">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">websocket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.settings.ConnectionManager.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove socket from active connections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>websocket</strong> – Websocket.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.api.models.settings.ConnectionManager.send_message">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ws_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.models.settings.ConnectionManager.send_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send message to an active connection with match websocket path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Message to send.</p></li>
+<li><p><strong>ws_path</strong> – Websocket path.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-jarvis.api.routers.routes">
-<span id="routers-routes"></span><h1>Routers - Routes<a class="headerlink" href="#module-jarvis.api.routers.routes" title="Permalink to this heading">¶</a></h1>
+<section id="routers-routes">
+<h1>Routers - Routes<a class="headerlink" href="#routers-routes" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.routes.</span></span><span class="sig-name descname"><span class="pre">APIPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.routes.APIPath" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.routes.</span></span><span class="sig-name descname"><span class="pre">APIPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.routes.APIPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for each API endpoint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.root">
@@ -1367,6 +1448,142 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.routers.routes.APIPath.listener_spectrum_wave">
 <span class="sig-name descname"><span class="pre">listener_spectrum_wave</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/wave/{command}'</span></em><a class="headerlink" href="#jarvis.api.routers.routes.APIPath.listener_spectrum_wave" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-jarvis.api.routers.routes"></span><dl class="py class">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.routes.</span></span><span class="sig-name descname"><span class="pre">APIPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Endpoint for each API endpoint.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/'</span></em><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">proxy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/proxy'</span></em><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">health</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/health'</span></em><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">keywords</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/keywords'</span></em><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">get_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-file'</span></em><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">put_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/put-file'</span></em><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">video_feed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/video-feed'</span></em><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">investment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/investment'</span></em><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">line_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/line-count'</span></em><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">file_count</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/file-count'</span></em><a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">list_files</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/list-files'</span></em><a class="headerlink" href="#id11" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">secure_send</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/secure-send'</span></em><a class="headerlink" href="#id12" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">get_signals</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/get-signals'</span></em><a class="headerlink" href="#id13" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">favicon_ico</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/favicon.ico'</span></em><a class="headerlink" href="#id14" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">surveillance</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance'</span></em><a class="headerlink" href="#id15" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">stock_monitor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/stock-monitor'</span></em><a class="headerlink" href="#id16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">speech_synthesis</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis'</span></em><a class="headerlink" href="#id17" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">offline_communicator</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/offline-communicator'</span></em><a class="headerlink" href="#id18" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">surveillance_ws</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/ws/surveillance/{client_id}'</span></em><a class="headerlink" href="#id19" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">robinhood_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/robinhood-authenticate'</span></em><a class="headerlink" href="#id20" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">speech_synthesis_voices</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/speech-synthesis-voices'</span></em><a class="headerlink" href="#id21" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">surveillance_authenticate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/surveillance-authenticate'</span></em><a class="headerlink" href="#id22" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">listener_index</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/listener'</span></em><a class="headerlink" href="#id23" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">listener_spectrum_ws</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/ws/listener_spectrum'</span></em><a class="headerlink" href="#id24" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id25">
+<span class="sig-name descname"><span class="pre">listener_spectrum_js</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/listener_spectrum_wave.js'</span></em><a class="headerlink" href="#id25" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id26">
+<span class="sig-name descname"><span class="pre">listener_spectrum_wave</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/wave/{command}'</span></em><a class="headerlink" href="#id26" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1795,20 +2012,11 @@
 </dd></dl>
 
 </section>
-<section id="module-jarvis.api.routers.stats">
-<span id="routers-stats"></span><h1>Routers - Stats<a class="headerlink" href="#module-jarvis.api.routers.stats" title="Permalink to this heading">¶</a></h1>
-<p>Snippet to get the lines of code and total number of files for Jarvis.</p>
-<p>Following shell command is a simple one-liner replicating this snippet.</p>
-<p class="rubric">Notes</p>
-<p><code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">.</span></code> (dot) can be replaced with the base directory to start the scan from.</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>.<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./venv&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs_gen&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-prune<span class="w"> </span>-o<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.py&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.html&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
-</pre></div>
-</div>
+<section id="routers-stats">
+<h1>Routers - Stats<a class="headerlink" href="#routers-stats" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.api.routers.stats.ValidColors">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">ValidColors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">ValidColors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.routers.stats.ValidColors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Valid colors for badges in img.shields.io.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ValidColors</span>
 </pre></div>
@@ -1874,6 +2082,15 @@
 
 </dd></dl>
 
+<span class="target" id="module-jarvis.api.routers.stats"></span><p>Snippet to get the lines of code and total number of files for Jarvis.</p>
+<p>Following shell command is a simple one-liner replicating this snippet.</p>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">find</span> <span class="pre">.</span></code> (dot) can be replaced with the base directory to start the scan from.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>.<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./venv&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;./docs_gen&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-prune<span class="w"> </span>-o<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.py&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.sh&#39;</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.html&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>wc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>total
+</pre></div>
+</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.stats.should_include">
 <span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.stats.</span></span><span class="sig-name descname"><span class="pre">should_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.api.routers.stats.should_include" title="Permalink to this definition">¶</a></dt>
@@ -5347,9 +5564,28 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.secure_send">
-<span id="securesend"></span><h1>SecureSend<a class="headerlink" href="#module-jarvis.executors.secure_send" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
+<section id="securesend">
+<h1>SecureSend<a class="headerlink" href="#securesend" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">SecretResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base model to store secret response from the server.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SecretResponse</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.response">
+<span class="sig-name descname"><span class="pre">response</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.token">
+<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-jarvis.executors.secure_send"></span><dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.secure_send.get_aws_secrets">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">get_aws_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.secure_send.get_aws_secrets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get secrets from AWS secretsmanager.</p>
@@ -5418,44 +5654,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.executors.secure_send.</span></span><span class="sig-name descname"><span class="pre">SecretResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base model to store secret response from the server.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SecretResponse</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.response">
-<span class="sig-name descname"><span class="pre">response</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.response" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.token">
-<span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.token" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse._abc_impl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.model_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.executors.secure_send.SecretResponse.model_fields">
-<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'response':</span> <span class="pre">FieldInfo(annotation=Union[str,</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'token':</span> <span class="pre">FieldInfo(annotation=Union[str,</span> <span class="pre">NoneType],</span> <span class="pre">required=False)}</span></em><a class="headerlink" href="#jarvis.executors.secure_send.SecretResponse.model_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metadata about the fields defined on the model,
-mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
-<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -6433,7 +6631,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.notify_reminders">
-<span class="sig-name descname"><span class="pre">notify_reminders</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ReminderOptions</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ReminderOptions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.notify_reminders" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">notify_reminders</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.ReminderOptions" title="jarvis.modules.models.enums.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.ReminderOptions" title="jarvis.modules.models.enums.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.notify_reminders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6443,7 +6641,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.startup_options">
-<span class="sig-name descname"><span class="pre">startup_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">StartupOptions</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">StartupOptions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.startup_options" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">startup_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions" title="jarvis.modules.models.enums.StartupOptions"><span class="pre">StartupOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions" title="jarvis.modules.models.enums.StartupOptions"><span class="pre">StartupOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.startup_options" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -6862,13 +7060,13 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.validate_notify_reminders">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_notify_reminders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ReminderOptions</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ReminderOptions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ReminderOptions</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_notify_reminders" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_notify_reminders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.ReminderOptions" title="jarvis.modules.models.enums.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.ReminderOptions" title="jarvis.modules.models.enums.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.ReminderOptions" title="jarvis.modules.models.enums.ReminderOptions"><span class="pre">ReminderOptions</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_notify_reminders" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate reminder options.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.validate_startup_options">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_startup_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">StartupOptions</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">StartupOptions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">StartupOptions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_startup_options" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_startup_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions" title="jarvis.modules.models.enums.StartupOptions"><span class="pre">StartupOptions</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions" title="jarvis.modules.models.enums.StartupOptions"><span class="pre">StartupOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions" title="jarvis.modules.models.enums.StartupOptions"><span class="pre">StartupOptions</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.validate_startup_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate startup options.</p>
 </dd></dl>
 
@@ -7189,6 +7387,70 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <section id="enums">
 <h1>Enums<a class="headerlink" href="#enums" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.enums.</span></span><span class="sig-name descname"><span class="pre">ReminderOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Supported reminder options.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions.phone">
+<span class="sig-name descname"><span class="pre">phone</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'phone'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions.phone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions.email">
+<span class="sig-name descname"><span class="pre">email</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'email'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions.email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions.telegram">
+<span class="sig-name descname"><span class="pre">telegram</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'telegram'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions.telegram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions.ntfy">
+<span class="sig-name descname"><span class="pre">ntfy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ntfy'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions.ntfy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions.all">
+<span class="sig-name descname"><span class="pre">all</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions.all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.enums.</span></span><span class="sig-name descname"><span class="pre">StartupOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Background threads to startup.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.all">
+<span class="sig-name descname"><span class="pre">all</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.car">
+<span class="sig-name descname"><span class="pre">car</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'car'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.car" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.gpt">
+<span class="sig-name descname"><span class="pre">gpt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gpt'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.gpt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.none">
+<span class="sig-name descname"><span class="pre">none</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'None'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.none" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.thermostat">
+<span class="sig-name descname"><span class="pre">thermostat</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'thermostat'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.thermostat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.SupportedPlatforms">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.enums.</span></span><span class="sig-name descname"><span class="pre">SupportedPlatforms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.enums.SupportedPlatforms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Supported operating systems.</p>
@@ -7375,18 +7637,18 @@ If none are found, it falls back to the default file.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">default</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id27">
+<span class="sig-name descname"><span class="pre">default</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id27" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id28">
+<span class="sig-name descname"><span class="pre">options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id28" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">filepath</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id29">
+<span class="sig-name descname"><span class="pre">filepath</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id29" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -7512,7 +7774,7 @@ If none are found, it falls back to the default file.</p>
 
 </section>
 <section id="module-jarvis.modules.models.models">
-<span id="id3"></span><h1>Models<a class="headerlink" href="#module-jarvis.modules.models.models" title="Permalink to this heading">¶</a></h1>
+<span id="id30"></span><h1>Models<a class="headerlink" href="#module-jarvis.modules.models.models" title="Permalink to this heading">¶</a></h1>
 <p>This is a space where all the validated environment variables are loaded and evalued as per requirements.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Models</span>
 </pre></div>
@@ -7970,7 +8232,7 @@ If none are found, it falls back to the default file.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.auth_bearer.BearerAuth">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.auth_bearer.</span></span><span class="sig-name descname"><span class="pre">BearerAuth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.auth_bearer.BearerAuth" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.auth_bearer.</span></span><span class="sig-name descname"><span class="pre">BearerAuth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">requests.auth.AuthBase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.auth_bearer.BearerAuth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates <code class="docutils literal notranslate"><span class="pre">BearerAuth</span></code> object.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BearerAuth</span>
 </pre></div>
@@ -7985,11 +8247,31 @@ If none are found, it falls back to the default file.</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.modules.builtin_overrides">
-<span id="built-in-overrides"></span><h1>Built-In Overrides<a class="headerlink" href="#module-jarvis.modules.builtin_overrides" title="Permalink to this heading">¶</a></h1>
+<section id="built-in-overrides">
+<h1>Built-In Overrides<a class="headerlink" href="#built-in-overrides" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.AddProcessName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">AddProcessName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging.Filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.builtin_overrides.AddProcessName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper that overrides <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code> to add <code class="docutils literal notranslate"><span class="pre">processName</span></code> to the existing log format.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AddProcessName</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>process_name</strong> – Takes name of the process to be added as argument.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.AddProcessName.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.AddProcessName.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the built-in filter record.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.APIServer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.builtin_overrides.APIServer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">APIServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uvicorn.Server</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.builtin_overrides.APIServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shared servers state that is available between all protocol instances.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">APIServer</span>
 </pre></div>
@@ -8010,7 +8292,7 @@ If none are found, it falls back to the default file.</p>
 
 </dd></dl>
 
-<dl class="py function">
+<span class="target" id="module-jarvis.modules.builtin_overrides"></span><dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.ordered_load">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">ordered_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Loader=&lt;class</span> <span class="pre">'yaml.loader.SafeLoader'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_pairs_hook=&lt;class</span> <span class="pre">'collections.OrderedDict'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDict</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.ordered_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom loader for OrderedDict.</p>
@@ -8053,26 +8335,6 @@ If none are found, it falls back to the default file.</p>
 </dl>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.AddProcessName">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.builtin_overrides.</span></span><span class="sig-name descname"><span class="pre">AddProcessName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.builtin_overrides.AddProcessName" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper that overrides <code class="docutils literal notranslate"><span class="pre">logging.Filter</span></code> to add <code class="docutils literal notranslate"><span class="pre">processName</span></code> to the existing log format.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AddProcessName</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>process_name</strong> – Takes name of the process to be added as argument.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.modules.builtin_overrides.AddProcessName.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LogRecord</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.builtin_overrides.AddProcessName.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overrides the built-in filter record.</p>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-jarvis.modules.cache.cache">
 <span id="cache-lru"></span><h1>Cache - LRU<a class="headerlink" href="#module-jarvis.modules.cache.cache" title="Permalink to this heading">¶</a></h1>
@@ -8106,8 +8368,8 @@ If none are found, it falls back to the default file.</p>
 </dd></dl>
 
 </section>
-<section id="id4">
-<h1>Conditions<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h1>
+<section id="id31">
+<h1>Conditions<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.conditions.conversation"></span><p>List of conversational keywords for each variable which is condition matched in main module.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Conversation</span>
 </pre></div>
@@ -8163,8 +8425,8 @@ If none are found, it falls back to the default file.</p>
 </dd></dl>
 
 </section>
-<section id="id5">
-<h1>Crontab<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h1>
+<section id="id32">
+<h1>Crontab<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.crontab.expression"></span><p>Module to handle crontab expressions.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Expression</span>
 </pre></div>
@@ -8679,8 +8941,8 @@ If none are found, it falls back to the default file.</p>
 </dd></dl>
 
 </section>
-<section id="id6">
-<h1>Lights<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h1>
+<section id="id33">
+<h1>Lights<a class="headerlink" href="#id33" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.lights.smart_lights"></span><p>Module to control smart lights using MagicHomeAPI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SmartLights</span>
 </pre></div>
@@ -10005,8 +10267,8 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="id7">
-<h1>Telegram<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h1>
+<section id="id34">
+<h1>Telegram<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h1>
 <span class="target" id="module-jarvis.modules.telegram.bot"></span><p>Module for TelegramAPI.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Bot</span>
 </pre></div>
@@ -10538,11 +10800,37 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <hr class="docutils" />
-<span class="target" id="module-jarvis.modules.telegram.settings"></span><p>Telegram settings with different types of objects and members as received in the payload.</p>
+<span class="target" id="module-jarvis.modules.telegram.webhook"></span><dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.get_webhook">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">get_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.get_webhook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get webhook information.</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://core.telegram.org/bots/api#getwebhookinfo">https://core.telegram.org/bots/api#getwebhookinfo</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.delete_webhook">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">delete_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.delete_webhook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete webhook.</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://core.telegram.org/bots/api#deletewebhook">https://core.telegram.org/bots/api#deletewebhook</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.set_webhook">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">set_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">webhook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.set_webhook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set webhook.</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://core.telegram.org/bots/api#setwebhook">https://core.telegram.org/bots/api#setwebhook</a></p>
+</dd></dl>
+
+</section>
+<section id="telegram-models">
+<h1>Telegram - Models<a class="headerlink" href="#telegram-models" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Chat">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Chat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_bot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for Message model.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Chat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for Chat model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Chat.message_id">
 <span class="sig-name descname"><span class="pre">message_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#jarvis.modules.telegram.settings.Chat.message_id" title="Permalink to this definition">¶</a></dt>
@@ -10595,9 +10883,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Text">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Text" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Text model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Text.text">
@@ -10606,9 +10895,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.PhotoFragment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">PhotoFragment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.PhotoFragment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">PhotoFragment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.PhotoFragment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for PhotoFragment model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.PhotoFragment.file_id">
@@ -10637,9 +10927,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Audio">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Audio" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Audio model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Audio.duration">
@@ -10673,9 +10964,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Voice">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Voice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Voice" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Voice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Voice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Voice model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Voice.duration">
@@ -10704,9 +10996,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Document">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Document" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Document model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Document.file_id">
@@ -10735,9 +11028,10 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Video" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.settings.</span></span><span class="sig-name descname"><span class="pre">Video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pydantic.BaseModel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.settings.Video" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Video model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.telegram.settings.Video.duration">
@@ -10841,31 +11135,6 @@ Whites can have a value of None.</p>
 
 </dd></dl>
 
-</dd></dl>
-
-<hr class="docutils" />
-<span class="target" id="module-jarvis.modules.telegram.webhook"></span><dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.get_webhook">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">get_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.get_webhook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get webhook information.</p>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://core.telegram.org/bots/api#getwebhookinfo">https://core.telegram.org/bots/api#getwebhookinfo</a></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.delete_webhook">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">delete_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Url</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.delete_webhook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete webhook.</p>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://core.telegram.org/bots/api#deletewebhook">https://core.telegram.org/bots/api#deletewebhook</a></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.telegram.webhook.set_webhook">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.telegram.webhook.</span></span><span class="sig-name descname"><span class="pre">set_webhook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">webhook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Url</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.telegram.webhook.set_webhook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set webhook.</p>
-<p class="rubric">References</p>
-<p><a class="reference external" href="https://core.telegram.org/bots/api#setwebhook">https://core.telegram.org/bots/api#setwebhook</a></p>
 </dd></dl>
 
 </section>
@@ -12091,7 +12360,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.api.models.authenticator">Models - Authenticator</a></li>
 <li><a class="reference internal" href="#models-modals">Models - Modals</a></li>
 <li><a class="reference internal" href="#models-settings">Models - Settings</a></li>
-<li><a class="reference internal" href="#module-jarvis.api.routers.routes">Routers - Routes</a></li>
+<li><a class="reference internal" href="#routers-routes">Routers - Routes</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.basics">Routers - Basic</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.fileio">Routers - FileIO</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.investment">Routers - Investment</a></li>
@@ -12100,7 +12369,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.api.routers.proxy_service">Routers - Proxy Engine</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.secure_send">Routers - SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.speech_synthesis">Routers - SpeechSynthesis</a></li>
-<li><a class="reference internal" href="#module-jarvis.api.routers.stats">Routers - Stats</a></li>
+<li><a class="reference internal" href="#routers-stats">Routers - Stats</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_monitor">Routers - StockMonitor</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.stock_analysis">Routers - StockAnalysis</a></li>
 <li><a class="reference internal" href="#module-jarvis.api.routers.surveillance">Routers - Surveillance</a></li>
@@ -12149,7 +12418,7 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.executors.resource_tracker">Resource Tracker</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.restrictions">Restrictions</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a></li>
-<li><a class="reference internal" href="#module-jarvis.executors.secure_send">SecureSend</a></li>
+<li><a class="reference internal" href="#securesend">SecureSend</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.simulator">Simulator</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.static_responses">StaticResponses</a></li>
 <li><a class="reference internal" href="#module-jarvis.executors.system">System</a></li>
@@ -12173,14 +12442,14 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#modules">———-Modules———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.audio.speaker">Audio</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.auth_bearer">Auth Bearer</a></li>
-<li><a class="reference internal" href="#module-jarvis.modules.builtin_overrides">Built-In Overrides</a></li>
+<li><a class="reference internal" href="#built-in-overrides">Built-In Overrides</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.cache.cache">Cache - LRU</a></li>
-<li><a class="reference internal" href="#id4">Conditions</a></li>
-<li><a class="reference internal" href="#id5">Crontab</a></li>
+<li><a class="reference internal" href="#id31">Conditions</a></li>
+<li><a class="reference internal" href="#id32">Crontab</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.database.database">Database</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.exceptions">Exceptions</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.facenet.face">FaceNet</a></li>
-<li><a class="reference internal" href="#id6">Lights</a></li>
+<li><a class="reference internal" href="#id33">Lights</a></li>
 <li><a class="reference internal" href="#logger">Logger</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.dictionary.dictionary">Meanings</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.meetings.ics">Meetings</a></li>
@@ -12188,7 +12457,8 @@ response is mocked from the post request call.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.shared">Shared Resources</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.support">Support</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.util">Utilities</a></li>
-<li><a class="reference internal" href="#id7">Telegram</a></li>
+<li><a class="reference internal" href="#id34">Telegram</a></li>
+<li><a class="reference internal" href="#telegram-models">Telegram - Models</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.temperature.temperature">Temperature</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.templates.templates">Templates</a></li>
 <li><a class="reference internal" href="#module-jarvis.modules.timeout.timeout">Timeout</a></li>

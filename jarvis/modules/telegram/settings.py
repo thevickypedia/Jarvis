@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class Chat(BaseModel):
-    """Base class for Message model."""
+    """Base class for Chat model."""
 
     message_id: int
     message_type: str = None
