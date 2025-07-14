@@ -25,7 +25,8 @@ class TestSpeak(unittest.TestCase):
             mock_playsound: Mock object for playsound module.
             mock_speech_synthesizer: Mock object for speaker.speech_synthesizer function.
         """
-        models.env.speech_synthesis_timeout = 10
+        models.env.speech_synthesis_timeout = 3
+        models.env.speech_synthesis_api = "mock-url"
         speaker.speak(text=SAMPLE_PHRASE, run=False, block=True)
         mock_speech_synthesizer.assert_called_once_with(text=SAMPLE_PHRASE)
         mock_playsound.assert_not_called()
