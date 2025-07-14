@@ -1,6 +1,23 @@
 Release Notes
 =============
 
+v7.1.0 (07/13/2025)
+-------------------
+- 222d437 chore: Release `v7.1.0`
+- fd0c14c feat: Allow ollama models to be hosted on external servers
+- a5923de docs: Add GHA label to README.md
+- 099c1f9 ci: Use reusable workflow to generate/update release notes
+- 92a9b65 dev: Add a dev script to keep Jarvis running all the time
+- 89d43a4 perf: Streamline the core implementation for VaultAPI integration Update runbook
+- e720b67 fix: Minor bug fixes and reduce code-redundancy
+- 3a67238 perf: Store table attributes for base DB in pydantic models
+- 806b179 perf: Use singleton approach and re-use db instance for all modules
+- 5c10e3f feat: Encrypt secrets stored locally during secure-send tranmission
+- 53b9e40 fix: Fix secure-send failing due non-primitive data types on local env vars
+- bee2e1a feat: Integrate spectrum UI with the backend listener status
+- acb1dac fix: Fix buggy UI for listener spectrum UI
+- 51f64e5 feat: Add a listener spectrum that resembles iPhone siri
+
 v7.0.0 (06/15/2025)
 -------------------
 - feature: Allow speech-synthesis containers to be hosted externally and remove internal trigger
