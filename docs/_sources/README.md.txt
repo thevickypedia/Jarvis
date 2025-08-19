@@ -261,7 +261,7 @@ Licensed under the [MIT License][license]
 [label-actions-pages]: https://github.com/thevickypedia/Jarvis/actions/workflows/pages/pages-build-deployment/badge.svg
 [label-actions-pypi]: https://github.com/thevickypedia/Jarvis/actions/workflows/matrix-publisher.yml/badge.svg
 [label-actions-markdown]: https://github.com/thevickypedia/Jarvis/actions/workflows/markdown.yml/badge.svg
-[label-actions-release]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml/badge.svg?branch=master
+[label-actions-release]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml/badge.svg
 
 [label-pypi-jarvis-ironman]: https://img.shields.io/pypi/v/jarvis-ironman
 [label-pypi-format-jarvis-ironman]: https://img.shields.io/pypi/format/jarvis-ironman
