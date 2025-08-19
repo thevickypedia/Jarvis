@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: thevickypedia/update-release-notes@v1
+      - uses: thevickypedia/update-release-notes@v2
         env:
           git_token: ${{ secrets.GIT_TOKEN }}
