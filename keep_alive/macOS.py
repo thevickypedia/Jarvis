@@ -91,7 +91,8 @@ def run_in_terminal() -> None:
     """Triggers the entrypoint in a new terminal."""
     LOGGER.info("Initiating Jarvis.")
     python = shutil.which("python") or sys.executable
-    initiate = f"cd {BASE_PATH} && {python} {ENTRYPOINT}"
+    pyenv = python.replace("/bin/python", "/bin/activate")
+    initiate = f"cd {BASE_PATH} && source {pyenv} && python {ENTRYPOINT}"
     os.system(
         f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null"""
     )
