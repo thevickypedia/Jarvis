@@ -300,4 +300,5 @@ if models.startup_gpt:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
 else:
+    logger.info("Startup disabled for GPT")
     instance = None

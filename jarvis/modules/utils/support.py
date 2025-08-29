@@ -121,9 +121,15 @@ def get_capitalized(
     # Set ignore as a tuple with avoid keywords regardless of current state
     ignore = tuple(ignore or ()) + tuple(keywords.keywords["avoid"])
     place = ""
-    for word in phrase.split():
-        # convert iterable to lowercase
-        if word[0].isupper() and word.lower() not in map(lambda x: x.lower(), ignore):
+    for idx, word in enumerate(phrase.split()):
+        # 1st letter should be upper-cased
+        # Should not be the first word of the phrase
+        # Should not be ignored
+        if (
+            word[0].isupper()
+            and idx != 0
+            and word.lower() not in map(lambda x: x.lower(), ignore)
+        ):
             place += word + " "
         elif "." in word and dot:
             place += word + " "
