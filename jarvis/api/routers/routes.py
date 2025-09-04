@@ -103,6 +103,7 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             endpoint=telegram.telegram_webhook,
             methods=["POST"],
             path=models.env.bot_endpoint,  # No enum
+            include_in_schema=False,
         ),
         APIRoute(
             endpoint=investment.authenticate_robinhood,
@@ -138,6 +139,7 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             endpoint=proxy_service.proxy_service_api,
             methods=["GET"],
             path=APIPath.proxy,
+            include_in_schema=False,
         ),
         APIRoute(
             endpoint=basics.redirect_index,
@@ -183,21 +185,28 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             path=APIPath.put_file,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
+        # TODO: Add authentication for the following endpoints OR limit to internal hosting (0.0.0.0 or local IP range)
+        # TODO: Add more OTP options like Telegram, Authenticator, and NTFY
+        # TODO: Replace rendering tokenized redirect (HTTPStatus.TEMPORARY_REDIRECT) URLs for investment, surveillance
+        #   with returning actual HTML content instead. Any downstream JS should just replace content inline
         APIRoute(
             endpoint=listener_spectrum.load_index,
             methods=["GET"],
             path=APIPath.listener_index,
+            include_in_schema=False,
         ),
         APIRoute(
             endpoint=listener_spectrum.get_listener_spectrum_js,
             methods=["GET"],
             path=APIPath.listener_spectrum_js,
+            include_in_schema=False,
         ),
         APIRoute(
             endpoint=listener_spectrum.send_wave_command,
             methods=["POST"],
             path=APIPath.listener_spectrum_wave,
             dependencies=authenticator.LISTENER_SPECTRUM_PROTECTOR,
+            include_in_schema=False,
         ),
         APIWebSocketRoute(
             endpoint=listener_spectrum.websocket_endpoint,
