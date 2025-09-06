@@ -1773,29 +1773,46 @@
 <section id="module-jarvis.api.routers.listener_spectrum">
 <span id="routers-listener-spectrum"></span><h1>Routers - Listener Spectrum<a class="headerlink" href="#module-jarvis.api.routers.listener_spectrum" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.check_internal">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">check_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_ip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.check_internal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the incoming request’s IP address is internal or hosted by offline communicator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host_ip</strong> – Incoming request’s IP address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.load_index">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">load_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.load_index" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">load_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HTMLResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.load_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the HTML index path for listener spectrum file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the HTML response for listener spectrum.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Request object from FastAPI.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>HTMLResponse</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the HTML response for listener spectrum.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HTMLResponse</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.get_listener_spectrum_js">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_listener_spectrum_js</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.get_listener_spectrum_js" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_listener_spectrum_js</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileResponse</span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.get_listener_spectrum_js" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the JavaScript for listener spectrum.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the loaded JavaScript as FileResponse.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Request object from FastAPI.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>FileResponse</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the loaded JavaScript as FileResponse.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FileResponse</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1813,11 +1830,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.routers.listener_spectrum.send_wave_command">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">send_wave_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.send_wave_command" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.api.routers.listener_spectrum.</span></span><span class="sig-name descname"><span class="pre">send_wave_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.routers.listener_spectrum.send_wave_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to send wave commands to ‘start’ or ‘stop’ the spectrum.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>command</strong> – Start or Stop command.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Request object from FastAPI.</p></li>
+<li><p><strong>command</strong> – Start or Stop command.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Returns a key-value pair with status.</p>

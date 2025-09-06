@@ -185,7 +185,6 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             path=APIPath.put_file,
             dependencies=authenticator.OFFLINE_PROTECTOR,
         ),
-        # TODO: Add authentication for the following endpoints OR limit to internal hosting (0.0.0.0 or local IP range)
         # TODO: Add more OTP options like Telegram, Authenticator, and NTFY
         # TODO: Replace rendering tokenized redirect (HTTPStatus.TEMPORARY_REDIRECT) URLs for investment, surveillance
         #   with returning actual HTML content instead. Any downstream JS should just replace content inline
