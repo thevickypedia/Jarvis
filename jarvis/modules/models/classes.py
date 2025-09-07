@@ -16,6 +16,7 @@ import sys
 from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
+from multiprocessing.pool import ThreadPool
 from typing import Dict, List, NoReturn, Optional
 from uuid import UUID
 
@@ -578,7 +579,8 @@ def env_file_loader() -> EnvConfig:
 
 # noinspection PyBroadException
 try:
-    env = env_vault_loader()
+    env_proc = ThreadPool(processes=1).apply_async(func=env_vault_loader)
+    env = env_proc.get(timeout=10)
 except Exception:
     env = env_file_loader()
 
