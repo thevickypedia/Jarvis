@@ -70,7 +70,10 @@ class APIConfig(BaseModel):
 
     """
 
-    DEFAULT_LOG_LEVEL: str = "INFO"
+    if models.env.debug:
+        DEFAULT_LOG_LEVEL: str = "DEBUG"
+    else:
+        DEFAULT_LOG_LEVEL: str = "INFO"
 
     ACCESS_LOG_FILENAME: str = datetime.now().strftime(
         os.path.join("logs", "jarvis_api_access_%d-%m-%Y.log")
