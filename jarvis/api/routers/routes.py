@@ -112,10 +112,11 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             dependencies=authenticator.ROBINHOOD_PROTECTOR,
         ),
         APIRoute(
-            endpoint=investment.robinhood_path,
+            endpoint=investment.robinhood_report,
             methods=["GET"],
             path=APIPath.investment,
             response_class=HTMLResponse,
+            dependencies=authenticator.ROBINHOOD_PROTECTOR,
         ),
         APIRoute(
             endpoint=offline.offline_communicator_api,

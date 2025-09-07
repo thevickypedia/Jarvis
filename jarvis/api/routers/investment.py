@@ -4,10 +4,11 @@ import secrets
 from datetime import datetime
 from http import HTTPStatus
 from threading import Timer
+from typing import Optional
 
 import gmailconnector
 import jinja2
-from fastapi import Request
+from fastapi import Header, Request
 from fastapi.responses import HTMLResponse
 
 from jarvis.api.logger import logger
@@ -80,12 +81,16 @@ async def authenticate_robinhood():
         )
     else:
         logger.error(mail_stat.json())
+        # Mask recipient email address in the response
         raise APIResponse(
-            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real,
+            detail=mail_stat.body.replace(models.env.recipient, "****"),
         )
 
 
-async def robinhood_path(request: Request, token: str = None):
+async def robinhood_report(
+    request: Request, access_token: Optional[str] = Header(None)
+):
     """Serves static file.
 
     Args:
@@ -133,17 +138,20 @@ async def robinhood_path(request: Request, token: str = None):
     ):
         raise CONDITIONAL_ENDPOINT_RESTRICTION
 
+    token = access_token or request.headers.get("access_token")
     if not token:
+        logger.debug("No access token received from: %s", request.client.host)
         raise APIResponse(
             status_code=HTTPStatus.UNAUTHORIZED.real,
             detail=HTTPStatus.UNAUTHORIZED.phrase,
         )
-    # token might be present because its added as headers but robinhood.token will be cleared after one time auth
+    # token might be present because it's added as headers but robinhood.token will be cleared after one time auth
     if settings.robinhood.token and secrets.compare_digest(
         token, settings.robinhood.token
     ):
         settings.robinhood.token = None
         if not os.path.isfile(models.fileio.robinhood):
+            logger.debug("File not found: %s", models.fileio.robinhood)
             raise APIResponse(
                 status_code=HTTPStatus.NOT_FOUND.real,
                 detail="Static file was not found on server.",
@@ -153,11 +161,12 @@ async def robinhood_path(request: Request, token: str = None):
         content_type, _ = mimetypes.guess_type(html_content)
         # serves as a static webpage
         return HTMLResponse(
-            status_code=HTTPStatus.TEMPORARY_REDIRECT.real,
+            status_code=HTTPStatus.OK.real,
             content=html_content,
             media_type=content_type,
         )
     else:
+        logger.debug("Invalid access token received")
         raise APIResponse(
             status_code=HTTPStatus.EXPECTATION_FAILED.real,
             detail="Requires authentication since endpoint uses single-use token.",
