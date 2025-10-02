@@ -3,6 +3,7 @@ import logging
 import requests
 from pydantic import HttpUrl
 
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
 
 
@@ -47,19 +48,24 @@ def set_webhook(
     if models.env.bot_webhook_ip:
         payload["ip_address"] = models.env.bot_webhook_ip.__str__()
     logger.debug(payload)
-    if models.env.bot_certificate:
-        response = requests.post(
-            url=put_info,
-            data=payload,
-            files={
-                "certificate": (
-                    models.env.bot_certificate.stem + models.env.bot_certificate.suffix,
-                    models.env.bot_certificate.certificate.open(mode="rb"),
-                )
-            },
-        )
-    else:
-        response = requests.post(url=put_info, params=payload)
+    try:
+        if models.env.bot_certificate:
+            response = requests.post(
+                url=put_info,
+                data=payload,
+                files={
+                    "certificate": (
+                        models.env.bot_certificate.stem
+                        + models.env.bot_certificate.suffix,
+                        models.env.bot_certificate.certificate.open(mode="rb"),
+                    )
+                },
+            )
+        else:
+            response = requests.post(url=put_info, params=payload)
+    except EgressErrors as error:
+        logger.error(error)
+        return
     if response.ok:
         logger.info("Webhook has been set to: %s", webhook)
         return response.json()

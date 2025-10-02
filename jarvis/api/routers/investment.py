@@ -96,14 +96,14 @@ async def robinhood_report(
     Args:
 
         - request: Takes the Request class as an argument.
-        - token: Takes custom auth token as an argument.
+        - access_token: Takes custom auth token as an argument.
 
     Raises:
 
         APIResponse:
-        - 403: If token is null.
+        - 403: If access_token is null.
         - 404: If the HTML file is not found.
-        - 417: If token doesn't match the auto-generated value.
+        - 417: If access_token doesn't match the auto-generated value.
 
     Returns:
 

@@ -182,7 +182,10 @@ def ip_info(phrase: str) -> None:
         else:
             output = f"I was unable to fetch the public IP {models.env.title}!"
     else:
-        output = f"My local IP address for {socket.gethostname().split('.')[0]} is {ip_address()}"
+        if private_ip := ip_address():
+            output = f"My local IP address for {socket.gethostname().split('.')[0]} is {private_ip}"
+        else:
+            output = f"I was unable to fetch the private IP address {models.env.title}!"
     speaker.speak(text=output)
 
 
