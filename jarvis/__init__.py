@@ -3,7 +3,7 @@ import sys
 from multiprocessing import current_process
 from typing import Callable
 
-version = "7.1.1.post1"
+version = "7.1.2.post1"
 
 
 def __preflight_check__() -> Callable:
