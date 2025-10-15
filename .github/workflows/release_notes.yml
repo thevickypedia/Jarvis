@@ -2,16 +2,30 @@ name: update-release-notes
 
 on:
   workflow_dispatch:
-  release:
-    types: [ published ]
+    inputs:
+      project_version:
+        type: string
+        description: Version of the project to update release notes for
+        required: true
+  workflow_call:
+    inputs:
+      project_version:
+        type: string
+        description: Version of the project to update release notes for
+        required: true
 
 jobs:
   release-notes:
-    runs-on: thevickypedia-lite
+    runs-on:
+      - thevickypedia-default
+      - posix
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Update Release Notes
+        uses: thevickypedia/update-release-notes@v2
         with:
-          fetch-depth: 0
-      - uses: thevickypedia/update-release-notes@v2
-        env:
           git_token: ${{ secrets.GIT_TOKEN }}
+          commit_message: "chore: Update release notes for v${{ inputs.project_version }}"
+          filename: release_notes.rst

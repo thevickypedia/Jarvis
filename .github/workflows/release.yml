@@ -1,0 +1,89 @@
+name: create-gh-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_version:
+        description: "Project version to use for the release"
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      project_version:
+        description: "Project version to use for the release"
+        required: true
+        type: string
+    outputs:
+      release_exists:
+        description: "Boolean indicating if the release already exists"
+        value: ${{ jobs.release.outputs.release_exists }}
+
+jobs:
+  release:
+    runs-on:
+      - thevickypedia-default
+      - posix
+    outputs:
+      release_exists: ${{ steps.check_release.outputs.release_exists }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Clean Project Version
+        run: |
+          original_version="${{ inputs.project_version }}"
+          clean_version="${original_version#v}"
+          echo "project_version=${clean_version}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Check GH Tag
+        id: check_release
+        run: |
+          url="${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/v${{ env.project_version }}"
+          response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.GIT_TOKEN }}" "$url")
+          if [ "$response" -eq 200 ]; then
+            echo "Release tag v${{ env.project_version }} already exists."
+            echo "release_exists=true" >> $GITHUB_ENV
+            echo "release_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Release tag v${{ env.project_version }} does not exist."
+            echo "release_exists=false" >> $GITHUB_ENV
+            echo "release_exists=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Get Release Notes
+        if: env.release_exists == 'false'
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git fetch --prune --unshallow || true
+          git fetch --tags
+
+          # Try to get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          echo "::notice title=Current Release::v${{ env.project_version }}"
+
+          repository="${{ github.server_url }}/${{ github.repository }}"
+
+          if [ -z "$PREV_TAG" ]; then
+            echo "::notice title=Previous Release::(none - first release)"
+            git log --pretty=format:"- [%h](${repository}/commit/%H) %s" --no-merges > release_notes.txt
+          else
+            echo "::notice title=Previous Release::${PREV_TAG}"
+            git log "${PREV_TAG}..HEAD" --pretty=format:"- [%h](${repository}/commit/%H) %s" --no-merges > release_notes.txt
+          fi
+
+          cat release_notes.txt
+        shell: bash
+
+      - name: Create Release
+        if: env.release_exists == 'false'
+        run: |
+          gh release create "v${{ env.project_version }}" \
+            --title "v${{ env.project_version }}" \
+            --notes-file release_notes.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        shell: bash

@@ -8,8 +8,7 @@ on:
     branches:
       - master
     paths:
-      - jarvis/**
-      - pyproject.toml
+      - "**/__init__.py"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -22,7 +21,10 @@ on:
 
 jobs:
   pypi-publisher:
-    runs-on: thevickypedia-lite
+    runs-on: thevickypedia-default
+    outputs:
+      version: ${{ steps.publish.outputs.version }}
+      dry_run: ${{ steps.dry-run.outputs.dry_run }}
     strategy:
       fail-fast: false
       matrix:
@@ -34,19 +36,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set dry-run
+        id: dry-run
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "::notice title=DryRun::Setting dry run to ${{ inputs.dry_run }} for '${{ github.event_name }}' event"
             echo "dry_run=${{ inputs.dry_run }}" >> $GITHUB_ENV
-          elif [[ "${{ github.event_name }}" == "push" ]]; then
-            echo "::notice title=DryRun::Setting dry run to true for '${{ github.event_name }}' event"
-            echo "dry_run=true" >> $GITHUB_ENV
+            echo "dry_run=${{ inputs.dry_run }}" >> $GITHUB_OUTPUT
           else
             echo "::notice title=DryRun::Setting dry run to false for '${{ github.event_name }}' event"
             echo "dry_run=false" >> $GITHUB_ENV
+            echo "dry_run=false" >> $GITHUB_OUTPUT
           fi
         shell: bash
 
@@ -59,8 +61,27 @@ jobs:
           FILE_PATH: "pyproject.toml"
           PROJECT_NAME: "${{ matrix.project_name }}"
 
-      - uses: thevickypedia/pypi-publisher@v4
+      - uses: thevickypedia/pypi-publisher@v5
+        id: publish
         with:
           dry-run: ${{ env.dry_run }}
           token: ${{ secrets.PYPI_TOKEN }}
           checkout: 'false'
+
+  release:
+    needs: pypi-publisher
+    if: needs.pypi-publisher.outputs.dry_run == 'false'
+    uses: ./.github/workflows/release.yml
+    with:
+      project_version: ${{ needs.pypi-publisher.outputs.version }}
+    secrets: inherit
+
+  release-notes:
+    needs:
+      - release
+      - pypi-publisher
+    if: needs.pypi-publisher.outputs.dry_run == 'false' && needs.release.outputs.release_exists == 'false'
+    uses: ./.github/workflows/release_notes.yml
+    with:
+      project_version: ${{ needs.pypi-publisher.outputs.version }}
+    secrets: inherit
