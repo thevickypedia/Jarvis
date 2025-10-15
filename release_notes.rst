@@ -1,6 +1,23 @@
 Release Notes
 =============
 
+v7.1.2.post1 (10/14/2025)
+-------------------------
+- `0bcf1cd <https://github.com/thevickypedia/Jarvis/commit/0bcf1cd0c58c42781014427dcd99f9e1b61878fc>`_ chore: Release ``v7.1.2.post1``
+- `2fb4d8f <https://github.com/thevickypedia/Jarvis/commit/2fb4d8fc139b7bcd5756d897bea58c9cc7a5d1ea>`_ ci: Create GH workflows to automatically upload to pypi, create a release and update release notes
+- `168f58a <https://github.com/thevickypedia/Jarvis/commit/168f58a9ad9ac514ad498e232d91f30a049a6841>`_ perf: Improve error handling for IP address fetch and telegram webhook connection
+- `26d9fbd <https://github.com/thevickypedia/Jarvis/commit/26d9fbdb87982eb205f38df752d2c62619ea2359>`_ perf: Consume OTP via header for robinhood report endpoint
+- `67d3d98 <https://github.com/thevickypedia/Jarvis/commit/67d3d98110ee9e484d79bf75b5d3db32f51ae3fc>`_ perf: Set a max timeout when awaiting vault connection
+- `ab65fe5 <https://github.com/thevickypedia/Jarvis/commit/ab65fe5a3f2d0c493b10171ea2541ff95482d9b6>`_ perf: Set API's default log level based on Jarvis' debug mode
+- `4fe13fc <https://github.com/thevickypedia/Jarvis/commit/4fe13fcc5ca7367b558f088b1ab29250f2e078a9>`_ fix: Remove dead link from error response for conditional endpoints
+- `5709037 <https://github.com/thevickypedia/Jarvis/commit/57090374eeee72317c160fb9e15f40df910addaa>`_ refactor: Restrict ``/listener`` endpoint to be available only on internal IPs
+- `baacd0f <https://github.com/thevickypedia/Jarvis/commit/baacd0fbc45b305a6261c6c6711d024d0c0c7524>`_ refactor: Exclude integrated API endpoints from ``/docs`` handler
+- `dd9a1fb <https://github.com/thevickypedia/Jarvis/commit/dd9a1fb2402b1d3f4f6c89edd11efa50760b8a45>`_ fix: Avoid first capitalized word being recognized as a place
+- `27942bc <https://github.com/thevickypedia/Jarvis/commit/27942bcd162a56111057e3f8da295c0c7bb16a12>`_ dev: Update keep alive script to activate env and then trigger
+- `0a0579d <https://github.com/thevickypedia/Jarvis/commit/0a0579df5ad79efcfa80dc5189920d25442c78a3>`_ ci: Bump release notes action to ``v2``
+- `38c3ba0 <https://github.com/thevickypedia/Jarvis/commit/38c3ba01287ff59a823ff93b6b0b6ecb22915f23>`_ docs: Update label in README.md
+- `0c73523 <https://github.com/thevickypedia/Jarvis/commit/0c735238ccbf9b57bde1852676f748fe13970b5f>`_ Update release notes
+
 v7.1.1.post1 (07/14/2025)
 -------------------------
 - b400686 chore: (release) ``v7.1.1.post1``
