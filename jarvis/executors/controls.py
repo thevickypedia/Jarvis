@@ -1,6 +1,5 @@
 import os
 import random
-import shutil
 import stat
 import subprocess
 import sys
@@ -271,17 +270,6 @@ def delete_logs() -> None:
                 os.remove(os.path.join(__path, file_))
 
 
-def delete_pycache() -> None:
-    """Deletes ``__pycache__`` folder from all sub-dir."""
-    for __path, __directory, __file in os.walk(os.getcwd()):
-        if "__pycache__" in __directory:
-            if os.path.exists(os.path.join(__path, "__pycache__")):
-                logger.debug(
-                    "Deleting pycache: %s", os.path.join(__path, "__pycache__")
-                )
-                shutil.rmtree(os.path.join(__path, "__pycache__"))
-
-
 def set_executable() -> None:
     """Modify file permissions for all the files within the fileio directory."""
     for file in os.listdir("fileio"):
@@ -299,7 +287,6 @@ def starter() -> None:
         - volume: To default the master volume a specific percent.
         - voices: To change the voice to default value.
         - delete_logs: To purge log files older than the set log retention time.
-        - delete_pycache: To purge pycache directories.
         - set_executable: To allow access to all the files within ``fileio`` directory.
     """
     listener_controls.put_listener_state(state=True)
@@ -307,7 +294,6 @@ def starter() -> None:
     voices.voice_default()
     try:
         delete_logs()
-        delete_pycache()
         set_executable()
     except Exception as error:  # can be ignored and troubleshooted later
         logger.critical("ATTENTION:: Failed at some startup steps.")
