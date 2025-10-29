@@ -5323,6 +5323,12 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 <section id="module-jarvis.executors.process_map">
 <span id="process-map"></span><h1>Process Map<a class="headerlink" href="#module-jarvis.executors.process_map" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.process_map.assert_process_names">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">assert_process_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NoReturn</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.process_map.assert_process_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert process names with actual function names.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.process_map.base">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">base</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Process</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.process_map.base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a base mapping with all the processes handled by Jarvis.</p>
@@ -6319,7 +6325,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.Settings.pname">
-<span class="sig-name descname"><span class="pre">pname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.pname" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames" title="jarvis.modules.models.enums.ProcessNames"><span class="pre">ProcessNames</span></a></em><a class="headerlink" href="#jarvis.modules.models.classes.Settings.pname" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7394,6 +7400,53 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 </section>
 <section id="enums">
 <h1>Enums<a class="headerlink" href="#enums" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.enums.</span></span><span class="sig-name descname"><span class="pre">ProcessNames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process names used by Jarvis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.jarvis">
+<span class="sig-name descname"><span class="pre">jarvis</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'JARVIS'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.jarvis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.pre_commit">
+<span class="sig-name descname"><span class="pre">pre_commit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pre_commit'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.pre_commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.startup_script">
+<span class="sig-name descname"><span class="pre">startup_script</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'startup_script'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.startup_script" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.crontab_executor">
+<span class="sig-name descname"><span class="pre">crontab_executor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'crontab_executor'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.crontab_executor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.plot_mic">
+<span class="sig-name descname"><span class="pre">plot_mic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'plot_mic'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.plot_mic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.jarvis_api">
+<span class="sig-name descname"><span class="pre">jarvis_api</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jarvis_api'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.jarvis_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.telegram_api">
+<span class="sig-name descname"><span class="pre">telegram_api</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'telegram_api'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.telegram_api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.background_tasks">
+<span class="sig-name descname"><span class="pre">background_tasks</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'background_tasks'</span></em><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.background_tasks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.ReminderOptions">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jarvis.modules.models.enums.</span></span><span class="sig-name descname"><span class="pre">ReminderOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.models.enums.ReminderOptions" title="Permalink to this definition">¶</a></dt>

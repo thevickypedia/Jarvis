@@ -25,6 +25,7 @@ from jarvis.modules.models.classes import (
 )
 from jarvis.modules.models.enums import (
     DistanceUnits,
+    ProcessNames,
     StartupOptions,
     SupportedPlatforms,
     TemperatureUnits,
@@ -41,7 +42,11 @@ indicators = Indicators()
 # Database connection for base db
 db = database.Database(database=fileio.base_db)
 
-startup = settings.pname in ("JARVIS", "telegram_api", "jarvis_api")
+startup = settings.pname in (
+    ProcessNames.jarvis,
+    ProcessNames.telegram_api,
+    ProcessNames.jarvis_api,
+)
 # 'startup_gpt' is required since it has to be invoked only for certain child processes
 # this will avoid running GPT instance for pre-commit as well
 if startup and StartupOptions.all in env.startup_options:
@@ -159,7 +164,7 @@ def _main_process_validations() -> None:
 
 def _global_validations() -> None:
     """Validations that should happen for all processes including parent and child."""
-    main: bool = settings.pname == "JARVIS"
+    main: bool = settings.pname == ProcessNames.jarvis
     validator = Validator(main=main, env=env)
     if validator.validate_builtin_voices(voices):
         _set_default_voice_name()
@@ -204,10 +209,10 @@ elif env.temperature_unit == TemperatureUnits.METRIC:
     temperature_symbol = "C"
 
 if settings.pname in (
-    "JARVIS",
-    "pre_commit",
-    "startup_script",
-    "plot_mic",
-    "crontab_executor",
+    ProcessNames.jarvis,
+    ProcessNames.pre_commit,
+    ProcessNames.startup_script,
+    ProcessNames.plot_mic,
+    ProcessNames.crontab_executor,
 ):
     _main_process_validations()

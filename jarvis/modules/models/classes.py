@@ -48,6 +48,7 @@ from jarvis.modules.models import enums, env_file, squire
 
 AUDIO_DRIVER = pyttsx3.init()
 platform_info: List[str] = platform.platform(terse=True).split("-")
+PROCESS_NAME = current_process().name
 
 
 class Settings(BaseModel):
@@ -62,7 +63,10 @@ class Settings(BaseModel):
 
     interactive: bool = sys.stdin.isatty()
     pid: PositiveInt = os.getpid()
-    pname: str = current_process().name
+    try:
+        pname: enums.ProcessNames = enums.ProcessNames[PROCESS_NAME]
+    except KeyError:
+        pname: str = PROCESS_NAME
     ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
     disk: PositiveInt | PositiveFloat = psutil.disk_usage("/").total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)

@@ -19,14 +19,14 @@ from jarvis.executors import files, word_match
 from jarvis.modules.audio import speaker, wave
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support
 
 recognizer = Recognizer()
 spectrum = wave.Spectrum()
 microphone = Microphone(device_index=models.env.microphone_index)
 
-if models.settings.pname == "JARVIS":
+if models.settings.pname == enums.ProcessNames.jarvis:
     recognizer_settings = files.get_recognizer()
     recognizer.energy_threshold = recognizer_settings.energy_threshold
     recognizer.pause_threshold = recognizer_settings.pause_threshold

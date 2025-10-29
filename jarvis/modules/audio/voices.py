@@ -13,7 +13,7 @@ from jarvis.executors import word_match
 from jarvis.modules.audio import listener, speaker
 from jarvis.modules.conditions import conversation, keywords
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.utils import support
 
 
@@ -30,7 +30,7 @@ def voice_default() -> Engine:
                 voice.name == models.env.voice_name
                 or models.env.voice_name in voice.name
             ):
-                if models.settings.pname == "JARVIS":
+                if models.settings.pname == enums.ProcessNames.jarvis:
                     logger.debug(voice.__dict__)
                 models.AUDIO_DRIVER.setProperty("voice", voice.id)
                 models.AUDIO_DRIVER.setProperty("rate", models.env.speech_rate)

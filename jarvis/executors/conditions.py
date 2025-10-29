@@ -15,7 +15,7 @@ from jarvis.executors import (
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.transformer import gpt
 from jarvis.modules.utils import shared, support
 
@@ -96,10 +96,13 @@ def conditions(phrase: str) -> None:
                 "restart_control",
                 "shutdown",
             ):
-                # WATCH OUT: for changes in function name
                 if (
                     models.settings.pname
-                    in ("background_tasks", "telegram_api", "jarvis_api")
+                    in (
+                        enums.ProcessNames.background_tasks,
+                        enums.ProcessNames.telegram_api,
+                        enums.ProcessNames.jarvis_api,
+                    )
                     and category == "restart_control"
                 ):
                     logger.info(
@@ -125,8 +128,11 @@ def conditions(phrase: str) -> None:
                 )
             return
     # GPT instance available only for communicable processes
-    # WATCH OUT: for changes in function name
-    if models.settings.pname not in ("JARVIS", "telegram_api", "jarvis_api"):
+    if models.settings.pname not in (
+        enums.ProcessNames.jarvis,
+        enums.ProcessNames.telegram_api,
+        enums.ProcessNames.jarvis_api,
+    ):
         logger.warning("%s reached unrecognized category", models.settings.pname)
         return
     logger.info("Received unrecognized lookup parameter: %s", phrase)

@@ -16,6 +16,20 @@ else:
         """Override for python 3.10 due to lack of StrEnum."""
 
 
+class ProcessNames(StrEnum):
+    """Process names used by Jarvis."""
+
+    jarvis = "JARVIS"
+    pre_commit = "pre_commit"
+    startup_script = "startup_script"
+    crontab_executor = "crontab_executor"
+
+    plot_mic = "plot_mic"
+    jarvis_api = "jarvis_api"
+    telegram_api = "telegram_api"
+    background_tasks = "background_tasks"
+
+
 class SupportedPlatforms(StrEnum):
     """Supported operating systems."""
 

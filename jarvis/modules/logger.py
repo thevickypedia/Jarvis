@@ -8,7 +8,7 @@ from logging.config import dictConfig
 from pydantic import BaseModel
 
 from jarvis.modules.builtin_overrides import AddProcessName
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 if not os.path.isdir("logs"):
     os.mkdir("logs")
@@ -26,7 +26,7 @@ dictConfig(
 )
 logging.getLogger("_code_cache").propagate = False
 
-logger = logging.getLogger("JARVIS")
+logger = logging.getLogger(enums.ProcessNames.jarvis)
 if models.env.debug:
     logger.setLevel(level=logging.DEBUG)
 else:

@@ -82,6 +82,7 @@ def start_processes(func_name: str = None) -> Process | Dict[str, Process]:
         - background_tasks: Initiates internal background tasks, cron jobs, alarms, reminders, events and meetings sync.
         - plot_mic: Initiates plotting realtime microphone usage using matplotlib.
     """
+    process_map.assert_process_names()
     process_dict = process_map.base()
     # Used when a single process is requested to be triggered/restarted
     if func_name:

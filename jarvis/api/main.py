@@ -8,7 +8,7 @@ from jarvis.api import entrypoint
 from jarvis.api.logger import logger
 from jarvis.api.routers import routes
 from jarvis.api.squire import stockanalysis_squire
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 
 @asynccontextmanager
@@ -33,8 +33,8 @@ app = FastAPI(
 )
 
 # Include all the routers
-# WATCH OUT: for changes in function name
-if models.settings.pname == "jarvis_api":  # Avoid looping when called by subprocesses
+# Avoid looping when called by subprocesses
+if models.settings.pname == enums.ProcessNames.jarvis_api:
     # Cannot add middleware after an application has started
     app.add_middleware(**entrypoint.get_cors_params())
     app.routes.extend(routes.get_all_routes())

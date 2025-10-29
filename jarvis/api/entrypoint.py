@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from jarvis.api.logger import logger
 from jarvis.executors import crontab, resource_tracker
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 
 # noinspection HttpUrlsUsage
@@ -72,7 +72,8 @@ def startup() -> None:
                 os.path.join("logs", "startup_script_%d-%m-%Y.log")
             )
             resource_tracker.semaphores(
-                crontab.executor, (script, log_file, "startup_script")
+                crontab.executor,
+                (script, log_file, enums.ProcessNames.startup_script.value),
             )
         else:
             logger.warning(

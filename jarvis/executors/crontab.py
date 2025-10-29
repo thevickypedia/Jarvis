@@ -7,7 +7,7 @@ from jarvis.executors import files
 from jarvis.modules.crontab import expression
 from jarvis.modules.exceptions import InvalidArgument
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 # Used by api functions that run on cron schedule
 LOG_FILE = os.path.join("logs", "cron_%d-%m-%Y.log")
@@ -28,7 +28,7 @@ def executor(statement: str, log_file: str = None, process_name: str = None) -> 
     if not log_file:
         log_file = multiprocessing_logger(filename=LOG_FILE)
     if not process_name:
-        process_name = "crontab_executor"
+        process_name = enums.ProcessNames.crontab_executor.value
     process_name = "_".join(process_name.split())
     command = f"export PROCESS_NAME={process_name} && {statement}"
     logger.debug("Executing '%s' as '%s'", statement, command)

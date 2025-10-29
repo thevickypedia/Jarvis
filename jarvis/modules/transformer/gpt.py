@@ -49,7 +49,7 @@ import ollama
 from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 from jarvis.modules.templates import templates
 from jarvis.modules.utils import support
 
@@ -296,19 +296,18 @@ if models.startup_gpt:
     else:
         start = f"Initiating GPT instance for {models.settings.pname}"
     logger.info(start)
-    # TODO: Convert all process names to enum
-    if models.settings.pname == "JARVIS":
+    if models.settings.pname == enums.ProcessNames.jarvis:
         support.write_screen(start)
     try:
         instance = Ollama()
         finish = f"GPT instance has been loaded for {models.settings.pname!r}"
-        if models.settings.pname == "JARVIS":
+        if models.settings.pname == enums.ProcessNames.jarvis:
             support.write_screen(finish)
         logger.info(finish)
     except ValueError as start_error:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
-        if models.settings.pname == "JARVIS":
+        if models.settings.pname == enums.ProcessNames.jarvis:
             support.write_screen(
                 f"Failed to load GPT instance: {start_error.__str__()!r}"
             )
