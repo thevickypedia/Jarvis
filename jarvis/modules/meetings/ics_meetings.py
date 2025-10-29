@@ -16,6 +16,7 @@ from multiprocessing.pool import ThreadPool
 from typing import List
 
 import requests
+from bs4 import BeautifulSoup
 
 from jarvis.executors import resource_tracker, word_match
 from jarvis.modules.audio import speaker
@@ -75,7 +76,21 @@ def meetings_gatherer(
         logger.error(error)
         return f"I'm sorry {models.env.title}! I was unable to connect to the shared calendar!"
     if not response.ok:
-        logger.error("[%d]: [%s]", response.status_code, response.text)
+        if (
+            response.text.startswith("<!DOCTYPE HTML")
+            or "DOCTYPE HTML" in response.text
+        ):
+            try:
+                soup = BeautifulSoup(response.text, "html.parser")
+                error_details = soup.find_all("div", class_="errorDetails")
+                for i, detail in enumerate(error_details, start=1):
+                    logger.error(f"Error Detail {i}:")
+                    logger.error(detail.get_text(strip=True))
+            except Exception as err:
+                logger.debug(err)
+                logger.error("[%d]: HTML response", response.status_code)
+        else:
+            logger.error("[%d]: [%s]", response.status_code, response.text)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
     if custom_date:
         events: List[ics.ICS] = list(
