@@ -32,6 +32,8 @@ See Also:
 import collections
 import difflib
 import os
+import subprocess
+import time
 import warnings
 from collections.abc import Generator
 
@@ -41,8 +43,6 @@ from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import List, NoReturn
 
-import httpcore
-import httpx
 import jinja2
 import ollama
 
@@ -160,13 +160,25 @@ def customize_model() -> None:
     """Uses the CLI to customize the model."""
     create_model_file()
     try:
-        for res in ollama.create(
-            model=models.env.ollama_model,
-            from_=models.fileio.ollama_model_file,
-            stream=True,
-        ):
-            logger.info(res["status"])
-    except ollama.ResponseError as error:
+        assert os.path.isfile(models.fileio.ollama_model_file)
+        if os.system("command -v ollama > /dev/null 2>&1") == 0:
+            output = (
+                subprocess.check_output(
+                    [
+                        "ollama",
+                        "create",
+                        models.env.ollama_model,
+                        "-f",
+                        models.fileio.ollama_model_file,
+                    ],
+                    stderr=subprocess.STDOUT,
+                )
+                .decode()
+                .splitlines()
+            )
+            for line in output:
+                logger.info(line)
+    except (subprocess.CalledProcessError, AssertionError) as error:
         logger.error(error)
 
 
@@ -174,12 +186,12 @@ def setup_local_instance() -> None | NoReturn:
     """Attempts to set up ollama with a local instance."""
     try:
         llama_models = ollama.list().get("models")
-    except (httpcore.ConnectError, httpx.ConnectError) as error:
+    except Exception as error:
         logger.error(error)
         logger.error(
             "Ollama client is either not installed or not running, refer: https://ollama.com/download"
         )
-        raise ValueError
+        raise ValueError(error.__str__())
     for model in llama_models:
         if model.get("name") == models.env.ollama_model:
             logger.info(f"Model {models.env.ollama_model!r} found")
@@ -196,7 +208,7 @@ def setup_local_instance() -> None | NoReturn:
                 "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
                 UserWarning,
             )
-            raise ValueError
+            raise ValueError(error.__str__())
     customize_model()
 
 
@@ -216,13 +228,9 @@ class Ollama:
             self.client = ollama.Client()
         try:
             self.client.list()
-        except (
-            httpx.HTTPError,
-            httpx.ConnectTimeout,
-            httpx.ConnectError,
-            httpx.TransportError,
-        ) as error:
+        except Exception as error:
             logger.error(error)
+            raise ValueError(error.__str__())
 
     def request_model(self, request: str) -> Generator[str]:
         """Interacts with the model with a request and yields the response.
@@ -288,6 +296,7 @@ if models.startup_gpt:
     else:
         start = f"Initiating GPT instance for {models.settings.pname}"
     logger.info(start)
+    # TODO: Convert all process names to enum
     if models.settings.pname == "JARVIS":
         support.write_screen(start)
     try:
@@ -296,9 +305,14 @@ if models.startup_gpt:
         if models.settings.pname == "JARVIS":
             support.write_screen(finish)
         logger.info(finish)
-    except ValueError:
+    except ValueError as start_error:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
+        if models.settings.pname == "JARVIS":
+            support.write_screen(
+                f"Failed to load GPT instance: {start_error.__str__()!r}"
+            )
+            time.sleep(3)
 else:
     logger.info("Startup disabled for GPT")
     instance = None
