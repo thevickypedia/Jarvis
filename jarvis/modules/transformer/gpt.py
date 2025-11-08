@@ -222,7 +222,7 @@ class Ollama:
     def __init__(self):
         """Instantiates the model and runs it locally."""
         if models.env.ollama_server:
-            self.client = ollama.Client(host=models.env.ollama_server)
+            self.client = ollama.Client(host=str(models.env.ollama_server))
         else:
             setup_local_instance()
             self.client = ollama.Client()
@@ -267,13 +267,22 @@ class Ollama:
             phrase: Takes the phrase spoken as an argument.
         """
         if response := existing_response(request=phrase):
+            logger.info("GPT: Rendering response from existing results.")
             speaker.speak(text=response)
             return
+        logger.debug("GPT: Generating response from: %s", models.env.ollama_model)
         try:
+            start_time = time.time()
             process = ThreadPool(processes=1).apply_async(
                 self.generator, args=(phrase,)
             )
             model_response = process.get(models.env.ollama_timeout)
+            token_gen = support.time_converter(time.time() - start_time)
+            logger.info(
+                "GPT: Finished generating response from: %s in %s",
+                models.env.ollama_model,
+                token_gen,
+            )
         except (ollama.ResponseError, ThreadTimeoutError) as error:
             logger.error("%s - %s", type(error), error)
             static_responses.un_processable()
