@@ -23,7 +23,14 @@ def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, str | List[str]]], str]:
         Return TV information and the key name under which it was stored. The key will be used to update the file.
     """
     for key, value in data.items():
-        if key.lower() in ("tv", "tvs", "television", "televisions"):
+        if key.lower() in (
+            "tv",
+            "tvs",
+            "television",
+            "televisions",
+            "projector",
+            "projectors",
+        ):
             return data[key], key
 
 
