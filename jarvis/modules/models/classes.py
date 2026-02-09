@@ -595,9 +595,6 @@ class FileIO(BaseModel):
     alarms: FilePath = os.path.join(root, "alarms.yaml")
     reminders: FilePath = os.path.join(root, "reminders.yaml")
 
-    # Simulation
-    simulation: FilePath = os.path.join(root, "simulation.yaml")
-
     # Custom keyword-function map
     keywords: FilePath = os.path.join(root, "keywords.yaml")
     conditions: FilePath = os.path.join(root, "conditions.yaml")
