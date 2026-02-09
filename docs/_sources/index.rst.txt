@@ -356,13 +356,6 @@ Background Task
    :members:
    :undoc-members:
 
-Car
-===
-
-.. automodule:: jarvis.executors.car
-   :members:
-   :undoc-members:
-
 Ciphertext
 ==========
 

@@ -3225,249 +3225,6 @@
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.car">
-<span id="car"></span><h1>Car<a class="headerlink" href="#module-jarvis.executors.car" title="Link to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.create_connection">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">create_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.car.create_connection" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new connection and stores the refresh token and device ID in a dedicated object.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.current_set_temperature">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">current_set_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.car.current_set_temperature" title="Link to this definition">¶</a></dt>
-<dd><p>Get the current temperature at a given location.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A tuple of current temperature and target temperature.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">Operations</span></span><a class="headerlink" href="#jarvis.executors.car.Operations" title="Link to this definition">¶</a></dt>
-<dd><p>Car operations that car condensed into its own object.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Operations</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.turn_on">
-<span class="sig-name descname"><span class="pre">turn_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.turn_on" title="Link to this definition">¶</a></dt>
-<dd><p>Calls the vehicle function to turn the car on with the requested climate setting.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>API climate controls (Conversion): 31 is LO, 57 is HOT
-Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>API docs are misleading to believe that the temperature arg is Celsius, but not really.</p></li>
-</ul>
-<p><a class="reference external" href="https://documenter.getpostman.com/view/6250319/RznBMzqo#59910c25-c107-4335-b178-22e343782b41">https://documenter.getpostman.com/view/6250319/RznBMzqo#59910c25-c107-4335-b178-22e343782b41</a></p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after turning on the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.turn_off">
-<span class="sig-name descname"><span class="pre">turn_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.turn_off" title="Link to this definition">¶</a></dt>
-<dd><p>Calls the vehicle function to turn off the vehicle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after turning off the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.enable_guard">
-<span class="sig-name descname"><span class="pre">enable_guard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.enable_guard" title="Link to this definition">¶</a></dt>
-<dd><p>Requests vehicle function to enable guardian mode for the requested time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Extracts a numeric value in the phrase or words that refer to a numeric value in the phrase</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after enabling guardian mode on the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.lock">
-<span class="sig-name descname"><span class="pre">lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.lock" title="Link to this definition">¶</a></dt>
-<dd><p>Calls vehicle function to perform the lock operation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after locking the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.unlock">
-<span class="sig-name descname"><span class="pre">unlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.unlock" title="Link to this definition">¶</a></dt>
-<dd><p>Calls vehicle function to perform the unlock operation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after unlocking the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.honk">
-<span class="sig-name descname"><span class="pre">honk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.honk" title="Link to this definition">¶</a></dt>
-<dd><p>Calls vehicle function to honk the car.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after honking the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.locate">
-<span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.locate" title="Link to this definition">¶</a></dt>
-<dd><p>Calls vehicle function to locate the car.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after retrieving the location of the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="jarvis.executors.car.Operations.report">
-<span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.Operations.report" title="Link to this definition">¶</a></dt>
-<dd><p>Calls vehicle function to get the status report.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Response after generating a status report of the vehicle.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.car">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">car</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.car.car" title="Link to this definition">¶</a></dt>
-<dd><p>Controls the car to lock, unlock or remote start.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.convert_dt_report">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">convert_dt_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.convert_dt_report" title="Link to this definition">¶</a></dt>
-<dd><p>Converts UTC to local datetime string. Helper function for generating car report.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt_string</strong> – Takes the UTC datetime string as an argument.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the local datetime string.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.report">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subscription_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.car.report" title="Link to this definition">¶</a></dt>
-<dd><p>Generates a report based on the vehicle’s status and sends an email notification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>status_data</strong> – Raw status data.</p></li>
-<li><p><strong>subscription_data</strong> – Raw subscription data.</p></li>
-<li><p><strong>attributes</strong> – Raw attributes data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response to the user.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.car.vehicle">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.car.</span></span><span class="sig-name descname"><span class="pre">vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.car.vehicle" title="Link to this definition">¶</a></dt>
-<dd><p>Establishes a connection with the car and returns an object to control the primary vehicle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>operation</strong> – Operation to be performed.</p></li>
-<li><p><strong>temp</strong> – Temperature for climate control.</p></li>
-<li><p><strong>end_time</strong> – End time for guardian mode. Should be a 13 digit integer including microseconds.</p></li>
-<li><p><strong>retry</strong> – Retry logic used when guardian mode is enabled already.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns the vehicle’s name.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-jarvis.executors.ciphertext">
 <span id="ciphertext"></span><h1>Ciphertext<a class="headerlink" href="#module-jarvis.executors.ciphertext" title="Link to this heading">¶</a></h1>
 <dl class="py function">
@@ -6738,21 +6495,6 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_username">
-<span class="sig-name descname"><span class="pre">car_username</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_username" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_password">
-<span class="sig-name descname"><span class="pre">car_password</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_password" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.car_pin">
-<span class="sig-name descname"><span class="pre">car_pin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.car_pin" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.tcc_username">
 <span class="sig-name descname"><span class="pre">tcc_username</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">EmailStr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.tcc_username" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7349,11 +7091,6 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.all">
 <span class="sig-name descname"><span class="pre">all</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.all" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.enums.StartupOptions.car">
-<span class="sig-name descname"><span class="pre">car</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'car'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.StartupOptions.car" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -12475,26 +12212,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.executors.background_task.validate_tasks"><code class="docutils literal notranslate"><span class="pre">validate_tasks()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-jarvis.executors.car">Car</a><ul>
-<li><a class="reference internal" href="#jarvis.executors.car.create_connection"><code class="docutils literal notranslate"><span class="pre">create_connection()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.current_set_temperature"><code class="docutils literal notranslate"><span class="pre">current_set_temperature()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations"><code class="docutils literal notranslate"><span class="pre">Operations</span></code></a><ul>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.turn_on"><code class="docutils literal notranslate"><span class="pre">Operations.turn_on()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.turn_off"><code class="docutils literal notranslate"><span class="pre">Operations.turn_off()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.enable_guard"><code class="docutils literal notranslate"><span class="pre">Operations.enable_guard()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.lock"><code class="docutils literal notranslate"><span class="pre">Operations.lock()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.unlock"><code class="docutils literal notranslate"><span class="pre">Operations.unlock()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.honk"><code class="docutils literal notranslate"><span class="pre">Operations.honk()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.locate"><code class="docutils literal notranslate"><span class="pre">Operations.locate()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.Operations.report"><code class="docutils literal notranslate"><span class="pre">Operations.report()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#jarvis.executors.car.car"><code class="docutils literal notranslate"><span class="pre">car()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.convert_dt_report"><code class="docutils literal notranslate"><span class="pre">convert_dt_report()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.report"><code class="docutils literal notranslate"><span class="pre">report()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.car.vehicle"><code class="docutils literal notranslate"><span class="pre">vehicle()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#module-jarvis.executors.ciphertext">Ciphertext</a><ul>
 <li><a class="reference internal" href="#jarvis.executors.ciphertext.encrypt"><code class="docutils literal notranslate"><span class="pre">encrypt()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.ciphertext.decrypt"><code class="docutils literal notranslate"><span class="pre">decrypt()</span></code></a></li>
@@ -12945,9 +12662,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_qr"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_qr</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_endpoint_auth"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_endpoint_auth</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.git_token"><code class="docutils literal notranslate"><span class="pre">EnvConfig.git_token</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.car_username"><code class="docutils literal notranslate"><span class="pre">EnvConfig.car_username</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.car_password"><code class="docutils literal notranslate"><span class="pre">EnvConfig.car_password</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.car_pin"><code class="docutils literal notranslate"><span class="pre">EnvConfig.car_pin</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.tcc_username"><code class="docutils literal notranslate"><span class="pre">EnvConfig.tcc_username</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.tcc_password"><code class="docutils literal notranslate"><span class="pre">EnvConfig.tcc_password</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.tcc_device_name"><code class="docutils literal notranslate"><span class="pre">EnvConfig.tcc_device_name</span></code></a></li>
@@ -13077,7 +12791,6 @@ mac address given as a parameter.</p>
 </li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions"><code class="docutils literal notranslate"><span class="pre">StartupOptions</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions.all"><code class="docutils literal notranslate"><span class="pre">StartupOptions.all</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions.car"><code class="docutils literal notranslate"><span class="pre">StartupOptions.car</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions.gpt"><code class="docutils literal notranslate"><span class="pre">StartupOptions.gpt</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions.none"><code class="docutils literal notranslate"><span class="pre">StartupOptions.none</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.StartupOptions.thermostat"><code class="docutils literal notranslate"><span class="pre">StartupOptions.thermostat</span></code></a></li>
