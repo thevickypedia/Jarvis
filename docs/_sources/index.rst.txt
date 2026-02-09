@@ -666,13 +666,6 @@ Volume
    :members:
    :undoc-members:
 
-VPN Server
-==========
-
-.. automodule:: jarvis.executors.vpn_server
-   :members:
-   :undoc-members:
-
 Weather
 =======
 

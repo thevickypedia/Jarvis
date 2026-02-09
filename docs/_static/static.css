@@ -1,3 +1,13 @@
 .sphinxsidebarwrapper {
   overflow-y: scroll;
 }
+
+/* Make left sidebar wider */
+div.sphinxsidebar {
+  width: 350px;
+}
+
+/* Move main content over */
+div.bodywrapper {
+  margin-left: 370px;
+}

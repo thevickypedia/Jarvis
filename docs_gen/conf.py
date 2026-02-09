@@ -16,7 +16,7 @@ import sys
 
 # Since pytest and docs run parallely, change the current dir and insert it to sys.path at index 0
 os.chdir(pathlib.Path(__file__).parent.parent)
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0, pathlib.Path(__file__).parent.parent)
 
 # -- Project information -----------------------------------------------------
 
