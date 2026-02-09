@@ -9,13 +9,25 @@ import imghdr
 import os
 
 import cv2
-import face_recognition
 from cv2.data import haarcascades
 from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
+
+
+def face_recognition_import() -> None:
+    """Imports the face_recognition module."""
+    try:
+        import face_recognition
+
+        return face_recognition
+    except ImportError as error:
+        logger.error(error)
+        logger.warning(
+            "face_recognition module not found. Please install it to use the FaceNet module."
+        )
 
 
 def verify_image(filename: str | FilePath) -> bool:
@@ -76,6 +88,10 @@ class FaceNet:
 
     def load_dataset(self, location: str) -> None:
         """Loads the dataset."""
+        face_recognition_mod = face_recognition_import()
+        if not face_recognition_mod:
+            logger.error("Requirement unsatisfied!!")
+            return
         logger.debug("Loading dataset to classify existing images.")
         for char_dir in os.listdir(location):  # loads the training dataset
             if not os.path.isdir(os.path.join(location, char_dir)):
@@ -86,11 +102,11 @@ class FaceNet:
                 ):
                     continue
                 # loads all the files within the named repo
-                img = face_recognition.load_image_file(
+                img = face_recognition_mod.load_image_file(
                     os.path.join(location, char_dir, file_name)
                 )
                 # generates face encoding matrix
-                if encoded := face_recognition.face_encodings(img):
+                if encoded := face_recognition_mod.face_encodings(img):
                     encoded = encoded[0]
                     # loads ended values to match
                     self.train_faces.append(encoded)
@@ -109,7 +125,8 @@ class FaceNet:
             str:
             Name of the enclosing directory in case of a recognized face.
         """
-        if not face_recognition:
+        face_recognition_mod = face_recognition_import()
+        if not face_recognition_mod:
             logger.error("Requirement unsatisfied!!")
             return
         logger.debug("Initiating face recognition.")
@@ -123,12 +140,12 @@ class FaceNet:
                 )
                 continue
             # gets image from the video read above
-            identifier = face_recognition.face_locations(img, model=self.MODEL)
+            identifier = face_recognition_mod.face_locations(img, model=self.MODEL)
             # creates an encoding for the image
-            encoded_ = face_recognition.face_encodings(img, identifier)
+            encoded_ = face_recognition_mod.face_encodings(img, identifier)
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
-                results = face_recognition.compare_faces(
+                results = face_recognition_mod.compare_faces(
                     self.train_faces, face_encoding, self.LEARNING_RATE
                 )
                 # if a match is found the directory name is rendered and returned as match value
