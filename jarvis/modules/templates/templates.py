@@ -44,9 +44,6 @@ class EmailTemplates:
         with open(os.path.join(os.path.dirname(__file__), "email.html")) as file:
             notification = file.read()
 
-        with open(os.path.join(os.path.dirname(__file__), "car_report.html")) as file:
-            car_report = file.read()
-
 
 class EndpointTemplates:
     """HTML templates used for hosting endpoints.

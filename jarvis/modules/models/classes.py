@@ -316,11 +316,6 @@ class EnvConfig(BaseSettings):
     # GitHub config
     git_token: str | None = None
 
-    # Vehicle config
-    car_username: EmailStr | None = None
-    car_password: str | None = None
-    car_pin: str | None = Field(None, pattern="\\d{4}$")
-
     # Thermostat config
     tcc_username: EmailStr | None = None
     tcc_password: str | None = None

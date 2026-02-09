@@ -52,7 +52,6 @@ class StartupOptions(StrEnum):
     """Background threads to startup."""
 
     all = "all"
-    car = "car"
     gpt = "gpt"
     none = "None"
     thermostat = "thermostat"

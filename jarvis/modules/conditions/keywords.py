@@ -55,7 +55,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
             "projector's",
         ],
         volume=["volume", "mute", "unmute"],
-        car=["car", "vehicle"],
         thermostat=["indoor", "outdoor", "thermostat"],
         weather=["weather", "temperature", "sunrise", "sun rise", "sunset", "sun set"],
         restart_control=["restart", "reboot"],
