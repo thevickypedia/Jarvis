@@ -17,7 +17,7 @@ from datetime import datetime
 from ipaddress import IPv4Address
 from multiprocessing import current_process
 from multiprocessing.pool import ThreadPool
-from typing import Dict, List, NoReturn, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 import dotenv
@@ -316,15 +316,6 @@ class EnvConfig(BaseSettings):
     # GitHub config
     git_token: str | None = None
 
-    # VPN Server config
-    vpn_username: str | None = None
-    vpn_password: str | None = None
-    vpn_subdomain: str = "vpn"
-    vpn_key_pair: str = "OpenVPN"
-    vpn_security_group: str = "OpenVPN Access Server"
-    vpn_info_file: str = Field("vpn_info.json", pattern=r".+\.json$")
-    vpn_hosted_zone: str | None = None
-
     # Vehicle config
     car_username: EmailStr | None = None
     car_password: str | None = None
@@ -477,19 +468,6 @@ class EnvConfig(BaseSettings):
         except ValueError:
             raise InvalidEnvVars("format should be 'DD-MM'")
 
-    @field_validator("vpn_password", mode="before", check_fields=True)
-    def validate_vpn_password(cls, v: str) -> str | NoReturn:
-        """Validates vpn_password as per the required regex."""
-        if v:
-            if re.match(
-                pattern=r"^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%&'()*+,-/[\]^_`{|}~<>]).+$",
-                string=v,
-            ):
-                return v
-            raise ValueError(
-                r"Password must contain a digit, an Uppercase letter, and a symbol from !@#$%&'()*+,-/[\]^_`{|}~<>"
-            )
-
     @field_validator("weather_alert", mode="before", check_fields=True)
     def validate_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
@@ -520,9 +498,9 @@ def env_vault_loader() -> EnvConfig | None:
 
     dotenv.load_dotenv(env_file.vault.filepath, override=True)
 
-    import vaultapi
+    import vaultapi_client
 
-    env_vars = vaultapi.VaultAPIClient().get_table(
+    env_vars = vaultapi_client.VaultAPIClient().get_table(
         table_name=env_file.get_env(["vault_table_name", "table_name"], "jarvis")
     )
 

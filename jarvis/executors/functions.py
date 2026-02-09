@@ -36,7 +36,6 @@ from jarvis.executors import (
     todo_list,
     tv,
     volume,
-    vpn_server,
     weather,
 )
 from jarvis.modules.audio import voices
@@ -93,7 +92,6 @@ def function_mapping() -> OrderedDict[str, Callable]:
         flip_a_coin=others.flip_a_coin,
         voice_changer=voices.voice_changer,
         system_vitals=system.system_info,
-        vpn_server=vpn_server.vpn_server,
         automation_handler=automation.automation_handler,
         background_task_handler=background_task.background_task_handler,
         photo=others.photo,

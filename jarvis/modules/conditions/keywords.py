@@ -169,7 +169,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         flip_a_coin=["head", "tail", "flip", "heads", "tails"],
         voice_changer=["voice", "voices"],
         system_vitals=["vitals", "statistics", "readings", "stats"],
-        vpn_server=["vpn"],
         automation_handler=["automation"],
         background_task_handler=["background"],
         photo=["picture", "snap", "photo", "pictures", "photos"],
