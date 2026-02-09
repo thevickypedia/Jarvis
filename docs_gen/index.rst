@@ -597,13 +597,6 @@ SecureSend
    :members:
    :exclude-members: SecretResponse
 
-Simulator
-=========
-
-.. automodule:: jarvis.executors.simulator
-   :members:
-   :undoc-members:
-
 StaticResponses
 ===============
 

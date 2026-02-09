@@ -5696,40 +5696,6 @@ Car Climate controls (Fahrenheit): 58 is LO, 84 is HOT</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.executors.simulator">
-<span id="simulator"></span><h1>Simulator<a class="headerlink" href="#module-jarvis.executors.simulator" title="Link to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.simulator.get_simulation_data">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.simulator.</span></span><span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.simulator.get_simulation_data" title="Link to this definition">¶</a></dt>
-<dd><p>Reads the simulation file and loads it as a dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns the required data to run the simulation.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dict[str, List[str]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.simulator.initiate_simulator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.simulator.</span></span><span class="sig-name descname"><span class="pre">initiate_simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.simulator.initiate_simulator" title="Link to this definition">¶</a></dt>
-<dd><p>Runs simulation on a preset of phrases.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>simulation_data</strong> – A key value pair of category and phrase list.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.simulator.simulation">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.simulator.</span></span><span class="sig-name descname"><span class="pre">simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.simulator.simulation" title="Link to this definition">¶</a></dt>
-<dd><p>Initiates simulation in a dedicated process logging into a dedicated file.</p>
-</dd></dl>
-
-</section>
 <section id="module-jarvis.executors.static_responses">
 <span id="staticresponses"></span><h1>StaticResponses<a class="headerlink" href="#module-jarvis.executors.static_responses" title="Link to this heading">¶</a></h1>
 <dl class="py function">
@@ -7089,11 +7055,6 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.reminders">
 <span class="sig-name descname"><span class="pre">reminders</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PathType</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">path_type</span></span><span class="o"><span class="pre">=</span></span><span class="pre">file</span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.reminders" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.simulation">
-<span class="sig-name descname"><span class="pre">simulation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PathType</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">path_type</span></span><span class="o"><span class="pre">=</span></span><span class="pre">file</span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.simulation" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -12803,12 +12764,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.executors.secure_send.secrets"><code class="docutils literal notranslate"><span class="pre">secrets()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-jarvis.executors.simulator">Simulator</a><ul>
-<li><a class="reference internal" href="#jarvis.executors.simulator.get_simulation_data"><code class="docutils literal notranslate"><span class="pre">get_simulation_data()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.simulator.initiate_simulator"><code class="docutils literal notranslate"><span class="pre">initiate_simulator()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.simulator.simulation"><code class="docutils literal notranslate"><span class="pre">simulation()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#module-jarvis.executors.static_responses">StaticResponses</a><ul>
 <li><a class="reference internal" href="#jarvis.executors.static_responses.form"><code class="docutils literal notranslate"><span class="pre">form()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.static_responses.greeting"><code class="docutils literal notranslate"><span class="pre">greeting()</span></code></a></li>
@@ -13051,7 +13006,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.ip_info"><code class="docutils literal notranslate"><span class="pre">FileIO.ip_info</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.alarms"><code class="docutils literal notranslate"><span class="pre">FileIO.alarms</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.reminders"><code class="docutils literal notranslate"><span class="pre">FileIO.reminders</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.simulation"><code class="docutils literal notranslate"><span class="pre">FileIO.simulation</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.keywords"><code class="docutils literal notranslate"><span class="pre">FileIO.keywords</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.conditions"><code class="docutils literal notranslate"><span class="pre">FileIO.conditions</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.restrictions"><code class="docutils literal notranslate"><span class="pre">FileIO.restrictions</span></code></a></li>

@@ -173,7 +173,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         background_task_handler=["background"],
         photo=["picture", "snap", "photo", "pictures", "photos"],
         version=["version"],
-        simulation=["simulator", "variation", "simulation", "variations"],
         celebrate=[
             "festival",
             "festivals",
