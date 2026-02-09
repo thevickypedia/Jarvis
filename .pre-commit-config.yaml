@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: install pre-commit
         name: install pre-commit
-        entry: python -m pip install -q sphinx==5.1.1 pre-commit recommonmark gitverse
+        entry: python -m pip install --upgrade --no-cache -q sphinx pre-commit recommonmark gitverse
         language: system
         pass_filenames: false
         always_run: true

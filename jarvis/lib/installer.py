@@ -521,7 +521,7 @@ def dev_install() -> None:
     logger.info(pretext())
     with Runtime() as runtime:
         run_subprocess(
-            f"{env.exec} pip install{verbose} sphinx==5.1.1 pre-commit recommonmark gitverse"
+            f"{env.exec} pip install{verbose} sphinx pre-commit recommonmark gitverse"
         )
     logger.info(pretext())
     logger.info(center(f"Installation completed in {runtime.get()}"))
