@@ -16,6 +16,7 @@ from jarvis.executors import (
     automation,
     background_task,
     conditions,
+    connectivity,
     crontab,
     files,
     internet,
@@ -57,7 +58,7 @@ async def background_tasks() -> None:
     smart_listener = Queue()
     while True:
         now = datetime.now()
-        # Trigger background tasks
+        # MARK: Trigger background tasks
         for i, task in enumerate(tasks):
             # Checks a particular tasks' elapsed time
             if task_dict[i] + task.seconds <= time.time() or dry_run:
@@ -78,7 +79,7 @@ async def background_tasks() -> None:
                         logger.warning("Removing %s from background tasks.", task)
                         background_task.remove_corrupted(task=task)
 
-        # Trigger cron jobs once during start up (regardless of schedule) and follow schedule after that
+        # MARK: Trigger cron jobs once during start up (regardless of schedule) and follow schedule after that
         if start_cron + 60 <= time.time():  # Condition passes every minute
             start_cron = time.time()
             for job in cron_jobs:
@@ -94,15 +95,15 @@ async def background_tasks() -> None:
                         )
                         connection.commit()
 
-        # Trigger wifi checker
+        # MARK: Trigger wifi checker
         if wifi_checker and (
             start_wifi + models.env.connection_retry <= time.time() or dry_run
         ):
             start_wifi = time.time()
             logger.debug("Initiating WiFi connection checker")
-            wifi_checker = connection.wifi(wifi_checker)
+            wifi_checker = connectivity.wifi(wifi_checker)
 
-        # Trigger automation
+        # MARK: Trigger automation
         if exec_task := automation.auto_helper():
             # Check and trigger weather alert monitoring system
             if "weather" in exec_task.lower():
@@ -121,7 +122,7 @@ async def background_tasks() -> None:
                     logger.error(error)
                     logger.error(traceback.format_exc())
 
-        # Sync events from the event app specified (calendar/outlook)
+        # MARK: Sync events from the event app specified (calendar/outlook)
         # Run either for macOS or during the initial run so the response gets stored in the DB
         if dry_run or models.settings.os == enums.SupportedPlatforms.macOS:
             if (
@@ -143,7 +144,7 @@ async def background_tasks() -> None:
                     )
                     connection.commit()
 
-        # Sync meetings from the ICS url provided
+        # MARK: Sync meetings from the ICS url provided
         # Run either when an ICS url is present or during the initial run so the response gets stored in the DB
         if dry_run or models.env.ics_url:
             if dry_run and models.env.ics_url:
@@ -174,7 +175,7 @@ async def background_tasks() -> None:
                     )
                     connection.commit()
 
-        # Mute during meetings
+        # MARK: Mute during meetings
         if models.env.mute_for_meetings and models.env.ics_url:
             while not smart_listener.empty():
                 mutes = smart_listener.get(timeout=2)
@@ -201,7 +202,7 @@ async def background_tasks() -> None:
                                 kwargs=dict(state=True),
                             ).start()
 
-        # Trigger alarms
+        # MARK: Trigger alarms
         if alarms := files.get_alarms():
             copied_alarms = alarms.copy()
             for alarmer in alarms:
@@ -216,7 +217,7 @@ async def background_tasks() -> None:
             if copied_alarms != alarms:
                 files.put_alarms(data=copied_alarms)
 
-        # Trigger reminders
+        # MARK: Trigger reminders
         if reminders := files.get_reminders():
             copied_reminders = reminders.copy()
             for reminder in reminders:
@@ -237,7 +238,7 @@ async def background_tasks() -> None:
             if copied_reminders != reminders:
                 files.put_reminders(data=copied_reminders)
 
-        # Re-check for any newly added tasks with logger disabled
+        # MARK: Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(
             background_task.validate_tasks(log=False)
         )
@@ -248,7 +249,7 @@ async def background_tasks() -> None:
             # Re-create start time for each task
             task_dict = {i: time.time() for i in range(len(tasks))}
 
-        # Re-check for any newly added cron_jobs with logger disabled
+        # MARK: Re-check for any newly added cron_jobs with logger disabled
         new_cron_jobs: List[crontab.expression.CronExpression] = list(
             crontab.validate_jobs(log=False)
         )
@@ -256,7 +257,8 @@ async def background_tasks() -> None:
             # Don't log updated jobs since there will always be a difference when run on author mode
             cron_jobs = new_cron_jobs
         dry_run = False
-        # Reduces CPU utilization as constant fileIO operations spike CPU %
+
+        # MARK: Pause and yield control back to the event loop
         await asyncio.sleep(1)
 
 
