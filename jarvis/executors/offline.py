@@ -4,6 +4,7 @@ import time
 import traceback
 from datetime import datetime
 from multiprocessing import Process, Queue
+from multiprocessing.pool import ThreadPool
 from threading import Thread, Timer
 from typing import AnyStr, List
 
@@ -22,15 +23,18 @@ from jarvis.executors import (
     internet,
     listener_controls,
     others,
+    telegram,
     remind,
     resource_tracker,
     weather_monitor,
     word_match,
 )
+from jarvis.modules.exceptions import BotInUse, BotWebhookConflict, EgressErrors
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
+from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, enums, models
 from jarvis.modules.utils import shared, support, util
@@ -50,10 +54,16 @@ async def background_tasks() -> None:
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
     meeting_muter = []
-    start_events = start_meetings = start_cron = start_wifi = time.time()
+    start_events = start_meetings = start_cron = start_wifi = start_telegram = time.time()
+    # Creates a start time for each task
     task_dict = {
         i: time.time() for i in range(len(tasks))
-    }  # Creates a start time for each task
+    }
+
+    telegram_thread = ThreadPool(processes=1).apply_async(func=telegram.telegram_api)
+    poll_telegram = False
+    failed_telegram_connections = {"count": 0}
+
     dry_run = True
     smart_listener = Queue()
     while True:
@@ -122,6 +132,50 @@ async def background_tasks() -> None:
                     logger.error(error)
                     logger.error(traceback.format_exc())
 
+
+        # MARK: Start polling for telegram messages
+        if not poll_telegram and start_telegram + 30 <= time.time():
+            # TODO:
+            #  Easy way implement telegram_api(3) would be create the `telegram_thread` in a func and call it on-demand
+            #  Best way would be to create an external even loop to control which segments require a restart (incl self)
+            if telegram_thread.ready():
+                poll_telegram = telegram_thread.get()
+            else:
+                logger.info("Telegram thread is still looking for a webhook.")
+
+        if poll_telegram:
+            try:
+                bot.poll_for_messages()
+            except BotWebhookConflict as error:
+                # At this point, its be safe to remove the dead webhook
+                logger.error(error)
+                webhook.delete_webhook(base_url=bot.BASE_URL, logger=logger)
+                # TODO: Need to try webhook for 3 times, and fall back to polling
+                # telegram_api(3)
+            except BotInUse as error:
+                logger.error(error)
+                logger.info("Restarting message poll to take over..")
+                # TODO: Need to try webhook for 3 times, and fall back to polling
+                # telegram_api(3)
+            except EgressErrors as error:
+                logger.error(error)
+                failed_telegram_connections["count"] += 1
+                if failed_telegram_connections["count"] > 3:
+                    logger.critical(
+                        "ATTENTION::Couldn't recover from connection error. Restarting current process."
+                    )
+                    # TODO: Implement a restart mechanism
+                    # controls.restart_control(quiet=True)
+                else:
+                    logger.info("Restarting in %d seconds.", failed_telegram_connections["count"] * 10)
+                    await asyncio.sleep(failed_telegram_connections["count"] * 10)
+                    # TODO: Need to try webhook for 3 times, and fall back to polling
+                    # telegram_api(3)
+            except Exception as error:
+                logger.critical("ATTENTION: %s", error.__str__())
+                # TODO: Implement a restart mechanism
+                # controls.restart_control(quiet=True)
+
         # MARK: Sync events from the event app specified (calendar/outlook)
         # Run either for macOS or during the initial run so the response gets stored in the DB
         if dry_run or models.settings.os == enums.SupportedPlatforms.macOS:
@@ -176,6 +230,7 @@ async def background_tasks() -> None:
                     connection.commit()
 
         # MARK: Mute during meetings
+        # TODO: Remove this functionality - expensive for what its worth
         if models.env.mute_for_meetings and models.env.ics_url:
             while not smart_listener.empty():
                 mutes = smart_listener.get(timeout=2)

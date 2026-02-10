@@ -7,7 +7,7 @@ from typing import Dict, List, NoReturn
 import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors import crontab, telegram
+from jarvis.executors import crontab
 from jarvis.modules.logger import logger
 from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import enums, models
@@ -17,7 +17,6 @@ def assert_process_names() -> None | NoReturn:
     """Assert process names with actual function names."""
     assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
     assert graph_mic.plot_mic.__name__ == enums.ProcessNames.plot_mic
-    assert telegram.telegram_api.__name__ == enums.ProcessNames.telegram_api
 
 
 def base() -> Dict[str, Dict[str, Process | List[str]]]:
@@ -46,12 +45,7 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
                 "Cron jobs",
                 "Background tasks",
             ],
-        },
-        # process map will be removed if telegram bot is hosted via Jarvis API
-        telegram.telegram_api.__name__: {
-            "process": Process(target=telegram.telegram_api),
-            "impact": ["Telegram Bot"],
-        },
+        }
     }
     if models.env.plot_mic:
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__

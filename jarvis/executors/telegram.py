@@ -2,14 +2,11 @@ import os
 import time
 from urllib.parse import urljoin
 
-from jarvis.executors import controls, internet, process_map
-from jarvis.modules.exceptions import BotInUse, BotWebhookConflict, EgressErrors
+from jarvis.executors import internet, process_map
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.utils import support
-
-FAILED_CONNECTIONS = {"count": 0}
 
 
 def get_webhook_origin(retry: int) -> str:
@@ -34,7 +31,7 @@ def get_webhook_origin(retry: int) -> str:
         time.sleep(3)
 
 
-def telegram_api(webhook_trials: int = 20) -> None:
+def telegram_api(webhook_trials: int = 20) -> bool:
     """Initiates polling for new messages.
 
     Args:
@@ -51,7 +48,7 @@ def telegram_api(webhook_trials: int = 20) -> None:
     multiprocessing_logger(filename=os.path.join("logs", "telegram_api_%d-%m-%Y.log"))
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
-        return
+        return False
     if (public_url := get_webhook_origin(webhook_trials)) and (
         response := webhook.set_webhook(
             base_url=bot.BASE_URL,
@@ -62,30 +59,5 @@ def telegram_api(webhook_trials: int = 20) -> None:
         logger.info("Telegram API will be hosted via webhook.")
         logger.info(response)
         process_map.remove(telegram_api.__name__)
-        return
-    try:
-        bot.poll_for_messages()
-    except BotWebhookConflict as error:
-        # At this point, its be safe to remove the dead webhook
-        logger.error(error)
-        webhook.delete_webhook(base_url=bot.BASE_URL, logger=logger)
-        telegram_api(3)
-    except BotInUse as error:
-        logger.error(error)
-        logger.info("Restarting message poll to take over..")
-        telegram_api(3)
-    except EgressErrors as error:
-        logger.error(error)
-        FAILED_CONNECTIONS["count"] += 1
-        if FAILED_CONNECTIONS["count"] > 3:
-            logger.critical(
-                "ATTENTION::Couldn't recover from connection error. Restarting current process."
-            )
-            controls.restart_control(quiet=True)
-        else:
-            logger.info("Restarting in %d seconds.", FAILED_CONNECTIONS["count"] * 10)
-            time.sleep(FAILED_CONNECTIONS["count"] * 10)
-            telegram_api(3)
-    except Exception as error:
-        logger.critical("ATTENTION: %s", error.__str__())
-        controls.restart_control(quiet=True)
+        return False
+    return True
