@@ -12,7 +12,6 @@ from jarvis.api.background_task import agent
 from jarvis.executors import (
     automation,
     background_task,
-    connectivity,
     crontab,
     telegram,
 )
@@ -47,11 +46,6 @@ async def background_tasks() -> None:
     await automation.validate_weather_alert()
     await agent.init_meetings()
 
-    if all((models.env.wifi_ssid, models.env.wifi_password)):
-        wifi_checker = classes.WiFiConnection()
-    else:
-        wifi_checker = None
-
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
 
@@ -85,9 +79,8 @@ async def background_tasks() -> None:
                 asyncio.create_task(agent.automation_executor(exec_task=exec_task))
 
             # MARK: Trigger Wi-Fi checker
-            if wifi_checker and models.env.connection_retry and start_times.wifi + models.env.connection_retry <= time.time():
-                # TODO: Shouldn't block
-                wifi_checker = await connectivity.wifi(wifi_checker)
+            if agent.wifi_checker["obj"]:
+                asyncio.create_task(agent.wifi_executor())
 
             # MARK: Sync events from the event app specified (calendar/outlook)
             if models.env.event_app and models.env.sync_events and start_times.events + models.env.sync_events <= time.time():

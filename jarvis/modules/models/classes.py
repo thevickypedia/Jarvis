@@ -353,7 +353,6 @@ class EnvConfig(BaseSettings):
     # WiFi config
     wifi_ssid: str | None = None
     wifi_password: str | None = None
-    connection_retry: PositiveInt | PositiveFloat = 30
 
     wake_words: List[str] = Field(["jarvis"])
 
