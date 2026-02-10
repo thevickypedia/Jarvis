@@ -12,6 +12,7 @@ from jarvis.api.background_task import agent
 from jarvis.executors import (
     automation,
     background_task,
+    connectivity,
     crontab,
     telegram,
 )
@@ -45,6 +46,8 @@ async def background_tasks() -> None:
     # Env vars are loaded only during startup, so run validations beforehand
     await automation.validate_weather_alert()
     await agent.init_meetings()
+    if not all((models.env.wifi_ssid, models.env.wifi_password)):
+        classes.wifi_connection = None
 
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
@@ -79,8 +82,8 @@ async def background_tasks() -> None:
                 asyncio.create_task(agent.automation_executor(exec_task=exec_task))
 
             # MARK: Trigger Wi-Fi checker
-            if agent.wifi_checker["obj"]:
-                asyncio.create_task(agent.wifi_executor())
+            if classes.wifi_connection:
+                asyncio.create_task(connectivity.wifi())
 
             # MARK: Sync events from the event app specified (calendar/outlook)
             if models.env.event_app and models.env.sync_events and start_times.events + models.env.sync_events <= time.time():
@@ -110,6 +113,8 @@ async def background_tasks() -> None:
 
         if poll_telegram:
             try:
+                # TODO: offset is not being rendered right - last message is remembered
+                # TODO: polling **must** be a thread/async task - if network disconnects - this will become a blocker
                 offset = bot.poll_for_messages(telegram_offset)
                 if offset is not None:
                     telegram_offset = offset

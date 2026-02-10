@@ -118,6 +118,9 @@ class WiFiConnection(BaseModel):
     os_errors: int = 0
 
 
+wifi_connection = WiFiConnection()
+
+
 class Thermostat(BaseModel):
     """Wrapper to store thermostat controls.
 

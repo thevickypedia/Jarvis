@@ -12,7 +12,6 @@ from jarvis.executors import (
     background_task,
     files,
     alarm,
-    connectivity,
     crontab,
     remind,
     offline,
@@ -23,12 +22,6 @@ from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.meetings import events, ics_meetings
 from jarvis.modules.models import classes, models
-
-# TODO: Remove this and replace it with startup time instantiation
-if all((models.env.wifi_ssid, models.env.wifi_password)):
-    wifi_checker = {"obj": classes.WiFiConnection()}
-else:
-    wifi_checker = {"obj": None}
 
 
 async def init_meetings() -> None:
@@ -155,7 +148,3 @@ async def reminder_executor(now: datetime):
                 copied_reminders.remove(reminder)
         if copied_reminders != reminders:
             files.put_reminders(data=copied_reminders)
-
-
-async def wifi_executor():
-    wifi_checker["obj"] = connectivity.wifi(wifi_checker["obj"])
