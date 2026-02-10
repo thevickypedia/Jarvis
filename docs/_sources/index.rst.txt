@@ -377,10 +377,10 @@ Communicator Squire
    :members:
    :undoc-members:
 
-Connection
-==========
+Connectivity
+============
 
-.. automodule:: jarvis.executors.connection
+.. automodule:: jarvis.executors.connectivity
    :members:
    :undoc-members:
 
