@@ -49,7 +49,7 @@ def rewrite_automator(write_data: dict) -> None:
     files.put_automation(data=write_data)
 
 
-def validate_weather_alert() -> None:
+async def validate_weather_alert() -> None:
     """Adds the env var for weather alert (if present) to automation feed file."""
     if models.env.weather_alert:
         automation_data = files.get_automation()

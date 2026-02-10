@@ -219,9 +219,6 @@ class EnvConfig(BaseSettings):
         None, validation_alias=AliasChoices("root_password", "password")
     )
 
-    # Mute during meetings
-    mute_for_meetings: bool = False
-
     # Built-in speaker config
     voice_name: str | None = None
     speech_rate: PositiveInt | PositiveFloat = Field(
@@ -356,7 +353,7 @@ class EnvConfig(BaseSettings):
     # WiFi config
     wifi_ssid: str | None = None
     wifi_password: str | None = None
-    connection_retry: PositiveInt | PositiveFloat = 10
+    connection_retry: PositiveInt | PositiveFloat = 30
 
     wake_words: List[str] = Field(["jarvis"])
 

@@ -1,9 +1,8 @@
-import os
 import time
 from urllib.parse import urljoin
 
-from jarvis.executors import internet, process_map
-from jarvis.modules.logger import logger, multiprocessing_logger
+from jarvis.executors import internet
+from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.utils import support
@@ -45,7 +44,6 @@ def telegram_api(webhook_trials: int = 20) -> bool:
         - BotInUse: Restarts polling to take control over.
         - EgressErrors: Initiates after 10, 20 or 30 seconds. Depends on retry count. Restarts after 3 attempts.
     """
-    multiprocessing_logger(filename=os.path.join("logs", "telegram_api_%d-%m-%Y.log"))
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return False
@@ -58,6 +56,5 @@ def telegram_api(webhook_trials: int = 20) -> bool:
     ):
         logger.info("Telegram API will be hosted via webhook.")
         logger.info(response)
-        process_map.remove(telegram_api.__name__)
         return False
     return True

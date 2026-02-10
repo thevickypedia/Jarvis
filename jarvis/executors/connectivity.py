@@ -8,7 +8,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import classes, enums, models
 
 
-def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
+async def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
     """Checks for internet connection as per given frequency. Enables Wi-Fi and connects to SSID if connection fails.
 
     Args:
@@ -50,8 +50,6 @@ def wifi(conn_object: classes.WiFiConnection) -> classes.WiFiConnection | None:
 
     if conn_object.unknown_errors > 10 or conn_object.os_errors > 30:
         logger.warning(conn_object.model_dump_json())
-        logger.error(
-            "'%s' is running into repeated errors, hence stopping..!", wifi.__name__
-        )
+        logger.error("WiFi connector is running into repeated errors, hence stopping..!")
         return None
     return conn_object

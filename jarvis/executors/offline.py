@@ -3,12 +3,7 @@ from typing import AnyStr
 import requests
 from pydantic import HttpUrl
 
-from jarvis.executors import (
-    conditions,
-    internet,
-    others,
-    word_match,
-)
+from jarvis.executors import conditions, internet, others, word_match
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
