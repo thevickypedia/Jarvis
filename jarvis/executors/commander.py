@@ -26,19 +26,14 @@ def split_phrase(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if " after " in phrase and not word_match.word_match(
-        phrase=phrase, match_list=keywords.ignore_after
-    ):
+    if " after " in phrase and not word_match.word_match(phrase=phrase, match_list=keywords.ignore_after):
         if delay_info := timed_delay(phrase=phrase):
             speaker.speak(
-                text=f"I will execute it after {support.time_converter(second=delay_info[1])} "
-                f"{models.env.title}!"
+                text=f"I will execute it after {support.time_converter(second=delay_info[1])} " f"{models.env.title}!"
             )
             return
 
-    if " and " in phrase and not word_match.word_match(
-        phrase=phrase, match_list=keywords.ignore_and
-    ):
+    if " and " in phrase and not word_match.word_match(phrase=phrase, match_list=keywords.ignore_and):
         and_phrases = phrase.split(" and ")
         logger.info("Looping through %s in iterations.", and_phrases)
         for each in and_phrases:
@@ -55,9 +50,7 @@ def delay_condition(phrase: str, delay: int | float) -> None:
         phrase: Takes the phrase spoken as an argument.
         delay: Sleeps for the number of seconds.
     """
-    logger.info(
-        "'%s' will be executed after %s", phrase, support.time_converter(second=delay)
-    )
+    logger.info("'%s' will be executed after %s", phrase, support.time_converter(second=delay))
     time.sleep(delay)
     logger.info("Executing '%s'", phrase)
     try:
@@ -79,15 +72,11 @@ def timed_delay(phrase: str) -> Tuple[str, int | float]:
     """
     if not word_match.word_match(
         phrase=phrase, match_list=keywords.keywords["set_alarm"]
-    ) and not word_match.word_match(
-        phrase=phrase, match_list=keywords.keywords["reminder"]
-    ):
+    ) and not word_match.word_match(phrase=phrase, match_list=keywords.keywords["reminder"]):
         split_ = phrase.split("after")
         if task := split_[0].strip():
             delay = util.delay_calculator(phrase=split_[1].strip())
-            resource_tracker.semaphores(
-                delay_condition, kwargs={"phrase": task, "delay": delay}
-            )
+            resource_tracker.semaphores(delay_condition, kwargs={"phrase": task, "delay": delay})
             return task, delay
 
 
@@ -128,9 +117,7 @@ def initiator(phrase: str = None) -> None:
             speaker.speak(text=f"Happy {event}!")
         if "night" in phrase.split() or "goodnight" in phrase.split():
             Thread(target=controls.sleep_control).start()
-    elif "you there" in phrase.lower() or word_match.word_match(
-        phrase=phrase, match_list=models.env.wake_words
-    ):
+    elif "you there" in phrase.lower() or word_match.word_match(phrase=phrase, match_list=models.env.wake_words):
         if not listener_controls.get_listener_state():
             speaker.speak(text=inactive_msg)
             return

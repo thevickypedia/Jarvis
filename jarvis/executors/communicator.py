@@ -21,9 +21,7 @@ def read_gmail(*args) -> None:
         return
 
     support.write_screen(text="Fetching unread emails..")
-    reader = gmailconnector.ReadEmail(
-        gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass
-    )
+    reader = gmailconnector.ReadEmail(gmail_user=models.env.gmail_user, gmail_pass=models.env.gmail_pass)
     response = reader.instantiate()
     if response.ok:
         if shared.called_by_offline:
@@ -39,14 +37,11 @@ def read_gmail(*args) -> None:
         )
         if not (confirmation := listener.listen()):
             return
-        if not word_match.word_match(
-            phrase=confirmation, match_list=keywords.keywords["ok"]
-        ):
+        if not word_match.word_match(phrase=confirmation, match_list=keywords.keywords["ok"]):
             return
         for mail in reader.read_mail(messages=response.body, humanize_datetime=True):
             speaker.speak(
-                text=f"You have an email from, {mail.sender}, with subject, "
-                f"{mail.subject}, {mail.date_time}",
+                text=f"You have an email from, {mail.sender}, with subject, " f"{mail.subject}, {mail.date_time}",
                 run=True,
             )
     elif response.status == 204:
@@ -55,9 +50,7 @@ def read_gmail(*args) -> None:
         speaker.speak(text=f"I was unable to read your email {models.env.title}!")
 
 
-def send_sms(
-    user: str, password: str, number: str | int, body: str, subject: str = None
-) -> bool | str:
+def send_sms(user: str, password: str, number: str | int, body: str, subject: str = None) -> bool | str:
     """Send text message through SMS gateway of destination number.
 
     References:
@@ -80,16 +73,10 @@ def send_sms(
         support.no_env_vars()
         return False
     if not any([models.env.phone_number, number]):
-        logger.error(
-            "No phone number was stored in env vars to trigger a notification."
-        )
+        logger.error("No phone number was stored in env vars to trigger a notification.")
         return False
     if not subject:
-        subject = (
-            "Message from Jarvis"
-            if number == models.env.phone_number
-            else f"Message from {models.env.name}"
-        )
+        subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
     sms_object = gmailconnector.SendSMS(gmail_user=user, gmail_pass=password)
     response = sms_object.send_sms(
         phone=number or models.env.phone_number,
@@ -140,11 +127,7 @@ def send_email(
         support.no_env_vars()
         return False
     if not subject:
-        subject = (
-            "Message from Jarvis"
-            if recipient == models.env.recipient
-            else f"Message from {models.env.name}"
-        )
+        subject = "Message from Jarvis" if recipient == models.env.recipient else f"Message from {models.env.name}"
     rendered = jinja2.Template(source=templates.email.notification).render(
         SENDER=title or models.env.name, MESSAGE=body
     )

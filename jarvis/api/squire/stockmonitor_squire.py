@@ -31,9 +31,7 @@ def cleanup_stock_userdata() -> None:
             connection.commit()
 
 
-def insert_stock_userdata(
-    params: Tuple[str, EmailStr, int | float, int | float, int, str]
-) -> None:
+def insert_stock_userdata(params: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
     """Inserts new entry into the stock database.
 
     Args:
@@ -61,17 +59,13 @@ def get_stock_userdata(
     with stock_db.connection as connection:
         cursor = connection.cursor()
         if email:
-            data = cursor.execute(
-                "SELECT * FROM stock WHERE email=(?)", (email,)
-            ).fetchall()
+            data = cursor.execute("SELECT * FROM stock WHERE email=(?)", (email,)).fetchall()
         else:
             data = cursor.execute("SELECT * FROM stock").fetchall()
     return data
 
 
-def get_daily_alerts() -> Generator[
-    Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]
-]:
+def get_daily_alerts() -> Generator[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]:
     """Get all the information stored in ``stock_daily`` database table.
 
     Yields:
@@ -83,11 +77,7 @@ def get_daily_alerts() -> Generator[
         yield {record[0]: record[1:] for record in data}
 
 
-def put_daily_alerts(
-    params: List[
-        Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]
-    ]
-):
+def put_daily_alerts(params: List[Dict[int, Tuple[int, str, EmailStr, int | float, int | float, int, str]]]):
     """Updates the daily alerts into the ``stock_daily`` database table.
 
     Args:
@@ -108,9 +98,7 @@ def put_daily_alerts(
         connection.commit()
 
 
-def delete_stock_userdata(
-    data: Tuple[str, EmailStr, int | float, int | float, int, str]
-) -> None:
+def delete_stock_userdata(data: Tuple[str, EmailStr, int | float, int | float, int, str]) -> None:
     """Delete particular user data from stock database.
 
     Args:

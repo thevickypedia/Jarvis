@@ -23,9 +23,7 @@ class Spectrum:
     SESSION.auth = BearerAuth(token=models.env.listener_spectrum_key)
     BASE_PATH = f"http://{models.env.offline_host}:{models.env.offline_port}"
     ACTIVATE = BASE_PATH + routes.APIPath.listener_spectrum_wave.format(command="start")
-    DEACTIVATE = BASE_PATH + routes.APIPath.listener_spectrum_wave.format(
-        command="stop"
-    )
+    DEACTIVATE = BASE_PATH + routes.APIPath.listener_spectrum_wave.format(command="stop")
 
     def make_request(self, url: str) -> None:
         """Make a request to the given URL with the session.
@@ -57,9 +55,7 @@ class Spectrum:
             Thread(target=self.make_request, args=(self.ACTIVATE,), daemon=True).start()
         if sound:
             playsound(sound=models.indicators.start, block=False)
-        support.write_screen(
-            text=f"Listener activated [{timeout}: {phrase_time_limit}]"
-        )
+        support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
 
     def deactivate(self, sound: bool) -> None:
         """Deactivate the listener spectrum by making a request to the deactivate URL.
@@ -68,9 +64,7 @@ class Spectrum:
             sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
         """
         if models.env.listener_spectrum_key and not shared.called_by_offline:
-            Thread(
-                target=self.make_request, args=(self.DEACTIVATE,), daemon=True
-            ).start()
+            Thread(target=self.make_request, args=(self.DEACTIVATE,), daemon=True).start()
         if sound:
             playsound(sound=models.indicators.end, block=False)
         support.flush_screen()

@@ -88,9 +88,7 @@ def get_location() -> DefaultDict[str, Dict | float | bool]:
     # noinspection PyTypeChecker
     return _loader(
         models.fileio.location,
-        default=collections.defaultdict(
-            lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False
-        ),
+        default=collections.defaultdict(lambda: {}, address={}, latitude=0.0, longitude=0.0, reserved=False),
     )
 
 
@@ -167,9 +165,7 @@ def get_automation() -> Dict[str, List[Dict[str, str | bool]] | Dict[str, str | 
     return _loader(models.fileio.automation, default={})
 
 
-def put_automation(
-    data: Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]
-) -> None:
+def put_automation(data: Dict[str, List[Dict[str, str | bool]] | Dict[str, str | bool]]) -> None:
     """Dumps automation data into feed file.
 
     Args:
@@ -177,10 +173,7 @@ def put_automation(
     """
     # Sort the keys by timestamp
     try:
-        sorted_data = {
-            k: data[k]
-            for k in sorted(data.keys(), key=lambda x: datetime.strptime(x, "%I:%M %p"))
-        }
+        sorted_data = {k: data[k] for k in sorted(data.keys(), key=lambda x: datetime.strptime(x, "%I:%M %p"))}
     except ValueError as error:
         logger.error(error)
         logger.error("Writing automation data without sorting")

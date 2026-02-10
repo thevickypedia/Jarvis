@@ -92,9 +92,7 @@ def existing_response(request: str) -> str | None:
     """
     # exclude if numbers present in new request
     if any(word.isdigit() for word in request):
-        logger.debug(
-            "request: '%s' contains numbers in it, so skipping existing search", request
-        )
+        logger.debug("request: '%s' contains numbers in it, so skipping existing search", request)
         return
     if not (data := files.get_gpt_data()):
         logger.debug("GPT history is empty")
@@ -115,15 +113,11 @@ def existing_response(request: str) -> str | None:
 
     # no identical requests found in history, and reuse threshold was not set
     if not models.env.ollama_reuse_threshold:
-        logger.warning(
-            "No identical requests found in history, and reuse threshold was not set."
-        )
+        logger.warning("No identical requests found in history, and reuse threshold was not set.")
         return
 
     # sort the new dict in reverse order so the closest match gets returned first
-    ratios = collections.OrderedDict(
-        sorted(ratios.items(), key=lambda kv: kv[1][1], reverse=True)
-    )
+    ratios = collections.OrderedDict(sorted(ratios.items(), key=lambda kv: kv[1][1], reverse=True))
 
     # iterate over the ordered dict to look for numbers in existing requests and ignore them
     for existing_request, response_ratio in ratios.items():
@@ -146,9 +140,7 @@ def create_model_file() -> None:
             os.path.basename(models.fileio.ollama_model_file),
             os.path.basename(models.fileio.root),
         )
-        logger.info(
-            "Feel free to modify this file in the future for custom instructions"
-        )
+        logger.info("Feel free to modify this file in the future for custom instructions")
         template = jinja2.Template(source=templates.llama.modelfile)
         rendered = template.render(MODEL_NAME=models.env.ollama_model)
         with open(models.fileio.ollama_model_file, "w") as file:
@@ -188,9 +180,7 @@ def setup_local_instance() -> None | NoReturn:
         llama_models = ollama.list().get("models")
     except Exception as error:
         logger.error(error)
-        logger.error(
-            "Ollama client is either not installed or not running, refer: https://ollama.com/download"
-        )
+        logger.error("Ollama client is either not installed or not running, refer: https://ollama.com/download")
         raise ValueError(error.__str__())
     for model in llama_models:
         if model.get("name") == models.env.ollama_model:
@@ -273,9 +263,7 @@ class Ollama:
         logger.debug("GPT: Generating response from: %s", models.env.ollama_model)
         try:
             start_time = time.time()
-            process = ThreadPool(processes=1).apply_async(
-                self.generator, args=(phrase,)
-            )
+            process = ThreadPool(processes=1).apply_async(self.generator, args=(phrase,))
             model_response = process.get(models.env.ollama_timeout)
             token_gen = support.time_converter(time.time() - start_time)
             logger.info(
@@ -317,9 +305,7 @@ if models.startup_gpt:
         logger.error("Failed to load GPT instance for '%s'", models.settings.pname)
         instance = None
         if models.settings.pname == enums.ProcessNames.jarvis:
-            support.write_screen(
-                f"Failed to load GPT instance: {start_error.__str__()!r}"
-            )
+            support.write_screen(f"Failed to load GPT instance: {start_error.__str__()!r}")
             time.sleep(3)
 else:
     logger.info("Startup disabled for GPT")

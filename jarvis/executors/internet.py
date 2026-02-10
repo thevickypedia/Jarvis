@@ -48,9 +48,7 @@ def vpn_checker() -> bool | str:
         Returns a ``False`` flag if VPN is detected, else the IP address.
     """
     if not (ip_address_ := ip_address()):
-        speaker.speak(
-            text=f"I was unable to connect to the internet {models.env.title}! Please check your connection."
-        )
+        speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! Please check your connection.")
         return False
     if ip_address_.startswith("192") or ip_address_.startswith("127"):
         return ip_address_
@@ -64,8 +62,7 @@ def vpn_checker() -> bool | str:
             )
         else:
             speaker.speak(
-                text=f"I was unable to connect to the internet {models.env.title}! "
-                "Please check your connection."
+                text=f"I was unable to connect to the internet {models.env.title}! " "Please check your connection."
             )
         return False
 
@@ -169,9 +166,7 @@ def ip_info(phrase: str) -> None:
     """
     if "public" in phrase.lower():
         if not ip_address():
-            speaker.speak(
-                text=f"You are not connected to the internet {models.env.title}!"
-            )
+            speaker.speak(text=f"You are not connected to the internet {models.env.title}!")
             return
         if ssid := get_connection_info():
             ssid = f"for the connection {ssid} "
@@ -208,9 +203,7 @@ def get_connection_info(target: str = "SSID") -> str | None:
         elif models.settings.os == enums.SupportedPlatforms.windows:
             process = subprocess.check_output("netsh wlan show interfaces", shell=True)
         else:
-            process = subprocess.check_output(
-                "nmcli -t -f name connection show --active | head -n 1", shell=True
-            )
+            process = subprocess.check_output("nmcli -t -f name connection show --active | head -n 1", shell=True)
     except (
         subprocess.CalledProcessError,
         subprocess.SubprocessError,
@@ -225,22 +218,14 @@ def get_connection_info(target: str = "SSID") -> str | None:
     if models.settings.os == enums.SupportedPlatforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
-            logger.error(
-                "Failed to fetch %s with exit code [%s]: %s", target, error, err
-            )
+            logger.error("Failed to fetch %s with exit code [%s]: %s", target, error, err)
             return
         # noinspection PyTypeChecker
         return dict(
-            map(str.strip, info.split(": "))
-            for info in out.decode("utf-8").splitlines()[:-1]
-            if len(info.split()) == 2
+            map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if len(info.split()) == 2
         ).get(target)
     elif models.settings.os == enums.SupportedPlatforms.windows:
-        if result := [
-            i.decode().strip()
-            for i in process.splitlines()
-            if i.decode().strip().startswith(target)
-        ]:
+        if result := [i.decode().strip() for i in process.splitlines() if i.decode().strip().startswith(target)]:
             return result[0].split(":")[-1].strip()
         else:
             logger.error("Failed to fetch %s", target)
@@ -259,9 +244,7 @@ def speed_test(*args) -> None:
         st = Speedtest()
     except ConfigRetrievalError as error:
         logger.error(error)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to connect to the speed test server."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the speed test server.")
         return
     client_location = location.get_location_from_coordinates(coordinates=st.lat_lon)
     city = (
@@ -287,9 +270,7 @@ def speed_test(*args) -> None:
     ping = round(st.results.ping)
     download = support.size_converter(byte_size=st.results.download)
     upload = support.size_converter(byte_size=st.results.upload)
-    support.write_screen(
-        text=f"Ping: {ping}m/s\tDownload: {download}\tUpload: {upload}"
-    )
+    support.write_screen(text=f"Ping: {ping}m/s\tDownload: {download}\tUpload: {upload}")
     speaker.speak(
         text=f"Ping rate: {ping} milli seconds. "
         f"Download speed: {download} per second. "

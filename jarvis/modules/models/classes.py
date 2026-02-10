@@ -81,9 +81,7 @@ class Settings(BaseModel):
     weather_onecall: bool = False
 
     os: str = platform.system()
-    if os == enums.SupportedPlatforms.macOS and Version(
-        platform.mac_ver()[0]
-    ) < Version("10.14"):
+    if os == enums.SupportedPlatforms.macOS and Version(platform.mac_ver()[0]) < Version("10.14"):
         raise DeprecationWarning(
             f"\nmacOS {platform.mac_ver()[0]} has been deprecated\n"
             f"Please upgrade to 10.14 or above to continue using Jarvis",
@@ -182,9 +180,7 @@ class BackgroundTask(BaseModel):
 
     seconds: int
     task: constr(strip_whitespace=True)
-    ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = Field(
-        default_factory=list
-    )
+    ignore_hours: List[int] | List[str] | str | int | List[int | str] | None = Field(default_factory=list)
 
     @field_validator("task", mode="before", check_fields=True)
     def check_empty_string(cls, value):
@@ -218,15 +214,11 @@ class EnvConfig(BaseSettings):
     volume: PositiveInt = 50
     limited: bool = False
     root_user: str = getpass.getuser()
-    root_password: str | None = Field(
-        None, validation_alias=AliasChoices("root_password", "password")
-    )
+    root_password: str | None = Field(None, validation_alias=AliasChoices("root_password", "password"))
 
     # Built-in speaker config
     voice_name: str | None = None
-    speech_rate: PositiveInt | PositiveFloat = Field(
-        default=AUDIO_DRIVER.getProperty("rate")
-    )
+    speech_rate: PositiveInt | PositiveFloat = Field(default=AUDIO_DRIVER.getProperty("rate"))
 
     # Peripheral config
     camera_index: int | PositiveInt | None = None
@@ -247,15 +239,11 @@ class EnvConfig(BaseSettings):
     ntfy_username: str | None = None
     ntfy_password: str | None = None
     ntfy_topic: str | None = None
-    notify_reminders: enums.ReminderOptions | List[
-        enums.ReminderOptions
-    ] = enums.ReminderOptions.all
+    notify_reminders: enums.ReminderOptions | List[enums.ReminderOptions] = enums.ReminderOptions.all
 
     # Author specific
     author_mode: bool = False
-    startup_options: enums.StartupOptions | List[
-        enums.StartupOptions
-    ] = enums.StartupOptions.none
+    startup_options: enums.StartupOptions | List[enums.StartupOptions] = enums.StartupOptions.none
 
     # Third party api config
     weather_apikey: str | None = None
@@ -322,9 +310,7 @@ class EnvConfig(BaseSettings):
     tcc_device_name: str | None = None
 
     # Listener config
-    sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(
-        0.5, le=1, ge=0
-    )
+    sensitivity: float | PositiveInt | List[float] | List[PositiveInt] = Field(0.5, le=1, ge=0)
     porcupine_key: str | None = None
     listener_timeout: PositiveFloat | PositiveInt = 3
     listener_phrase_limit: PositiveFloat | PositiveInt = 5
@@ -389,9 +375,7 @@ class EnvConfig(BaseSettings):
         pattern = r"^https:\/\/api\.openweathermap\.org\/data\/(2\.5|3\.0)\/(weather|onecall)$"
         try:
             assert re.match(pattern, str(value))
-            settings.weather_onecall = str(value).endswith("onecall") or str(
-                value
-            ).endswith("onecall/")
+            settings.weather_onecall = str(value).endswith("onecall") or str(value).endswith("onecall/")
         except AssertionError:
             issue_link = "https://github.com/thevickypedia/Jarvis/issues/new/choose"
             raise ValueError(
@@ -437,16 +421,12 @@ class EnvConfig(BaseSettings):
         return [value]
 
     @field_validator("microphone_index", mode="before", check_fields=True)
-    def validate_microphone_index(
-        cls, value: int | PositiveInt
-    ) -> int | PositiveInt | None:
+    def validate_microphone_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates microphone index."""
         return squire.channel_validator(value, "input")
 
     @field_validator("speaker_index", mode="before", check_fields=True)
-    def validate_speaker_index(
-        cls, value: int | PositiveInt
-    ) -> int | PositiveInt | None:
+    def validate_speaker_index(cls, value: int | PositiveInt) -> int | PositiveInt | None:
         """Validates speaker index."""
         # fixme: Create an OS agnostic model for usage (currently the index value is unused)
         return squire.channel_validator(value, "output")
@@ -535,15 +515,11 @@ def env_file_loader() -> EnvConfig:
         with open(env_file.jarvis.filepath) as stream:
             env_data = yaml.load(stream, yaml.FullLoader)
         return EnvConfig(**{k.lower(): v for k, v in env_data.items()})
-    elif (
-        not env_file.jarvis.filepath.suffix
-        or env_file.jarvis.filepath.suffix.lower()
-        in (
-            ".text",
-            ".txt",
-            ".env",
-            "",
-        )
+    elif not env_file.jarvis.filepath.suffix or env_file.jarvis.filepath.suffix.lower() in (
+        ".text",
+        ".txt",
+        ".env",
+        "",
     ):
         return EnvConfig.from_env_file(env_file.jarvis.filepath)
     else:
@@ -622,9 +598,7 @@ class FileIO(BaseModel):
     speech_synthesis_wav: FilePath = os.path.join(root, "speech_synthesis.wav")
     # Store log file name in a variable as it is used in multiple modules with file IO
     speech_synthesis_cid: FilePath = os.path.join(root, "speech_synthesis.cid")
-    speech_synthesis_log: FilePath = datetime.now().strftime(
-        os.path.join("logs", "speech_synthesis_%d-%m-%Y.log")
-    )
+    speech_synthesis_log: FilePath = datetime.now().strftime(os.path.join("logs", "speech_synthesis_%d-%m-%Y.log"))
 
     # Secure Send
     secure_send: FilePath = os.path.join(root, "secure_send.yaml")
@@ -646,9 +620,7 @@ class Indicators(BaseModel):
 
     """
 
-    acknowledgement: FilePath = os.path.join(
-        indicators.__path__[0], "acknowledgement.mp3"
-    )
+    acknowledgement: FilePath = os.path.join(indicators.__path__[0], "acknowledgement.mp3")
     alarm: FilePath = os.path.join(indicators.__path__[0], "alarm.mp3")
     coin: FilePath = os.path.join(indicators.__path__[0], "coin.mp3")
     end: FilePath = os.path.join(indicators.__path__[0], "end.mp3")

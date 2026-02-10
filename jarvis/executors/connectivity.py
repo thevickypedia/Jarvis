@@ -28,9 +28,7 @@ async def wifi() -> None:
             ip_addr = socket_.getsockname()[0]
             socket_.close()
         if classes.wifi_connection.unknown_errors:
-            logger.info(
-                "Connection established with IP: %s. Resetting flags.", ip_addr
-            )
+            logger.info("Connection established with IP: %s. Resetting flags.", ip_addr)
             classes.wifi_connection.unknown_errors = 0
             classes.wifi_connection.os_errors = 0
     except OSError as error:

@@ -25,9 +25,7 @@ def face_recognition_import() -> None:
         return face_recognition
     except ImportError as error:
         logger.error(error)
-        logger.warning(
-            "face_recognition module not found. Please install it to use the FaceNet module."
-        )
+        logger.warning("face_recognition module not found. Please install it to use the FaceNet module.")
 
 
 def verify_image(filename: str | FilePath) -> bool:
@@ -97,14 +95,10 @@ class FaceNet:
             if not os.path.isdir(os.path.join(location, char_dir)):
                 continue
             for file_name in os.listdir(os.path.join(location, char_dir)):
-                if not condition_check(
-                    filename=os.path.join(location, char_dir, file_name)
-                ):
+                if not condition_check(filename=os.path.join(location, char_dir, file_name)):
                     continue
                 # loads all the files within the named repo
-                img = face_recognition_mod.load_image_file(
-                    os.path.join(location, char_dir, file_name)
-                )
+                img = face_recognition_mod.load_image_file(os.path.join(location, char_dir, file_name))
                 # generates face encoding matrix
                 if encoded := face_recognition_mod.face_encodings(img):
                     encoded = encoded[0]
@@ -113,9 +107,7 @@ class FaceNet:
                     # loads the names of each named subdirectories
                     self.train_names.append(char_dir)
 
-    def face_recognition(
-        self, location: str | FilePath, retry_count: int = 20
-    ) -> str | None:
+    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str | None:
         """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:
@@ -135,9 +127,7 @@ class FaceNet:
             # reads video from web cam
             ret, img = self.validation_video.read()
             if not ret:
-                logger.warning(
-                    "Unable to read from camera index: %d", models.env.camera_index
-                )
+                logger.warning("Unable to read from camera index: %d", models.env.camera_index)
                 continue
             # gets image from the video read above
             identifier = face_recognition_mod.face_locations(img, model=self.MODEL)
@@ -145,9 +135,7 @@ class FaceNet:
             encoded_ = face_recognition_mod.face_encodings(img, identifier)
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
-                results = face_recognition_mod.compare_faces(
-                    self.train_faces, face_encoding, self.LEARNING_RATE
-                )
+                results = face_recognition_mod.compare_faces(self.train_faces, face_encoding, self.LEARNING_RATE)
                 # if a match is found the directory name is rendered and returned as match value
                 if True in results:
                     return self.train_names[results.index(True)]
@@ -191,14 +179,10 @@ class FaceNet:
             except cv2.error as error:
                 logger.error(error)
                 img = image  # proceed without performing grayscale
-            scale_factor = (
-                1.1  # specify how much the image size is reduced at each image scale
-            )
+            scale_factor = 1.1  # specify how much the image size is reduced at each image scale
             min_neighbors = 5  # specify how many neighbors each candidate rectangle should have to retain it
             img = cv2.flip(img, 1) if mirror else img
-            faces = cascade.detectMultiScale(
-                image=img, scaleFactor=scale_factor, minNeighbors=min_neighbors
-            )
+            faces = cascade.detectMultiScale(image=img, scaleFactor=scale_factor, minNeighbors=min_neighbors)
             if display:
                 # Rectangle box around each face
                 for (x, y, w, h) in faces:

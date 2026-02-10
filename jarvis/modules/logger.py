@@ -14,9 +14,7 @@ if not os.path.isdir("logs"):
     os.mkdir("logs")
 
 DEFAULT_LOG_FORM = "%(asctime)s - %(levelname)s - [%(processName)s:%(module)s:%(lineno)d] - %(funcName)s - %(message)s"
-DEFAULT_FORMATTER = logging.Formatter(
-    datefmt="%b-%d-%Y %I:%M:%S %p", fmt=DEFAULT_LOG_FORM
-)
+DEFAULT_FORMATTER = logging.Formatter(datefmt="%b-%d-%Y %I:%M:%S %p", fmt=DEFAULT_LOG_FORM)
 
 dictConfig(
     {
@@ -33,9 +31,7 @@ else:
     logger.setLevel(level=logging.INFO)
 
 
-def multiprocessing_logger(
-    filename: str, log_format: Formatter = DEFAULT_FORMATTER
-) -> str:
+def multiprocessing_logger(filename: str, log_format: Formatter = DEFAULT_FORMATTER) -> str:
     """Remove existing handlers and adds a new handler when a child process kicks in.
 
     Args:
@@ -72,16 +68,10 @@ class APIConfig(BaseModel):
 
     DEFAULT_LOG_LEVEL: str = "DEBUG" if models.env.debug else "INFO"
 
-    ACCESS_LOG_FILENAME: str = datetime.now().strftime(
-        os.path.join("logs", "jarvis_api_access_%d-%m-%Y.log")
-    )
-    DEFAULT_LOG_FILENAME: str = datetime.now().strftime(
-        os.path.join("logs", "jarvis_api_%d-%m-%Y.log")
-    )
+    ACCESS_LOG_FILENAME: str = datetime.now().strftime(os.path.join("logs", "jarvis_api_access_%d-%m-%Y.log"))
+    DEFAULT_LOG_FILENAME: str = datetime.now().strftime(os.path.join("logs", "jarvis_api_%d-%m-%Y.log"))
 
-    ACCESS_LOG_FORMAT: str = (
-        '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
-    )
+    ACCESS_LOG_FORMAT: str = '%(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
     ERROR_LOG_FORMAT: str = "%(levelname)s\t %(message)s"
 
     LOG_CONFIG: dict = {
@@ -143,9 +133,7 @@ def log_file(filename: str) -> str:
     return datetime.now().strftime(filename)
 
 
-def custom_handler(
-    filename: str = None, log_format: logging.Formatter = None
-) -> logging.FileHandler:
+def custom_handler(filename: str = None, log_format: logging.Formatter = None) -> logging.FileHandler:
     """Creates a FileHandler, sets the log format and returns it.
 
     Returns:
@@ -153,9 +141,7 @@ def custom_handler(
         Returns file handler.
     """
     handler = logging.FileHandler(
-        filename=log_file(
-            filename=filename or os.path.join("logs", "jarvis_%d-%m-%Y.log")
-        ),
+        filename=log_file(filename=filename or os.path.join("logs", "jarvis_%d-%m-%Y.log")),
         mode="a",
     )
     handler.setFormatter(fmt=log_format or DEFAULT_FORMATTER)

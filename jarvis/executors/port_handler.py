@@ -42,11 +42,7 @@ def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
         Flag to indicate whether the process was terminated successfully.
     """
     try:
-        active_sessions = (
-            subprocess.check_output(f"lsof -i {protocol}:{port}", shell=True)
-            .decode("utf-8")
-            .splitlines()
-        )
+        active_sessions = subprocess.check_output(f"lsof -i {protocol}:{port}", shell=True).decode("utf-8").splitlines()
         for each in active_sessions:
             each_split = each.split()
             if each_split[0].strip() == "Python":

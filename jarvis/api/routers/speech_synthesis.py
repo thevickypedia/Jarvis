@@ -33,20 +33,14 @@ async def speech_synthesis_voices():
         response = requests.get(url=url, timeout=3)
     except EgressErrors as error:
         logger.error(error)
-        raise APIResponse(
-            status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error)
-        )
+        raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error))
     if response.ok:
         try:
             json_response = response.json()
         except JSONDecodeError as error:
             logger.error(error)
-            raise APIResponse(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error)
-            )
-        available_voices = [
-            value.get("id").replace("/", "_") for key, value in json_response.items()
-        ]
+            raise APIResponse(status_code=HTTPStatus.INTERNAL_SERVER_ERROR.real, detail=str(error))
+        available_voices = [value.get("id").replace("/", "_") for key, value in json_response.items()]
         logger.info("Available voices: %d", len(available_voices))
         logger.debug(available_voices)
         raise APIResponse(status_code=HTTPStatus.OK.real, detail=available_voices)
@@ -55,9 +49,7 @@ async def speech_synthesis_voices():
         raise APIResponse(status_code=response.status_code, detail=response.content)
 
 
-async def speech_synthesis(
-    input_data: modals.SpeechSynthesisModal, raise_for_status: bool = True
-):
+async def speech_synthesis(input_data: modals.SpeechSynthesisModal, raise_for_status: bool = True):
     """Process request to convert text to speech using the speech-synthesis API endpoint.
 
     Args:
@@ -120,6 +112,4 @@ async def speech_synthesis(
         )
     logger.error("File Not Found: %s", models.fileio.speech_synthesis_wav)
     if raise_for_status:
-        raise APIResponse(
-            status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase
-        )
+        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)

@@ -63,9 +63,7 @@ class CronExpression:
         "@hourly": "0 * * * *",
     }
 
-    def __init__(
-        self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0
-    ):
+    def __init__(self, line: str, epoch: tuple = DEFAULT_EPOCH, epoch_utc_offset: int = 0):
         """Instantiates a CronExpression object with an optionally defined epoch."""
         self.numerical_tab = []
         for key, value in self.SUBSTITUTIONS.items():
@@ -169,9 +167,7 @@ class CronExpression:
         if date_tuple:
             year, month, day, hour, mins = date_tuple
         else:
-            year, month, day, hour, mins = tuple(
-                map(int, datetime.datetime.now().strftime("%Y %m %d %H %M").split())
-            )
+            year, month, day, hour, mins = tuple(map(int, datetime.datetime.now().strftime("%Y %m %d %H %M").split()))
         given_date = datetime.date(year, month, day)
         zeroday = datetime.date(*self.epoch[:3])
         last_dom = calendar.monthrange(year, month)[-1]
@@ -332,13 +328,7 @@ if __name__ == "__main__":
     print(job.comment)
     print(job.expression)
 
-    print(
-        job.check_trigger(
-            tuple(
-                map(int, datetime.datetime.now().strftime("%Y,%m,%d,%H,%M").split(","))
-            )
-        )
-    )
+    print(job.check_trigger(tuple(map(int, datetime.datetime.now().strftime("%Y,%m,%d,%H,%M").split(",")))))
 
     print(job.check_trigger((2022, 7, 27, 0, 0)))
     print(job.check_trigger((2022, 7, 26, 0, 0)))

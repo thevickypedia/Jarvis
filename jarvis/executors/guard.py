@@ -128,9 +128,7 @@ def guard_disable(*args) -> None:
 def security_runner(offline: bool = True) -> None:
     """Enables microphone and camera to watch and listen for potential threats. Notifies if any."""
     if offline:
-        multiprocessing_logger(
-            filename=os.path.join("logs", "guardian_mode_%d-%m-%Y.log")
-        )
+        multiprocessing_logger(filename=os.path.join("logs", "guardian_mode_%d-%m-%Y.log"))
     notified, converted = None, None
     face_object = face.FaceNet()
     while True:
@@ -147,12 +145,8 @@ def security_runner(offline: bool = True) -> None:
             logger.info("Conversation::%s", converted)
         try:
             if not models.env.debug:  # Skip face recognition when DEBUG mode is enabled
-                if recognized := face_object.face_recognition(
-                    location=os.path.realpath("train"), retry_count=1
-                ):
-                    logger.warning(
-                        "Located '%s' when guardian mode was enabled.", recognized
-                    )
+                if recognized := face_object.face_recognition(location=os.path.realpath("train"), retry_count=1):
+                    logger.warning("Located '%s' when guardian mode was enabled.", recognized)
                     continue
             if not face_object.face_detection(filename=face_detected, mirror=True):
                 face_detected = None
@@ -199,8 +193,7 @@ def guard_enable(*args) -> None:
         if models.settings.os == enums.SupportedPlatforms.linux:
             pname = (models.settings.pname or "offline communicator").replace("_", " ")
             speaker.speak(
-                text=f"Security mode cannot be enabled via {pname}, as the host "
-                "machine is running on Linux OS"
+                text=f"Security mode cannot be enabled via {pname}, as the host " "machine is running on Linux OS"
             )
             return
         process = Process(target=security_runner)
@@ -208,9 +201,7 @@ def guard_enable(*args) -> None:
         with models.db.connection as connection:
             cursor = connection.cursor()
             cursor.execute("UPDATE children SET guard=null")
-            cursor.execute(
-                "INSERT or REPLACE INTO children (guard) VALUES (?);", (process.pid,)
-            )
+            cursor.execute("INSERT or REPLACE INTO children (guard) VALUES (?);", (process.pid,))
             connection.commit()
         return
     TRACE["status"] = True
@@ -238,17 +229,14 @@ def threat_notify(converted: str, face_detected: str | None) -> None:
             body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\nINTRUDER SPOKE: {converted}\n\n"
             f"Intruder picture has been sent to {recipient}",
         )
-        rendered = jinja2.Template(templates.email.threat_image_audio).render(
-            CONVERTED=converted
-        )
+        rendered = jinja2.Template(templates.email.threat_image_audio).render(CONVERTED=converted)
     elif face_detected:
         communicator.send_sms(
             user=models.env.open_gmail_user,
             password=models.env.open_gmail_pass,
             number=models.env.phone_number,
             subject="!!INTRUDER ALERT!!",
-            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
-            "Check your email for more information.",
+            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n" "Check your email for more information.",
         )
         rendered = jinja2.Template(templates.email.threat_image).render()
     elif converted:
@@ -257,12 +245,9 @@ def threat_notify(converted: str, face_detected: str | None) -> None:
             password=models.env.open_gmail_pass,
             number=models.env.phone_number,
             subject="!!INTRUDER ALERT!!",
-            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n"
-            "Check your email for more information.",
+            body=f"{datetime.now().strftime('%B %d, %Y %I:%M %p')}\n" "Check your email for more information.",
         )
-        rendered = jinja2.Template(templates.email.threat_audio).render(
-            CONVERTED=converted
-        )
+        rendered = jinja2.Template(templates.email.threat_audio).render(CONVERTED=converted)
     else:
         logger.warning("Un-processable arguments received.")
         return

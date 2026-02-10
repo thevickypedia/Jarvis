@@ -29,9 +29,7 @@ def kill_power() -> None:
         cursor.connection.commit()
 
 
-async def process_ok_response(
-    response: str, input_data: modals.OfflineCommunicatorModal
-) -> bytes | FileResponse:
+async def process_ok_response(response: str, input_data: modals.OfflineCommunicatorModal) -> bytes | FileResponse:
     """Processes responses for 200 messages. Response is framed as synthesized or native based on input data.
 
     Args:
@@ -74,9 +72,7 @@ async def process_ok_response(
     raise APIResponse(status_code=HTTPStatus.OK.real, detail=response)
 
 
-async def offline_communicator_api(
-    request: Request, input_data: modals.OfflineCommunicatorModal
-):
+async def offline_communicator_api(request: Request, input_data: modals.OfflineCommunicatorModal):
     """Offline Communicator API endpoint for Jarvis.
 
     Args:
@@ -106,21 +102,14 @@ async def offline_communicator_api(
         request.headers.get("user-agent"),
     )
     if not (command := input_data.command.strip()):
-        raise APIResponse(
-            status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase
-        )
+        raise APIResponse(status_code=HTTPStatus.NO_CONTENT.real, detail=HTTPStatus.NO_CONTENT.phrase)
 
     logger.info("Request: %s", command)
     if command.lower() == "test":
         logger.info("Test message received.")
-        raise APIResponse(
-            status_code=HTTPStatus.OK.real, detail="Test message received."
-        )
+        raise APIResponse(status_code=HTTPStatus.OK.real, detail="Test message received.")
 
-    if (
-        word_match.word_match(phrase=command, match_list=keywords.keywords["kill"])
-        and "override" in command.lower()
-    ):
+    if word_match.word_match(phrase=command, match_list=keywords.keywords["kill"]) and "override" in command.lower():
         logger.info("STOP override has been requested.")
         Thread(target=kill_power).start()
         return await process_ok_response(
@@ -128,21 +117,15 @@ async def offline_communicator_api(
             input_data=input_data,
         )
 
-    if word_match.word_match(
-        phrase=command, match_list=keywords.keywords["restrictions"]
-    ):
+    if word_match.word_match(phrase=command, match_list=keywords.keywords["restrictions"]):
         try:
             raise APIResponse(
                 status_code=HTTPStatus.OK.real,
                 detail=restrictions.handle_restrictions(phrase=command),
             )
         except InvalidArgument as error:
-            raise APIResponse(
-                status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__()
-            )
-    if word_match.word_match(
-        phrase=command, match_list=keywords.keywords["secrets"]
-    ) and word_match.word_match(
+            raise APIResponse(status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__())
+    if word_match.word_match(phrase=command, match_list=keywords.keywords["secrets"]) and word_match.word_match(
         phrase=command, match_list=("list", "get", "send", "create", "share")
     ):
         secret = secure_send.secrets(phrase=command)
@@ -159,9 +142,7 @@ async def offline_communicator_api(
 
     if "alarm" in command.lower() or "remind" in command.lower():
         command = command.lower()
-    if " and " in command and not word_match.word_match(
-        phrase=command, match_list=keywords.ignore_and
-    ):
+    if " and " in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
         and_phrases = command.split(" and ")
         logger.info("Looping through %s in iterations.", and_phrases)
         and_response = ""
@@ -175,9 +156,7 @@ async def offline_communicator_api(
         logger.info("Response: %s", and_response.strip())
         return await process_ok_response(response=and_response, input_data=input_data)
 
-    if " after " in command.lower() and not word_match.word_match(
-        phrase=command, match_list=keywords.ignore_after
-    ):
+    if " after " in command.lower() and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info(
                 "%s will be executed after %s",

@@ -69,18 +69,14 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             path=APIPath.surveillance_authenticate,
             dependencies=authenticator.SURVEILLANCE_PROTECTOR,
         ),
-        APIRoute(
-            endpoint=surveillance.monitor, methods=["GET"], path=APIPath.surveillance
-        ),
+        APIRoute(endpoint=surveillance.monitor, methods=["GET"], path=APIPath.surveillance),
         APIRoute(
             endpoint=surveillance.video_feed,
             methods=["GET"],
             path=APIPath.video_feed,
             include_in_schema=False,
         ),
-        APIWebSocketRoute(
-            endpoint=surveillance.websocket_endpoint, path=APIPath.surveillance_ws
-        ),
+        APIWebSocketRoute(endpoint=surveillance.websocket_endpoint, path=APIPath.surveillance_ws),
         APIRoute(
             endpoint=speech_synthesis.speech_synthesis_voices,
             methods=["GET"],

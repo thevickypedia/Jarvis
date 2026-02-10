@@ -12,18 +12,12 @@ from jarvis.modules.utils import support, util
 
 def system_info(phrase: str) -> None:
     """Tells the system configuration and current statistics."""
-    vitals = word_match.word_match(
-        phrase=phrase, match_list=keywords.keywords["system_vitals"]
-    )
+    vitals = word_match.word_match(phrase=phrase, match_list=keywords.keywords["system_vitals"])
 
     if vitals:
-        cpu_percent = ThreadPool(processes=1).apply_async(
-            psutil.cpu_percent, kwds={"interval": 3}
-        )
+        cpu_percent = ThreadPool(processes=1).apply_async(psutil.cpu_percent, kwds={"interval": 3})
 
-    if models.settings.distro.get("distributor_id") and models.settings.distro.get(
-        "release"
-    ):
+    if models.settings.distro.get("distributor_id") and models.settings.distro.get("release"):
         system = f"{models.settings.distro['distributor_id']} {models.settings.distro['release']}"
     else:
         system = f"{models.settings.os_name} {models.settings.os_version}"

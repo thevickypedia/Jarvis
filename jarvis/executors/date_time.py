@@ -22,28 +22,20 @@ def current_time(converted: str = None) -> None:
         located = location.geo_locator.reverse(coordinates, language="en")
         address = located.raw.get("address", {})
         city, state = address.get("city"), address.get("state")
-        time_location = (
-            f"{city} {state}".replace("None", "") if city or state else place
-        )
-        zone = TimezoneFinder().timezone_at(
-            lat=place_tz.latitude, lng=place_tz.longitude
-        )
+        time_location = f"{city} {state}".replace("None", "") if city or state else place
+        zone = TimezoneFinder().timezone_at(lat=place_tz.latitude, lng=place_tz.longitude)
         datetime_zone = datetime.now(pytz.timezone(zone))
         date_tz = datetime_zone.strftime("%A, %B %d, %Y")
         time_tz = datetime_zone.strftime("%I:%M %p")
         dt_string = datetime.now().strftime("%A, %B %d, %Y")
         if date_tz != dt_string:
             date_tz = datetime_zone.strftime("%A, %B %d")
-            speaker.speak(
-                text=f"The current time in {time_location} is {time_tz}, on {date_tz}."
-            )
+            speaker.speak(text=f"The current time in {time_location} is {time_tz}, on {date_tz}.")
         else:
             speaker.speak(text=f"The current time in {time_location} is {time_tz}.")
     else:
         if shared.called["report"]:
-            speaker.speak(
-                text=f"The current time is, {datetime.now().strftime('%I:%M %p')}."
-            )
+            speaker.speak(text=f"The current time is, {datetime.now().strftime('%I:%M %p')}.")
             return
         speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
 

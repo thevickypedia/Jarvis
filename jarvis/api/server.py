@@ -34,9 +34,7 @@ def jarvis_api() -> None:
 
         # This might terminate Jarvis
         if not port_handler.kill_port_pid(port=models.env.offline_port):
-            logger.critical(
-                "ATTENTION::Failed to kill existing PID. Attempting to re-create session."
-            )
+            logger.critical("ATTENTION::Failed to kill existing PID. Attempting to re-create session.")
 
     # Uvicorn config supports the module as a value for the arg 'app' which can be from relative imports
     # However, in this case, using relative imports will mess with the logger since it is shared across multiple process
@@ -53,9 +51,7 @@ def jarvis_api() -> None:
     }
 
     logger.debug(argument_dict)
-    logger.info(
-        "Starting FastAPI on Uvicorn server with %d workers.", models.env.workers
-    )
+    logger.info("Starting FastAPI on Uvicorn server with %d workers.", models.env.workers)
 
     server_conf = uvicorn.Config(**argument_dict)
     APIServer(config=server_conf).run_in_parallel()

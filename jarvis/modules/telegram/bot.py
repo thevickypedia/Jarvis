@@ -34,9 +34,7 @@ from jarvis.modules.utils import support, util
 
 USER_TITLE = {}
 BASE_URL = f"https://api.telegram.org/bot{models.env.bot_token}"
-FILE_CONTENT_URL = (
-        f"https://api.telegram.org/file/bot{models.env.bot_token}/" + "{file_path}"
-)
+FILE_CONTENT_URL = f"https://api.telegram.org/file/bot{models.env.bot_token}/" + "{file_path}"
 
 
 def username_is_valid(username: str) -> bool:
@@ -53,9 +51,7 @@ def greeting() -> str:
         str:
         Random greeting.
     """
-    return random.choice(
-        ("Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "Cheers")
-    )
+    return random.choice(("Greetings", "Hello", "Welcome", "Bonjour", "Hey there", "Cheers"))
 
 
 def get_title_by_name(name: str) -> str:
@@ -72,9 +68,7 @@ def get_title_by_name(name: str) -> str:
         return models.env.title
     logger.info("Identifying gender for '%s'", name)
     try:
-        response = requests.get(
-            url=f"https://api.genderize.io/?name={name}", timeout=(3, 3)
-        )
+        response = requests.get(url=f"https://api.genderize.io/?name={name}", timeout=(3, 3))
     except EgressErrors as error:
         logger.critical(error)
         return models.env.title
@@ -134,9 +128,7 @@ def _get_file(data_class: settings.Voice | settings.Document) -> bytes | None:
         bytes:
         Returns the file content as bytes.
     """
-    response = _make_request(
-        url=BASE_URL + "/getFile", payload={"file_id": data_class.file_id}
-    )
+    response = _make_request(url=BASE_URL + "/getFile", payload={"file_id": data_class.file_id})
     try:
         json_response = json.loads(response.content)
     except json.JSONDecodeError as error:
@@ -145,9 +137,7 @@ def _get_file(data_class: settings.Voice | settings.Document) -> bytes | None:
     if not response.ok or not json_response.get("ok"):
         logger.error(response.content)
         return
-    response = requests.get(
-        url=FILE_CONTENT_URL.format(file_path=json_response["result"]["file_path"])
-    )
+    response = requests.get(url=FILE_CONTENT_URL.format(file_path=json_response["result"]["file_path"]))
     if not response.ok:
         logger.error(response.content)
         return
@@ -175,9 +165,7 @@ def _make_request(url: str, payload: dict, files: dict = None) -> requests.Respo
     return response
 
 
-def send_audio(
-        chat_id: int, filename: str | FilePath, parse_mode: str = "HTML"
-) -> requests.Response:
+def send_audio(chat_id: int, filename: str | FilePath, parse_mode: str = "HTML") -> requests.Response:
     """Sends an audio file to the user.
 
     Args:
@@ -198,9 +186,7 @@ def send_audio(
     )
 
 
-def send_document(
-        chat_id: int, filename: str | FilePath, parse_mode: str = "HTML"
-) -> requests.Response:
+def send_document(chat_id: int, filename: str | FilePath, parse_mode: str = "HTML") -> requests.Response:
     """Sends a document to the user.
 
     Args:
@@ -245,10 +231,10 @@ def send_photo(chat_id: int, filename: str | FilePath) -> requests.Response:
 
 
 def reply_to(
-        chat: settings.Chat,
-        response: str,
-        parse_mode: str | None = "markdown",
-        retry: bool = False,
+    chat: settings.Chat,
+    response: str,
+    parse_mode: str | None = "markdown",
+    retry: bool = False,
 ) -> requests.Response:
     """Generates a payload to reply to a message received.
 
@@ -279,10 +265,10 @@ def reply_to(
 
 
 def send_message(
-        chat_id: int,
-        response: str,
-        parse_mode: str | None = "markdown",
-        retry: bool = False,
+    chat_id: int,
+    response: str,
+    parse_mode: str | None = "markdown",
+    retry: bool = False,
 ) -> requests.Response:
     """Generates a payload to reply to a message received.
 
@@ -322,9 +308,7 @@ def poll_for_messages(offset: int) -> None | int:
     See Also:
         Swaps ``offset`` value during every iteration to avoid reprocessing messages.
     """
-    response = _make_request(
-        url=BASE_URL + "/getUpdates", payload={"offset": offset, "timeout": 60}
-    )
+    response = _make_request(url=BASE_URL + "/getUpdates", payload={"offset": offset, "timeout": 60})
     if response.ok:
         response = response.json()
     else:
@@ -332,8 +316,8 @@ def poll_for_messages(offset: int) -> None | int:
             err_desc = response.json().get("description")
             # If it has come to this, then webhook has already failed
             if err_desc == (
-                    "Conflict: can't use getUpdates method while webhook is active; "
-                    "use deleteWebhook to delete the webhook first"
+                "Conflict: can't use getUpdates method while webhook is active; "
+                "use deleteWebhook to delete the webhook first"
             ):
                 raise BotWebhookConflict(err_desc)
             raise BotInUse(err_desc)
@@ -402,15 +386,9 @@ def authenticate(chat: settings.Chat) -> bool:
             response=f"Sorry {chat.first_name}! I can't process requests from bots.",
         )
         return False
-    if chat.id not in models.env.bot_chat_ids or not username_is_valid(
-            username=chat.username
-    ):
-        logger.error(
-            "Unauthorized chatID [%d] or userName [%s]", chat.id, chat["username"]
-        )
-        send_message(
-            chat_id=chat.id, response=f"401 Unauthorized user: ({chat['username']})"
-        )
+    if chat.id not in models.env.bot_chat_ids or not username_is_valid(username=chat.username):
+        logger.error("Unauthorized chatID [%d] or userName [%s]", chat.id, chat["username"])
+        send_message(chat_id=chat.id, response=f"401 Unauthorized user: ({chat['username']})")
         return False
     if not USER_TITLE.get(chat.username):
         USER_TITLE[chat.username] = get_title_by_name(name=chat.first_name)
@@ -449,15 +427,11 @@ def verify_stop(chat: settings.Chat, data_class: settings.Text) -> bool:
         bool:
         Boolean flag to indicate whether to proceed.
     """
-    if not word_match.word_match(
-            phrase=data_class.text, match_list=keywords.keywords["kill"]
-    ):
+    if not word_match.word_match(phrase=data_class.text, match_list=keywords.keywords["kill"]):
         return True
     if "override" in data_class.text.lower():
         logger.info("%s requested a STOP override.", chat.username)
-        reply_to(
-            chat, f"Shutting down now {models.env.title}!\n{support.exit_message()}"
-        )
+        reply_to(chat, f"Shutting down now {models.env.title}!\n{support.exit_message()}")
         with models.db.connection as connection:
             cursor = connection.cursor()
             cursor.execute(
@@ -472,9 +446,7 @@ def verify_stop(chat: settings.Chat, data_class: settings.Text) -> bool:
         )
 
 
-def process_photo(
-        chat: settings.Chat, data_class: List[settings.PhotoFragment]
-) -> None:
+def process_photo(chat: settings.Chat, data_class: List[settings.PhotoFragment]) -> None:
     """Processes a photo input.
 
     Args:
@@ -533,14 +505,10 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
         converted = False
         if models.settings.os == enums.SupportedPlatforms.macOS:
             transcode = audio_handler.audio_converter_mac()
-            if transcode and transcode(
-                    input_file_name=filename, output_audio_format="flac"
-            ):
+            if transcode and transcode(input_file_name=filename, output_audio_format="flac"):
                 converted = True
         elif models.settings.os == enums.SupportedPlatforms.windows:
-            if audio_handler.audio_converter_win(
-                    input_filename=filename, output_audio_format="flac"
-            ):
+            if audio_handler.audio_converter_win(input_filename=filename, output_audio_format="flac"):
                 converted = True
         if converted:
             os.remove(filename)
@@ -557,8 +525,7 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
     # Catches both unconverted source ogg and unconverted audio to text
     title = USER_TITLE.get(chat.username, models.env.title)
     if filename := tts_stt.text_to_audio(
-            text=f"I'm sorry {title}! I was unable to process your voice command. "
-                 "Please try again!"
+        text=f"I'm sorry {title}! I was unable to process your voice command. " "Please try again!"
     ):
         send_audio(filename=filename, chat_id=chat.id)
         os.remove(filename)
@@ -566,9 +533,7 @@ def process_voice(chat: settings.Chat, data_class: settings.Voice) -> None:
         reply_to(chat, "Failed to convert audio. Please try text input.")
 
 
-def process_document(
-        chat: settings.Chat, data_class: settings.Document | settings.Audio | settings.Video
-) -> None:
+def process_document(chat: settings.Chat, data_class: settings.Document | settings.Audio | settings.Video) -> None:
     """Processes the document in payload received after checking for authentication.
 
     Args:
@@ -576,9 +541,7 @@ def process_document(
         data_class: Required section of the payload as Document object.
     """
     if bytes_obj := _get_file(data_class):
-        response = file_handler.put_file(
-            filename=data_class.file_name, file_content=bytes_obj
-        )
+        response = file_handler.put_file(filename=data_class.file_name, file_content=bytes_obj)
         send_message(chat_id=chat.id, response=response, parse_mode=None)
     else:
         title = USER_TITLE.get(chat.username, models.env.title)
@@ -610,29 +573,28 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
     data_class.text = data_class.text.replace("override", "").replace("OVERRIDE", "")
     text_lower = data_class.text.lower()
     if match_word := word_match.word_match(
-            phrase=text_lower,
-            match_list=(
-                    "hey",
-                    "hola",
-                    "what's up",
-                    "ssup",
-                    "whats up",
-                    "hello",
-                    "hi",
-                    "howdy",
-                    "hey",
-                    "chao",
-                    "hiya",
-                    "aloha",
-            ),
-            strict=True,
+        phrase=text_lower,
+        match_list=(
+            "hey",
+            "hola",
+            "what's up",
+            "ssup",
+            "whats up",
+            "hello",
+            "hi",
+            "howdy",
+            "hey",
+            "chao",
+            "hiya",
+            "aloha",
+        ),
+        strict=True,
     ):
         rest_of_msg = data_class.text.replace(match_word, "")
         if not rest_of_msg or "jarvis" in rest_of_msg.strip().lower():
             reply_to(
                 chat,
-                f"{greeting()} {chat.first_name}!\n"
-                f"Good {util.part_of_day()}! How can I be of service today?",
+                f"{greeting()} {chat.first_name}!\n" f"Good {util.part_of_day()}! How can I be of service today?",
             )
             return
     if data_class.text.startswith("/"):
@@ -643,9 +605,7 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
                 "*Deprecation Notice*\n\nSlash commands ('/') have been deprecated. Please use "
                 "commands directly instead.",
             )
-        data_class.text = (
-            data_class.text.lstrip("/").replace("jarvis", "").replace("_", " ").strip()
-        )
+        data_class.text = data_class.text.lstrip("/").replace("jarvis", "").replace("_", " ").strip()
     if text_lower == "start":
         send_message(chat.id, f"{greeting()} {chat.first_name}! {intro()}")
         return
@@ -653,22 +613,20 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
         send_message(
             chat_id=chat.id,
             response=f"{greeting()} {chat.first_name}!\n"
-                     f"Good {util.part_of_day()}! {intro()}\n\n"
-                     "Please reach out at https://vigneshrao.com/contact for more info.",
+            f"Good {util.part_of_day()}! {intro()}\n\n"
+            "Please reach out at https://vigneshrao.com/contact for more info.",
         )
         return
     if not data_class.text:
         return
     split_text = text_lower.split()
     if ("file" in split_text or "files" in split_text) and (
-            "send" in split_text or "get" in split_text or "list" in split_text
+        "send" in split_text or "get" in split_text or "list" in split_text
     ):
         if "list" in split_text and ("files" in split_text or "file" in split_text):
             # Set parse_mode to an explicit None, so the API doesn't try to parse as HTML or Markdown
             # since the result has file names and paths
-            send_message(
-                chat_id=chat.id, response=file_handler.list_files(), parse_mode=None
-            )
+            send_message(chat_id=chat.id, response=file_handler.list_files(), parse_mode=None)
             return
         _, _, filename = data_class.text.partition(" file ")
         if filename:
@@ -680,13 +638,10 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
         else:
             reply_to(
                 chat,
-                "No filename was received. "
-                "Please include only the filename after the keyword 'file'.",
+                "No filename was received. " "Please include only the filename after the keyword 'file'.",
             )
         return
-    if word_match.word_match(
-            phrase=data_class.text, match_list=keywords.keywords["restrictions"]
-    ):
+    if word_match.word_match(phrase=data_class.text, match_list=keywords.keywords["restrictions"]):
         try:
             response = restrictions.handle_restrictions(phrase=data_class.text)
         except InvalidArgument as error:
@@ -694,9 +649,7 @@ def process_text(chat: settings.Chat, data_class: settings.Text) -> None:
         send_message(chat_id=chat.id, response=response)
         return
     # this feature for telegram bot relies on Jarvis API to function
-    if word_match.word_match(
-            phrase=data_class.text, match_list=keywords.keywords["secrets"]
-    ) and word_match.word_match(
+    if word_match.word_match(phrase=data_class.text, match_list=keywords.keywords["secrets"]) and word_match.word_match(
         phrase=data_class.text, match_list=("list", "get", "send", "create", "share")
     ):
         secret = secure_send.secrets(phrase=data_class.text)
@@ -735,28 +688,21 @@ def jarvis(command: str, chat: settings.Chat) -> None:
         send_message(chat.id, "Test message received.")
         return
 
-    if " and " in command and not word_match.word_match(
-            phrase=command, match_list=keywords.ignore_and
-    ):
+    if " and " in command and not word_match.word_match(phrase=command, match_list=keywords.ignore_and):
         and_phrases = command.split(" and ")
         logger.info("Looping through %s in iterations.", and_phrases)
         for each in and_phrases:
             executor(each, chat)
         return
 
-    if " after " in command_lower and not word_match.word_match(
-            phrase=command, match_list=keywords.ignore_after
-    ):
+    if " after " in command_lower and not word_match.word_match(phrase=command, match_list=keywords.ignore_after):
         if delay_info := commander.timed_delay(phrase=command):
             logger.info("Request: %s", delay_info[0])
             process_response(
-                "I will execute it after "
-                f"{support.time_converter(second=delay_info[1])} {models.env.title}!",
+                "I will execute it after " f"{support.time_converter(second=delay_info[1])} {models.env.title}!",
                 chat,
             )
-            logger.info(
-                "Response: Task will be executed after %d seconds", delay_info[1]
-            )
+            logger.info("Response: Task will be executed after %d seconds", delay_info[1])
             return
     executor(command, chat)
 
@@ -773,9 +719,7 @@ def executor(command: str, chat: settings.Chat) -> None:
     models.env.ollama_timeout = 60
     logger.info("Request: %s", command)
     try:
-        response = offline.communicator(command=command).replace(
-            models.env.title, USER_TITLE.get(chat.username)
-        )
+        response = offline.communicator(command=command).replace(models.env.title, USER_TITLE.get(chat.username))
     except Exception as error:
         logger.error(error)
         logger.error(traceback.format_exc())

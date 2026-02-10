@@ -66,15 +66,11 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
     except socket.error as error:
         logger.error("%s [%d] on %s", error.strerror, error.errno, hostname)
         return []
-    logger.debug(
-        {"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list}
-    )
+    logger.debug({"Hostname": _hostname, "Alias": _alias_list, "Interfaces": _ipaddr_list})
     if not _ipaddr_list:
         logger.critical("ATTENTION::No interfaces found for %s", hostname)
     elif len(_ipaddr_list) > 1:
-        logger.warning(
-            "Host %s has multiple interfaces. %s", hostname, _ipaddr_list
-        ) if localhost else None
+        logger.warning("Host %s has multiple interfaces. %s", hostname, _ipaddr_list) if localhost else None
         return _ipaddr_list
     else:
         if localhost:
@@ -104,9 +100,7 @@ def country_timezone() -> Dict[str, str]:
     return timezone_country
 
 
-def get_capitalized(
-    phrase: str, ignore: Iterable = None, dot: bool = True
-) -> str | None:
+def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> str | None:
     """Looks for words starting with an upper-case letter.
 
     Args:
@@ -125,11 +119,7 @@ def get_capitalized(
         # 1st letter should be upper-cased
         # Should not be the first word of the phrase
         # Should not be ignored
-        if (
-            word[0].isupper()
-            and idx != 0
-            and word.lower() not in map(lambda x: x.lower(), ignore)
-        ):
+        if word[0].isupper() and idx != 0 and word.lower() not in map(lambda x: x.lower(), ignore):
             place += word + " "
         elif "." in word and dot:
             place += word + " "
@@ -152,9 +142,7 @@ def unrecognized_dumper(train_data: dict) -> None:
             logger.error(error)
             os.rename(
                 src=models.fileio.training_data,
-                dst=str(models.fileio.training_data).replace(
-                    ".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."
-                ),
+                dst=str(models.fileio.training_data).replace(".", f"_{datetime.now().strftime('%m_%d_%Y_%H_%M')}."),
             )
         for key, value in train_data.items():
             if data.get(key):
@@ -195,9 +183,7 @@ def size_converter(byte_size: int | float) -> str:
         byte_size = psutil.Process(pid=models.settings.pid).memory_info().rss
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
     index = int(math.floor(math.log(byte_size, 1024)))
-    return (
-        f"{util.format_nos(round(byte_size / pow(1024, index), 2))} {size_name[index]}"
-    )
+    return f"{util.format_nos(round(byte_size / pow(1024, index), 2))} {size_name[index]}"
 
 
 def check_restart() -> List[str]:
@@ -246,9 +232,7 @@ def build_lookup() -> List[str]:
         if day == day_str:
             floating_days[0] = day_str
             floating_days[7] = day_str
-            for i, j in zip(
-                range(idx + 1, len(days_in_week)), range(1, len(days_in_week))
-            ):
+            for i, j in zip(range(idx + 1, len(days_in_week)), range(1, len(days_in_week))):
                 floating_days[j] = days_in_week[i]
             for i in range(idx):
                 floating_days[7 - (idx - i)] = days_in_week[i]
@@ -321,9 +305,7 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
     return datetime.today() + td, addon
 
 
-def extract_humanized_date(
-    phrase: str, fail_past: bool = False
-) -> Tuple[datetime.date, str, str] | None:
+def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[datetime.date, str, str] | None:
     """Converts most humanized date into datetime object.
 
     Args:
@@ -420,11 +402,7 @@ def exit_message() -> str:
         exit_msg = f"Have a nice day, and happy {day}."
     elif am_pm == "AM" and int(hour) >= 10:
         exit_msg = f"Enjoy your {day}."
-    elif (
-        am_pm == "PM"
-        and (int(hour) == 12 or int(hour) < 3)
-        and day in ["Friday", "Saturday"]
-    ):
+    elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3) and day in ["Friday", "Saturday"]:
         exit_msg = "Have a nice afternoon, and enjoy your weekend."
     elif am_pm == "PM" and (int(hour) == 12 or int(hour) < 3):
         exit_msg = "Have a nice afternoon."
@@ -452,9 +430,7 @@ def no_env_vars() -> None:
 def unsupported_features() -> None:
     """Says a message about unsupported features."""
     logger.error("Called by: %s", sys._getframe(1).f_code.co_name)  # noqa
-    speaker.speak(
-        text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!"
-    )
+    speaker.speak(text=f"I'm sorry {models.env.title}! This feature is yet to be implemented on {models.settings.os}!")
 
 
 def write_screen(text: Any) -> None:
@@ -504,9 +480,7 @@ def number_to_words(input_: int | str, capitalize: bool = False) -> str:
     return result[0].upper() + result[1:] if capitalize else result
 
 
-def pluralize(
-    count: int, word: str, to_words: bool = False, cap_word: bool = False
-) -> str:
+def pluralize(count: int, word: str, to_words: bool = False, cap_word: bool = False) -> str:
     """Helper for ``time_converter`` function.
 
     Args:
@@ -547,10 +521,7 @@ def time_converter(second: float) -> str:
             f"{pluralize(minute, 'minute')}, and {pluralize(second, 'second')}"
         )
     elif day and hour and minute:
-        return (
-            f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, "
-            f"and {pluralize(minute, 'minute')}"
-        )
+        return f"{pluralize(day, 'day')}, {pluralize(hour, 'hour')}, " f"and {pluralize(minute, 'minute')}"
     elif day and hour:
         return f"{pluralize(day, 'day')}, and {pluralize(hour, 'hour')}"
     elif day:
@@ -577,9 +548,7 @@ def remove_file(filepath: str, delay: int = 0) -> None:
         delay: Delay in seconds after which the requested file is to be deleted.
     """
     time.sleep(delay)
-    os.remove(filepath) if os.path.isfile(filepath) else logger.error(
-        "%s not found.", filepath
-    )
+    os.remove(filepath) if os.path.isfile(filepath) else logger.error("%s not found.", filepath)
 
 
 def stop_process(pid: int) -> None:

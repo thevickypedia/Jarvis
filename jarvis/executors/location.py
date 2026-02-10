@@ -40,8 +40,7 @@ def get_coordinates_from_ip() -> Tuple[float, float] | Tuple[float, ...]:
     except ConfigRetrievalError as error:
         logger.error(error)
         support.write_screen(
-            text="Failed to get location based on IP. Hand modify it at "
-            f"'{os.path.abspath(models.fileio.location)}'"
+            text="Failed to get location based on IP. Hand modify it at " f"'{os.path.abspath(models.fileio.location)}'"
         )
         time.sleep(5)
     return 37.230881, -93.3710393  # Default to SGF latitude and longitude
@@ -82,9 +81,7 @@ def write_current_location() -> None:
         logger.warning("Automatic location detection has been disabled!")
         return
     current_lat, current_lon = get_coordinates_from_ip()
-    location_info = get_location_from_coordinates(
-        coordinates=(current_lat, current_lon)
-    )
+    location_info = get_location_from_coordinates(coordinates=(current_lat, current_lon))
     current_tz = TimezoneFinder().timezone_at(lat=current_lat, lng=current_lon)
     logger.info("Writing location info in %s", models.fileio.location)
     with open(models.fileio.location, "w") as location_writer:
@@ -123,9 +120,7 @@ def distance(phrase) -> None:
         # looks for words that start with uppercase
         if word[0].isupper() or "." in word:
             try:
-                next_word = check[
-                    check.index(word) + 1
-                ]  # looks if words after an uppercase word is also one
+                next_word = check[check.index(word) + 1]  # looks if words after an uppercase word is also one
                 if next_word[0].isupper():
                     places.append(f"{word + ' ' + check[check.index(word) + 1]}")
                 else:
@@ -166,15 +161,9 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         speaker.speak(text="Destination please?", run=True)
         if destination := listener.listen():
             if len(destination.split()) > 2:
-                speaker.speak(
-                    text=f"I asked for a destination {models.env.title}, not a sentence. Try again."
-                )
+                speaker.speak(text=f"I asked for a destination {models.env.title}, not a sentence. Try again.")
                 distance_controller()
-            if (
-                "exit" in destination
-                or "quit" in destination
-                or "Xzibit" in destination
-            ):
+            if "exit" in destination or "quit" in destination or "Xzibit" in destination:
                 return
 
     if origin:
@@ -191,9 +180,7 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         end = desired_location.latitude, desired_location.longitude
     else:
         end = destination[0], destination[1]
-    if not all(isinstance(v, float) for v in start) or not all(
-        isinstance(v, float) for v in end
-    ):
+    if not all(isinstance(v, float) for v in start) or not all(isinstance(v, float) for v in end):
         speaker.speak(text=f"I don't think {destination} exists {models.env.title}!")
         return
     if models.env.distance_unit == models.DistanceUnits.MILES:
@@ -208,28 +195,20 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         t_taken = dist / avg_speed
         if dist < avg_speed:
             drive_time = int(t_taken * 60)
-            speaker.speak(
-                text=f"It might take you about {drive_time} minutes to get there {models.env.title}!"
-            )
+            speaker.speak(text=f"It might take you about {drive_time} minutes to get there {models.env.title}!")
         else:
             drive_time = math.ceil(t_taken)
             if drive_time == 1:
-                speaker.speak(
-                    text=f"It might take you about {drive_time} hour to get there {models.env.title}!"
-                )
+                speaker.speak(text=f"It might take you about {drive_time} hour to get there {models.env.title}!")
             else:
-                speaker.speak(
-                    text=f"It might take you about {drive_time} hours to get there {models.env.title}!"
-                )
+                speaker.speak(text=f"It might take you about {drive_time} hours to get there {models.env.title}!")
     elif start_check:
         text = f"{models.env.title}! You're {dist} {models.env.distance_unit.value} away from {destination}. "
         if not shared.called["locate_places"]:
             text += f"You may also ask where is {destination}"
         speaker.speak(text=text)
     else:
-        speaker.speak(
-            text=f"{origin} is {dist} {models.env.distance_unit.value} away from {destination}."
-        )
+        speaker.speak(text=f"{origin} is {dist} {models.env.distance_unit.value} away from {destination}.")
     return
 
 
@@ -247,17 +226,10 @@ def locate_places(phrase: str = None) -> None:
         place = after_keyword.replace(" in", "").strip()
     if not place:
         if shared.called_by_offline:
-            speaker.speak(
-                text=f"I need a location to get you the details {models.env.title}!"
-            )
+            speaker.speak(text=f"I need a location to get you the details {models.env.title}!")
             return
         speaker.speak(text="Tell me the name of a place!", run=True)
-        if (
-            not (converted := listener.listen())
-            or "exit" in converted
-            or "quit" in converted
-            or "Xzibit" in converted
-        ):
+        if not (converted := listener.listen()) or "exit" in converted or "quit" in converted or "Xzibit" in converted:
             return
         place = support.get_capitalized(phrase=converted)
         if not place:
@@ -291,16 +263,12 @@ def locate_places(phrase: str = None) -> None:
             if country == current_location["address"]["country"]:
                 speaker.speak(text=f"{place} is in {city or county}, {state}")
             else:
-                speaker.speak(
-                    text=f"{place} is in {city or county}, {state}, in {country}"
-                )
+                speaker.speak(text=f"{place} is in {city or county}, {state}, in {country}")
         if shared.called_by_offline:
             return
         shared.called["locate_places"] = True
     except (TypeError, AttributeError):
-        speaker.speak(
-            text=f"{place} is not a real place on Earth {models.env.title}! Try again."
-        )
+        speaker.speak(text=f"{place} is not a real place on Earth {models.env.title}! Try again.")
         if shared.called_by_offline:
             return
         locate_places(phrase=None)
@@ -324,9 +292,7 @@ def directions(phrase: str = None, no_repeat: bool = False) -> None:
             if not place:
                 if no_repeat:
                     return
-                speaker.speak(
-                    text=f"I can't take you to anywhere without a location {models.env.title}!"
-                )
+                speaker.speak(text=f"I can't take you to anywhere without a location {models.env.title}!")
                 directions(phrase=None, no_repeat=True)
             if "exit" in place or "quit" in place or "Xzibit" in place:
                 return

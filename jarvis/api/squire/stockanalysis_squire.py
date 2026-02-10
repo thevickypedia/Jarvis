@@ -23,9 +23,7 @@ def ticker_gatherer(character: str) -> None:
         character: ASCII character (alphabet) with which the stock ticker name starts.
     """
     try:
-        response = requests.get(
-            url=f"https://www.eoddata.com/stocklist/NASDAQ/{character}.htm"
-        )
+        response = requests.get(url=f"https://www.eoddata.com/stocklist/NASDAQ/{character}.htm")
     except EgressErrors as error:
         logger.error(error)
         return
@@ -40,9 +38,7 @@ def ticker_gatherer(character: str) -> None:
         settings.trader.stock_list[td2[0].text] = td2[1].text
 
 
-def thread_worker(
-    function_to_call: Callable, iterable: List | Iterable, workers: int = None
-) -> None:
+def thread_worker(function_to_call: Callable, iterable: List | Iterable, workers: int = None) -> None:
     """Initiates ``ThreadPoolExecutor`` with in a dedicated thread.
 
     Args:
@@ -83,9 +79,7 @@ def nasdaq() -> None:
         if int(time.time()) - modified < 86_400:
             try:
                 with open(models.fileio.stock_list_backup) as file:
-                    settings.trader.stock_list = yaml.load(
-                        stream=file, Loader=yaml.FullLoader
-                    )
+                    settings.trader.stock_list = yaml.load(stream=file, Loader=yaml.FullLoader)
             except yaml.YAMLError as error:
                 logger.error(error)
             if len(settings.trader.stock_list) > 2_000:  # Usually close to ~5K
@@ -100,15 +94,11 @@ def nasdaq() -> None:
                 return
     logger.info("Gathering stock list from webull.")
     try:
-        settings.trader.stock_list = [
-            ticker.get("symbol") for ticker in webull().get_all_tickers()
-        ]
+        settings.trader.stock_list = [ticker.get("symbol") for ticker in webull().get_all_tickers()]
     except Exception as error:
         logger.error(error)
     if settings.trader.stock_list:
-        os.remove("did.bin") if os.path.isfile(
-            "did.bin"
-        ) else None  # Created by webull module
+        os.remove("did.bin") if os.path.isfile("did.bin") else None  # Created by webull module
     else:
         logger.info("Gathering stock list from eoddata.")
         thread_worker(function_to_call=ticker_gatherer, iterable=string.ascii_uppercase)

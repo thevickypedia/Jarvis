@@ -64,18 +64,12 @@ def startup() -> None:
                 starter = shutil.which(cmd="zsh")
             if not starter:
                 continue
-            script = (
-                starter + " " + os.path.join(models.fileio.startup_dir, startup_script)
-            )
+            script = starter + " " + os.path.join(models.fileio.startup_dir, startup_script)
             logger.debug("Running %s", script)
-            log_file = datetime.now().strftime(
-                os.path.join("logs", "startup_script_%d-%m-%Y.log")
-            )
+            log_file = datetime.now().strftime(os.path.join("logs", "startup_script_%d-%m-%Y.log"))
             resource_tracker.semaphores(
                 crontab.executor,
                 (script, log_file, enums.ProcessNames.startup_script.value),
             )
         else:
-            logger.warning(
-                "Unsupported file format for startup script: %s", startup_script
-            )
+            logger.warning("Unsupported file format for startup script: %s", startup_script)

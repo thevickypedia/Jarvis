@@ -11,9 +11,7 @@ from typing import Dict, List
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.models import enums, models
 
-Windows = (
-    """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
-)
+Windows = """wmic path CIM_LogicalDevice where "Description like 'USB Video%'" get /value"""
 Darwin = "system_profiler SPCameraDataType"
 Linux = "v4l2-ctl --list-devices"
 
@@ -39,19 +37,14 @@ def list_splitter(original_list: List[str], delimiter: str) -> List[List[str]]:
         Returns list of list(s).
     """
     # Split indices at the required value where the list as to be split and rebuilt as a new one
-    split_indices = [
-        index + 1
-        for index, val in enumerate(original_list)
-        if val.startswith(delimiter)
-    ]
+    split_indices = [index + 1 for index, val in enumerate(original_list) if val.startswith(delimiter)]
 
     # Rebuild the new list split at the given index value
     return [
         original_list[i:j]
         for i, j in zip(
             [0] + split_indices,
-            split_indices
-            + ([len(original_list)] if split_indices[-1] != len(original_list) else []),
+            split_indices + ([len(original_list)] if split_indices[-1] != len(original_list) else []),
         )
     ]
 
@@ -99,9 +92,7 @@ class Camera:
         """
         for cam in self.output:
             if cam.strip().startswith("/dev/video"):
-                result = subprocess.check_output(
-                    f"v4l2-ctl --device={cam.strip()} --all", shell=True
-                )
+                result = subprocess.check_output(f"v4l2-ctl --device={cam.strip()} --all", shell=True)
                 yield result.decode(encoding="UTF-8")
 
     def _list_cameras_linux(self) -> Generator[str]:
@@ -114,12 +105,8 @@ class Camera:
         for cam in self.output:
             if cam.strip().startswith("/dev/video"):
                 try:
-                    result = subprocess.check_output(
-                        f"v4l2-ctl --device={cam.strip()} --all | grep Name", shell=True
-                    )
-                    yield result.decode(encoding="UTF-8").replace(
-                        "Name", ""
-                    ).strip().lstrip(":").strip()
+                    result = subprocess.check_output(f"v4l2-ctl --device={cam.strip()} --all | grep Name", shell=True)
+                    yield result.decode(encoding="UTF-8").replace("Name", "").strip().lstrip(":").strip()
                 except subprocess.CalledProcessError:
                     continue
 

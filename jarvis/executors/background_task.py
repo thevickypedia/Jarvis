@@ -25,38 +25,24 @@ def background_task_handler(phrase: str) -> None:
                 src=models.fileio.tmp_background_tasks,
                 dst=models.fileio.background_tasks,
             )
-            speaker.speak(
-                text=f"Background tasks have been enabled {models.env.title}!"
-            )
+            speaker.speak(text=f"Background tasks have been enabled {models.env.title}!")
         elif os.path.isfile(models.fileio.background_tasks):
-            speaker.speak(
-                text=f"Background tasks were never disabled {models.env.title}!"
-            )
+            speaker.speak(text=f"Background tasks were never disabled {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I couldn't not find the source file to enable background tasks {models.env.title}!"
-            )
+            speaker.speak(text=f"I couldn't not find the source file to enable background tasks {models.env.title}!")
     elif "disable" in phrase.lower():
         if os.path.isfile(models.fileio.background_tasks):
             os.rename(
                 src=models.fileio.background_tasks,
                 dst=models.fileio.tmp_background_tasks,
             )
-            speaker.speak(
-                text=f"Background tasks have been disabled {models.env.title}!"
-            )
+            speaker.speak(text=f"Background tasks have been disabled {models.env.title}!")
         elif os.path.isfile(models.fileio.tmp_background_tasks):
-            speaker.speak(
-                text=f"Background tasks were never enabled {models.env.title}!"
-            )
+            speaker.speak(text=f"Background tasks were never enabled {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I couldn't not find the source file to disable background tasks {models.env.title}!"
-            )
+            speaker.speak(text=f"I couldn't not find the source file to disable background tasks {models.env.title}!")
     else:
-        speaker.speak(
-            text="Please specify whether you'd like to enable or disable background tasks."
-        )
+        speaker.speak(text="Please specify whether you'd like to enable or disable background tasks.")
 
 
 def compare_tasks(dict1: dict, dict2: dict) -> bool:
@@ -70,17 +56,9 @@ def compare_tasks(dict1: dict, dict2: dict) -> bool:
         bool:
         A boolean flag to if both the dictionaries are similar.
     """
-    if (
-        "ignore_hours" in dict1
-        and dict1["ignore_hours"] == []
-        and "ignore_hours" not in dict2
-    ):
+    if "ignore_hours" in dict1 and dict1["ignore_hours"] == [] and "ignore_hours" not in dict2:
         dict1.pop("ignore_hours")
-    if (
-        "ignore_hours" in dict2
-        and dict2["ignore_hours"] == []
-        and "ignore_hours" not in dict1
-    ):
+    if "ignore_hours" in dict2 and dict2["ignore_hours"] == [] and "ignore_hours" not in dict1:
         dict2.pop("ignore_hours")
     if OrderedDict(sorted(dict1.items())) == OrderedDict(sorted(dict2.items())):
         return True
@@ -151,12 +129,8 @@ def validate_tasks(log: bool = True) -> Generator[BackgroundTask]:
                 remove_corrupted(t)
                 continue
             if "restart" in task.task.lower():
-                logger.warning(
-                    "Unsupervised restarts are not allowed via background tasks. Use automation instead."
-                )
-                warnings.warn(
-                    "Unsupervised restarts are not allowed via background tasks. Use automation instead."
-                )
+                logger.warning("Unsupervised restarts are not allowed via background tasks. Use automation instead.")
+                warnings.warn("Unsupervised restarts are not allowed via background tasks. Use automation instead.")
                 continue
             if log:
                 msg = f"{task.task!r} will be executed every {support.time_converter(second=task.seconds)!r}"

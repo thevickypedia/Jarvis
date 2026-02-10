@@ -62,8 +62,7 @@ class LGWebOS:
             self._reconnect = True
             if not shared.called_by_offline:
                 speaker.speak(
-                    f"The TV's IP has either changed or unreachable {models.env.title}! "
-                    "Scanning your IP range now.",
+                    f"The TV's IP has either changed or unreachable {models.env.title}! " "Scanning your IP range now.",
                     run=True,
                 )
             if discovered := WebOSClient.discover():
@@ -92,9 +91,7 @@ class LGWebOS:
                         run=True,
                     )
                 self._reconnect = True
-                support.write_screen(
-                    text="Please accept the connection request on your TV."
-                )
+                support.write_screen(text="Please accept the connection request on your TV.")
 
         if self._reconnect:
             self._reconnect = False
@@ -114,9 +111,7 @@ class LGWebOS:
                 logger.critical(str(store))
 
         self.system = SystemControl(self.client)
-        self.system.notify(
-            "Jarvis is controlling the TV now."
-        ) if not self._init_status else None
+        self.system.notify("Jarvis is controlling the TV now.") if not self._init_status else None
         self.media = MediaControl(self.client)
         self.app = ApplicationControl(self.client)
         self.source_control = SourceControl(self.client)
@@ -126,17 +121,13 @@ class LGWebOS:
         """Increases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_up()
-        self.system.notify(
-            f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%"
-        )
+        self.system.notify(f"Jarvis::Increased Volume: {self.media.get_volume()['volume']}%")
 
     def decrease_volume(self) -> None:
         """Decreases the volume by ``10`` units."""
         for _ in range(10):
             self.media.volume_down()
-        self.system.notify(
-            f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%"
-        )
+        self.system.notify(f"Jarvis::Decreased Volume: {self.media.get_volume()['volume']}%")
 
     def get_volume(self) -> int:
         """Get volume status.
@@ -145,9 +136,7 @@ class LGWebOS:
             int:
             Volume level.
         """
-        self.system.notify(
-            f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%"
-        )
+        self.system.notify(f"Jarvis::Current Volume: {self.media.get_volume()['volume']}%")
         return self.media.get_volume()["volume"]
 
     def get_state(self) -> bool:
@@ -169,9 +158,7 @@ class LGWebOS:
         Args:
             target: Takes an integer as argument to set the volume.
         """
-        self.system.notify(
-            f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%"
-        )
+        self.system.notify(f"Jarvis::Volume has been set to: {self.media.get_volume()['volume']}%")
         self.media.set_volume(target)
 
     def mute(self) -> None:
@@ -220,9 +207,7 @@ class LGWebOS:
         Args:
             app_name: Takes the application name as argument.
         """
-        app_launcher = [
-            x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()
-        ][0]
+        app_launcher = [x for x in self.app.list_apps() if app_name.lower() in x["title"].lower()][0]
         self.app.launch(app_launcher, content_id=None)
 
     def close_app(self, app_name: str) -> None:

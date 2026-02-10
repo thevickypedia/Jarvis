@@ -28,7 +28,8 @@ async def init_meetings() -> None:
     if models.env.ics_url:
         try:
             if requests.get(url=models.env.ics_url).status_code == 503:
-                models.env.sync_meetings = 21_600  # Set to 6 hours if unable to connect to the meetings URL
+                # Set to 6 hours if unable to connect to the meetings URL
+                models.env.sync_meetings = 21_600
         except EgressErrors as error:
             logger.error(error)
             # NEVER RUNs, as env vars are loaded only during start up
@@ -47,10 +48,7 @@ async def background_executor(tasks: List[classes.BackgroundTask], task_dict: Di
             else:
                 logger.debug("Executing: '%s'", task.task)
                 try:
-                    response = (
-                            offline.communicator(task.task, True)
-                            or "No response for background task"
-                    )
+                    response = offline.communicator(task.task, True) or "No response for background task"
                     logger.debug("Response: '%s'", response)
                 except Exception as error:
                     logger.error(error)
@@ -82,10 +80,7 @@ async def automation_executor(exec_task: str):
     else:
         logger.debug("Executing: '%s'", exec_task)
         try:
-            response = (
-                    offline.communicator(command=exec_task)
-                    or "No response for automated task"
-            )
+            response = offline.communicator(command=exec_task) or "No response for automated task"
             logger.debug("Response: '%s'", response)
         except Exception as error:
             logger.error(error)
@@ -116,10 +111,9 @@ async def alarm_executor(now: datetime):
         copied_alarms = alarms.copy()
         for alarmer in alarms:
             # alarms match 'time' and 'day' of alarm
-            if (
-                    alarmer["alarm_time"] == now.strftime("%I:%M %p") and
-                    alarmer.get("day", now.strftime("%A")) == now.strftime("%A")
-            ):
+            if alarmer["alarm_time"] == now.strftime("%I:%M %p") and alarmer.get(
+                "day", now.strftime("%A")
+            ) == now.strftime("%A"):
                 logger.info("Executing alarm: %s", alarmer)
                 resource_tracker.semaphores(alarm.executor)
                 if not alarmer["repeat"]:
@@ -133,10 +127,7 @@ async def reminder_executor(now: datetime):
         copied_reminders = reminders.copy()
         for reminder in reminders:
             # reminders match the 'time' and 'date' of reminder
-            if (
-                    reminder["reminder_time"] == now.strftime("%I:%M %p")
-                    and reminder["date"] == datetime.now().date()
-            ):
+            if reminder["reminder_time"] == now.strftime("%I:%M %p") and reminder["date"] == datetime.now().date():
                 logger.info("Executing reminder: %s", reminder)
                 Thread(
                     target=remind.executor,

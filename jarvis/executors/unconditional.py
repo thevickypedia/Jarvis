@@ -30,9 +30,7 @@ def google_maps(query: str) -> bool:
 
     maps_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
     try:
-        response = requests.get(
-            maps_url + "query=" + query + "&key=" + models.env.maps_apikey
-        )
+        response = requests.get(maps_url + "query=" + query + "&key=" + models.env.maps_apikey)
     except EgressErrors as error:
         logger.error(error)
         return False
@@ -66,9 +64,7 @@ def google_maps(query: str) -> bool:
         logger.warning("Coordinates are missing")
         return False
     results = len(required)
-    speaker.speak(
-        text=f"I found {results} results {models.env.title}!"
-    ) if results != 1 else None
+    speaker.speak(text=f"I found {results} results {models.env.title}!") if results != 1 else None
     start = current_location["latitude"], current_location["longitude"]
     n = 0
     for item in required:
@@ -114,15 +110,12 @@ def google_maps(query: str) -> bool:
             run=True,
         )
         support.write_screen(
-            text=f"{item['Name']} -- {item['Rating']} -- "
-            f"{''.join([j for j in item['Address'] if not j.isdigit()])}"
+            text=f"{item['Name']} -- {item['Rating']} -- " f"{''.join([j for j in item['Address'] if not j.isdigit()])}"
         )
         if converted := listener.listen():
             if "exit" in converted or "quit" in converted or "Xzibit" in converted:
                 break
-            elif word_match.word_match(
-                phrase=converted.lower(), match_list=keywords.keywords["ok"]
-            ):
+            elif word_match.word_match(phrase=converted.lower(), match_list=keywords.keywords["ok"]):
                 maps_url = f"https://www.google.com/maps/dir/{start}/{end}/"
                 webbrowser.open(url=maps_url)
                 speaker.speak(text=f"Directions on your screen {models.env.title}!")

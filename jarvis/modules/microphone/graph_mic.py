@@ -59,9 +59,7 @@ def list_devices() -> sounddevice.DeviceList:
 
 
 # noinspection PyUnusedLocal
-def audio_callback(
-    indata: np.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags
-) -> None:
+def audio_callback(indata: np.ndarray, frames: int, time: Struct, status: sounddevice.CallbackFlags) -> None:
     """This is called (from a separate thread) for each audio block."""
     if status:
         logger.info(status)
@@ -121,21 +119,14 @@ def plot_mic(
     with models.db.connection as connection:
         cursor = connection.cursor()
         cursor.execute("UPDATE children SET plot_mic=null")
-        cursor.execute(
-            "INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,)
-        )
+        cursor.execute("INSERT or REPLACE INTO children (plot_mic) VALUES (?);", (subprocess_id,))
         connection.commit()
-    logger.info(
-        "Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id
-    )
+    logger.info("Updating process ID [%d] in [plot_mic] processes mapping.", subprocess_id)
     if os.path.isfile(models.fileio.processes):
         with open(models.fileio.processes) as file:
             dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
         if not dump.get(plot_mic.__name__):
-            logger.critical(
-                "ATTENTION::Missing %s's process ID in '%s'"
-                % (plot_mic.__name__, models.fileio.processes)
-            )
+            logger.critical("ATTENTION::Missing %s's process ID in '%s'" % (plot_mic.__name__, models.fileio.processes))
         # WATCH OUT: for changes in docstring in "processor.py -> create_process_mapping() -> Handles -> plot_mic"
         dump[plot_mic.__name__] = [subprocess_id, "Plot microphone usage in real time"]
         with open(models.fileio.processes, "w") as file:
@@ -172,9 +163,7 @@ def _kick_off() -> None:
         device_info = sounddevice.query_devices(settings.device, "input")
         settings.samplerate = device_info["default_samplerate"]
 
-    length = int(
-        settings.window * settings.samplerate / (settings.rate * settings.down_sample)
-    )
+    length = int(settings.window * settings.samplerate / (settings.rate * settings.down_sample))
     settings.plot_data = np.zeros((length, len(settings.channels)))
 
     # Add type hint when unpacking a tuple (lazy way to avoid variables)

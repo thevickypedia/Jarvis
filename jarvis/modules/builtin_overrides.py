@@ -64,9 +64,7 @@ def ordered_load(
 
 
 # noinspection PyPep8Naming
-def ordered_dump(
-    dump, stream=None, Dumper=yaml.SafeDumper, **kwds
-) -> None | str | bytes:
+def ordered_dump(dump, stream=None, Dumper=yaml.SafeDumper, **kwds) -> None | str | bytes:
     """Custom dumper to serialize OrderedDict.
 
     Args:
@@ -100,13 +98,9 @@ def ordered_dump(
             Node:
             Returns the representer node.
         """
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items()
-        )
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    OrderedDumper.add_representer(
-        data_type=collections.OrderedDict, representer=_dict_representer
-    )
+    OrderedDumper.add_representer(data_type=collections.OrderedDict, representer=_dict_representer)
     return yaml.dump(data=dump, stream=stream, Dumper=OrderedDumper, **kwds)
 
 

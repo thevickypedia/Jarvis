@@ -55,9 +55,7 @@ def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str:
         command = "ping -c 1 -t 2 {IP_ADDRESS} >/dev/null 2>&1"
     for ip in tv_ip_list:
         if tv_stat := os.system(command=command.format(IP_ADDRESS=ip)):
-            logger.error(
-                "Connection timed out on %s. Ping result: %s", ip, tv_stat
-            ) if not attempt else None
+            logger.error("Connection timed out on %s. Ping result: %s", ip, tv_stat) if not attempt else None
         else:
             return ip
 
@@ -99,24 +97,18 @@ def television(phrase: str) -> None:
         "source",
     ]
     if not word_match.word_match(phrase=phrase, match_list=match_words):
-        speaker.speak(
-            text=f"I didn't quite get that {models.env.title}! What do you want me to do to your tv?"
-        )
+        speaker.speak(text=f"I didn't quite get that {models.env.title}! What do you want me to do to your tv?")
         Thread(target=support.unrecognized_dumper, args=[{"TV": phrase}]).start()
         return
 
     if not internet.vpn_checker():
         return
 
-    if (smart_devices := files.get_smart_devices()) and (
-        tv_mapping := get_tv(data=smart_devices)
-    ):
+    if (smart_devices := files.get_smart_devices()) and (tv_mapping := get_tv(data=smart_devices)):
         tv_map, key = tv_mapping
         logger.debug("%s stored with key: '%s'", tv_map, key)
     else:
-        logger.warning(
-            "Smart devices are not configured for tv in %s", models.fileio.smart_devices
-        )
+        logger.warning("Smart devices are not configured for tv in %s", models.fileio.smart_devices)
         support.no_env_vars()
         return
 
@@ -127,8 +119,7 @@ def television(phrase: str) -> None:
         tv_iterate = [selected]
     else:
         speaker.speak(
-            text=f"You have {len(tvs)} TVs added {models.env.title}! "
-            "Please specify which TV I should access."
+            text=f"You have {len(tvs)} TVs added {models.env.title}! " "Please specify which TV I should access."
         )
         return
 
@@ -141,8 +132,7 @@ def television(phrase: str) -> None:
 
         if not all((tv_name, tv_mac)):
             speaker.speak(
-                text=f"I'm sorry {models.env.title}! "
-                f"I was unable to find the {target_tv}'s name or MAC address."
+                text=f"I'm sorry {models.env.title}! " f"I was unable to find the {target_tv}'s name or MAC address."
             )
             continue
 
@@ -173,11 +163,7 @@ def television(phrase: str) -> None:
         if isinstance(tv_mac, str):
             tv_mac = [tv_mac]
 
-        if (
-            "turn off" in phrase.lower()
-            or "shutdown" in phrase.lower()
-            or "shut down" in phrase.lower()
-        ):
+        if "turn off" in phrase.lower() or "shutdown" in phrase.lower() or "shut down" in phrase.lower():
             if not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
                 # WARNING: TV that was turned off recently might still respond to ping
                 speaker.speak(
@@ -186,9 +172,7 @@ def television(phrase: str) -> None:
                 )
                 continue
         elif not (tv_ip := tv_status(tv_ip_list=tv_ip_list)):
-            logger.info(
-                "Trying to power on the device using the mac addresses: %s", tv_mac
-            )
+            logger.info("Trying to power on the device using the mac addresses: %s", tv_mac)
             power_controller = wakeonlan.WakeOnLan()
             # REDUNDANT-Roku: Send magic packets thrice to ensure device wakes up from sleep
             for _ in range(3):
@@ -228,7 +212,5 @@ def television(phrase: str) -> None:
                 key=key,
             )
         else:
-            kwargs = dict(
-                phrase=phrase, tv_ip=tv_ip, identifier="ROKU", nickname=target_tv
-            )
+            kwargs = dict(phrase=phrase, tv_ip=tv_ip, identifier="ROKU", nickname=target_tv)
         tv_controls.tv_controller(**kwargs)

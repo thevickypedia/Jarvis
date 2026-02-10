@@ -33,9 +33,7 @@ def tv_controller(
     if not shared.tv[nickname]:
         try:
             if identifier == "LG":
-                shared.tv[nickname] = lg.LGWebOS(
-                    ip_address=tv_ip, client_key=client_key, nickname=nickname, key=key
-                )
+                shared.tv[nickname] = lg.LGWebOS(ip_address=tv_ip, client_key=client_key, nickname=nickname, key=key)
             elif identifier == "ROKU":
                 shared.tv[nickname] = roku.RokuECP(ip_address=tv_ip)
         except TVError as error:
@@ -47,21 +45,13 @@ def tv_controller(
             return
         else:
             if "turn on" in phrase_lower or "connect" in phrase_lower:
-                speaker.speak(
-                    text=f"TV features have been integrated {models.env.title}!"
-                )
+                speaker.speak(text=f"TV features have been integrated {models.env.title}!")
                 return
 
     if shared.tv[nickname]:
         if "turn on" in phrase_lower or "connect" in phrase_lower:
-            speaker.speak(
-                text=f"Your {nickname} is already powered on {models.env.title}!"
-            )
-        elif (
-            "shutdown" in phrase_lower
-            or "shut down" in phrase_lower
-            or "turn off" in phrase_lower
-        ):
+            speaker.speak(text=f"Your {nickname} is already powered on {models.env.title}!")
+        elif "shutdown" in phrase_lower or "shut down" in phrase_lower or "turn off" in phrase_lower:
             # ROKU:
             #   Connections to Roku TVs are made with IP, so it almost always connects as long as it is powered
             #   Roku tends to return 'Home' even when powered off, so check state of the TV first
@@ -70,19 +60,13 @@ def tv_controller(
             #   Edge case scenario is when the TV is powered on and off by different processes
             #   leaving the processes that powered on with a memory reference that'd assume the TV is powered on
             #   end up failing to connect to the TV as it is powered off already
-            if shared.tv[nickname].get_state() and (
-                running_app := shared.tv[nickname].current_app()
-            ):
+            if shared.tv[nickname].get_state() and (running_app := shared.tv[nickname].current_app()):
                 logger.info("Currently running '%s'", running_app)
             else:
-                speaker.speak(
-                    text=f"I don't think your {nickname} is powered on {models.env.title}!"
-                )
+                speaker.speak(text=f"I don't think your {nickname} is powered on {models.env.title}!")
                 return
             Thread(target=shared.tv[nickname].shutdown).start()
-            speaker.speak(
-                text=f"{random.choice(conversation.acknowledgement)}! Turning your {nickname} off."
-            )
+            speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning your {nickname} off.")
             shared.tv.pop(nickname)
         elif "increase" in phrase_lower:
             shared.tv[nickname].increase_volume()
@@ -111,16 +95,12 @@ def tv_controller(
         elif "set" in phrase_lower and "volume" in phrase_lower:
             vol = util.extract_nos(input_=phrase_lower, method=int)
             if vol is None:
-                speaker.speak(
-                    text=f"Requested volume doesn't match the right format {models.env.title}!"
-                )
+                speaker.speak(text=f"Requested volume doesn't match the right format {models.env.title}!")
             else:
                 shared.tv[nickname].set_volume(target=vol)
                 speaker.speak(text=f"I've set the volume to {vol}% {models.env.title}.")
         elif "volume" in phrase_lower:
-            speaker.speak(
-                text=f"The current volume on your {nickname} is, {shared.tv[nickname].get_volume()}%"
-            )
+            speaker.speak(text=f"The current volume on your {nickname} is, {shared.tv[nickname].get_volume()}%")
         elif "app" in phrase_lower or "application" in phrase_lower:
             speaker.speak(
                 text=f"The applications on your {nickname} are, "
@@ -132,23 +112,16 @@ def tv_controller(
                     [
                         w
                         for w in phrase.split()
-                        if w
-                        not in ["launch", "open", "on", "my", "the", "tv"]
-                        + nickname.split()
-                        + identifier.split()
+                        if w not in ["launch", "open", "on", "my", "the", "tv"] + nickname.split() + identifier.split()
                     ]
                 ),
                 match_list=list(shared.tv[nickname].get_apps()),
             )
             logger.info("%s -> %s", phrase, app_name)
             shared.tv[nickname].launch_app(app_name=app_name)
-            speaker.speak(
-                text=f"I've launched {app_name} on your {nickname} {models.env.title}!"
-            )
+            speaker.speak(text=f"I've launched {app_name} on your {nickname} {models.env.title}!")
         elif "what's" in phrase_lower or "currently" in phrase_lower:
-            speaker.speak(
-                text=f"{shared.tv[nickname].current_app()} is running on your {nickname}."
-            )
+            speaker.speak(text=f"{shared.tv[nickname].current_app()} is running on your {nickname}.")
         elif "change" in phrase_lower or "source" in phrase_lower:
             source = util.get_closest_match(
                 text=" ".join(
@@ -170,12 +143,5 @@ def tv_controller(
             speaker.speak(text="I didn't quite get that.")
             Thread(target=support.unrecognized_dumper, args=[{"TV": phrase}]).start()
     else:
-        phrase = (
-            phrase.replace("my", "your")
-            .replace("please", "")
-            .replace("will you", "")
-            .strip()
-        )
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to {phrase}, as the TV state is unknown!"
-        )
+        phrase = phrase.replace("my", "your").replace("please", "").replace("will you", "").strip()
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to {phrase}, as the TV state is unknown!")

@@ -22,9 +22,7 @@ def automation_handler(phrase: str) -> None:
         elif os.path.isfile(models.fileio.automation):
             speaker.speak(text=f"Automation was never disabled {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I couldn't not find the source file to enable automation {models.env.title}!"
-            )
+            speaker.speak(text=f"I couldn't not find the source file to enable automation {models.env.title}!")
     elif "disable" in phrase.lower():
         if os.path.isfile(models.fileio.automation):
             os.rename(src=models.fileio.automation, dst=models.fileio.tmp_automation)
@@ -32,9 +30,7 @@ def automation_handler(phrase: str) -> None:
         elif os.path.isfile(models.fileio.tmp_automation):
             speaker.speak(text=f"Automation was never enabled {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I couldn't not find the source file to disable automation {models.env.title}!"
-            )
+            speaker.speak(text=f"I couldn't not find the source file to disable automation {models.env.title}!")
 
 
 def rewrite_automator(write_data: dict) -> None:
@@ -56,9 +52,7 @@ async def validate_weather_alert() -> None:
         if tasks_overlap := automation_data.get(models.env.weather_alert):
             for task_overlap in tasks_overlap:
                 if "weather" in task_overlap.get("task"):
-                    logger.info(
-                        "Redundancy found in env var and automation. Skipping.."
-                    )
+                    logger.info("Redundancy found in env var and automation. Skipping..")
                     return
                 else:
                     logger.warning(
@@ -66,15 +60,9 @@ async def validate_weather_alert() -> None:
                         task_overlap,
                         models.env.weather_alert,
                     )
-                    time_overlap = datetime.strptime(
-                        models.env.weather_alert, "%I:%M %p"
-                    )
-                    models.env.weather_alert = (
-                        time_overlap + timedelta(minutes=1)
-                    ).strftime("%I:%M %p")
-                    automation_data[models.env.weather_alert].append(
-                        {"task": "weather alert"}
-                    )
+                    time_overlap = datetime.strptime(models.env.weather_alert, "%I:%M %p")
+                    models.env.weather_alert = (time_overlap + timedelta(minutes=1)).strftime("%I:%M %p")
+                    automation_data[models.env.weather_alert].append({"task": "weather alert"})
                     files.put_automation(data=automation_data)
         else:  # Write weather alert schedule to 'automation.yaml' since env var is not used to trigger the function
             logger.info(
@@ -97,9 +85,7 @@ def auto_helper() -> str | None:
     for automation_time, automation_schedule in automation_data.items():
         try:
             datetime.strptime(automation_time, "%I:%M %p")
-            assert (
-                automation_schedule
-            ), "Following entry does not have the task information."
+            assert automation_schedule, "Following entry does not have the task information."
         except (ValueError, AssertionError) as error:
             logger.error(error)
             logger.error("%s - %s", automation_time, automation_schedule)

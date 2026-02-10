@@ -35,9 +35,7 @@ def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger):
     response.raise_for_status()
 
 
-def set_webhook(
-    base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger
-):
+def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger):
     """Set webhook.
 
     References:
@@ -55,8 +53,7 @@ def set_webhook(
                 data=payload,
                 files={
                     "certificate": (
-                        models.env.bot_certificate.stem
-                        + models.env.bot_certificate.suffix,
+                        models.env.bot_certificate.stem + models.env.bot_certificate.suffix,
                         models.env.bot_certificate.certificate.open(mode="rb"),
                     )
                 },

@@ -80,8 +80,7 @@ def events_gatherer() -> str:
         )
     failure = None
     process = subprocess.Popen(
-        ["/usr/bin/osascript", models.fileio.event_script]
-        + [str(arg) for arg in [1, 3]],
+        ["/usr/bin/osascript", models.fileio.event_script] + [str(arg) for arg in [1, 3]],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         shell=True,
@@ -127,14 +126,8 @@ def events_gatherer() -> str:
     event_name = local_events.split("rEpLaCInG")[0].split(", ")
     event_name = util.remove_duplicates(input_=event_name)
     count = len(event_time)
-    [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(
-        event_name
-    ) else None
-    event_status = (
-        f"You have {count} events in the next 12 hours {models.env.title}! "
-        if count > 1
-        else ""
-    )
+    [event_name.remove(e) for e in event_name if len(e) <= 5] if count != len(event_name) else None
+    event_status = f"You have {count} events in the next 12 hours {models.env.title}! " if count > 1 else ""
     local_events = {}
     for i in range(count):
         if i < len(event_name):
@@ -142,17 +135,13 @@ def events_gatherer() -> str:
             dt_string = datetime.strptime(event_time[i], "%I:%M:%S %p")
             event_time[i] = dt_string.strftime("%I:%M %p")
             local_events.update({event_name[i]: event_time[i]})
-    ordered_data = sorted(
-        local_events.items(), key=lambda x: datetime.strptime(x[1], "%I:%M %p")
-    )
+    ordered_data = sorted(local_events.items(), key=lambda x: datetime.strptime(x[1], "%I:%M %p"))
     for index, event in enumerate(ordered_data):
         if count == 1:
             event_status += f"You have an event at {event[1]} {models.env.title}! {event[0].upper()}. "
         else:
             event_status += (
-                f"{event[0]} at {event[1]}, "
-                if index + 1 < len(ordered_data)
-                else f"{event[0]} at {event[1]}."
+                f"{event[0]} at {event[1]}, " if index + 1 < len(ordered_data) else f"{event[0]} at {event[1]}."
             )
     return event_status
 
@@ -162,9 +151,7 @@ def events(*args) -> None:
     with models.db.connection as connection:
         cursor = connection.cursor()
         # Use f-string or %s as table names cannot be parametrized
-        event_status = cursor.execute(
-            f"SELECT info, date FROM {models.env.event_app}"
-        ).fetchone()
+        event_status = cursor.execute(f"SELECT info, date FROM {models.env.event_app}").fetchone()
     if event_status and event_status[1] == datetime.now().strftime("%Y_%m_%d"):
         speaker.speak(text=event_status[0])
     elif event_status:
@@ -175,18 +162,12 @@ def events(*args) -> None:
         )
         logger.info("Starting adhoc process to update %s table.", models.env.event_app)
         resource_tracker.semaphores(events_writer)
-        speaker.speak(
-            text=f"Events table is outdated {models.env.title}. Please try again in a minute or two."
-        )
+        speaker.speak(text=f"Events table is outdated {models.env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
-            logger.info(
-                "Starting adhoc process to get events from %s.", models.env.event_app
-            )
+            logger.info("Starting adhoc process to get events from %s.", models.env.event_app)
             resource_tracker.semaphores(events_writer)
-            speaker.speak(
-                text=f"Events table is empty {models.env.title}. Please try again in a minute or two."
-            )
+            speaker.speak(text=f"Events table is empty {models.env.title}. Please try again in a minute or two.")
             return
         # Runs parallely and awaits completion
         event = ThreadPool(processes=1).apply_async(func=events_gatherer)

@@ -92,10 +92,7 @@ class Activator:
     def __init__(self):
         """Initiates Porcupine object for hot word detection."""
         label = ", ".join(
-            [
-                f"{string.capwords(wake)!r}: {sens}"
-                for wake, sens in zip(models.env.wake_words, models.env.sensitivity)
-            ]
+            [f"{string.capwords(wake)!r}: {sens}" for wake, sens in zip(models.env.wake_words, models.env.sensitivity)]
         )
         logger.info("Initiating hot-word detector with sensitivity: %s", label)
         self.detector = pvporcupine.create(**constructor())
@@ -162,9 +159,7 @@ class Activator:
                     continue
                 restart_checker()
                 if flag := support.check_stop():
-                    logger.info(
-                        "Stopper condition is set to %s by %s", flag[0], flag[1]
-                    )
+                    logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
                     self.stop()
                     controls.terminator()
         except StopSignal:
@@ -202,9 +197,7 @@ def start() -> None:
     # Instantiate the object here, so validations go through first
     activator = Activator()
     if internet.ip_address() and internet.public_ip_info():
-        support.write_screen(
-            text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}."
-        )
+        support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
         support.write_screen("Trying to toggle WiFi")
         pywifi.ControlPeripheral(logger=logger).enable()
@@ -224,17 +217,13 @@ def start() -> None:
                     "Please check your connection.",
                     run=True,
                 )
-    support.write_screen(
-        text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}"
-    )
+    support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
     if models.settings.limited:
         # Write processes mapping file before calling start_processes with func_name flag,
         # as passing the flag will look for the file's presence
         process_map.add({"jarvis": {models.settings.pid: ["Main Process"]}})
         if models.settings.os != enums.SupportedPlatforms.macOS:
-            shared.processes = processor.start_processes(
-                func_name="speech_synthesis_api"
-            )
+            shared.processes = processor.start_processes(func_name="speech_synthesis_api")
             # Enable speech synthesis for speaker
             if not models.env.speech_synthesis_timeout:
                 models.env.speech_synthesis_timeout = 10

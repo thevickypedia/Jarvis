@@ -45,9 +45,7 @@ async def get_favicon():
             path=filepath,
             status_code=HTTPStatus.OK.real,
         )
-    logger.warning(
-        "'favicon.ico' is missing or the path is messed up. Fix this to avoid errors in the UI"
-    )
+    logger.warning("'favicon.ico' is missing or the path is messed up. Fix this to avoid errors in the UI")
 
 
 async def keywords():

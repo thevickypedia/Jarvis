@@ -25,9 +25,7 @@ def forward_lookup(lookup: str | List | Tuple, match_list: List | Tuple) -> str 
             return word
 
 
-def word_match(
-    phrase: str, match_list: List | Tuple, strict: bool = False
-) -> str | None:
+def word_match(phrase: str, match_list: List | Tuple, strict: bool = False) -> str | None:
     """Keyword classifier.
 
     Args:
@@ -47,7 +45,5 @@ def word_match(
         return forward_lookup(lookup, match_list)
     else:
         lookup = phrase.lower()
-        if (fl := forward_lookup(lookup, match_list)) and reverse_lookup(
-            lookup, match_list
-        ):
+        if (fl := forward_lookup(lookup, match_list)) and reverse_lookup(lookup, match_list):
             return fl

@@ -9,9 +9,7 @@ from jarvis.modules.models import models
 
 def monitor() -> None:
     """Weather monitoring system to trigger notifications for high, low weather and severe weather alert."""
-    multiprocessing_logger(
-        filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log")
-    )
+    multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
     try:
         condition, high, low, temp_f, alert = weather.weather(monitor=True)
     except TypeError:
@@ -24,11 +22,7 @@ def monitor() -> None:
             alert,
         )
     ):
-        logger.debug(
-            dict(
-                condition=condition, high=high, low=low, temperature=temp_f, alert=alert
-            )
-        )
+        logger.debug(dict(condition=condition, high=high, low=low, temperature=temp_f, alert=alert))
         logger.info("No alerts to report")
         return
     title = "Weather Alert"
@@ -59,12 +53,8 @@ def monitor() -> None:
     # high will definitely be greater than or equal to current
     if high >= models.env.weather_alert_max:
         if alert:
-            email_args["body"] = (
-                f"High weather alert!\n{alert}\n\n" + email_args["body"]
-            )
-            phone_args["body"] = (
-                f"High weather alert!\n{alert}\n\n" + phone_args["body"]
-            )
+            email_args["body"] = f"High weather alert!\n{alert}\n\n" + email_args["body"]
+            phone_args["body"] = f"High weather alert!\n{alert}\n\n" + phone_args["body"]
         else:
             email_args["body"] = "High weather alert!\n" + email_args["body"]
             phone_args["body"] = "High weather alert!\n" + phone_args["body"]
@@ -87,9 +77,7 @@ def monitor() -> None:
         communicator.send_sms(**phone_args)
         return
     if alert:
-        email_args["body"] = (
-            f"Critical weather alert!\n{alert}\n\n" + email_args["body"]
-        )
+        email_args["body"] = f"Critical weather alert!\n{alert}\n\n" + email_args["body"]
         phone_args["body"] = "Critical weather alert!\n" + phone_args["body"]
         logger.info("critical weather alert")
         email_args["body"] = email_args["body"].replace("\n", "<br>")

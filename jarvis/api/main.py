@@ -16,9 +16,7 @@ from jarvis.modules.models import enums, models
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     """Simple startup function to add anything that has to be triggered when Jarvis API starts up."""
-    logger.info(
-        "Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port
-    )
+    logger.info("Hosting at http://%s:%s", models.env.offline_host, models.env.offline_port)
     if models.env.author_mode:
         Thread(target=stockanalysis_squire.nasdaq).start()
     entrypoint.startup()

@@ -33,9 +33,7 @@ if os.environ.get("JARVIS_VERBOSITY", "-1") == "1":
     verbose = " --verbose"
 else:
     verbose = ""
-uv_install = {
-    "option": os.environ.get("UV_INSTALL", "-1").lower() in ("1", "true", "yes")
-}
+uv_install = {"option": os.environ.get("UV_INSTALL", "-1").lower() in ("1", "true", "yes")}
 
 
 def convert_seconds(seconds: int | float, n_elem: int = 2) -> str:
@@ -99,9 +97,7 @@ def convert_seconds(seconds: int | float, n_elem: int = 2) -> str:
         return time_parts[0]
 
     list_ = time_parts[:n_elem]
-    return ", and ".join(
-        [", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_
-    )
+    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
 class Runtime:
@@ -153,9 +149,7 @@ class Runtime:
     def get(self) -> None | NoReturn:
         """Retrieve the elapsed time."""
         if not all((self.start_time, self.end_time)):
-            raise ValueError(
-                "Runtime not captured. Ensure you call `stop()` before `get()`."
-            )
+            raise ValueError("Runtime not captured. Ensure you call `stop()` before `get()`.")
         return convert_seconds(self.end_time - self.start_time, n_elem=self.breakout)
 
 
@@ -236,9 +230,7 @@ class Env:
         except Exception as err:
             logger.warning(err)
             installer = "jarvis"
-        assert (
-            self.exec
-        ), f"\n\tFailed to install package manager. Try to rerun '{installer} {sys.argv[1]}'"
+        assert self.exec, f"\n\tFailed to install package manager. Try to rerun '{installer} {sys.argv[1]}'"
 
 
 env = Env()
@@ -280,9 +272,7 @@ def run_subprocess(command: str) -> None:
         process.wait()
         for line in process.stderr:
             logger.error(line.strip())
-        assert (
-            process.returncode == 0
-        ), f"{command!r} returned exit code {process.returncode}"
+        assert process.returncode == 0, f"{command!r} returned exit code {process.returncode}"
     except KeyboardInterrupt:
         if process.poll() is None:
             for line in process.stdout:
@@ -311,9 +301,7 @@ def untested_os() -> None | NoReturn:
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     logger.warning(f"Current Operating System: {env.osname}")
     logger.warning("Jarvis has currently been tested only on Linux, macOS and Windows")
-    logger.warning(
-        center("Please note that you might need to install additional dependencies.")
-    )
+    logger.warning(center("Please note that you might need to install additional dependencies."))
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     confirmation_prompt()
 
@@ -322,12 +310,8 @@ def untested_arch() -> None | NoReturn:
     """Function to handle unsupported architecture."""
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     logger.warning(center(f"Current Architecture: {env.architecture}"))
-    logger.warning(
-        center("Jarvis has currently been tested only on AMD and ARM64 machines.")
-    )
-    logger.warning(
-        center("Please note that you might need to install additional dependencies.")
-    )
+    logger.warning(center("Jarvis has currently been tested only on AMD and ARM64 machines."))
+    logger.warning(center("Please note that you might need to install additional dependencies."))
     logger.warning(f"\n{pretext()}\n{pretext()}\n")
     confirmation_prompt()
 
@@ -359,15 +343,9 @@ class Requirements:
 
     def __init__(self):
         """Instantiates the file paths for pinned, locked and upgrade-able requirements."""
-        self.pinned: str = os.path.join(
-            env.current_dir, "version_pinned_requirements.txt"
-        )
-        self.locked: str = os.path.join(
-            env.current_dir, "version_locked_requirements.txt"
-        )
-        self.upgrade: str = os.path.join(
-            env.current_dir, "version_upgrade_requirements.txt"
-        )
+        self.pinned: str = os.path.join(env.current_dir, "version_pinned_requirements.txt")
+        self.locked: str = os.path.join(env.current_dir, "version_locked_requirements.txt")
+        self.upgrade: str = os.path.join(env.current_dir, "version_upgrade_requirements.txt")
 
 
 requirements = Requirements()
@@ -409,9 +387,7 @@ def thread_worker(commands: List[str]) -> bool:
     for future in as_completed(futures):
         if future.exception():
             failed = True
-            logger.error(
-                f"Thread processing for {futures[future]!r} received an exception: {future.exception()!r}"
-            )
+            logger.error(f"Thread processing for {futures[future]!r} received an exception: {future.exception()!r}")
     return failed
 
 
@@ -469,9 +445,7 @@ def os_agnostic() -> None:
     logger.info(pretext())
     if exception:
         logger.error(center("One or more installation threads have failed!!"))
-        logger.error(
-            center("Please set JARVIS_VERBOSITY=1 and retry to identify root cause.")
-        )
+        logger.error(center("Please set JARVIS_VERBOSITY=1 and retry to identify root cause."))
     else:
         logger.info(center(f"Installation completed in {runtime.get()}"))
     logger.info(pretext())
@@ -488,14 +462,10 @@ def init() -> None:
     if sys.prefix == sys.base_prefix:
         no_venv()
 
-    pyversion: str = (
-        f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    )
+    pyversion: str = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     if sys.version_info.major == 3 and sys.version_info.minor in (10, 11):
         logger.info(pretext())
-        logger.info(
-            center(f"{env.osname}-{env.architecture} running python {pyversion}")
-        )
+        logger.info(center(f"{env.osname}-{env.architecture} running python {pyversion}"))
         logger.info(pretext())
     else:
         logger.warning(
@@ -520,9 +490,7 @@ def dev_install() -> None:
     logger.info(center("Installing dev dependencies"))
     logger.info(pretext())
     with Runtime() as runtime:
-        run_subprocess(
-            f"{env.exec} pip install{verbose} sphinx pre-commit recommonmark gitverse"
-        )
+        run_subprocess(f"{env.exec} pip install{verbose} sphinx pre-commit recommonmark gitverse")
     logger.info(pretext())
     logger.info(center(f"Installation completed in {runtime.get()}"))
     logger.info(pretext())
@@ -533,9 +501,7 @@ def main_install() -> None:
     init()
     install_script = os.path.join(env.current_dir, f"install_{env.osname}.sh")
     logger.info(pretext())
-    logger.info(
-        center(f"Installing dependencies specific to {string.capwords(env.osname)}")
-    )
+    logger.info(center(f"Installing dependencies specific to {string.capwords(env.osname)}"))
     logger.info(pretext())
     if env.osname == "windows":
         windows_handler()

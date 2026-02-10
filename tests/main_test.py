@@ -16,9 +16,7 @@ class TestActivator(unittest.TestCase):
 
     @patch("pvporcupine.create")
     @patch("jarvis.main.audio_engine.open")
-    def test_init_activator(
-        self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock
-    ) -> None:
+    def test_init_activator(self, mock_audio_open: MagicMock, mock_pvporcupine_create: MagicMock) -> None:
         """Test whether the Activator is initialized correctly.
 
         Mock the return values of the create function.

@@ -27,9 +27,7 @@ def get_timezone() -> str:
     return datetime.now(UTC).astimezone().tzname()
 
 
-def epoch_to_datetime(
-    seconds: int | float, format_: str = None, zone: timezone = None
-) -> datetime | str:
+def epoch_to_datetime(seconds: int | float, format_: str = None, zone: timezone = None) -> datetime | str:
     """Convert epoch time to datetime.
 
     Args:
@@ -77,9 +75,7 @@ def part_of_day() -> str:
     return "Night"
 
 
-def get_closest_match(
-    text: str, match_list: list, get_ratio: bool = False
-) -> Dict[str, float] | str:
+def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Dict[str, float] | str:
     """Get the closest matching word from a list of words.
 
     Args:
@@ -91,10 +87,7 @@ def get_closest_match(
         Dict[str, float] | str:
         Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.
     """
-    closest_match = [
-        {"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()}
-        for key in match_list
-    ]
+    closest_match = [{"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]
     if get_ratio:
         return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0]
     return sorted(closest_match, key=lambda d: d["ratio"], reverse=True)[0].get("text")
@@ -218,9 +211,7 @@ def comma_separator(list_: list) -> str:
         str:
         Comma separated list of elements.
     """
-    return ", and ".join(
-        [", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_
-    )
+    return ", and ".join([", ".join(list_[:-1]), list_[-1]] if len(list_) > 2 else list_)
 
 
 def extract_time(input_: str) -> List[str]:
@@ -331,13 +322,7 @@ def extract_str(input_: str) -> str:
         str:
         A string after removing special characters.
     """
-    return "".join(
-        [
-            i
-            for i in input_
-            if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]
-        ]
-    ).strip()
+    return "".join([i for i in input_ if not i.isdigit() and i not in [",", ".", "?", "-", ";", "!", ":"]]).strip()
 
 
 def matrix_to_flat_list(input_: List[list]) -> List:

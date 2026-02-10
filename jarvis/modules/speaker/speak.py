@@ -110,9 +110,7 @@ class Speaker:
             voice_index: Index of the voice that has to be used.
             rate: Rate at which the voice should speak.
         """
-        logger.debug(
-            "Setting voice index to %d and speech rate to '%d'", voice_index, rate
-        )
+        logger.debug("Setting voice index to %d and speech rate to '%d'", voice_index, rate)
         self.engine.setProperty("voice", self.voices[voice_index].id)
         self.engine.setProperty("rate", rate)
 
@@ -123,9 +121,7 @@ class Speaker:
             voice_name: Name of the voice that has to be used.
             rate: Rate at which the voice should speak.
         """
-        logger.debug(
-            "Setting voice name to %s and speech rate to '%d'", voice_name, rate
-        )
+        logger.debug("Setting voice name to %s and speech rate to '%d'", voice_name, rate)
         voices: list | object = self.engine.getProperty("voices")
         for voice in voices:
             if voice.name == voice_name or voice_name in voice.name:

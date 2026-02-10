@@ -15,9 +15,7 @@ def get_distributor_info_linux() -> Dict[str, str]:
         A dictionary of key-value pairs with distributor id, name and version.
     """
     try:
-        result = subprocess.check_output(
-            "lsb_release -a", shell=True, stderr=subprocess.DEVNULL
-        )
+        result = subprocess.check_output("lsb_release -a", shell=True, stderr=subprocess.DEVNULL)
         return {
             i.split(":")[0].strip().lower().replace(" ", "_"): i.split(":")[1].strip()
             for i in result.decode(encoding="UTF-8").splitlines()
@@ -87,17 +85,13 @@ def parse_ignore_hours(
             try:
                 assert form_list[0].isdigit()
             except AssertionError:
-                raise ValueError(
-                    "string format can either be start-end (7-10) or just the hour by itself (7)"
-                )
+                raise ValueError("string format can either be start-end (7-10) or just the hour by itself (7)")
             else:
                 value = [int(form_list[0])]
         elif len(form_list) == 2:
             value = handle_multiform(form_list)
         else:
-            raise ValueError(
-                "string format can either be start-end (7-10) or just the hour by itself (7)"
-            )
+            raise ValueError("string format can either be start-end (7-10) or just the hour by itself (7)")
     refined = []
     for multiple in value:
         if isinstance(multiple, str):
@@ -135,9 +129,7 @@ def handle_multiform(form_list: List[str]) -> List[int]:
         assert form_list[0].isdigit()
         assert form_list[1].isdigit()
     except AssertionError:
-        raise ValueError(
-            "string format can either be start-end (7-10) or just the hour by itself (7)"
-        )
+        raise ValueError("string format can either be start-end (7-10) or just the hour by itself (7)")
     start_hour = int(form_list[0])
     end_hour = int(form_list[1])
     if start_hour <= end_hour:

@@ -130,13 +130,9 @@ def music(phrase: str = None) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     get_all_files = (
-        os.path.join(root, f)
-        for root, _, file in os.walk(os.path.join(models.env.home, "Music"))
-        for f in file
+        os.path.join(root, f) for root, _, file in os.walk(os.path.join(models.env.home, "Music")) for f in file
     )
-    if music_files := [
-        file for file in get_all_files if os.path.splitext(file)[1] == ".mp3"
-    ]:
+    if music_files := [file for file in get_all_files if os.path.splitext(file)[1] == ".mp3"]:
         chosen = random.choice(music_files)
         if phrase and "speaker" in phrase:
             google_home(device=phrase, file=chosen)
@@ -222,9 +218,7 @@ def google_home(device: str = None, file: str = None) -> None:
         )
         return
     else:
-        chosen = [
-            value for key, value in devices.items() if key.lower() in device.lower()
-        ]
+        chosen = [value for key, value in devices.items() if key.lower() in device.lower()]
         if not chosen:
             speaker.speak(
                 text=f"I don't see any matching devices {models.env.title}!. Let me help you. "
@@ -250,9 +244,7 @@ def google_home(device: str = None, file: str = None) -> None:
 
 def flip_a_coin(*args) -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
-    playsound(
-        sound=models.indicators.coin, block=True
-    ) if not shared.called_by_offline else None
+    playsound(sound=models.indicators.coin, block=True) if not shared.called_by_offline else None
     speaker.speak(
         text=f"""{random.choice(['You got', 'It landed on',
                                  "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}"""
@@ -269,9 +261,7 @@ def meaning(phrase: str) -> None:
     if not keyword or keyword == "word":
         speaker.speak(text="Please tell a keyword.", run=True)
         response = listener.listen()
-        if not response or word_match.word_match(
-            phrase=response, match_list=keywords.keywords["exit_"]
-        ):
+        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords["exit_"]):
             return
         meaning(phrase=response)
     else:
@@ -283,38 +273,26 @@ def meaning(phrase: str) -> None:
                 repeated = " also " if n != 0 else " "
                 n += 1
                 mean = ", ".join(value[:2])
-                speaker.speak(
-                    text=f"{keyword} is{repeated}{insert} {key}, which means {mean}."
-                )
+                speaker.speak(text=f"{keyword} is{repeated}{insert} {key}, which means {mean}.")
             if shared.called_by_offline:
                 return
             speaker.speak(text=f"Do you wanna know how {keyword} is spelled?", run=True)
             response = listener.listen()
-            if word_match.word_match(
-                phrase=response, match_list=keywords.keywords["ok"]
-            ):
+            if word_match.word_match(phrase=response, match_list=keywords.keywords["ok"]):
                 for letter in list(keyword.lower()):
                     speaker.speak(text=letter)
                 speaker.speak(run=True)
         else:
-            speaker.speak(
-                text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}"
-            )
+            speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
 
 
 def notes(*args) -> None:
     """Listens to the user and saves it as a text file."""
-    if (
-        (converted := listener.listen())
-        or "exit" in converted
-        or "quit" in converted
-        or "Xzibit" in converted
-    ):
+    if (converted := listener.listen()) or "exit" in converted or "quit" in converted or "Xzibit" in converted:
         return
     with open(models.fileio.notes, "a") as writer:
         writer.write(
-            f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n"
-            f"{converted}\n"
+            f"{datetime.now().strftime('%A, %B %d, %Y')}\n{datetime.now().strftime('%I:%M %p')}\n" f"{converted}\n"
         )
 
 
@@ -334,29 +312,18 @@ def news(news_source: str = "fox") -> None:
         all_articles = news_client.get_top_headlines(sources=f"{news_source}-news")
     except newsapi_exception.NewsAPIException as error:
         logger.error(error)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!"
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
         return
     if all_articles.get("status", "fail") != "ok":
         logger.warning(all_articles)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!"
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to get the news {models.env.title}!")
         return
-    if (
-        all_articles.get("totalResults", 0) == 0
-        or all_articles.get("articles", []) == []
-    ):
+    if all_articles.get("totalResults", 0) == 0 or all_articles.get("articles", []) == []:
         logger.warning(all_articles)
-        speaker.speak(
-            text=f"I wasn't able to find any news around you {models.env.title}!"
-        )
+        speaker.speak(text=f"I wasn't able to find any news around you {models.env.title}!")
         return
     speaker.speak(text="News around you!")
-    speaker.speak(
-        text=" ".join([article["title"] for article in all_articles["articles"]])
-    )
+    speaker.speak(text=" ".join([article["title"] for article in all_articles["articles"]]))
     if shared.called_by_offline:
         return
 
@@ -397,8 +364,7 @@ def celebrate(phrase: str = None) -> str | None:
     if phrase:
         phrase = phrase.strip()
         countries = {
-            country[1]: [" ".join(re.findall("[A-Z][^A-Z]*", country[0])), country[2]]
-            for country in COUNTRIES.values()
+            country[1]: [" ".join(re.findall("[A-Z][^A-Z]*", country[0])), country[2]] for country in COUNTRIES.values()
         }
         for code, names in countries.items():
             # If country code is used, then it should be a precise match, otherwise just regex it
@@ -420,16 +386,12 @@ def celebrate(phrase: str = None) -> str | None:
         countryname = "USA"
     if current_holiday := country_holidays(countrycode.upper()).get(date):
         if phrase:
-            speaker.speak(
-                text=f"{string.capwords(day)} {tense} {current_holiday!r} in {countryname}"
-            )
+            speaker.speak(text=f"{string.capwords(day)} {tense} {current_holiday!r} in {countryname}")
         else:
             return current_holiday
     elif models.env.birthday == date.strftime("%d-%B"):
         if phrase:
-            speaker.speak(
-                text=f"{string.capwords(day)} {tense} your birthday {models.env.title}!"
-            )
+            speaker.speak(text=f"{string.capwords(day)} {tense} your birthday {models.env.title}!")
         else:
             return "Birthday"
     elif phrase:
@@ -443,9 +405,7 @@ def abusive(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     logger.warning(phrase)
-    speaker.speak(
-        text="I don't respond to abusive words. Ask me nicely, you might get a response."
-    )
+    speaker.speak(text="I don't respond to abusive words. Ask me nicely, you might get a response.")
 
 
 def photo(*args) -> str:
@@ -456,9 +416,7 @@ def photo(*args) -> str:
         Filename.
     """
     # Ret value will be used only by offline communicator
-    filename = os.path.join(
-        models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg"
-    )
+    filename = os.path.join(models.fileio.root, f"{datetime.now().strftime('%B_%d_%Y_%I_%M_%p')}.jpg")
     try:
         facenet = face.FaceNet()
     except CameraError as error:
@@ -475,9 +433,7 @@ def photo(*args) -> str:
         speaker.speak(text=f"A photo has been captured {models.env.title}!")
         return filename
     else:
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to take a picture."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to take a picture.")
         return f"I'm sorry {models.env.title}! I wasn't able to take a picture."
 
 

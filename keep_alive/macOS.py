@@ -93,9 +93,7 @@ def run_in_terminal() -> None:
     python = shutil.which("python") or sys.executable
     pyenv = python.replace("/bin/python", "/bin/activate")
     initiate = f"cd {BASE_PATH} && source {pyenv} && python {ENTRYPOINT}"
-    os.system(
-        f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null"""
-    )
+    os.system(f"""osascript -e 'tell application "Terminal" to do script "{initiate}"' > /dev/null""")
 
 
 def main() -> None:

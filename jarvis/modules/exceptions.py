@@ -27,9 +27,7 @@ ALSA_ERROR_HANDLER = ctypes.CFUNCTYPE(
 
 
 # noinspection PyUnusedLocal
-def py_error_handler(
-    filename: ByteString, line: int, function: ByteString, err: int, fmt: ByteString
-) -> None:
+def py_error_handler(filename: ByteString, line: int, function: ByteString, err: int, fmt: ByteString) -> None:
     """Handles errors from pyaudio module especially for Linux based operating systems."""
     pass
 

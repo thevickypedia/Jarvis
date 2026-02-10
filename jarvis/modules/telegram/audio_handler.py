@@ -28,9 +28,7 @@ def audio_converter_mac() -> Callable:
         logger.error(error)
 
 
-def audio_converter_win(
-    input_filename: FilePath | str, output_audio_format: str
-) -> str | None:
+def audio_converter_win(input_filename: FilePath | str, output_audio_format: str) -> str | None:
     """Imports AudioSegment from pydub.
 
     Args:
@@ -61,8 +59,6 @@ def audio_converter_win(
         os.remove(input_filename)
         if os.path.isfile(output_filename):
             return output_filename
-        raise FileNotFoundError(
-            f"{output_filename} was not found after exporting audio to {output_audio_format}"
-        )
+        raise FileNotFoundError(f"{output_filename} was not found after exporting audio to {output_audio_format}")
     except FileNotFoundError as error:  # raised by audio.export when conversion fails
         logger.error(error)

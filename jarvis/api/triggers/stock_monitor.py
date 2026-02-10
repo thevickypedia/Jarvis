@@ -28,9 +28,7 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> str 
     """
     logger.info("Generating price chart for '%s'", ticker)
     # ~ 1 month
-    dataframe = webull().get_bars(
-        stock=ticker, interval="m60", count=bars, extendTrading=1
-    )
+    dataframe = webull().get_bars(stock=ticker, interval="m60", count=bars, extendTrading=1)
     refined = dataframe[["close"]]
     if len(refined) == 0:
         refined = dataframe[["open"]]
@@ -111,9 +109,7 @@ class StockMonitor:
             prices[ticker] = {}
             try:
                 price_check = webull().get_quote(ticker)
-                if current_price := round(
-                    float(price_check.get("close") or price_check.get("open")), 2
-                ):
+                if current_price := round(float(price_check.get("close") or price_check.get("open")), 2):
                     prices[ticker]["price"] = float(current_price)
                 else:
                     raise ValueError(price_check)
@@ -127,9 +123,7 @@ class StockMonitor:
         return prices
 
     @staticmethod
-    def closest_maximum(
-        stock_price: int | float, maximum: int | float, correction: int
-    ) -> bool:
+    def closest_maximum(stock_price: int | float, maximum: int | float, correction: int) -> bool:
         """Determines if a stock price is close to the maximum value.
 
         Examples:
@@ -156,9 +150,7 @@ class StockMonitor:
         return stock_price >= max_corrected_amt
 
     @staticmethod
-    def closest_minimum(
-        stock_price: int | float, minimum: int | float, correction: int
-    ) -> bool:
+    def closest_minimum(stock_price: int | float, minimum: int | float, correction: int) -> bool:
         """Determines if a stock price is close to the minimum value.
 
         Examples:
@@ -184,9 +176,7 @@ class StockMonitor:
         min_corrected_amt = math.ceil(minimum + (stock_price * correction / 100))
         return stock_price <= min_corrected_amt
 
-    def skip_signal(
-        self, condition_list: Tuple[Any, Any, Any, Any, Any, Any], hours: int = 12
-    ) -> bool:
+    def skip_signal(self, condition_list: Tuple[Any, Any, Any, Any, Any, Any], hours: int = 12) -> bool:
         """Generate a skip signal for a particular stock monitoring alert.
 
         Args:
@@ -261,18 +251,14 @@ class StockMonitor:
                 email_text = ""
                 if maximum and prices[ticker]["price"] >= maximum:
                     email_text += f"{ticker_hyperlinked} has increased more than the set value: ${maximum:,}"
-                elif maximum and self.closest_maximum(
-                    prices[ticker]["price"], maximum, correction
-                ):
+                elif maximum and self.closest_maximum(prices[ticker]["price"], maximum, correction):
                     email_text += (
                         f"{ticker_hyperlinked} is close (within {correction}% range) to the set "
                         f"maximum value: ${maximum:,}"
                     )
                 elif minimum and prices[ticker]["price"] <= minimum:
                     email_text += f"{ticker_hyperlinked} has decreased less than the set value: ${minimum:,}"
-                elif minimum and self.closest_minimum(
-                    prices[ticker]["price"], minimum, correction
-                ):
+                elif minimum and self.closest_minimum(prices[ticker]["price"], minimum, correction):
                     email_text += (
                         f"{ticker_hyperlinked} is close (within {correction}% range) to the set "
                         f"minimum value: ${minimum:,}"
@@ -290,9 +276,7 @@ class StockMonitor:
                             daily_alerts,
                         )
                     )
-                    datastore["attachments"].append(
-                        generate_graph(ticker=ticker, logger=self.logger)
-                    )
+                    datastore["attachments"].append(generate_graph(ticker=ticker, logger=self.logger))
             if not datastore["text_gathered"]:
                 self.logger.info("Nothing to report")
                 return
@@ -313,17 +297,11 @@ class StockMonitor:
                         self.logger.info("Removing '%s' from database.", entry)
                         stockmonitor_squire.delete_stock_userdata(data=entry)
                     else:
-                        self.logger.info(
-                            "Retaining '%s' as user subscribed for daily alerts.", entry
-                        )
+                        self.logger.info("Retaining '%s' as user subscribed for daily alerts.", entry)
                         self.repeat_alerts.append({int(time.time()): entry})
             else:
                 self.logger.error(response.json())
-            [
-                os.remove(stock_graph)
-                for stock_graph in datastore["attachments"]
-                if os.path.isfile(stock_graph)
-            ]
+            [os.remove(stock_graph) for stock_graph in datastore["attachments"] if os.path.isfile(stock_graph)]
 
 
 if __name__ == "__main__":

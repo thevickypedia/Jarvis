@@ -46,9 +46,7 @@ def make_request(lat: float, lon: float) -> Dict | None:
         logger.error(error)
 
 
-def weather_with_specifics(
-    phrase: str, response: Dict[str, Any], weather_location: str
-) -> None:
+def weather_with_specifics(phrase: str, response: Dict[str, Any], weather_location: str) -> None:
     """Parses the weather information in depth when requested for a specific timeline.
 
     Args:
@@ -67,9 +65,7 @@ def weather_with_specifics(
         tell = "tomorrow"
     elif "next week" in phrase:
         idx = -1
-        next_week = datetime.fromtimestamp(response["daily"][-1]["dt"]).strftime(
-            "%A, %B %d"
-        )
+        next_week = datetime.fromtimestamp(response["daily"][-1]["dt"]).strftime("%A, %B %d")
         tell = f"on {' '.join(next_week.split()[:-1])} {support.ENGINE.ordinal(next_week.split()[-1])}"
     else:
         idx = 0
@@ -93,12 +89,8 @@ def weather_with_specifics(
 
     if "alerts" in response:
         alerts = response["alerts"][0]["event"]
-        start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime(
-            "%I:%M %p"
-        )
-        end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime(
-            "%I:%M %p"
-        )
+        start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime("%I:%M %p")
+        end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime("%I:%M %p")
     else:
         alerts, start_alert, end_alert = None, None, None
     indexed_response = response["daily"][idx]
@@ -109,29 +101,19 @@ def weather_with_specifics(
     temp_feel_f = int(indexed_response["feels_like"][when])
     sunrise = datetime.fromtimestamp(indexed_response["sunrise"]).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(indexed_response["sunset"]).strftime("%I:%M %p")
-    if (
-        "sunrise" in phrase
-        or "sun rise" in phrase
-        or ("sun" in phrase and "rise" in phrase)
-    ):
-        if datetime.strptime(
-            datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-        ) >= datetime.strptime(sunrise, "%I:%M %p"):
+    if "sunrise" in phrase or "sun rise" in phrase or ("sun" in phrase and "rise" in phrase):
+        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= datetime.strptime(
+            sunrise, "%I:%M %p"
+        ):
             tense = "will be"
         else:
             tense = "was"
-        speaker.speak(
-            text=f"{tell} in {weather_location}, sunrise {tense} at {sunrise}."
-        )
+        speaker.speak(text=f"{tell} in {weather_location}, sunrise {tense} at {sunrise}.")
         return
-    if (
-        "sunset" in phrase
-        or "sun set" in phrase
-        or ("sun" in phrase and "set" in phrase)
-    ):
-        if datetime.strptime(
-            datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-        ) >= datetime.strptime(sunset, "%I:%M %p"):
+    if "sunset" in phrase or "sun set" in phrase or ("sun" in phrase and "set" in phrase):
+        if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= datetime.strptime(
+            sunset, "%I:%M %p"
+        ):
             tense = "will be"
         else:
             tense = "was"
@@ -158,9 +140,7 @@ def weather_with_specifics(
     speaker.speak(text=output)
 
 
-def weather(
-    phrase: str = None, monitor: bool = False
-) -> Tuple[Any, int, int, int, Optional[str]] | None:
+def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, int, Optional[str]] | None:
     """Says weather at any location if a specific location is mentioned.
 
     Says weather at current location by getting IP using reverse geocoding if no place is received.
@@ -182,8 +162,7 @@ def weather(
         # ignore days in week and the keywords for weather as they are guaranteed to not be places
         place = support.get_capitalized(
             phrase=phrase,
-            ignore=support.days_in_week
-            + tuple(string.capwords(w) for w in keywords.keywords["weather"]),
+            ignore=support.days_in_week + tuple(string.capwords(w) for w in keywords.keywords["weather"]),
         )
         phrase = phrase.lower()
     if place:
@@ -192,43 +171,28 @@ def weather(
         if not desired_location:
             logger.error("Failed to get coordinates for the place: '%s'", place)
             speaker.speak(
-                text=f"I'm sorry {models.env.title}! "
-                f"I wasn't able to get the weather information at {place}!"
+                text=f"I'm sorry {models.env.title}! " f"I wasn't able to get the weather information at {place}!"
             )
             return
         coordinates = desired_location.latitude, desired_location.longitude
         located = location.geo_locator.reverse(coordinates, language="en")
         address = located.raw["address"]
-        city = (
-            address.get("city")
-            or address.get("town")
-            or address.get("hamlet")
-            or "Unknown"
-        )
+        city = address.get("city") or address.get("town") or address.get("hamlet") or "Unknown"
         state = address.get("state", "Unknown")
         lat = located.latitude
         lon = located.longitude
     else:
         current_location = files.get_location()
         address = current_location.get("address", {})
-        city = (
-            address.get("city")
-            or address.get("town")
-            or address.get("hamlet")
-            or "Unknown"
-        )
+        city = address.get("city") or address.get("town") or address.get("hamlet") or "Unknown"
         state = address.get("state", "Unknown")
         lat = current_location["latitude"]
         lon = current_location["longitude"]
     if not (response := make_request(lat=lat, lon=lon)):
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
         return
 
-    weather_location = (
-        f"{city} {state}".replace("None", "") if city != state else city or state
-    )
+    weather_location = f"{city} {state}".replace("None", "") if city != state else city or state
 
     not_current = word_match.word_match(
         phrase=phrase,
@@ -245,9 +209,7 @@ def weather(
         weather_with_specifics(phrase, response, weather_location)
         return
     elif not_current:
-        speaker.speak(
-            f"I'm sorry {models.env.title}! The API endpoint is only set to retrieve the current weather."
-        )
+        speaker.speak(f"I'm sorry {models.env.title}! The API endpoint is only set to retrieve the current weather.")
         return
 
     # todo: the onecall endpoint is untested
@@ -257,54 +219,38 @@ def weather(
         low = int(response["daily"][0]["temp"]["min"])
         temp_f = int(response["current"]["temp"])
         temp_feel_f = int(response["current"]["feels_like"])
-        sunrise = datetime.fromtimestamp(response["daily"][0]["sunrise"]).strftime(
-            "%I:%M %p"
-        )
+        sunrise = datetime.fromtimestamp(response["daily"][0]["sunrise"]).strftime("%I:%M %p")
     else:
         condition = response["weather"][0]["description"]
         high = int(response["main"]["temp_max"])
         low = int(response["main"]["temp_min"])
         temp_f = int(response["main"]["temp"])
         temp_feel_f = int(response["main"]["feels_like"])
-        sunrise = datetime.fromtimestamp(response["sys"]["sunrise"]).strftime(
-            "%I:%M %p"
-        )
+        sunrise = datetime.fromtimestamp(response["sys"]["sunrise"]).strftime("%I:%M %p")
     sunset = datetime.fromtimestamp(response["sys"]["sunset"]).strftime("%I:%M %p")
     if monitor:
         if "alerts" in response:
             alerts = response["alerts"][0]["event"]
-            start_alert = datetime.fromtimestamp(
-                response["alerts"][0]["start"]
-            ).strftime("%m-%d %H:%M")
-            end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime(
-                "%m-%d %H:%M"
-            )
+            start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime("%m-%d %H:%M")
+            end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime("%m-%d %H:%M")
             alert = f"{string.capwords(alerts)} from {start_alert} to {end_alert}"
         else:
             alert = None
         return condition, high, low, temp_f, alert
     if phrase:
-        if (
-            "sunrise" in phrase
-            or "sun rise" in phrase
-            or ("sun" in phrase and "rise" in phrase)
-        ):
-            if datetime.strptime(
-                datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-            ) >= datetime.strptime(sunrise, "%I:%M %p"):
+        if "sunrise" in phrase or "sun rise" in phrase or ("sun" in phrase and "rise" in phrase):
+            if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= datetime.strptime(
+                sunrise, "%I:%M %p"
+            ):
                 tense = "will be"
             else:
                 tense = "was"
             speaker.speak(text=f"In {weather_location}, sunrise {tense} at {sunrise}.")
             return
-        if (
-            "sunset" in phrase
-            or "sun set" in phrase
-            or ("sun" in phrase and "set" in phrase)
-        ):
-            if datetime.strptime(
-                datetime.today().strftime("%I:%M %p"), "%I:%M %p"
-            ) >= datetime.strptime(sunset, "%I:%M %p"):
+        if "sunset" in phrase or "sun set" in phrase or ("sun" in phrase and "set" in phrase):
+            if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= datetime.strptime(
+                sunset, "%I:%M %p"
+            ):
                 tense = "will be"
             else:
                 tense = "was"
@@ -319,11 +265,7 @@ def weather(
     )
     if "alerts" in response:
         alerts = response["alerts"][0]["event"]
-        start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime(
-            "%I:%M %p"
-        )
-        end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime(
-            "%I:%M %p"
-        )
+        start_alert = datetime.fromtimestamp(response["alerts"][0]["start"]).strftime("%I:%M %p")
+        end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime("%I:%M %p")
         output += f" You have a weather alert for {alerts} between {start_alert} and {end_alert}"
     speaker.speak(text=output)

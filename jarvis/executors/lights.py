@@ -84,9 +84,7 @@ class ThreadExecutor:
         Args:
             function_to_call: Takes the function/method that has to be called as an argument.
         """
-        status = ThreadPool(processes=1).apply_async(
-            func=self.thread_worker, args=(function_to_call,)
-        )
+        status = ThreadPool(processes=1).apply_async(func=self.thread_worker, args=(function_to_call,))
         # Speak the initial response when the work is happening behind the scenes
         speaker.speak(run=True)
         try:
@@ -106,10 +104,7 @@ class ThreadExecutor:
             if len(failed_msg) == 1 and failed_msg[0].startswith("One"):
                 response = "".join(failed_msg) + " isn't available right now!"
             else:
-                response = (
-                    util.comma_separator(list_=failed_msg)
-                    + " aren't available right now!"
-                )
+                response = util.comma_separator(list_=failed_msg) + " aren't available right now!"
             logger.error(response)
             speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
 
@@ -123,9 +118,7 @@ def lights(phrase: str) -> None:
     if not internet.vpn_checker():
         return
 
-    if (smart_devices := files.get_smart_devices()) and (
-        lights_map := get_lights(data=smart_devices)
-    ):
+    if (smart_devices := files.get_smart_devices()) and (lights_map := get_lights(data=smart_devices)):
         logger.debug(lights_map)
     else:
         logger.warning(
@@ -147,21 +140,15 @@ def lights(phrase: str) -> None:
             phrase_location = phrase
             for word in remove:
                 phrase_location = phrase_location.replace(word, "")
-            exclusion = util.get_closest_match(
-                text=phrase_location.strip(), match_list=list(lights_map.keys())
-            )
+            exclusion = util.get_closest_match(text=phrase_location.strip(), match_list=list(lights_map.keys()))
             host_names: List[str] = util.remove_duplicates(
-                input_=util.matrix_to_flat_list(
-                    [lights_map[light] for light in lights_map if light != exclusion]
-                )
+                input_=util.matrix_to_flat_list([lights_map[light] for light in lights_map if light != exclusion])
             )
             host_names_len = len(host_names)
             logger.debug("%d lights' excluding %s", host_names_len, exclusion)
         else:
             host_names: List[str] = util.remove_duplicates(
-                input_=util.matrix_to_flat_list(
-                    input_=[v for k, v in lights_map.items() if v]
-                )
+                input_=util.matrix_to_flat_list(input_=[v for k, v in lights_map.items() if v])
             )
             host_names_len = len(host_names)
             logger.debug("All lights: %d", host_names_len)
@@ -173,9 +160,7 @@ def lights(phrase: str) -> None:
         phrase_location = phrase
         for word in remove:
             phrase_location = phrase_location.replace(word, "")
-        light_location = util.get_closest_match(
-            text=phrase_location.strip(), match_list=list(lights_map.keys())
-        )
+        light_location = util.get_closest_match(text=phrase_location.strip(), match_list=list(lights_map.keys()))
         host_names: List[str] = lights_map[light_location]
         host_names_len = len(host_names)
         logger.info("%d lights' location: %s", host_names_len, light_location)
@@ -198,51 +183,38 @@ def lights(phrase: str) -> None:
     if word_match.word_match(phrase, squire.word_map["turn_on"]):
         tone = "white" if "white" in phrase else "cool"
         if "turn on" in phrase:
-            speaker.speak(
-                text=f"{random.choice(conversation.acknowledgement)}! Turning on {host_names_len} {plural}"
-            )
+            speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning on {host_names_len} {plural}")
         else:
             speaker.speak(
                 text=f"{random.choice(conversation.acknowledgement)}! Setting {host_names_len} {plural} to {tone}!"
             )
         executor.avail_check(function_to_call=squire.cool)
     elif word_match.word_match(phrase, squire.word_map["turn_off"]):
-        speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! Turning off {host_names_len} {plural}"
-        )
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning off {host_names_len} {plural}")
         if state := squire.check_status():
             support.stop_process(pid=int(state[0]))
         if word_match.word_match(phrase, squire.word_map["reset"]):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
         executor.avail_check(function_to_call=squire.turn_off)
     elif word_match.word_match(phrase, squire.word_map["party_mode"]):
-        host_ip = util.remove_duplicates(
-            input_=util.matrix_to_flat_list(input_=list(lights_map.values()))
-        )
+        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
         if squire.party_mode(host=host_ip, phrase=phrase):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             Thread(target=executor.thread_worker, args=[squire.turn_off]).start()
     elif word_match.word_match(phrase, squire.word_map["warm"]):
         if "yellow" in phrase:
             speaker.speak(
-                text=f"{random.choice(conversation.acknowledgement)}! "
-                f"Setting {host_names_len} {plural} to yellow!"
+                text=f"{random.choice(conversation.acknowledgement)}! " f"Setting {host_names_len} {plural} to yellow!"
             )
         else:
-            speaker.speak(
-                text=f"Sure {models.env.title}! Setting {host_names_len} {plural} to warm!"
-            )
+            speaker.speak(text=f"Sure {models.env.title}! Setting {host_names_len} {plural} to warm!")
         executor.avail_check(function_to_call=squire.warm)
-    elif color := word_match.word_match(
-        phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())
-    ):
+    elif color := word_match.word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(
             text=f"{random.choice(conversation.acknowledgement)}! "
             f"I've changed {host_names_len} {plural} to {color}!"
         )
-        host_ip = util.remove_duplicates(
-            input_=util.matrix_to_flat_list(input_=list(lights_map.values()))
-        )
+        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
         for light_ip in host_ip:
             squire.preset(
                 host=light_ip,
@@ -263,15 +235,12 @@ def lights(phrase: str) -> None:
             if level is None:
                 level = 100
         speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! "
-            f"I've set {host_names_len} {plural} to {level}%!"
+            text=f"{random.choice(conversation.acknowledgement)}! " f"I've set {host_names_len} {plural} to {level}%!"
         )
         level = round((255 * level) / 100)
         Thread(target=executor.thread_worker, args=[squire.turn_off]).run()
         time.sleep(1)
-        host_ip = util.remove_duplicates(
-            input_=util.matrix_to_flat_list(input_=list(lights_map.values()))
-        )
+        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
         for light_ip in host_ip:
             squire.lumen(host=light_ip, rgb=level)
     else:

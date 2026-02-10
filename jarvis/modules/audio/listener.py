@@ -55,23 +55,15 @@ def listen(
     """
     with microphone as source:
         try:
-            spectrum.activate(
-                sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit
-            )
-            listened = recognizer.listen(
-                source=source, timeout=timeout, phrase_time_limit=phrase_time_limit
-            )
+            spectrum.activate(sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit)
+            listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
             spectrum.deactivate(sound=sound)
-            recognized, confidence = recognizer.recognize_google(
-                audio_data=listened, with_confidence=True
-            )
+            recognized, confidence = recognizer.recognize_google(audio_data=listened, with_confidence=True)
             # SafetyNet: Should never meet the condition for called by offline
             if no_conf or shared.called_by_offline:
                 logger.info(recognized)
                 return recognized
-            logger.info(
-                "Recognized '%s' with a confidence rate '%.2f'", recognized, confidence
-            )
+            logger.info("Recognized '%s' with a confidence rate '%.2f'", recognized, confidence)
             if confidence > models.env.recognizer_confidence:
                 return recognized
             else:
@@ -98,13 +90,9 @@ def listen_recursive(source: Microphone, timeout: int, phrase_time_limit: int) -
     """
     playsound(sound=models.indicators.start, block=False)
     support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
-    listened = recognizer.listen(
-        source=source, timeout=timeout, phrase_time_limit=phrase_time_limit
-    )
+    listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
     playsound(sound=models.indicators.end, block=False)
     support.flush_screen()
     recognized = recognizer.recognize_google(audio_data=listened)
-    if word_match.word_match(
-        phrase=recognized, match_list=("yes", "yeah", "yep", "yeh", "indeed")
-    ):
+    if word_match.word_match(phrase=recognized, match_list=("yes", "yeah", "yep", "yeh", "indeed")):
         return True

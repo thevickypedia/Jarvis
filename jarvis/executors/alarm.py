@@ -16,9 +16,7 @@ from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support, util
 
 
-def check_overlap(
-    new_alarm: Dict[str, str | bool], old_alarms: List[Dict[str, str | bool]]
-) -> bool:
+def check_overlap(new_alarm: Dict[str, str | bool], old_alarms: List[Dict[str, str | bool]]) -> bool:
     """Checks to see if there is a possibility of an overlap.
 
     Args:
@@ -48,9 +46,7 @@ def check_overlap(
             and not old_alarm.get("day")
         ):
             if difference <= 203:  # within 203 seconds of an existing alarm
-                logger.info(
-                    "Difference between both the alarms in seconds: %.2f", difference
-                )
+                logger.info("Difference between both the alarms in seconds: %.2f", difference)
             speaker.speak(
                 text=f"You have an existing alarm, at {old_alarm['alarm_time']} "
                 f"that overlaps with this one {models.env.title}!"
@@ -111,9 +107,7 @@ def create_alarm(
             f"Alarm has been set for {alarm_time.strftime('%I:%M %p')} {add}",
             f"Your alarm is set for {alarm_time.strftime('%I:%M %p')} {add}",
         ]
-        speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! {random.choice(response)}"
-        )
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! {random.choice(response)}")
 
 
 def set_alarm(phrase: str) -> None:
@@ -123,9 +117,7 @@ def set_alarm(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     if models.settings.limited:
-        speaker.speak(
-            text="Alarm features are currently unavailable, as you're running on restricted mode."
-        )
+        speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
         return
     phrase = phrase.lower()
     if "minute" in phrase:
@@ -179,9 +171,7 @@ def set_alarm(phrase: str) -> None:
                     day=string.capwords(day),
                     repeat=True,
                 )
-            elif word_match.word_match(
-                phrase=phrase, match_list=("everyday", "every day", "daily")
-            ):
+            elif word_match.word_match(phrase=phrase, match_list=("everyday", "every day", "daily")):
                 create_alarm(phrase=phrase, alarm_time=datetime_obj, repeat=True)
             else:
                 create_alarm(phrase=phrase, alarm_time=datetime_obj)
@@ -207,13 +197,9 @@ def set_alarm(phrase: str) -> None:
         ):
             if alarm_states := get_alarm_state():
                 if len(alarm_states) > 1:
-                    speaker.speak(
-                        text=f"Your alarms are at, {util.comma_separator(alarm_states)}."
-                    )
+                    speaker.speak(text=f"Your alarms are at, {util.comma_separator(alarm_states)}.")
                 else:
-                    speaker.speak(
-                        text=f"You have an alarm at, {util.comma_separator(alarm_states)}."
-                    )
+                    speaker.speak(text=f"You have an alarm at, {util.comma_separator(alarm_states)}.")
             else:
                 speaker.speak(text=f"You don't have any alarms set {models.env.title}!")
             return
@@ -241,17 +227,13 @@ def get_alarm_state(alarm_time: str = None) -> List[str]:
     response = []
     for _alarm in _alarms:
         if _alarm["repeat"]:
-            response.append(
-                f"{_alarm['alarm_time']} on every {_alarm.get('day', 'day')}"
-            )
+            response.append(f"{_alarm['alarm_time']} on every {_alarm.get('day', 'day')}")
         else:
             response.append(_alarm["alarm_time"])
     return response
 
 
-def more_than_one_alarm_to_kill(
-    alarms: List[Dict[str, str | bool]], phrase: str, alarm_states: List[str]
-) -> None:
+def more_than_one_alarm_to_kill(alarms: List[Dict[str, str | bool]], phrase: str, alarm_states: List[str]) -> None:
     """Helper function for kill alarm, if there are multiple alarms set at the same time with different days.
 
     Args:
@@ -290,10 +272,7 @@ def more_than_one_alarm_to_kill(
                     f"{del_alarm.get('day', 'day')} has been silenced {models.env.title}!"
                 )
             else:
-                speaker.speak(
-                    text=f"Your alarm at {del_alarm['alarm_time']} "
-                    f"has been silenced {models.env.title}!"
-                )
+                speaker.speak(text=f"Your alarm at {del_alarm['alarm_time']} " f"has been silenced {models.env.title}!")
             alarms.remove(del_alarm)
             files.put_alarms(alarms)
         else:
@@ -327,9 +306,7 @@ def kill_alarm(phrase: str) -> None:
         files.put_alarms(data=alarms)
         return
     if "all" in phrase.split():
-        speaker.speak(
-            text=f"I have silenced {len(alarms)} of your alarms {models.env.title}!"
-        )
+        speaker.speak(text=f"I have silenced {len(alarms)} of your alarms {models.env.title}!")
         alarms.clear()
         files.put_alarms(data=alarms)
         return
@@ -350,18 +327,10 @@ def kill_alarm(phrase: str) -> None:
                     more_than_one_alarm_to_kill(alarms, phrase, alarm_states)
                     return
                 response = f"Your alarm at {alarm_states[0]} has been silenced {models.env.title}!"
-                files.put_alarms(
-                    data=[
-                        _alarm
-                        for _alarm in alarms
-                        if _alarm["alarm_time"] != chosen_alarm
-                    ]
-                )
+                files.put_alarms(data=[_alarm for _alarm in alarms if _alarm["alarm_time"] != chosen_alarm])
                 speaker.speak(text=response)
             else:
-                speaker.speak(
-                    text=f"There are no such alarms setup {models.env.title}!"
-                )
+                speaker.speak(text=f"There are no such alarms setup {models.env.title}!")
         else:
             speaker.speak(text="Such an alarm time is impossible!")
     else:

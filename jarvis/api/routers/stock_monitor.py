@@ -34,12 +34,8 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
         - 200: If email delivery was successful.
         - 503: If failed to send an email.
     """
-    timeout_in = support.pluralize(
-        count=util.format_nos(input_=reset_timeout / 60), word="minute"
-    )
-    mail_obj = gmailconnector.SendEmail(
-        gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass
-    )
+    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     logger.info("Sending stock monitor token as OTP")
     settings.stock_monitor_helper.otp_sent[email_address] = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.one_time_passcode).render(
@@ -68,9 +64,7 @@ async def send_otp_stock_monitor(email_address: EmailStr, reset_timeout: int = 3
         )
     else:
         logger.error(mail_stat.json())
-        raise APIResponse(
-            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body
-        )
+        raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=mail_stat.body)
 
 
 async def stock_monitor_api(
@@ -129,9 +123,7 @@ async def stock_monitor_api(
         input_data.request = input_data.request.upper()
     except AttributeError as error:
         logger.error(error)
-        raise APIResponse(
-            status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=error.__str__()
-        )
+        raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=error.__str__())
     if input_data.request not in ("GET", "PUT", "DELETE"):
         logger.warning("'%s' is not in the allowed request list.", input_data.request)
         raise APIResponse(
@@ -144,9 +136,7 @@ async def stock_monitor_api(
     if (
         apikey
         and models.env.stock_monitor_api.get(input_data.email)
-        and secrets.compare_digest(
-            models.env.stock_monitor_api[input_data.email], apikey
-        )
+        and secrets.compare_digest(models.env.stock_monitor_api[input_data.email], apikey)
     ):
         logger.info("%s has been verified using apikey", input_data.email)
     # both vars are present but don't match
@@ -169,14 +159,10 @@ async def stock_monitor_api(
         ):
             logger.info("%s has been verified.", input_data.email)
         else:
-            result = gmailconnector.validate_email(
-                email_address=input_data.email, smtp_check=False
-            )
+            result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)
             logger.debug(result.body)
             if result.ok is False:
-                raise APIResponse(
-                    status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body
-                )
+                raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
             await send_otp_stock_monitor(email_address=input_data.email)
 
     if input_data.request == "GET":
@@ -192,10 +178,7 @@ async def stock_monitor_api(
             if input_data.plaintext:
                 raise APIResponse(
                     status_code=HTTPStatus.OK.real,
-                    detail=[
-                        dict(zip(settings.stock_monitor.user_info, each_entry))
-                        for each_entry in db_entry
-                    ],
+                    detail=[dict(zip(settings.stock_monitor.user_info, each_entry)) for each_entry in db_entry],
                 )
             # Format as an HTML table to serve in https://vigneshrao.com/stock-monitor
             # This is a mess, yet required because JavaScript can't handle dataframes and
@@ -203,9 +186,7 @@ async def stock_monitor_api(
             html_data = """<table border="1" class="dataframe" id="dataframe"><tbody><tr><td><b>Selector</b></td>"""
             html_data += (
                 "<td><b>"
-                + "</b></td><td><b>".join(
-                    (string.capwords(p) for p in settings.stock_monitor.user_info)
-                )
+                + "</b></td><td><b>".join((string.capwords(p) for p in settings.stock_monitor.user_info))
                 + "</b></td></tr>"
             )
             rows = ""
@@ -283,9 +264,7 @@ async def stock_monitor_api(
     if input_data.request == "DELETE":
         logger.info("'%s' requested to delete '%s'", input_data.email, new_entry)
         # Checks if entry exists
-        if new_entry not in stockmonitor_squire.get_stock_userdata(
-            email=input_data.email
-        ):
+        if new_entry not in stockmonitor_squire.get_stock_userdata(email=input_data.email):
             raise APIResponse(
                 status_code=HTTPStatus.NOT_FOUND.real,
                 detail="Entry is not present in the database.",

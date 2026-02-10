@@ -143,9 +143,7 @@ async def line_count(
     total_lines = total_lines_of_code()
     logger.info("Total lines of code: %d", total_lines)
     if badge:
-        return RedirectResponse(
-            f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{total_lines:,}-{color}"
-        )
+        return RedirectResponse(f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{total_lines:,}-{color}")
     return total_lines
 
 
@@ -170,7 +168,5 @@ async def file_count(
     files = total_files()
     logger.info("Total number of files: %d", files)
     if badge:
-        return RedirectResponse(
-            f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{files:,}-{color}"
-        )
+        return RedirectResponse(f"https://img.shields.io/badge/{urllib.parse.quote(text)}-{files:,}-{color}")
     return files

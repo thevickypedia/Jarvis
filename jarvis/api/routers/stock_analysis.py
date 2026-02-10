@@ -25,9 +25,7 @@ async def get_signals(symbol: str, bar_count: int = 100, data_dict: bool = False
     if symbol == "ALL":
         if settings.trader.stock_list:
             if data_dict:
-                raise APIResponse(
-                    status_code=HTTPStatus.OK.real, detail=settings.trader.stock_list
-                )
+                raise APIResponse(status_code=HTTPStatus.OK.real, detail=settings.trader.stock_list)
             raise APIResponse(
                 status_code=HTTPStatus.OK.real,
                 detail=json.dumps(settings.trader.stock_list),
@@ -69,9 +67,7 @@ def thread_worker(function_to_call: Callable) -> None:
             )
 
 
-def get_signals_per_ticker(
-    symbol: str, bar_count: int = 100, all_tickers: bool = False
-):
+def get_signals_per_ticker(symbol: str, bar_count: int = 100, all_tickers: bool = False):
     """Get buy, sell and hold signals for a particular stock.
 
     Args:
@@ -105,9 +101,7 @@ def get_signals_per_ticker(
         logger.error(type(error))
         if all_tickers:
             return
-        raise APIResponse(
-            status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__()
-        )
+        raise APIResponse(status_code=HTTPStatus.BAD_REQUEST.real, detail=error.__str__())
 
     # Create a DataFrame from the fetched data
     stock_data = pandas.DataFrame(bars)
@@ -127,16 +121,13 @@ def get_signals_per_ticker(
     hold_signals = stock_data[stock_data["hold"]]
 
     buy_signals_timestamped = {
-        pandas.Timestamp(timestamp).to_pydatetime(): "Buy"
-        for timestamp in buy_signals.index.values
+        pandas.Timestamp(timestamp).to_pydatetime(): "Buy" for timestamp in buy_signals.index.values
     }
     sell_signals_timestamped = {
-        pandas.Timestamp(timestamp).to_pydatetime(): "Sell"
-        for timestamp in sell_signals.index.values
+        pandas.Timestamp(timestamp).to_pydatetime(): "Sell" for timestamp in sell_signals.index.values
     }
     hold_signals_timestamped = {
-        pandas.Timestamp(timestamp).to_pydatetime(): "Hold"
-        for timestamp in hold_signals.index.values
+        pandas.Timestamp(timestamp).to_pydatetime(): "Hold" for timestamp in hold_signals.index.values
     }
 
     all_signals = dict(
@@ -158,9 +149,7 @@ def get_signals_per_ticker(
     }
 
     if all_tickers:
-        settings.trader.result[max(assessment, key=assessment.get).upper()].append(
-            symbol
-        )
+        settings.trader.result[max(assessment, key=assessment.get).upper()].append(symbol)
         return
 
     extras = ""
@@ -186,6 +175,5 @@ def get_signals_per_ticker(
 
     raise APIResponse(
         status_code=HTTPStatus.OK.real,
-        detail=f"{stock} is a {max(assessment, key=assessment.get).upper()}\n"
-        f"\n{extras}",
+        detail=f"{stock} is a {max(assessment, key=assessment.get).upper()}\n" f"\n{extras}",
     )

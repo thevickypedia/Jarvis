@@ -19,21 +19,9 @@ async def list_files():
         Dictionary of files that can be downloaded or uploaded.
     """
     return {
-        **{
-            "logs": [
-                file_
-                for __path, __directory, __file in os.walk("logs")
-                for file_ in __file
-            ]
-        },
-        **{
-            "fileio": [f for f in os.listdir(models.fileio.root) if f.endswith(".yaml")]
-        },
-        **{
-            "uploads": [
-                f for f in os.listdir(models.fileio.uploads) if not f.startswith(".")
-            ]
-        },
+        **{"logs": [file_ for __path, __directory, __file in os.walk("logs") for file_ in __file]},
+        **{"fileio": [f for f in os.listdir(models.fileio.root) if f.endswith(".yaml")]},
+        **{"uploads": [f for f in os.listdir(models.fileio.uploads) if not f.startswith(".")]},
     }
 
 
@@ -53,15 +41,10 @@ async def get_file(filename: str):
     if filename not in allowed_files["fileio"] + allowed_files["logs"]:
         raise APIResponse(
             status_code=HTTPStatus.NOT_ACCEPTABLE.real,
-            detail=f"{filename!r} is either unavailable or not allowed.\n"
-            f"Downloadable files:{allowed_files}",
+            detail=f"{filename!r} is either unavailable or not allowed.\n" f"Downloadable files:{allowed_files}",
         )
     if filename.endswith(".log"):
-        if path := [
-            __path
-            for __path, __directory, __file in os.walk("logs")
-            if filename in __file
-        ]:
+        if path := [__path for __path, __directory, __file in os.walk("logs") if filename in __file]:
             target_file = os.path.join(path[0], filename)
         else:
             logger.critical("ATTENTION::'%s' wasn't found.", filename)
@@ -101,8 +84,7 @@ async def put_file(file: UploadFile):
             f_stream.write(content)
         raise APIResponse(
             status_code=HTTPStatus.ACCEPTED.real,
-            detail=f"{file.filename!r} is not allowed for an update.\n"
-            "Hence storing as a standalone file.",
+            detail=f"{file.filename!r} is not allowed for an update.\n" "Hence storing as a standalone file.",
         )
     with open(os.path.join(models.fileio.root, file.filename), "wb") as f_stream:
         f_stream.write(content)

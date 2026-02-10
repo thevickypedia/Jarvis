@@ -78,9 +78,7 @@ def get_summary() -> str:
 
 def robinhood(*args) -> None:
     """Gets investment details from robinhood API."""
-    if not all(
-        [models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]
-    ):
+    if not all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]):
         logger.warning("Robinhood username, password or QR code not found.")
         support.no_env_vars()
         return
@@ -97,22 +95,16 @@ def robinhood(*args) -> None:
         summary = get_summary()
     except AuthenticationError as error:
         logger.error(error)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I ran into an authentication error."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an authentication error.")
         return
     except PyrhException as error:
         logger.error(error)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to fetch your investment summary."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to fetch your investment summary.")
         return
     speaker.speak(text=summary)
     with models.db.connection as connection:
         cursor = connection.cursor()
         cursor.execute("DELETE FROM robinhood;")
-        cursor.execute(
-            "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
-        )
+        cursor.execute("INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,))
         connection.commit()
     logger.info("Stored summary in database.")

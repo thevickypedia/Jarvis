@@ -44,18 +44,14 @@ class TestListener(unittest.TestCase):
             "some_confidence",
         )
 
-        result = listener.listen(
-            sound=False, timeout=5, phrase_time_limit=10, no_conf=True
-        )
+        result = listener.listen(sound=False, timeout=5, phrase_time_limit=10, no_conf=True)
 
         # Assertions
         self.assertEqual(result, SAMPLE_PHRASE)
         mock_recognizer.listen.assert_called_once_with(
             source=mock_microphone.__enter__(), timeout=5, phrase_time_limit=10
         )
-        mock_recognizer.recognize_google.assert_called_once_with(
-            audio_data=mock_listened, with_confidence=True
-        )
+        mock_recognizer.recognize_google.assert_called_once_with(audio_data=mock_listened, with_confidence=True)
 
         # Check that playsound function was not called
         mock_playsound.assert_not_called()

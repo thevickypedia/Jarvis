@@ -43,13 +43,9 @@ class Database:
             sqlite3.Connection:
             Returns a ``sqlite3.Connection`` object.
         """
-        return sqlite3.connect(
-            database=self.datastore, check_same_thread=False, timeout=self.timeout
-        )
+        return sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=self.timeout)
 
-    def create_table(
-        self, table_name: str, columns: List[str] | Tuple[str], primary_key: str = None
-    ) -> None:
+    def create_table(self, table_name: str, columns: List[str] | Tuple[str], primary_key: str = None) -> None:
         """Creates the table with the required columns.
 
         Args:
@@ -59,19 +55,13 @@ class Database:
         """
         if primary_key:
             # Ensure the column exists by name
-            assert (
-                primary_key in columns
-            ), f"{primary_key!r} should be one of the columns"
+            assert primary_key in columns, f"{primary_key!r} should be one of the columns"
             # Rebuild the column definition with PRIMARY KEY
-            columns = [
-                f"{col} PRIMARY KEY" if col == primary_key else col for col in columns
-            ]
+            columns = [f"{col} PRIMARY KEY" if col == primary_key else col for col in columns]
         with self.connection as connection:
             cursor = connection.cursor()
             # Use f-string or %s as table names cannot be parametrized
-            cursor.execute(
-                f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
-            )
+            cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})")
 
 
 class __TestDatabase:
@@ -99,9 +89,7 @@ class __TestDatabase:
 
     def random_single(self) -> None:
         """Example using a single column."""
-        self.db.create_table(
-            table_name="TestDatabase", columns=["column"], primary_key="column"
-        )
+        self.db.create_table(table_name="TestDatabase", columns=["column"], primary_key="column")
         with self.db.connection as connection:
             cursor_ = connection.cursor()
             cursor_.execute("INSERT INTO TestDatabase (column) VALUES (?);", (True,))
@@ -125,15 +113,11 @@ class __TestDatabase:
                 (True,),
             )
             connection.commit()
-            if (
-                row := cursor_.execute("SELECT row FROM TestDatabase").fetchone()
-            ) and row[0]:
+            if (row := cursor_.execute("SELECT row FROM TestDatabase").fetchone()) and row[0]:
                 logging.info(f"Row: {row[0]}")
                 cursor_.execute("DELETE FROM TestDatabase WHERE row=1")
                 connection.commit()
-            if (
-                col := cursor_.execute("SELECT column FROM TestDatabase").fetchone()
-            ) and col[0]:
+            if (col := cursor_.execute("SELECT column FROM TestDatabase").fetchone()) and col[0]:
                 logging.info(f"Column: {col[0]}")
                 cursor_.execute("DELETE FROM TestDatabase WHERE column=1")
                 connection.commit()

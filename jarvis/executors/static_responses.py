@@ -40,23 +40,17 @@ def capabilities(*args) -> None:
 
 def languages(*args) -> None:
     """Response for languages."""
-    speaker.speak(
-        text="Tricky question!. I'm configured in python, and I can speak English."
-    )
+    speaker.speak(text="Tricky question!. I'm configured in python, and I can speak English.")
 
 
 def whats_up(*args) -> None:
     """Response for what's up."""
-    speaker.speak(
-        text="My listeners are up. There is nothing I cannot process. So ask me anything.."
-    )
+    speaker.speak(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
 
 
 def what(*args) -> None:
     """Response for what."""
-    speaker.speak(
-        text="The name is Jarvis. I'm just a pre-programmed virtual assistant."
-    )
+    speaker.speak(text="The name is Jarvis. I'm just a pre-programmed virtual assistant.")
 
 
 def hi(*args) -> None:
@@ -80,9 +74,7 @@ def who(*args) -> None:
 def age(*args) -> None:
     """Response for age."""
     relative_date = relativedelta(
-        dt1=datetime.strptime(
-            datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"
-        ),
+        dt1=datetime.strptime(datetime.strftime(datetime.now(), "%Y-%m-%d"), "%Y-%m-%d"),
         dt2=datetime.strptime("2020-09-06", "%Y-%m-%d"),
     )
     statement = f"{relative_date.years} years, {relative_date.months} months and {relative_date.days} days"
@@ -117,6 +109,4 @@ def not_allowed_offline() -> None:
 
 def un_processable() -> None:
     """Speaker response for un-processable requests."""
-    speaker.speak(
-        text=f"I'm sorry {models.env.title}! I wasn't able to process your request."
-    )
+    speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to process your request.")

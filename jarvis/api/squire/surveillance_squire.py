@@ -12,9 +12,7 @@ from jarvis.modules.camera import camera
 from jarvis.modules.exceptions import CameraError
 
 
-def generate_error_frame(
-    text: str, dimension: Tuple[int, int, int]
-) -> Tuple[bytes, str]:
+def generate_error_frame(text: str, dimension: Tuple[int, int, int]) -> Tuple[bytes, str]:
     """Generates a single frame for error image.
 
     Args:
@@ -104,9 +102,7 @@ def test_camera() -> None:
     settings.surveillance.frame = frame.shape
     if cam.isOpened():
         cam.release()
-    logger.info(
-        "%s is ready to use.", available_cameras[settings.surveillance.camera_index]
-    )
+    logger.info("%s is ready to use.", available_cameras[settings.surveillance.camera_index])
     settings.surveillance.available_cameras = available_cameras
 
 
@@ -152,8 +148,6 @@ def streamer() -> AsyncIterable[bytes]:
     queue = settings.surveillance.queue_manager[settings.surveillance.client_id]
     try:
         while queue:
-            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + bytearray(
-                queue.get()
-            ) + b"\r\n"
+            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + bytearray(queue.get()) + b"\r\n"
     except (GeneratorExit, EOFError) as error:
         logger.error(error)

@@ -152,66 +152,40 @@ def secrets(phrase: str) -> SecretResponse | None:
                 except Exception as error:
                     logger.error(error)
             return SecretResponse(
-                response=", ".join(SECRET_STORAGE["aws"])
-                if SECRET_STORAGE["aws"]
-                else "No parameters were found"
+                response=", ".join(SECRET_STORAGE["aws"]) if SECRET_STORAGE["aws"] else "No parameters were found"
             )
         if "local" in text:
             SECRET_STORAGE["local"] = list(models.env.__dict__.keys())
             return SecretResponse(response=", ".join(SECRET_STORAGE["local"]))
-        return SecretResponse(
-            response="Please specify which secrets you want to list: 'aws' or 'local''"
-        )
+        return SecretResponse(response="Please specify which secrets you want to list: 'aws' or 'local''")
 
     # calling get will always return the latest information in the existing dict
     if "get" in text or "send" in text:
         if "aws" in text:
             if SECRET_STORAGE["aws"]:
-                if aws_key := [
-                    key for key in phrase.split() if key in SECRET_STORAGE["aws"]
-                ]:
+                if aws_key := [key for key in phrase.split() if key in SECRET_STORAGE["aws"]]:
                     aws_key = aws_key[0]
                 else:
-                    return SecretResponse(
-                        response="No AWS params were found matching your request."
-                    )
+                    return SecretResponse(response="No AWS params were found matching your request.")
             else:
-                return SecretResponse(
-                    response="Please use 'list secret' before using 'get secret'"
-                )
+                return SecretResponse(response="Please use 'list secret' before using 'get secret'")
             if "ssm" in text or "params" in text or "parameters" in text:
                 try:
-                    return SecretResponse(
-                        token=store_secret(
-                            key=aws_key, value=get_aws_params(name=aws_key)
-                        )
-                    )
+                    return SecretResponse(token=store_secret(key=aws_key, value=get_aws_params(name=aws_key)))
                 except Exception as error:  # if secret is removed between 'list' and 'get'
                     logger.error(error)
             else:
                 try:
-                    return SecretResponse(
-                        token=store_secret(
-                            key=aws_key, value=get_aws_secrets(name=aws_key)
-                        )
-                    )
+                    return SecretResponse(token=store_secret(key=aws_key, value=get_aws_secrets(name=aws_key)))
                 except Exception as error:  # if secret is removed between 'list' and 'get'
                     logger.error(error)
             return SecretResponse(response=f"Failed to retrieve {aws_key!r}")
         if "local" in text:
             if not SECRET_STORAGE["local"]:
                 SECRET_STORAGE["local"] = list(models.env.__dict__.keys())
-            if local_key := [
-                key for key in phrase.split() if key in SECRET_STORAGE["local"]
-            ]:
+            if local_key := [key for key in phrase.split() if key in SECRET_STORAGE["local"]]:
                 local_key = local_key[0]
             else:
-                return SecretResponse(
-                    response="No local params were found matching your request."
-                )
-            return SecretResponse(
-                token=store_secret(key=local_key, value=models.env.__dict__[local_key])
-            )
-        return SecretResponse(
-            response="Please specify which type of secret you want the value for: 'aws' or 'local'"
-        )
+                return SecretResponse(response="No local params were found matching your request.")
+            return SecretResponse(token=store_secret(key=local_key, value=models.env.__dict__[local_key]))
+        return SecretResponse(response="Please specify which type of secret you want the value for: 'aws' or 'local'")

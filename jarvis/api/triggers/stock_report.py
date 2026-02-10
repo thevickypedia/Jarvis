@@ -56,9 +56,7 @@ class Investment:
             share_id = str(data["instrument"].split("/")[-2])
             try:
                 raw_details = self.rh.get_quote(share_id)
-                stock_name = requests.get(url=raw_details["instrument"]).json()[
-                    "simple_name"
-                ]
+                stock_name = requests.get(url=raw_details["instrument"]).json()["simple_name"]
             except PyrhException as error:
                 self.logger.error(error)
                 continue
@@ -87,14 +85,10 @@ class Investment:
                 ]
 
         profit_output, profit_total, loss_output, loss_total = "", [], "", []
-        for key, value in sorted(
-            profit_dict.items(), reverse=True, key=lambda item: item[1]
-        ):
+        for key, value in sorted(profit_dict.items(), reverse=True, key=lambda item: item[1]):
             profit_output += value[1]
             profit_total.append(value[0])
-        for key, value in sorted(
-            loss_dict.items(), reverse=True, key=lambda item: item[1]
-        ):
+        for key, value in sorted(loss_dict.items(), reverse=True, key=lambda item: item[1]):
             loss_output += value[1]
             loss_total.append(value[0])
 
@@ -135,9 +129,7 @@ class Investment:
         output += f"\n\nWithdrawable Amount: ${withdrawable_amount:,}"
         return port_msg, profit_output, loss_output, output, rh_text
 
-    def watchlist(
-        self, interval: str = "hour", strict: bool = False
-    ) -> Tuple[str, str]:
+    def watchlist(self, interval: str = "hour", strict: bool = False) -> Tuple[str, str]:
         """Sweeps all watchlist stocks and compares current price with historical data (24h ago) to wrap as a string.
 
         Args:
@@ -152,9 +144,7 @@ class Investment:
         self.logger.info("Gathering watchlist.")
         watchlist = [
             self.rh.get_url(item["instrument"])
-            for item in self.rh.get_url(
-                url="https://api.robinhood.com/watchlists/Default"
-            ).get("results", [])
+            for item in self.rh.get_url(url="https://api.robinhood.com/watchlists/Default").get("results", [])
         ]
         if not watchlist:
             return r1, r2
@@ -177,9 +167,7 @@ class Investment:
                 return r1, r2
             try:
                 raw_details = self.rh.get_quote(stock)
-                stock_name = requests.get(raw_details["instrument"]).json()[
-                    "simple_name"
-                ]
+                stock_name = requests.get(raw_details["instrument"]).json()["simple_name"]
             except PyrhException as error:
                 self.logger.error(error)
                 continue
@@ -228,15 +216,11 @@ class Investment:
         )
         with open(models.fileio.robinhood, "w") as static_file:
             static_file.write(rendered)
-        self.logger.info(
-            "Static file '%s' has been generated.", models.fileio.robinhood
-        )
+        self.logger.info("Static file '%s' has been generated.", models.fileio.robinhood)
         with models.db.connection as connection:
             cursor = connection.cursor()
             cursor.execute("DELETE FROM robinhood;")
-            cursor.execute(
-                "INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,)
-            )
+            cursor.execute("INSERT or REPLACE INTO robinhood (summary) VALUES (?);", (summary,))
             connection.commit()
         self.logger.info("Stored summary in database.")
 

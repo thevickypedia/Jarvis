@@ -72,9 +72,7 @@ def get_missing(entrypoint: str) -> Generator[str]:
             if file.endswith(".py") and file not in EXCLUSIONS:
                 src_file = os.path.join(src, file)
                 filepath = src_file.split(entrypoint, 1)[1]
-                automodule = entrypoint + filepath.replace(".py", "").replace(
-                    os.path.sep, "."
-                )
+                automodule = entrypoint + filepath.replace(".py", "").replace(os.path.sep, ".")
                 yield from inheritance(src_file, automodule)
                 if automodule not in rst_text:
                     yield automodule

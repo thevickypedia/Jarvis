@@ -40,9 +40,7 @@ def conditions(phrase: str) -> None:
         and not all(
             (
                 "activate" in phrase or "enable" in phrase,
-                word_match.word_match(
-                    phrase=phrase, match_list=keywords.keywords["listener_control"]
-                ),
+                word_match.word_match(phrase=phrase, match_list=keywords.keywords["listener_control"]),
             )
         )
     ):
@@ -67,16 +65,10 @@ def conditions(phrase: str) -> None:
                 if "send" not in phrase.lower():
                     continue
             if category in ("distance", "kill"):
-                if word_match.word_match(
-                    phrase=phrase, match_list=keywords.keywords["avoid"]
-                ):
+                if word_match.word_match(phrase=phrase, match_list=keywords.keywords["avoid"]):
                     continue
             if category == "speed_test":
-                if not (
-                    "internet" in phrase.lower()
-                    or "connection" in phrase.lower()
-                    or "run" in phrase.lower()
-                ):
+                if not ("internet" in phrase.lower() or "connection" in phrase.lower() or "run" in phrase.lower()):
                     continue
 
             # Stand alone - Internally used [skip for both main and offline processes]
@@ -122,10 +114,7 @@ def conditions(phrase: str) -> None:
                     return
             else:
                 # edge case scenario if a category has matched but the function name is incorrect or not imported
-                warnings.warn(
-                    "Condition matched for '%s' but there is not function to call."
-                    % category
-                )
+                warnings.warn("Condition matched for '%s' but there is not function to call." % category)
             return
     # GPT instance available only for communicable processes
     if models.settings.pname not in (

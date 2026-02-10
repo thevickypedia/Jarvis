@@ -207,11 +207,7 @@ class RokuECP:
             app_name: Name of the application to launch.
         """
         app_id = next(
-            (
-                item
-                for item in self.get_apps(raw=True)
-                if item["name"].lower() == app_name.lower()
-            ),
+            (item for item in self.get_apps(raw=True) if item["name"].lower() == app_name.lower()),
             {},
         ).get("id")
         if app_id:
@@ -235,9 +231,7 @@ class RokuECP:
         xml_parsed = ElementTree.fromstring(response.content)
         if raw:
             for node in xml_parsed:
-                yield dict(
-                    id=node.get("id"), version=node.get("version"), name=node.text
-                )
+                yield dict(id=node.get("id"), version=node.get("version"), name=node.text)
         else:
             for node in xml_parsed:
                 yield node.text

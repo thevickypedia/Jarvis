@@ -52,9 +52,7 @@ def meetings_writer(queue: Queue = None) -> None:
         cursor.connection.commit()
 
 
-def meetings_gatherer(
-    custom_date: datetime.date = None, addon: str = "today", queue: Queue = None
-) -> str:
+def meetings_gatherer(custom_date: datetime.date = None, addon: str = "today", queue: Queue = None) -> str:
     """Get ICS data, parse it and frame a statement with meeting information.
 
     Args:
@@ -76,10 +74,7 @@ def meetings_gatherer(
         logger.error(error)
         return f"I'm sorry {models.env.title}! I was unable to connect to the shared calendar!"
     if not response.ok:
-        if (
-            response.text.startswith("<!DOCTYPE HTML")
-            or "DOCTYPE HTML" in response.text
-        ):
+        if response.text.startswith("<!DOCTYPE HTML") or "DOCTYPE HTML" in response.text:
             try:
                 soup = BeautifulSoup(response.text, "html.parser")
                 error_details = soup.find_all("div", class_="errorDetails")
@@ -93,9 +88,7 @@ def meetings_gatherer(
             logger.error("[%d]: [%s]", response.status_code, response.text)
         return "I wasn't able to read your calendar schedule sir! Please check the shared URL."
     if custom_date:
-        events: List[ics.ICS] = list(
-            ics.parse_calendar(calendar_data=response.text, lookup_date=custom_date)
-        )
+        events: List[ics.ICS] = list(ics.parse_calendar(calendar_data=response.text, lookup_date=custom_date))
     else:
         now = datetime.datetime.now()
         events: List[ics.ICS] = list(
@@ -111,11 +104,7 @@ def meetings_gatherer(
     meeting_status, count = "", 0
     for index, event in enumerate(events):
         # Skips if meeting ended earlier than current time
-        if (
-            time.mktime(event.end.timetuple()) < int(time.time())
-            and "last" not in addon
-            and "yesterday" not in addon
-        ):
+        if time.mktime(event.end.timetuple()) < int(time.time()) and "last" not in addon and "yesterday" not in addon:
             continue
         count += 1
         begin_local = event.start.strftime("%I:%M %p")
@@ -130,9 +119,7 @@ def meetings_gatherer(
             queue.put({event.summary: [begin_local, event.duration.total_seconds()]})
         if len(events) == 1:
             if event.all_day:
-                meeting_status += (
-                    f"You have an all day meeting {models.env.title}! {event.summary}. "
-                )
+                meeting_status += f"You have an all day meeting {models.env.title}! {event.summary}. "
             else:
                 meeting_status += (
                     f"You have a meeting at {begin_local} for {event_duration} {models.env.title}! "
@@ -142,15 +129,11 @@ def meetings_gatherer(
             if event.all_day:
                 meeting_status += f"{event.summary} - all day"
             else:
-                meeting_status += (
-                    f"{event.summary} at {begin_local} for {event_duration}"
-                )
+                meeting_status += f"{event.summary} at {begin_local} for {event_duration}"
             meeting_status += ", " if index + 1 < len(events) else "."
     if count:
         plural = "meeting" if count == 1 else "meetings"
-        meeting_status = (
-            f"You have {count} {plural} {addon} {models.env.title}! {meeting_status}"
-        )
+        meeting_status = f"You have {count} {plural} {addon} {models.env.title}! {meeting_status}"
     else:
         plural = "meeting" if len(events) == 1 else "meetings"
         meeting_status = (
@@ -175,9 +158,7 @@ def custom_meetings(phrase: str) -> bool:
     if tuple_res := support.detect_lookup_date(phrase):
         datetime_obj, addon = tuple_res
         meeting_status = meetings_gatherer(
-            custom_date=datetime.date(
-                year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day
-            ),
+            custom_date=datetime.date(year=datetime_obj.year, month=datetime_obj.month, day=datetime_obj.day),
             addon=addon,
         )
         speaker.speak(meeting_status)
@@ -198,9 +179,7 @@ def meetings(phrase: str) -> None:
     with models.db.connection as connection:
         cursor = connection.cursor()
         meeting_status = cursor.execute("SELECT info, date FROM ics").fetchone()
-    if meeting_status and meeting_status[1] == datetime.datetime.now().strftime(
-        "%Y_%m_%d"
-    ):
+    if meeting_status and meeting_status[1] == datetime.datetime.now().strftime("%Y_%m_%d"):
         speaker.speak(text=meeting_status[0])
     elif meeting_status:
         logger.warning(
@@ -209,16 +188,12 @@ def meetings(phrase: str) -> None:
         )
         logger.info("Starting adhoc process to update ics table.")
         resource_tracker.semaphores(meetings_writer)
-        speaker.speak(
-            text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two."
-        )
+        speaker.speak(text=f"Meetings table is outdated {models.env.title}. Please try again in a minute or two.")
     else:
         if shared.called_by_offline:
             logger.info("Starting adhoc process to get meetings from ICS.")
             resource_tracker.semaphores(meetings_writer)
-            speaker.speak(
-                text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two."
-            )
+            speaker.speak(text=f"Meetings table is empty {models.env.title}. Please try again in a minute or two.")
             return
         # Runs parallely and awaits completion
         meeting = ThreadPool(processes=1).apply_async(func=meetings_gatherer)

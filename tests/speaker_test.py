@@ -16,9 +16,7 @@ class TestSpeak(unittest.TestCase):
 
     @patch("jarvis.modules.audio.speaker.speech_synthesizer", return_value=False)
     @patch("playsound.playsound")
-    def test_speech_synthesis_usage(
-        self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock
-    ) -> None:
+    def test_speech_synthesis_usage(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
         """Test speech synthesis usage.
 
         Args:
@@ -74,9 +72,7 @@ class TestSpeak(unittest.TestCase):
 
     @patch("jarvis.modules.audio.speaker.speech_synthesizer", return_value=False)
     @patch("playsound.playsound")
-    def test_offline_mode(
-        self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock
-    ) -> None:
+    def test_offline_mode(self, mock_playsound: MagicMock, mock_speech_synthesizer: MagicMock) -> None:
         """Test speak function in offline mode.
 
         Args:

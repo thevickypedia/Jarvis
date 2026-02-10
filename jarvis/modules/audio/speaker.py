@@ -62,8 +62,7 @@ def speech_synthesizer(
             params={"voice": voice, "vocoder": quality},
             data=text,
             verify=False,
-            timeout=timeout
-            or models.env.speech_synthesis_timeout,  # set timeout here as speak() sets it on demand
+            timeout=timeout or models.env.speech_synthesis_timeout,  # set timeout here as speak() sets it on demand
         )
         if response.ok:
             with open(file=models.fileio.speech_synthesis_wav, mode="wb") as file:
@@ -78,9 +77,7 @@ def speech_synthesizer(
         logger.error(error)
         logger.info("Disabling speech synthesis")
         # Purposely exclude timeout since, speech-synthesis takes more time initially to download the required voice
-        if not any(
-            (isinstance(error, TimeoutError), isinstance(error, requests.Timeout))
-        ):
+        if not any((isinstance(error, TimeoutError), isinstance(error, requests.Timeout))):
             models.env.speech_synthesis_timeout = 0
 
 
@@ -149,7 +146,5 @@ def frequently_used(function_name: str) -> None:
         data[function_name] += 1
     else:
         data[function_name] = 1
-    data = {
-        k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)
-    }  # sort by size
+    data = {k: v for k, v in sorted(data.items(), key=lambda x: x[1], reverse=True)}  # sort by size
     files.put_frequent(data=data)

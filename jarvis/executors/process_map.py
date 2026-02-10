@@ -55,9 +55,7 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
                 target=crontab.executor,
                 kwargs={
                     "statement": statement,
-                    "log_file": datetime.now().strftime(
-                        os.path.join("logs", "mic_plotter_%d-%m-%Y.log")
-                    ),
+                    "log_file": datetime.now().strftime(os.path.join("logs", "mic_plotter_%d-%m-%Y.log")),
                     "process_name": graph_mic.plot_mic.__name__,
                 },
             ),
@@ -123,9 +121,7 @@ def update(func_name: str, old_pid: int, new_pid: int) -> None:
         _temp = process_map[func_name][old_pid]
         del process_map[func_name][old_pid]
         process_map[func_name][new_pid] = _temp
-        logger.info(
-            "%s has been updated from pid '%d' to pid '%d'", func_name, old_pid, new_pid
-        )
+        logger.info("%s has been updated from pid '%d' to pid '%d'", func_name, old_pid, new_pid)
     logger.debug(process_map)
     with open(models.fileio.processes, "w") as file:
         yaml.dump(data=process_map, stream=file)

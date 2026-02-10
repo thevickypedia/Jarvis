@@ -39,9 +39,7 @@ class StartTimes:
 
 async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
-    multiprocessing_logger(
-        filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log")
-    )
+    multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
 
     # Env vars are loaded only during startup, so run validations beforehand
     await automation.validate_weather_alert()
@@ -86,12 +84,20 @@ async def background_tasks() -> None:
                 asyncio.create_task(connectivity.wifi())
 
             # MARK: Sync events from the event app specified (calendar/outlook)
-            if models.env.event_app and models.env.sync_events and start_times.events + models.env.sync_events <= time.time():
+            if (
+                models.env.event_app
+                and models.env.sync_events
+                and start_times.events + models.env.sync_events <= time.time()
+            ):
                 start_times.events = time.time()
                 asyncio.create_task(agent.db_writer(picker="events", dry_run=dry_run))
 
             # MARK: Sync meetings from the ICS url provided
-            if models.env.ics_url and models.env.sync_meetings and start_times.meetings + models.env.sync_meetings <= time.time():
+            if (
+                models.env.ics_url
+                and models.env.sync_meetings
+                and start_times.meetings + models.env.sync_meetings <= time.time()
+            ):
                 start_times.meetings = time.time()
                 asyncio.create_task(agent.db_writer(picker="meetings", dry_run=dry_run))
 
@@ -133,9 +139,7 @@ async def background_tasks() -> None:
                 logger.error(error)
                 failed_telegram_connections["count"] += 1
                 if failed_telegram_connections["count"] > 3:
-                    logger.critical(
-                        "ATTENTION::Couldn't recover from connection error. Restarting current process."
-                    )
+                    logger.critical("ATTENTION::Couldn't recover from connection error. Restarting current process.")
                     # TODO: Implement a restart mechanism
                     # controls.restart_control(quiet=True)
                 else:
@@ -152,9 +156,7 @@ async def background_tasks() -> None:
                 # controls.restart_control(quiet=True)
 
         # MARK: Re-check for any newly added tasks with logger disabled
-        new_tasks: List[classes.BackgroundTask] = list(
-            background_task.validate_tasks(log=False)
-        )
+        new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
         if new_tasks != tasks:
             logger.warning("Tasks list has been updated.")
             logger.info(DeepDiff(tasks, new_tasks, ignore_order=True))
@@ -163,9 +165,7 @@ async def background_tasks() -> None:
             task_dict = {i: time.time() for i in range(len(tasks))}
 
         # MARK: Re-check for any newly added cron_jobs with logger disabled
-        new_cron_jobs: List[crontab.expression.CronExpression] = list(
-            crontab.validate_jobs(log=False)
-        )
+        new_cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs(log=False))
         if new_cron_jobs != cron_jobs:
             # Don't log updated jobs since there will always be a difference when run on author mode
             cron_jobs = new_cron_jobs

@@ -10,9 +10,7 @@ from jarvis.modules.exceptions import APIResponse
 from jarvis.modules.models import models
 
 
-async def secure_send_api(
-    request: Request, key: str, access_token: Optional[str] = Header(None)
-):
+async def secure_send_api(request: Request, key: str, access_token: Optional[str] = Header(None)):
     """API endpoint to share/retrieve secrets.
 
     Args:
@@ -72,6 +70,4 @@ async def secure_send_api(
             )
     else:
         logger.info("'%s' not found", models.fileio.secure_send)
-        raise APIResponse(
-            status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase
-        )
+        raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)

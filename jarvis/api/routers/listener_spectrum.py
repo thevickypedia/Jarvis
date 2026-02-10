@@ -62,9 +62,7 @@ async def get_listener_spectrum_js(request: Request) -> FileResponse:
     if not models.env.listener_spectrum_key:
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     logger.warning("Responding to JS file request")
-    return FileResponse(
-        templates.listener_spectrum.javascript, media_type="application/javascript"
-    )
+    return FileResponse(templates.listener_spectrum.javascript, media_type="application/javascript")
 
 
 async def websocket_endpoint(websocket: WebSocket) -> None:
@@ -105,7 +103,5 @@ async def send_wave_command(request: Request, command: str) -> Dict[str, str]:
 
     if command not in ("start", "stop"):
         return {"error": "Invalid command"}
-    await settings.ws_manager.send_message(
-        message=command, ws_path=APIPath.listener_spectrum_ws
-    )
+    await settings.ws_manager.send_message(message=command, ws_path=APIPath.listener_spectrum_ws)
     return {"status": f"Command '{command}' sent."}

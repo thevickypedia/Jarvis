@@ -41,24 +41,18 @@ def detected_face() -> None:
         os.rename(FACE_DETECTION_TEMP_FILE, img_name)
         # move under TRAINING_DIR -> named directory
         shutil.move(src=img_name, dst=os.path.join(TRAINING_DIR, phrase))
-        speaker.speak(
-            text=f"Image has been added to known database. I will be able to recognize {phrase} in future."
-        )
+        speaker.speak(text=f"Image has been added to known database. I will be able to recognize {phrase} in future.")
 
 
 def faces(phrase: str) -> None:
     """Initiates face recognition script and looks for images stored in named directories within ``train`` directory."""
     support.flush_screen()
-    if word_match.word_match(
-        phrase=phrase, match_list=("detect", "detection", "faces", "look")
-    ):
+    if word_match.word_match(phrase=phrase, match_list=("detect", "detection", "faces", "look")):
         try:
             face_detection = FaceNet().face_detection(retry_count=5)
         except FileNotFoundError as error:
             logger.error(error)
-            speaker.speak(
-                text=f"I'm sorry {models.env.title}! I wasn't able to initiate face detection."
-            )
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to initiate face detection.")
             return
         if face_detection:
             detected_face()
@@ -66,8 +60,7 @@ def faces(phrase: str) -> None:
             speaker.speak(text=f"No faces were detected {models.env.title}!")
     else:
         if os.path.isdir(TRAINING_DIR) and set(
-            os.path.dirname(p)
-            for p in glob.glob(os.path.join(TRAINING_DIR, "*", ""), recursive=True)
+            os.path.dirname(p) for p in glob.glob(os.path.join(TRAINING_DIR, "*", ""), recursive=True)
         ):
             speaker.speak(
                 text="Initializing facial recognition. Please smile at the camera for me.",
@@ -87,9 +80,7 @@ def faces(phrase: str) -> None:
             if result:
                 speaker.speak(text=f"Hi {result}! How can I be of service to you?")
                 return
-            speaker.speak(
-                text="No faces were recognized. Switching to face detection.", run=True
-            )
+            speaker.speak(text="No faces were recognized. Switching to face detection.", run=True)
         else:
             os.mkdir(TRAINING_DIR) if not os.path.isdir(TRAINING_DIR) else None
             speaker.speak(

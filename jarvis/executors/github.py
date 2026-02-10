@@ -22,9 +22,7 @@ def get_repos() -> Generator[Dict[str, str | bool]]:
     session.auth = BearerAuth(token=models.env.git_token)
     i = 1
     while True:
-        response = session.get(
-            f"https://api.github.com/user/repos?type=all&page={i}&per_page=100"
-        )
+        response = session.get(f"https://api.github.com/user/repos?type=all&page={i}&per_page=100")
         response.raise_for_status()
         assert response.ok
         response_json = response.json()
@@ -52,9 +50,7 @@ def github(*args) -> None:
             licensed += 1 if repo["license"] else 0
     except (EgressErrors, AssertionError, requests.JSONDecodeError) as error:
         logger.error(error)
-        speaker.speak(
-            text=f"I'm sorry {models.env.title}! I wasn't able to connect to the GitHub API."
-        )
+        speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to connect to the GitHub API.")
         return
     speaker.speak(
         text=f"You have {total} repositories {models.env.title}, out of which {forked} are forked, "

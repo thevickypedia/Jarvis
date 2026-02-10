@@ -93,15 +93,11 @@ class MagicHomeApi:
 
     def turn_on(self) -> None:
         """Turn a device on."""
-        self.send_bytes(
-            0x71, 0x23, 0x0F, 0xA3
-        ) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
+        self.send_bytes(0x71, 0x23, 0x0F, 0xA3) if self.device_type < 4 else self.send_bytes(0xCC, 0x23, 0x33)
 
     def turn_off(self) -> None:
         """Turn a device off."""
-        self.send_bytes(
-            0x71, 0x24, 0x0F, 0xA4
-        ) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
+        self.send_bytes(0x71, 0x24, 0x0F, 0xA4) if self.device_type < 4 else self.send_bytes(0xCC, 0x24, 0x33)
 
     @staticmethod
     def byte_to_percent(byte: int) -> int:

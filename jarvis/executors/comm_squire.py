@@ -25,9 +25,7 @@ def extract_contacts(name: str, key: str) -> int | EmailStr | str | None:
     contacts = files.get_contacts()
     if contacts.get(key):
         logger.info("Looking for '%s' in contacts file.", name)
-        result = util.get_closest_match(
-            text=name, match_list=list(contacts[key].keys()), get_ratio=True
-        )
+        result = util.get_closest_match(text=name, match_list=list(contacts[key].keys()), get_ratio=True)
         logger.info(result)
         # Setting a higher threshold as the name is user given and can be easily adjusted
         # Also, better to re-configure the name to match the recognized value, than sending messages to wrong recipient
@@ -48,9 +46,7 @@ def send_notification(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     if not all([models.env.gmail_user, models.env.gmail_pass]):
-        logger.error(
-            "Gmail credentials not stored in env vars to trigger an email notification."
-        )
+        logger.error("Gmail credentials not stored in env vars to trigger an email notification.")
         support.no_env_vars()
         return
 
@@ -68,9 +64,7 @@ def send_notification(phrase: str) -> None:
             break
     else:
         logger.error("Invalid message or destination: %s -> %s", body, to)
-        speaker.speak(
-            text="Messenger format should be::send some message using SMS or email to some number or name."
-        )
+        speaker.speak(text="Messenger format should be::send some message using SMS or email to some number or name.")
         return
 
     method_words = ["via", "Via", "using", "Using"]
@@ -84,9 +78,7 @@ def send_notification(phrase: str) -> None:
         if "mail" in phrase:
             method = "email"
         else:
-            logger.warning(
-                "No valid portal found to send. Defaulting to SMS."
-            ) if "message" not in phrase else None
+            logger.warning("No valid portal found to send. Defaulting to SMS.") if "message" not in phrase else None
             method = "SMS"
         method_words.append(method)
 
@@ -103,9 +95,7 @@ def send_notification(phrase: str) -> None:
     if to[0].isdigit():
         method = "SMS"
 
-    logger.info(
-        "'{body}' -> '{to}' via '{method}'".format(body=body, to=to, method=method)
-    )
+    logger.info("'{body}' -> '{to}' via '{method}'".format(body=body, to=to, method=method))
 
     if "mail" in method.lower():
         initiate_email(body=body, to=to)
@@ -133,9 +123,7 @@ def initiate_sms(body: str, to: str | int) -> None:
             number = str(numb)
 
     if number and len(number) != 10:
-        speaker.speak(
-            text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits."
-        )
+        speaker.speak(text=f"I don't think that's a right number {models.env.title}! Phone numbers are 10 digits.")
         return
 
     if number and shared.called_by_offline:  # Number is present and called by offline
@@ -149,15 +137,10 @@ def initiate_sms(body: str, to: str | int) -> None:
         if sms_response is True:
             speaker.speak(text=f"Message has been sent {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I'm sorry {models.env.title}! I wasn't able to send the email. "
-                f"{sms_response}"
-            )
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to send the email. " f"{sms_response}")
         return
     elif shared.called_by_offline:  # Number is not present but called by offline
-        speaker.speak(
-            text="SMS format should be::send some message to some number or name using sms or email."
-        )
+        speaker.speak(text="SMS format should be::send some message to some number or name using sms or email.")
         return
     if not number:  # Number is not present
         speaker.speak(text=f"Please tell me a number {models.env.title}!", run=True)
@@ -184,10 +167,7 @@ def initiate_sms(body: str, to: str | int) -> None:
             if sms_response is True:
                 speaker.speak(text=f"Message has been sent {models.env.title}!")
             else:
-                speaker.speak(
-                    text=f"I'm sorry {models.env.title}! I wasn't able to send the email. "
-                    f"{sms_response}"
-                )
+                speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to send the email. " f"{sms_response}")
         else:
             speaker.speak(text=f"Message will not be sent {models.env.title}!")
 
@@ -214,15 +194,10 @@ def initiate_email(body: str, to: str) -> None:
         if mail_response is True:
             speaker.speak(text=f"Email has been sent {models.env.title}!")
         else:
-            speaker.speak(
-                text=f"I'm sorry {models.env.title}! I wasn't able to send the email. "
-                f"{mail_response}"
-            )
+            speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to send the email. " f"{mail_response}")
         return
     elif shared.called_by_offline:  # Number is not present but called by offline
-        speaker.speak(
-            text="Email format should be::send some message to some email address."
-        )
+        speaker.speak(text="Email format should be::send some message to some email address.")
         return
 
     if not body:
@@ -241,8 +216,7 @@ def initiate_email(body: str, to: str) -> None:
                 speaker.speak(text=f"Email has been sent {models.env.title}!")
             else:
                 speaker.speak(
-                    text=f"I'm sorry {models.env.title}! I wasn't able to send the email. "
-                    f"{mail_response}"
+                    text=f"I'm sorry {models.env.title}! I wasn't able to send the email. " f"{mail_response}"
                 )
         else:
             speaker.speak(text=f"Email will not be sent {models.env.title}!")

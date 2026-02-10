@@ -52,9 +52,7 @@ def convert_to_local_tz(ddd_object: vDDDTypes) -> datetime.datetime:
     origin_zone = ddd_object.dt.replace(tzinfo=ddd_object.dt.tzinfo)
     destin_zone = origin_zone.astimezone(tz=dateutil.tz.gettz())
     # convert to a datetime object of desired format
-    return datetime.datetime.strptime(
-        destin_zone.strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S"
-    )
+    return datetime.datetime.strptime(destin_zone.strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
 
 
 def all_day_event(dt_start: vDDDTypes, dt_end: vDDDTypes) -> bool:
@@ -96,28 +94,18 @@ def parse_calendar(calendar_data: str, lookup_date: datetime.date) -> Generator[
             dt_end: vDDDTypes = component.get("dtend")
             if not all((summary, dt_start, dt_end)):
                 logger.warning("Error while parsing, component information is missing.")
-                logger.error(
-                    "summary: [%s], start: [%s], end: [%s]", summary, dt_start, dt_end
-                )
+                logger.error("summary: [%s], start: [%s], end: [%s]", summary, dt_start, dt_end)
                 logger.error(component)
                 continue
             # create a datetime.date object since start/end can be datetime.datetime if it is not an all day event
-            start = datetime.date(
-                year=dt_start.dt.year, month=dt_start.dt.month, day=dt_start.dt.day
-            )
-            end = datetime.date(
-                year=dt_end.dt.year, month=dt_end.dt.month, day=dt_end.dt.day
-            )
+            start = datetime.date(year=dt_start.dt.year, month=dt_start.dt.month, day=dt_start.dt.day)
+            end = datetime.date(year=dt_end.dt.year, month=dt_end.dt.month, day=dt_end.dt.day)
             # event during current date or lookup date is between start and end date (repeat events)
             if start == lookup_date or start <= lookup_date <= end:
                 if all_day_event(dt_start, dt_end):
                     # add a timestamp to all day events' start and end
-                    _start = datetime.datetime.strptime(
-                        start.strftime("%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S"
-                    )
-                    _end = datetime.datetime.strptime(
-                        end.strftime("%Y-%m-%d 23:59:59"), "%Y-%m-%d %H:%M:%S"
-                    )
+                    _start = datetime.datetime.strptime(start.strftime("%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
+                    _end = datetime.datetime.strptime(end.strftime("%Y-%m-%d 23:59:59"), "%Y-%m-%d %H:%M:%S")
                     yield ICS(
                         summary=summary,
                         start=_start,

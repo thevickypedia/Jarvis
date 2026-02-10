@@ -35,12 +35,8 @@ class Tables(BaseModel):
     robinhood: Table = Table(name="robinhood", columns=("summary",), pkey="summary")
     restart: Table = Table(name="restart", columns=("flag", "caller"), pkey="caller")
     stopper: Table = Table(name="stopper", columns=("flag", "caller"), pkey="caller")
-    listener: Table = Table(
-        name="listener", columns=("state",), pkey="state", keep=True
-    )
-    events: Table = Table(
-        name=env.event_app or "calendar", columns=("info", "date"), pkey="date"
-    )
+    listener: Table = Table(name="listener", columns=("state",), pkey="state", keep=True)
+    events: Table = Table(name=env.event_app or "calendar", columns=("info", "date"), pkey="date")
     children: Table = Table(
         name="children",
         columns=(

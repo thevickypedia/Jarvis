@@ -55,15 +55,12 @@ def commandline() -> None:
     _longest_key = len(max(options.keys()))
     _pretext = "\n\t* "
     choices = _pretext + _pretext.join(
-        f"{k} {'·' * (_longest_key - len(k) + 8)}→ {v}".expandtabs()
-        for k, v in options.items()
+        f"{k} {'·' * (_longest_key - len(k) + 8)}→ {v}".expandtabs() for k, v in options.items()
     )
     try:
         arg = sys.argv[1].lower()
     except (IndexError, AttributeError):
-        print(
-            f"Cannot proceed without arbitrary commands. Please choose from {choices}"
-        )
+        print(f"Cannot proceed without arbitrary commands. Please choose from {choices}")
         exit(1)
     from jarvis.lib import installer
 
@@ -83,9 +80,7 @@ def commandline() -> None:
         case "version" | "-v" | "--version":
             print(f"Jarvis {version}")
         case "help" | "-h" | "--help":
-            print(
-                f"Usage: jarvis [arbitrary-command]\nOptions (and corresponding behavior):{choices}"
-            )
+            print(f"Usage: jarvis [arbitrary-command]\nOptions (and corresponding behavior):{choices}")
         case _:
             print(f"Unknown Option: {arg}\nArbitrary commands must be one of {choices}")
 

@@ -147,9 +147,7 @@ def _main_process_validations() -> None:
     os.makedirs(fileio.root, exist_ok=True)
     for attr in tables.model_fields:
         table = getattr(tables, attr)
-        db.create_table(
-            table_name=table.name, columns=table.columns, primary_key=table.pkey
-        )
+        db.create_table(table_name=table.name, columns=table.columns, primary_key=table.pkey)
     _set_fernet_key()
     # Create required file for alarms
     pathlib.Path(fileio.alarms).touch(exist_ok=True)
@@ -188,9 +186,7 @@ def _global_validations() -> None:
     if settings.limited is True and env.weather_alert:
         warnings.warn("weather alert cannot function on limited mode")
     if env.author_mode and settings.limited:
-        warnings.warn(
-            "'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode."
-        )
+        warnings.warn("'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode.")
 
     env.camera_index = validator.validate_camera_indices()
     validator.validate_speech_synthesis_voices()

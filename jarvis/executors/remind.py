@@ -47,9 +47,7 @@ def create_reminder(
         return
     existing_reminders.append(formatted)
     files.put_reminders(data=existing_reminders)
-    logger.info(
-        "Reminder created for '%s' at %s", message, reminder_time.strftime("%I:%M %p")
-    )
+    logger.info("Reminder created for '%s' at %s", message, reminder_time.strftime("%I:%M %p"))
     if timer:
         response = (
             f"{random.choice(conversation.acknowledgement)}! "
@@ -83,14 +81,8 @@ def create_reminder(
 def find_name(phrase: str) -> str:
     """Looks for names in contact file if there is any matching the phrase."""
     contacts = files.get_contacts()
-    if (
-        name := word_match.word_match(
-            phrase=phrase, match_list=list(contacts.get("phone", {}).keys())
-        )
-    ) or (
-        name := word_match.word_match(
-            phrase=phrase, match_list=list(contacts.get("email", {}).keys())
-        )
+    if (name := word_match.word_match(phrase=phrase, match_list=list(contacts.get("phone", {}).keys()))) or (
+        name := word_match.word_match(phrase=phrase, match_list=list(contacts.get("email", {}).keys()))
     ):
         logger.info("Reminder requested for third party: %s", name)
         return name
@@ -107,9 +99,7 @@ def get_reminder_state() -> List[str]:
     response = []
     for reminder_ in reminders:
         if reminder_["name"]:
-            response.append(
-                f"{reminder_['message']} to {reminder_['name']} at {reminder_['reminder_time']}"
-            )
+            response.append(f"{reminder_['message']} to {reminder_['name']} at {reminder_['reminder_time']}")
         else:
             response.append(f"{reminder_['message']} at {reminder_['reminder_time']}")
     return response
@@ -122,9 +112,7 @@ def reminder(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     if models.settings.limited:
-        speaker.speak(
-            text="Reminder features are currently unavailable, as you're running on restricted mode."
-        )
+        speaker.speak(text="Reminder features are currently unavailable, as you're running on restricted mode.")
         return
     message = (
         re.search(" to (.*) in ", phrase)
@@ -159,9 +147,7 @@ def reminder(phrase: str) -> None:
             else:
                 speaker.speak(text=f"You don't have any reminders {models.env.title}!")
             return
-        speaker.speak(
-            text="Reminder format should be::Remind me to do something, at some time."
-        )
+        speaker.speak(text="Reminder format should be::Remind me to do something, at some time.")
         return
     to_about = "about" if "about" in phrase else "to"
     if "minute" in phrase or "now" in phrase:
@@ -189,13 +175,9 @@ def reminder(phrase: str) -> None:
             return
     if not (extracted_time := util.extract_time(input_=phrase)):
         if shared.called_by_offline:
-            speaker.speak(
-                text="Reminder format should be::Remind me to do something, at some time."
-            )
+            speaker.speak(text="Reminder format should be::Remind me to do something, at some time.")
             return
-        speaker.speak(
-            text=f"When do you want to be reminded {models.env.title}?", run=True
-        )
+        speaker.speak(text=f"When do you want to be reminded {models.env.title}?", run=True)
         if not (phrase := listener.listen()):
             return
         if not (extracted_time := util.extract_time(input_=phrase)):
@@ -205,24 +187,14 @@ def reminder(phrase: str) -> None:
     if int(hour) <= 12 and int(minute) <= 59:
         reminder_time_ = f"{hour}:{minute} {am_pm}"
         try:
-            reminder_date_, day, _ = support.extract_humanized_date(
-                phrase=phrase, fail_past=True
-            )
-            datetime_obj = datetime.combine(
-                reminder_date_, datetime.strptime(reminder_time_, "%I:%M %p").time()
-            )
+            reminder_date_, day, _ = support.extract_humanized_date(phrase=phrase, fail_past=True)
+            datetime_obj = datetime.combine(reminder_date_, datetime.strptime(reminder_time_, "%I:%M %p").time())
             # if user specifically mentions today or tonight with a time in the past
-            if (
-                datetime_obj <= datetime.now()
-                and "today" in phrase
-                or "tonight" in phrase
-            ):
+            if datetime_obj <= datetime.now() and "today" in phrase or "tonight" in phrase:
                 raise ValueError(f"{datetime_obj!r} is in the past!")
         except ValueError as error:
             logger.error(error)
-            speaker.speak(
-                "We are not time travellers yet, so reminders in the past is not a thing."
-            )
+            speaker.speak("We are not time travellers yet, so reminders in the past is not a thing.")
             return
 
         # if user doesn't specify the date but time is in the past, reminder will be defaulted for the next day
@@ -313,11 +285,7 @@ def executor(message: str, contact: str = None) -> None:
             body=message,
         )
     if notify_telegram and models.env.telegram_id:
-        bot.send_message(
-            chat_id=models.env.telegram_id, response=f"*{title}*\n\n{message}"
-        )
+        bot.send_message(chat_id=models.env.telegram_id, response=f"*{title}*\n\n{message}")
     if ntfy and models.env.ntfy_topic:
-        communicator.ntfy_send(
-            topic=models.env.ntfy_topic, title=title, message=message
-        )
+        communicator.ntfy_send(topic=models.env.ntfy_topic, title=title, message=message)
     pynotification.pynotifier(title=title, message=message, debug=True, logger=logger)

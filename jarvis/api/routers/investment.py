@@ -47,17 +47,11 @@ async def authenticate_robinhood():
     ):
         raise CONDITIONAL_ENDPOINT_RESTRICTION
     reset_timeout = 300
-    timeout_in = support.pluralize(
-        count=util.format_nos(input_=reset_timeout / 60), word="minute"
-    )
-    mail_obj = gmailconnector.SendEmail(
-        gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass
-    )
+    timeout_in = support.pluralize(count=util.format_nos(input_=reset_timeout / 60), word="minute")
+    mail_obj = gmailconnector.SendEmail(gmail_user=models.env.open_gmail_user, gmail_pass=models.env.open_gmail_pass)
     auth_stat = mail_obj.authenticate
     if not auth_stat.ok:
-        raise APIResponse(
-            status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body
-        )
+        raise APIResponse(status_code=HTTPStatus.SERVICE_UNAVAILABLE.real, detail=auth_stat.body)
     settings.robinhood.token = util.keygen_uuid(length=16)
     rendered = jinja2.Template(templates.email.one_time_passcode).render(
         TIMEOUT=timeout_in,
@@ -88,9 +82,7 @@ async def authenticate_robinhood():
         )
 
 
-async def robinhood_report(
-    request: Request, access_token: Optional[str] = Header(None)
-):
+async def robinhood_report(request: Request, access_token: Optional[str] = Header(None)):
     """Serves static file.
 
     Args:
@@ -146,9 +138,7 @@ async def robinhood_report(
             detail=HTTPStatus.UNAUTHORIZED.phrase,
         )
     # token might be present because it's added as headers but robinhood.token will be cleared after one time auth
-    if settings.robinhood.token and secrets.compare_digest(
-        token, settings.robinhood.token
-    ):
+    if settings.robinhood.token and secrets.compare_digest(token, settings.robinhood.token):
         settings.robinhood.token = None
         if not os.path.isfile(models.fileio.robinhood):
             logger.debug("File not found: %s", models.fileio.robinhood)

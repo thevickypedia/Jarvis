@@ -61,9 +61,7 @@ def rh_cron_schedule(extended: bool = False) -> expression.CronExpression:
     tz = util.get_timezone()
     if tz not in hours:
         tz = "OTHER"
-    return expression.CronExpression(
-        f"*/30 {hours[tz]['OPEN']}-{hours[tz]['CLOSE']} * * 1-5 {job}"
-    )
+    return expression.CronExpression(f"*/30 {hours[tz]['OPEN']}-{hours[tz]['CLOSE']} * * 1-5 {job}")
 
 
 def sm_cron_schedule(include_weekends: bool = False) -> expression.CronExpression:
