@@ -214,7 +214,6 @@ def terminator() -> NoReturn:
     process_info = proc.as_dict()
     if process_info.get("environ"):
         del process_info["environ"]  # To ensure env vars are not printed in log files
-    logger.debug(process_info)
     support.stop_process(pid=proc.pid)
     # noinspection PyUnresolvedReferences,PyProtectedMember
     os._exit(0)

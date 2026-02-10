@@ -7,7 +7,7 @@ from typing import Dict, List, NoReturn
 import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors import crontab, offline, telegram
+from jarvis.executors import crontab, telegram
 from jarvis.modules.logger import logger
 from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import enums, models
@@ -18,7 +18,6 @@ def assert_process_names() -> None | NoReturn:
     assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
     assert graph_mic.plot_mic.__name__ == enums.ProcessNames.plot_mic
     assert telegram.telegram_api.__name__ == enums.ProcessNames.telegram_api
-    assert offline.background_tasks.__name__ == enums.ProcessNames.background_tasks
 
 
 def base() -> Dict[str, Dict[str, Process | List[str]]]:
@@ -39,12 +38,6 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
                 "Stock monitor",
                 "Surveillance",
                 "Telegram",
-            ],
-        },
-        # process map will not be removed
-        offline.background_tasks.__name__: {
-            "process": Process(target=offline.background_tasks),
-            "impact": [
                 "Home automation",
                 "Alarms",
                 "Reminders",

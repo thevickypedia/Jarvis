@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 import traceback
@@ -15,7 +16,6 @@ from jarvis.executors import (
     automation,
     background_task,
     conditions,
-    controls,
     crontab,
     files,
     internet,
@@ -35,16 +35,7 @@ from jarvis.modules.models import classes, enums, models
 from jarvis.modules.utils import shared, support, util
 
 
-def background_tasks() -> None:
-    """Initiate the runner function for background tasks."""
-    try:
-        background_task_runner()
-    except Exception as error:
-        logger.critical("ATTENTION: %s", error.__str__())
-        controls.restart_control(quiet=True)
-
-
-def background_task_runner() -> None:
+async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(
         filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log")
@@ -266,7 +257,7 @@ def background_task_runner() -> None:
             cron_jobs = new_cron_jobs
         dry_run = False
         # Reduces CPU utilization as constant fileIO operations spike CPU %
-        time.sleep(1)
+        await asyncio.sleep(1)
 
 
 def ondemand_offline_automation(task: str) -> str | None:
