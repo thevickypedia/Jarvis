@@ -116,6 +116,13 @@ API - BackgroundTasks (Executor)
    :members:
    :undoc-members:
 
+API - BackgroundTasks (Telegram)
+================================
+
+.. automodule:: jarvis.api.background_task.bot
+   :members:
+   :undoc-members:
+
 Models - Authenticator
 ======================
 

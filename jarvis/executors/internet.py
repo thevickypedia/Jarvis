@@ -11,7 +11,6 @@ from typing import Dict
 
 import psutil
 import requests
-from pydantic import HttpUrl
 from speedtest import ConfigRetrievalError, Speedtest
 
 from jarvis.executors import files, location
@@ -278,11 +277,11 @@ def speed_test(*args) -> None:
     )
 
 
-def get_tunnel(log: bool = True) -> HttpUrl:
+def get_tunnel(log: bool = True) -> str | None:
     """Checks for any active public URL tunneled using Ngrok.
 
     Returns:
-        HttpUrl:
+        str:
         Ngrok public URL.
     """
     try:

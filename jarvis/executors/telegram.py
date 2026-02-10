@@ -8,7 +8,7 @@ from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.utils import support
 
 
-def get_webhook_origin(retry: int) -> str:
+def get_webhook_origin(retry: int) -> str | None:
     """Get the telegram bot webhook origin.
 
     Args:
@@ -26,6 +26,7 @@ def get_webhook_origin(retry: int) -> str:
             logger.info("Public URL was fetched on %s attempt", support.ENGINE.ordinal(i + 1))
             return url
         time.sleep(3)
+    return None
 
 
 def telegram_api(webhook_trials: int = 20) -> bool:

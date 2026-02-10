@@ -957,7 +957,7 @@
 <span id="api-backgroundtasks-controller"></span><h1>API - BackgroundTasks (Controller)<a class="headerlink" href="#module-jarvis.api.background_task.task" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.api.background_task.task.StartTimes">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.task.</span></span><span class="sig-name descname"><span class="pre">StartTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meetings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telegram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wifi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.task.StartTimes" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.task.</span></span><span class="sig-name descname"><span class="pre">StartTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meetings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telegram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.task.StartTimes" title="Link to this definition">¶</a></dt>
 <dd><p>Dataclass to store each agent’s start time.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">StartTimes</span>
 </pre></div>
@@ -982,11 +982,6 @@
 <span class="sig-name descname"><span class="pre">telegram</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#jarvis.api.background_task.task.StartTimes.telegram" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.background_task.task.StartTimes.wifi">
-<span class="sig-name descname"><span class="pre">wifi</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#jarvis.api.background_task.task.StartTimes.wifi" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -1001,37 +996,121 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.init_meetings">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">init_meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.init_meetings" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes the meetings sync interval based on the availability of the ICS URL.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.background_executor">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">background_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.background_executor" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks and triggers background tasks based on their defined intervals and ignore hours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> – List of BackgroundTask objects to be monitored.</p></li>
+<li><p><strong>task_dict</strong> – Dictionary to keep track of the last execution time of each task.</p></li>
+<li><p><strong>now</strong> – Datetime object representing the current time.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.crontab_executor">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cron_jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.crontab_executor" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks and triggers cron jobs based on their defined schedules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cron_jobs</strong> – List of CronExpression objects representing the cron jobs to be monitored.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.automation_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">automation_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.automation_executor" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">automation_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.automation_executor" title="Link to this definition">¶</a></dt>
+<dd><p>Checks and triggers the execution of an automated task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exec_task</strong> – The command string to be executed as an automated task.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.db_writer">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">db_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.db_writer" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">db_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.db_writer" title="Link to this definition">¶</a></dt>
+<dd><p>Starts a background process to fetch meetings or events and updates the database with the process ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>picker</strong> – String indicating whether to fetch ‘events’ or ‘meetings’.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.alarm_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.alarm_executor" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.alarm_executor" title="Link to this definition">¶</a></dt>
+<dd><p>Checks and triggers alarms based on the current time and their defined repeat settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>now</strong> – Datetime object representing the current time.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.reminder_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.reminder_executor" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.reminder_executor" title="Link to this definition">¶</a></dt>
+<dd><p>Checks and triggers reminders based on the current time and their defined date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>now</strong> – Datetime object representing the current time.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jarvis.api.background_task.bot">
+<span id="api-backgroundtasks-telegram"></span><h1>API - BackgroundTasks (Telegram)<a class="headerlink" href="#module-jarvis.api.background_task.bot" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failed_connections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_webhook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_for_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat" title="Link to this definition">¶</a></dt>
+<dd><p>Telegram beat class.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TelegramBeat</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.offset">
+<span class="sig-name descname"><span class="pre">offset</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.offset" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.failed_connections">
+<span class="sig-name descname"><span class="pre">failed_connections</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.failed_connections" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.retry_webhook">
+<span class="sig-name descname"><span class="pre">retry_webhook</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.retry_webhook" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.poll_for_messages">
+<span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.poll_for_messages" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.restart_loop">
+<span class="sig-name descname"><span class="pre">restart_loop</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.restart_loop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.telegram_executor">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">telegram_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.bot.telegram_executor" title="Link to this definition">¶</a></dt>
+<dd><p>Poll for new Telegram messages.</p>
+</dd></dl>
 
 </section>
 <section id="module-jarvis.api.models.authenticator">
@@ -4386,14 +4465,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.internet.get_tunnel">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_tunnel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">HttpUrl</span></span></span><a class="headerlink" href="#jarvis.executors.internet.get_tunnel" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_tunnel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.get_tunnel" title="Link to this definition">¶</a></dt>
 <dd><p>Checks for any active public URL tunneled using Ngrok.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Ngrok public URL.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>HttpUrl</p>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4830,7 +4909,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.offline.communicator">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AnyStr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">HttpUrl</span></span></span><a class="headerlink" href="#jarvis.executors.offline.communicator" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.offline.</span></span><span class="sig-name descname"><span class="pre">communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">HttpUrl</span></span></span><a class="headerlink" href="#jarvis.executors.offline.communicator" title="Link to this definition">¶</a></dt>
 <dd><p>Initiates conditions after flipping <code class="docutils literal notranslate"><span class="pre">status</span></code> flag in <code class="docutils literal notranslate"><span class="pre">called_by_offline</span></code> dict which suppresses the speaker.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -4843,7 +4922,7 @@
 <dd class="field-even"><p>Response from Jarvis.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>AnyStr</p>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -5607,7 +5686,7 @@
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-jarvis.executors.telegram" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.telegram.get_webhook_origin">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Link to this definition">¶</a></dt>
 <dd><p>Get the telegram bot webhook origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -8535,7 +8614,7 @@ If none are found, it falls back to the default file.</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.facenet.face.face_recognition_import">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">face_recognition_import</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.facenet.face.face_recognition_import" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.facenet.face.</span></span><span class="sig-name descname"><span class="pre">face_recognition_import</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.facenet.face.face_recognition_import" title="Link to this definition">¶</a></dt>
 <dd><p>Imports the face_recognition module.</p>
 </dd></dl>
 
@@ -11961,7 +12040,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.meetings"><code class="docutils literal notranslate"><span class="pre">StartTimes.meetings</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.pulse"><code class="docutils literal notranslate"><span class="pre">StartTimes.pulse</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.telegram"><code class="docutils literal notranslate"><span class="pre">StartTimes.telegram</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.wifi"><code class="docutils literal notranslate"><span class="pre">StartTimes.wifi</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.background_tasks"><code class="docutils literal notranslate"><span class="pre">background_tasks()</span></code></a></li>
@@ -11975,6 +12053,18 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.api.background_task.agent.db_writer"><code class="docutils literal notranslate"><span class="pre">db_writer()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.agent.alarm_executor"><code class="docutils literal notranslate"><span class="pre">alarm_executor()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.agent.reminder_executor"><code class="docutils literal notranslate"><span class="pre">reminder_executor()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jarvis.api.background_task.bot">API - BackgroundTasks (Telegram)</a><ul>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat"><code class="docutils literal notranslate"><span class="pre">TelegramBeat</span></code></a><ul>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.offset"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.offset</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.failed_connections"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.failed_connections</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.retry_webhook"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.retry_webhook</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.poll_for_messages"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.poll_for_messages</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.restart_loop"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.restart_loop</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.telegram_executor"><code class="docutils literal notranslate"><span class="pre">telegram_executor()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.api.models.authenticator">Models - Authenticator</a><ul>

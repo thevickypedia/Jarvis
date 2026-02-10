@@ -108,7 +108,6 @@ async def db_writer(picker: str) -> None:
 
     Args:
         picker: String indicating whether to fetch 'events' or 'meetings'.
-        dry_run: Boolean flag to indicate first run.
     """
     if picker == "events":
         process_target = events.events_writer

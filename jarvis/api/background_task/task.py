@@ -8,7 +8,7 @@ from typing import List
 
 from deepdiff import DeepDiff
 
-from jarvis.api.background_task import agent
+from jarvis.api.background_task import agent, bot
 from jarvis.executors import (
     automation,
     background_task,
@@ -16,10 +16,8 @@ from jarvis.executors import (
     crontab,
     telegram,
 )
-from jarvis.modules.exceptions import BotInUse, BotWebhookConflict, EgressErrors
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import classes, models
-from jarvis.modules.telegram import bot, webhook
 
 
 @dataclass
@@ -57,9 +55,6 @@ async def background_tasks() -> None:
     task_dict = {i: time.time() for i in range(len(tasks))}
 
     telegram_thread = ThreadPool(processes=1).apply_async(func=telegram.telegram_api)
-    poll_telegram = False
-    telegram_offset = 0
-    failed_telegram_connections = {"count": 0}
 
     while True:
         now = datetime.now()
@@ -106,53 +101,16 @@ async def background_tasks() -> None:
             # MARK: Trigger reminders
             asyncio.create_task(agent.reminder_executor(now))
 
-        # MARK: Poll for telegram messages
-        if not poll_telegram and start_times.telegram + 30 <= time.time():
-            # TODO:
-            #  Easy way implement telegram_api(3) would be create the `telegram_thread` in a func and call it on-demand
-            #  Best way would be to create an external even loop to control which segments require a restart (incl self)
+        # MARK: Set a flag for telegram polling
+        if not bot.telegram_beat.poll_for_messages and start_times.telegram + 30 <= time.time():
             if telegram_thread.ready():
-                poll_telegram = telegram_thread.get()
+                bot.telegram_beat.poll_for_messages = telegram_thread.get()
             else:
                 logger.info("Telegram thread is still looking for a webhook.")
 
-        if poll_telegram:
-            try:
-                # TODO: offset is not being rendered right - last message is remembered
-                # TODO: polling **must** be a thread/async task - if network disconnects - this will become a blocker
-                offset = bot.poll_for_messages(telegram_offset)
-                if offset is not None:
-                    telegram_offset = offset
-            except BotWebhookConflict as error:
-                # At this point, its be safe to remove the dead webhook
-                logger.error(error)
-                webhook.delete_webhook(base_url=bot.BASE_URL, logger=logger)
-                # TODO: Need to try webhook for 3s, and fall back to polling
-                # telegram_api(3)
-            except BotInUse as error:
-                logger.error(error)
-                logger.info("Restarting message poll to take over..")
-                # TODO: Need to try webhook for 3s, and fall back to polling
-                # telegram_api(3)
-            except EgressErrors as error:
-                logger.error(error)
-                failed_telegram_connections["count"] += 1
-                if failed_telegram_connections["count"] > 3:
-                    logger.critical("ATTENTION::Couldn't recover from connection error. Restarting current process.")
-                    # TODO: Implement a restart mechanism
-                    # controls.restart_control(quiet=True)
-                else:
-                    logger.info(
-                        "Restarting in %d seconds.",
-                        failed_telegram_connections["count"] * 10,
-                    )
-                    await asyncio.sleep(failed_telegram_connections["count"] * 10)
-                    # TODO: Need to try webhook for 3s, and fall back to polling
-                    # telegram_api(3)
-            except Exception as error:
-                logger.critical("ATTENTION: %s", error.__str__())
-                # TODO: Implement a restart mechanism
-                # controls.restart_control(quiet=True)
+        # MARK: Poll for telegram messages
+        if bot.telegram_beat.poll_for_messages:
+            asyncio.create_task(bot.telegram_executor())
 
         # MARK: Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))
