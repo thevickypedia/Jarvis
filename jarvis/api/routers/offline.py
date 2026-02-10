@@ -167,7 +167,7 @@ async def offline_communicator_api(
         and_response = ""
         for each in and_phrases:
             try:
-                and_response += f"{offline.offline_communicator(command=each)}\n"
+                and_response += f"{offline.communicator(command=each)}\n"
             except Exception as error:
                 logger.error(error)
                 logger.error(traceback.format_exc())
@@ -194,7 +194,7 @@ async def offline_communicator_api(
     # Set to a max timeout of 1 minute to allow longer text conversations
     models.env.ollama_timeout = 60
     try:
-        response = offline.offline_communicator(command=command)
+        response = offline.communicator(command=command)
     except Exception as error:
         logger.error(error)
         logger.error(traceback.format_exc())

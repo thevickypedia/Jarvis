@@ -61,7 +61,7 @@ def delay_condition(phrase: str, delay: int | float) -> None:
     time.sleep(delay)
     logger.info("Executing '%s'", phrase)
     try:
-        offline.offline_communicator(command=phrase)
+        offline.communicator(command=phrase)
     except Exception as error:
         logger.error(error)
         logger.error(traceback.format_exc())

@@ -6,10 +6,10 @@ from fastapi import FastAPI
 
 from jarvis import version
 from jarvis.api import entrypoint
+from jarvis.api.background_task import task
 from jarvis.api.logger import logger
 from jarvis.api.routers import routes
 from jarvis.api.squire import stockanalysis_squire
-from jarvis.executors import offline
 from jarvis.modules.models import enums, models
 
 
@@ -23,9 +23,9 @@ async def lifespan(_: FastAPI):
         Thread(target=stockanalysis_squire.nasdaq).start()
     entrypoint.startup()
     logger.info("Initiating background tasks...")
-    task = asyncio.create_task(offline.background_tasks())
+    bg_task = asyncio.create_task(task.background_tasks())
     yield
-    task.cancel()
+    bg_task.cancel()
 
 
 # Initiate API

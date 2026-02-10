@@ -773,7 +773,7 @@ def executor(command: str, chat: settings.Chat) -> None:
     models.env.ollama_timeout = 60
     logger.info("Request: %s", command)
     try:
-        response = offline.offline_communicator(command=command).replace(
+        response = offline.communicator(command=command).replace(
             models.env.title, USER_TITLE.get(chat.username)
         )
     except Exception as error:
