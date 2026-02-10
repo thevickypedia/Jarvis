@@ -158,10 +158,12 @@ def distance_controller(origin: str = None, destination: str = None) -> None:
         - If ``destination`` is None, Jarvis will ask for a destination from the user.
     """
     if not destination:
-        speaker.speak(text="Destination please?")
         if shared.called_by_offline:
+            speaker.speak(
+                text="Please include destination in your request with a 'from' and 'to', and capitalized place name."
+            )
             return
-        speaker.speak(run=True)
+        speaker.speak(text="Destination please?", run=True)
         if destination := listener.listen():
             if len(destination.split()) > 2:
                 speaker.speak(
