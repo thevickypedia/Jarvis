@@ -34,7 +34,6 @@ class StartTimes:
     meetings: float
     pulse: float
     telegram: float
-    wifi: float
 
 
 # TODO: Rename to pulse or beat
@@ -52,7 +51,7 @@ async def background_tasks() -> None:
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
 
     t_now = time.time()
-    start_times = StartTimes(t_now, t_now, t_now, t_now, t_now)
+    start_times = StartTimes(t_now, t_now, t_now, t_now)
 
     # Creates a start time for each task
     task_dict = {i: time.time() for i in range(len(tasks))}
@@ -62,8 +61,6 @@ async def background_tasks() -> None:
     telegram_offset = 0
     failed_telegram_connections = {"count": 0}
 
-    # TODO: Remove dry run flag
-    dry_run = True
     while True:
         now = datetime.now()
 
@@ -92,7 +89,7 @@ async def background_tasks() -> None:
                 and start_times.events + models.env.sync_events <= time.time()
             ):
                 start_times.events = time.time()
-                asyncio.create_task(agent.db_writer(picker="events", dry_run=dry_run))
+                asyncio.create_task(agent.db_writer(picker="events"))
 
             # MARK: Sync meetings from the ICS url provided
             if (
@@ -101,7 +98,7 @@ async def background_tasks() -> None:
                 and start_times.meetings + models.env.sync_meetings <= time.time()
             ):
                 start_times.meetings = time.time()
-                asyncio.create_task(agent.db_writer(picker="meetings", dry_run=dry_run))
+                asyncio.create_task(agent.db_writer(picker="meetings"))
 
             # MARK: Trigger alarms
             asyncio.create_task(agent.alarm_executor(now))
@@ -130,12 +127,12 @@ async def background_tasks() -> None:
                 # At this point, its be safe to remove the dead webhook
                 logger.error(error)
                 webhook.delete_webhook(base_url=bot.BASE_URL, logger=logger)
-                # TODO: Need to try webhook for 3 times, and fall back to polling
+                # TODO: Need to try webhook for 3s, and fall back to polling
                 # telegram_api(3)
             except BotInUse as error:
                 logger.error(error)
                 logger.info("Restarting message poll to take over..")
-                # TODO: Need to try webhook for 3 times, and fall back to polling
+                # TODO: Need to try webhook for 3s, and fall back to polling
                 # telegram_api(3)
             except EgressErrors as error:
                 logger.error(error)
@@ -150,7 +147,7 @@ async def background_tasks() -> None:
                         failed_telegram_connections["count"] * 10,
                     )
                     await asyncio.sleep(failed_telegram_connections["count"] * 10)
-                    # TODO: Need to try webhook for 3 times, and fall back to polling
+                    # TODO: Need to try webhook for 3s, and fall back to polling
                     # telegram_api(3)
             except Exception as error:
                 logger.critical("ATTENTION: %s", error.__str__())
@@ -171,7 +168,6 @@ async def background_tasks() -> None:
         if new_cron_jobs != cron_jobs:
             # Don't log updated jobs since there will always be a difference when run on author mode
             cron_jobs = new_cron_jobs
-        dry_run = False
 
         # MARK: Pause and yield control back to the event loop
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)

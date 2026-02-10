@@ -156,7 +156,7 @@ def _make_request(url: str, payload: dict, files: dict = None) -> requests.Respo
         Response:
         Response class.
     """
-    response = requests.post(url=url, data=payload, files=files, timeout=(5, 60))
+    response = requests.post(url=url, data=payload, files=files, timeout=(2, 3))
     if not response.ok:
         logger.debug(payload)
         logger.debug(files)

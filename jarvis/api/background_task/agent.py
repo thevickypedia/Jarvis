@@ -103,7 +103,7 @@ async def automation_executor(exec_task: str) -> None:
             logger.error(traceback.format_exc())
 
 
-async def db_writer(picker: str, dry_run: bool) -> None:
+async def db_writer(picker: str) -> None:
     """Starts a background process to fetch meetings or events and updates the database with the process ID.
 
     Args:
@@ -112,9 +112,7 @@ async def db_writer(picker: str, dry_run: bool) -> None:
     """
     if picker == "events":
         process_target = events.events_writer
-        logger.info("Getting events from %s.", models.env.event_app) if dry_run else None
     else:
-        logger.info("Getting meetings from ICS.") if dry_run else None
         process_target = ics_meetings.meetings_writer
     process = Process(target=process_target)
     process.start()

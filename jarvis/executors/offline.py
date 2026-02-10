@@ -1,5 +1,3 @@
-from typing import AnyStr
-
 import requests
 from pydantic import HttpUrl
 
@@ -34,7 +32,7 @@ def ondemand_offline_automation(task: str) -> str | None:
         return response.json()["detail"].split("\n")[-1]
 
 
-def communicator(command: str, bg_flag: bool = False) -> AnyStr | HttpUrl:
+def communicator(command: str, bg_flag: bool = False) -> str | HttpUrl:
     """Initiates conditions after flipping ``status`` flag in ``called_by_offline`` dict which suppresses the speaker.
 
     Args:
@@ -42,7 +40,7 @@ def communicator(command: str, bg_flag: bool = False) -> AnyStr | HttpUrl:
         bg_flag: Takes the background flag caller as an argument.
 
     Returns:
-        AnyStr:
+        str:
         Response from Jarvis.
     """
     shared.called_by_offline = True

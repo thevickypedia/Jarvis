@@ -1001,81 +1001,37 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.init_meetings">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">init_meetings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.init_meetings" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes the meetings sync interval based on the availability of the ICS URL.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.background_executor">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">background_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.models.classes.BackgroundTask" title="jarvis.modules.models.classes.BackgroundTask"><span class="pre">BackgroundTask</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.background_executor" title="Link to this definition">¶</a></dt>
-<dd><p>Checks and triggers background tasks based on their defined intervals and ignore hours.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> – List of BackgroundTask objects to be monitored.</p></li>
-<li><p><strong>task_dict</strong> – Dictionary to keep track of the last execution time of each task.</p></li>
-<li><p><strong>now</strong> – Datetime object representing the current time.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.crontab_executor">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cron_jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#jarvis.modules.crontab.expression.CronExpression" title="jarvis.modules.crontab.expression.CronExpression"><span class="pre">CronExpression</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.crontab_executor" title="Link to this definition">¶</a></dt>
-<dd><p>Checks and triggers cron jobs based on their defined schedules.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cron_jobs</strong> – List of CronExpression objects representing the cron jobs to be monitored.</p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.automation_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">automation_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.automation_executor" title="Link to this definition">¶</a></dt>
-<dd><p>Checks and triggers the execution of an automated task.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>exec_task</strong> – The command string to be executed as an automated task.</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">automation_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exec_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.automation_executor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.db_writer">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">db_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.db_writer" title="Link to this definition">¶</a></dt>
-<dd><p>Starts a background process to fetch meetings or events and updates the database with the process ID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>picker</strong> – String indicating whether to fetch ‘events’ or ‘meetings’.</p></li>
-<li><p><strong>dry_run</strong> – Boolean flag to indicate first run.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.alarm_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.alarm_executor" title="Link to this definition">¶</a></dt>
-<dd><p>Checks and triggers alarms based on the current time and their defined repeat settings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>now</strong> – Datetime object representing the current time.</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">alarm_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.alarm_executor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.agent.reminder_executor">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.agent.reminder_executor" title="Link to this definition">¶</a></dt>
-<dd><p>Checks and triggers reminders based on the current time and their defined date.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>now</strong> – Datetime object representing the current time.</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.agent.</span></span><span class="sig-name descname"><span class="pre">reminder_executor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.agent.reminder_executor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-jarvis.api.models.authenticator">
