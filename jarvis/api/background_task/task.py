@@ -35,6 +35,7 @@ class StartTimes:
 
 
 # TODO: Rename to pulse or beat
+#   TRACK ALL SPAWNS WITH ``.add_done_callback`` to a task and restart as needed
 async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
@@ -54,8 +55,7 @@ async def background_tasks() -> None:
     # Creates a start time for each task
     task_dict = {i: time.time() for i in range(len(tasks))}
 
-    telegram_thread = ThreadPool(processes=1).apply_async(func=telegram.telegram_api)
-
+    asyncio.create_task(bot.init())
     while True:
         now = datetime.now()
 
@@ -101,16 +101,11 @@ async def background_tasks() -> None:
             # MARK: Trigger reminders
             asyncio.create_task(agent.reminder_executor(now))
 
-        # MARK: Set a flag for telegram polling
-        if not bot.telegram_beat.poll_for_messages and start_times.telegram + 30 <= time.time():
-            if telegram_thread.ready():
-                bot.telegram_beat.poll_for_messages = telegram_thread.get()
-            else:
-                logger.info("Telegram thread is still looking for a webhook.")
-
         # MARK: Poll for telegram messages
         if bot.telegram_beat.poll_for_messages:
             asyncio.create_task(bot.telegram_executor())
+        if bot.telegram_beat.restart_loop:
+            asyncio.create_task(bot.init(3))
 
         # MARK: Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

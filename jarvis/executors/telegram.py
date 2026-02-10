@@ -1,4 +1,4 @@
-import time
+import asyncio
 from urllib.parse import urljoin
 
 from jarvis.executors import internet
@@ -8,7 +8,7 @@ from jarvis.modules.telegram import bot, webhook
 from jarvis.modules.utils import support
 
 
-def get_webhook_origin(retry: int) -> str | None:
+async def get_webhook_origin(retry: int) -> str | None:
     """Get the telegram bot webhook origin.
 
     Args:
@@ -20,16 +20,16 @@ def get_webhook_origin(retry: int) -> str | None:
     """
     if models.env.bot_webhook:
         return str(models.env.bot_webhook)
-    logger.info("Attempting to connect via webhook. ETA: 60 seconds.")
+    logger.info("Attempting to connect via webhook. ETA: %d seconds.", 3 * retry)
     for i in range(retry):
         if url := internet.get_tunnel(False):
             logger.info("Public URL was fetched on %s attempt", support.ENGINE.ordinal(i + 1))
             return url
-        time.sleep(3)
+        await asyncio.sleep(3)
     return None
 
 
-def telegram_api(webhook_trials: int = 20) -> bool:
+async def telegram_api(webhook_trials: int) -> bool:
     """Initiates polling for new messages.
 
     Args:
@@ -46,7 +46,7 @@ def telegram_api(webhook_trials: int = 20) -> bool:
     if not models.env.bot_token:
         logger.info("Bot token is required to start the Telegram Bot")
         return False
-    if (public_url := get_webhook_origin(webhook_trials)) and (
+    if (public_url := await get_webhook_origin(webhook_trials)) and (
         response := webhook.set_webhook(
             base_url=bot.BASE_URL,
             webhook=urljoin(public_url, models.env.bot_endpoint),
