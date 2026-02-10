@@ -37,6 +37,7 @@ class StartTimes:
     wifi: float
 
 
+# TODO: Rename to pulse or beat
 async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
@@ -61,6 +62,7 @@ async def background_tasks() -> None:
     telegram_offset = 0
     failed_telegram_connections = {"count": 0}
 
+    # TODO: Remove dry run flag
     dry_run = True
     while True:
         now = datetime.now()

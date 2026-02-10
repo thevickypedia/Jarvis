@@ -17,7 +17,7 @@ from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 
 
-def face_recognition_import() -> None:
+def face_recognition_import() -> object | None:
     """Imports the face_recognition module."""
     try:
         import face_recognition
@@ -81,7 +81,7 @@ class FaceNet:
 
     def __init__(self):
         """Instantiates the ``Processor`` object and sources the camera hardware."""
-        self.validation_video = cv2.VideoCapture(models.env.camera_index)
+        self.validation_video = cv2.VideoCapture(models.env.camera_index or 0)
         self.train_faces, self.train_names = [], []
 
     def load_dataset(self, location: str) -> None:
@@ -127,7 +127,7 @@ class FaceNet:
             # reads video from web cam
             ret, img = self.validation_video.read()
             if not ret:
-                logger.warning("Unable to read from camera index: %d", models.env.camera_index)
+                logger.warning("Unable to read from camera index: %d", models.env.camera_index or 0)
                 continue
             # gets image from the video read above
             identifier = face_recognition_mod.face_locations(img, model=self.MODEL)

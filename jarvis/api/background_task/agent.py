@@ -3,18 +3,17 @@ import traceback
 from datetime import datetime
 from multiprocessing import Process
 from threading import Thread
-from typing import Dict
-from typing import List
+from typing import Dict, List
 
 import requests
 
 from jarvis.executors import (
-    background_task,
-    files,
     alarm,
+    background_task,
     crontab,
-    remind,
+    files,
     offline,
+    remind,
     resource_tracker,
     weather_monitor,
 )
@@ -25,6 +24,7 @@ from jarvis.modules.models import classes, models
 
 
 async def init_meetings() -> None:
+    """Initializes the meetings sync interval based on the availability of the ICS URL."""
     if models.env.ics_url:
         try:
             if requests.get(url=models.env.ics_url).status_code == 503:
@@ -37,7 +37,13 @@ async def init_meetings() -> None:
 
 
 async def background_executor(tasks: List[classes.BackgroundTask], task_dict: Dict[int, float], now: datetime) -> None:
-    # MARK: Trigger background tasks
+    """Checks and triggers background tasks based on their defined intervals and ignore hours.
+
+    Args:
+        tasks: List of BackgroundTask objects to be monitored.
+        task_dict: Dictionary to keep track of the last execution time of each task.
+        now: Datetime object representing the current time.
+    """
     for i, task in enumerate(tasks):
         # Checks a particular tasks' elapsed time
         if task_dict[i] + task.seconds <= time.time():
@@ -57,6 +63,11 @@ async def background_executor(tasks: List[classes.BackgroundTask], task_dict: Di
 
 
 async def crontab_executor(cron_jobs: List[crontab.expression.CronExpression]) -> None:
+    """Checks and triggers cron jobs based on their defined schedules.
+
+    Args:
+        cron_jobs: List of CronExpression objects representing the cron jobs to be monitored.
+    """
     for job in cron_jobs:
         if job.check_trigger():
             logger.debug("Executing cron job: '%s'", job.comment)
@@ -71,7 +82,12 @@ async def crontab_executor(cron_jobs: List[crontab.expression.CronExpression]) -
                 connection.commit()
 
 
-async def automation_executor(exec_task: str):
+async def automation_executor(exec_task: str) -> None:
+    """Checks and triggers the execution of an automated task.
+
+    Args:
+        exec_task: The command string to be executed as an automated task.
+    """
     # Check and trigger weather alert monitoring system
     if "weather" in exec_task.lower():
         # run as daemon and not store in children table as this won't take long
@@ -88,6 +104,12 @@ async def automation_executor(exec_task: str):
 
 
 async def db_writer(picker: str, dry_run: bool) -> None:
+    """Starts a background process to fetch meetings or events and updates the database with the process ID.
+
+    Args:
+        picker: String indicating whether to fetch 'events' or 'meetings'.
+        dry_run: Boolean flag to indicate first run.
+    """
     if picker == "events":
         process_target = events.events_writer
         logger.info("Getting events from %s.", models.env.event_app) if dry_run else None
@@ -106,7 +128,12 @@ async def db_writer(picker: str, dry_run: bool) -> None:
         connection.commit()
 
 
-async def alarm_executor(now: datetime):
+async def alarm_executor(now: datetime) -> None:
+    """Checks and triggers alarms based on the current time and their defined repeat settings.
+
+    Args:
+        now: Datetime object representing the current time.
+    """
     if alarms := files.get_alarms():
         copied_alarms = alarms.copy()
         for alarmer in alarms:
@@ -122,7 +149,12 @@ async def alarm_executor(now: datetime):
             files.put_alarms(data=copied_alarms)
 
 
-async def reminder_executor(now: datetime):
+async def reminder_executor(now: datetime) -> None:
+    """Checks and triggers reminders based on the current time and their defined date.
+
+    Args:
+        now: Datetime object representing the current time.
+    """
     if reminders := files.get_reminders():
         copied_reminders = reminders.copy()
         for reminder in reminders:

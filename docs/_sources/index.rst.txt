@@ -102,6 +102,20 @@ API - Server
    :members:
    :undoc-members:
 
+API - BackgroundTasks (Controller)
+==================================
+
+.. automodule:: jarvis.api.background_task.task
+   :members:
+   :undoc-members:
+
+API - BackgroundTasks (Executor)
+================================
+
+.. automodule:: jarvis.api.background_task.agent
+   :members:
+   :undoc-members:
+
 Models - Authenticator
 ======================
 
