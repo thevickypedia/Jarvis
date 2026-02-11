@@ -148,7 +148,7 @@ def put_restrictions(restrictions: List[str]) -> None:
 
 def get_gpt_data() -> List[Dict[str, str]]:
     """Get history from Jarvis -> Ollama conversation."""
-    return _loader(models.fileio.gpt_data)
+    return _loader(models.fileio.gpt_data, default=[])
 
 
 def put_gpt_data(data: List[Dict[str, str]]) -> None:
