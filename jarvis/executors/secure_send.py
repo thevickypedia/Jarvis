@@ -168,8 +168,8 @@ def secrets(phrase: str) -> SecretResponse | None:
                 else:
                     return SecretResponse(response="No AWS params were found matching your request.")
             else:
-                return SecretResponse(response="Please use 'list secret' before using 'get secret'")
-            if "ssm" in text or "params" in text or "parameters" in text:
+                return SecretResponse(response="Please use 'list secret/param' before using 'get secret/param'")
+            if "ssm" in text or "params" in text or "parameters" in text or "param" in text or "parameter" in text:
                 try:
                     return SecretResponse(token=store_secret(key=aws_key, value=get_aws_params(name=aws_key)))
                 except Exception as error:  # if secret is removed between 'list' and 'get'
