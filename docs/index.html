@@ -11188,14 +11188,8 @@ Whites can have a value of None.</p>
 <li><p>This module uses a pre-trained transformer to generate predictive responses.</p></li>
 <li><p>Although this feature is enabled by default, please note that machine learning models are memory beasts.</p></li>
 <li><p>Please refer the following minimum requirements before choosing the right model.</p></li>
-<li><p>This feature can be disabled by setting the env var <code class="docutils literal notranslate"><span class="pre">ollama=False</span></code> in the <code class="docutils literal notranslate"><span class="pre">env_file</span></code></p></li>
 </ul>
 </div>
-<p class="rubric">Notes</p>
-<p>There are quite a few parameters that can be adjusted, to customize the model usage and interaction with Jarvis.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-gpt-integration">Params for Jarvis</a></p></li>
-</ul>
 <dl class="simple">
 <dt><strong>RAM Requirements</strong></dt><dd><ul class="simple">
 <li><p>8 GB to run the 7B models</p></li>
@@ -11210,10 +11204,6 @@ Whites can have a value of None.</p>
 <li><p>Alternatives: <a class="reference external" href="https://huggingface.co/meta-llama">https://huggingface.co/meta-llama</a></p></li>
 <li><p>Supported Models: <a class="reference external" href="https://github.com/ollama/ollama/blob/main/README.md#model-library">https://github.com/ollama/ollama/blob/main/README.md#model-library</a></p></li>
 </ul>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/transformer/gpt.md">Future Plans</a></p>
-</div>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.dump_history">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">dump_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.dump_history" title="Link to this definition">¶</a></dt>
@@ -11269,12 +11259,6 @@ Whites can have a value of None.</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.setup_local_instance">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">setup_local_instance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.setup_local_instance" title="Link to this definition">¶</a></dt>
-<dd><p>Attempts to set up ollama with a local instance.</p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">Ollama</span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama" title="Link to this definition">¶</a></dt>
@@ -11285,7 +11269,77 @@ Whites can have a value of None.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama.create_custom_model">
 <span class="sig-name descname"><span class="pre">create_custom_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.create_custom_model" title="Link to this definition">¶</a></dt>
-<dd><p>Creates the custom model.</p>
+<dd><p>Creates the custom model using the base model.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">If the base model doesn’t exist on the server,</div>
+<div class="line">the create endpoint automatically pulls the model from Ollama library.</div>
+</div>
+</li>
+<li><p>Custom model is created to isolate the system message and custom parameter options (mentioned below)</p></li>
+</ul>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">temperature</span></span></dt>
+<dd><p>Higher is more creative and random, lower is more focused and deterministic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, 0.0–2.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">|</span> <span class="pre">top_p</span></span></dt>
+<dd><p>Higher considers more possible tokens (more diverse),
+| lower limits choices to the most probable ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, 0.0–1.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">num_predict</span></span></dt>
+<dd><p>Higher generates longer responses, lower generates shorter responses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, 1+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">repeat_penalty</span></span></dt>
+<dd><p>Higher reduces repetition, lower allows more repeated words or phrases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, 0.0–2.0+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">-</span> <span class="pre">|</span> <span class="pre">num_ctx</span></span></dt>
+<dd><p>Higher allows more context to be remembered,
+| lower limits how much context the model can use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, 128+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://docs.ollama.com/modelfile#parameter">https://docs.ollama.com/modelfile#parameter</a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -13432,7 +13486,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.transformer.gpt">Transformer</a><ul>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.dump_history"><code class="docutils literal notranslate"><span class="pre">dump_history()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.existing_response"><code class="docutils literal notranslate"><span class="pre">existing_response()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.transformer.gpt.setup_local_instance"><code class="docutils literal notranslate"><span class="pre">setup_local_instance()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama"><code class="docutils literal notranslate"><span class="pre">Ollama</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.create_custom_model"><code class="docutils literal notranslate"><span class="pre">Ollama.create_custom_model()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.request_model"><code class="docutils literal notranslate"><span class="pre">Ollama.request_model()</span></code></a></li>

@@ -4,13 +4,6 @@ Warnings:
     - This module uses a pre-trained transformer to generate predictive responses.
     - Although this feature is enabled by default, please note that machine learning models are memory beasts.
     - Please refer the following minimum requirements before choosing the right model.
-    - This feature can be disabled by setting the env var ``ollama=False`` in the ``env_file``
-
-Notes:
-    There are quite a few parameters that can be adjusted, to customize the model usage and interaction with Jarvis.
-
-    - `Params for Jarvis <https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables
-      #ollama-gpt-integration>`__
 
 **RAM Requirements**
     - 8 GB to run the 7B models
@@ -21,22 +14,18 @@ References:
     - Model Artifactory: https://ollama.com/library
     - Alternatives: https://huggingface.co/meta-llama
     - Supported Models: https://github.com/ollama/ollama/blob/main/README.md#model-library
-
-See Also:
-    `Future Plans <https://github.com/thevickypedia/Jarvis/blob/master/jarvis/modules/transformer/gpt.md>`__
 """
 
 import collections
 import difflib
 import time
-import warnings
 from collections.abc import Generator
 
 # noinspection PyProtectedMember
 from multiprocessing.context import TimeoutError as ThreadTimeoutError
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-from typing import List, NoReturn
+from typing import List
 
 import ollama
 
@@ -126,33 +115,6 @@ def existing_response(request: str) -> str | None:
     return None
 
 
-def setup_local_instance() -> None | NoReturn:
-    """Attempts to set up ollama with a local instance."""
-    try:
-        llama_models = ollama.list().get("models")
-    except Exception as error:
-        logger.error(error)
-        logger.error("Ollama client is either not installed or not running, refer: https://ollama.com/download")
-        raise ValueError(error.__str__())
-    for model in llama_models:
-        if model.get("name") == models.env.ollama_base_model:
-            logger.info(f"Model {models.env.ollama_base_model!r} found")
-            break
-    else:
-        # To run manually: ollama pull phi4-mini
-        logger.info(f"Downloading {models.env.ollama_base_model!r}")
-        try:
-            ollama.pull(models.env.ollama_base_model)
-        except ollama.ResponseError as error:
-            logger.error(error)
-            warnings.warn(
-                f"\n\tInvalid model name: {models.env.ollama_base_model}\n"
-                "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
-                UserWarning,
-            )
-            raise ValueError(error.__str__())
-
-
 SYSTEM_MESSAGE = """You are Jarvis, a virtual assistant designed by Mr. Rao.
 Answer only as Jarvis.
 
@@ -176,7 +138,6 @@ class Ollama:
         if models.env.ollama_server:
             self.client = ollama.Client(host=str(models.env.ollama_server))
         else:
-            setup_local_instance()
             self.client = ollama.Client()
         try:
             self.client.list()
@@ -186,8 +147,25 @@ class Ollama:
         self.create_custom_model()
 
     def create_custom_model(self) -> None:
-        """Creates the custom model."""
-        # TODO: Test if a custom model is actually required or these params can be set otherwise
+        """Creates the custom model using the base model.
+
+        See Also:
+            - | If the base model doesn't exist on the server,
+              | the create endpoint automatically pulls the model from Ollama library.
+            - Custom model is created to isolate the system message and custom parameter options (mentioned below)
+
+        Attributes:
+            - temperature (float, 0.0–2.0): Higher is more creative and random, lower is more focused and deterministic.
+            - | top_p (float, 0.0–1.0): Higher considers more possible tokens (more diverse),
+              | lower limits choices to the most probable ones.
+            - num_predict (int, 1+): Higher generates longer responses, lower generates shorter responses.
+            - repeat_penalty (float, 0.0–2.0+): Higher reduces repetition, lower allows more repeated words or phrases.
+            - | num_ctx (int, 128+): Higher allows more context to be remembered,
+              | lower limits how much context the model can use.
+
+        References:
+            https://docs.ollama.com/modelfile#parameter
+        """
         self.client.create(
             model=models.env.ollama_custom_model,
             from_=models.env.ollama_base_model,
