@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 import requests
 from pydantic import HttpUrl
@@ -7,7 +8,7 @@ from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
 
 
-def get_webhook(base_url: str, logger: logging.Logger):
+def get_webhook(base_url: str, logger: logging.Logger) -> Dict[str, str] | None:
     """Get webhook information.
 
     References:
@@ -19,9 +20,10 @@ def get_webhook(base_url: str, logger: logging.Logger):
         logger.info(response.json())
         return response.json()
     response.raise_for_status()
+    return None
 
 
-def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger):
+def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger) -> Dict[str, str] | None:
     """Delete webhook.
 
     References:
@@ -33,9 +35,10 @@ def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger):
         logger.info("Webhook has been removed.")
         return response.json()
     response.raise_for_status()
+    return None
 
 
-def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger):
+def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger) -> None:
     """Set webhook.
 
     References:
@@ -60,11 +63,10 @@ def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging
             )
         else:
             response = requests.post(url=put_info, params=payload)
+        response.raise_for_status()
+        if response.ok:
+            logger.info("Webhook has been set to: %s", webhook)
+            return response.json()
     except EgressErrors as error:
         logger.error(error)
-        return
-    if response.ok:
-        logger.info("Webhook has been set to: %s", webhook)
-        return response.json()
-    else:
-        logger.error(response.text)
+    return None

@@ -23,6 +23,7 @@ if platform.system() == "Linux":
     with no_alsa_err():
         MICROPHONE = speech_recognition.Microphone()
 else:
+    # noinspection PyRedeclaration
     MICROPHONE = speech_recognition.Microphone()
 COMMON_ERRORS = (
     speech_recognition.UnknownValueError,
@@ -74,6 +75,7 @@ async def main() -> None:
                 audio = RECOGNIZER.listen(source)
                 logger.info("Recognizing..")
                 # Requires stable internet connection
+                # noinspection PyUnresolvedReferences
                 recognized = RECOGNIZER.recognize_google(audio_data=audio)
                 # Requires pocketsphinx module, but can work offline
                 # recognized = RECOGNIZER.recognize_sphinx(audio_data=audio)

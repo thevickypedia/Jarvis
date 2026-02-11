@@ -163,6 +163,7 @@ def custom_meetings(phrase: str) -> bool:
         )
         speaker.speak(meeting_status)
         return True
+    return False
 
 
 def meetings(phrase: str) -> None:

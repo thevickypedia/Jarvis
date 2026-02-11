@@ -12,7 +12,7 @@ from jarvis.modules.utils import shared, support
 from jarvis.modules.wakeonlan import wakeonlan
 
 
-def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, str | List[str]]], str]:
+def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, str | List[str]]], str] | None:
     """Extract TV mapping from the data in smart devices.
 
     Args:
@@ -32,10 +32,11 @@ def get_tv(data: dict) -> Tuple[Dict[str, Dict[str, str | List[str]]], str]:
             "projectors",
         ):
             return data[key], key
+    return None
 
 
-def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str:
-    """Pings the tv and returns the IP address.
+def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str | None:
+    """Pings the TV and returns the IP address.
 
     Args:
         tv_ip_list: List of possible IP addresses for the Television.
@@ -58,6 +59,7 @@ def tv_status(tv_ip_list: List[str], attempt: int = 0) -> str:
             logger.error("Connection timed out on %s. Ping result: %s", ip, tv_stat) if not attempt else None
         else:
             return ip
+    return None
 
 
 def television(phrase: str) -> None:

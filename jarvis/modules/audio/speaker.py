@@ -79,6 +79,7 @@ def speech_synthesizer(
         # Purposely exclude timeout since, speech-synthesis takes more time initially to download the required voice
         if not any((isinstance(error, TimeoutError), isinstance(error, requests.Timeout))):
             models.env.speech_synthesis_timeout = 0
+    return False
 
 
 def speak(text: str = None, run: bool = False, block: bool = True) -> None:
@@ -132,7 +133,7 @@ def speak(text: str = None, run: bool = False, block: bool = True) -> None:
 
 
 def frequently_used(function_name: str) -> None:
-    """Writes the function called and the number of times into a yaml file.
+    """Writes the function called and the number of times into a YAML file.
 
     Args:
         function_name: Name of the function that called the speaker.

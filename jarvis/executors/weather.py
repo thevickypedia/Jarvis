@@ -155,7 +155,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
     if not models.env.weather_apikey:
         logger.warning("Weather apikey not found.")
         support.no_env_vars()
-        return
+        return None
 
     place = None
     if phrase:
@@ -173,7 +173,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
             speaker.speak(
                 text=f"I'm sorry {models.env.title}! " f"I wasn't able to get the weather information at {place}!"
             )
-            return
+            return None
         coordinates = desired_location.latitude, desired_location.longitude
         located = location.geo_locator.reverse(coordinates, language="en")
         address = located.raw["address"]
@@ -190,7 +190,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
         lon = current_location["longitude"]
     if not (response := make_request(lat=lat, lon=lon)):
         speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an exception. Please check your logs.")
-        return
+        return None
 
     weather_location = f"{city} {state}".replace("None", "") if city != state else city or state
 
@@ -207,12 +207,12 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
     )
     if not_current and models.settings.weather_onecall:
         weather_with_specifics(phrase, response, weather_location)
-        return
+        return None
     elif not_current:
         speaker.speak(f"I'm sorry {models.env.title}! The API endpoint is only set to retrieve the current weather.")
-        return
+        return None
 
-    # todo: the onecall endpoint is untested
+    # TODO: the onecall endpoint is untested
     if models.settings.weather_onecall:
         condition = response["current"]["weather"][0]["description"]
         high = int(response["daily"][0]["temp"]["max"])
@@ -246,7 +246,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
             else:
                 tense = "was"
             speaker.speak(text=f"In {weather_location}, sunrise {tense} at {sunrise}.")
-            return
+            return None
         if "sunset" in phrase or "sun set" in phrase or ("sun" in phrase and "set" in phrase):
             if datetime.strptime(datetime.today().strftime("%I:%M %p"), "%I:%M %p") >= datetime.strptime(
                 sunset, "%I:%M %p"
@@ -255,7 +255,7 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
             else:
                 tense = "was"
             speaker.speak(text=f"In {weather_location}, sunset {tense} at {sunset}")
-            return
+            return None
     output = (
         f"The weather in {weather_location} is "
         f"{temp_f}\N{DEGREE SIGN}{models.temperature_symbol}, with a high of {high}, "
@@ -269,3 +269,4 @@ def weather(phrase: str = None, monitor: bool = False) -> Tuple[Any, int, int, i
         end_alert = datetime.fromtimestamp(response["alerts"][0]["end"]).strftime("%I:%M %p")
         output += f" You have a weather alert for {alerts} between {start_alert} and {end_alert}"
     speaker.speak(text=output)
+    return None

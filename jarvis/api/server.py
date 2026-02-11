@@ -18,6 +18,7 @@ def jarvis_api() -> None:
         - Attempts to kill the process listening to the port, if the endpoint doesn't respond.
     """
     multiprocessing_logger(filename=APIConfig().DEFAULT_LOG_FILENAME)
+    # noinspection HttpUrlsUsage
     url = f"http://{models.env.offline_host}:{models.env.offline_port}"
 
     if port_handler.is_port_in_use(port=models.env.offline_port):

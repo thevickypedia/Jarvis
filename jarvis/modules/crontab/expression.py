@@ -260,7 +260,7 @@ class CronExpression:
         return True
 
 
-def parse_atom(parse: str, minmax: tuple) -> set:
+def parse_atom(parse: str, minmax: tuple) -> set | None:
     """Returns a set containing valid values for a given cron-style range of numbers.
 
     Args:
@@ -321,6 +321,7 @@ def parse_atom(parse: str, minmax: tuple) -> set:
             noskips = list(range(prefix, minmax[1] + 1))
             noskips += list(range(minmax[0], suffix + 1))
             return set(noskips[::increment])
+    return None
 
 
 if __name__ == "__main__":

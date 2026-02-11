@@ -41,7 +41,7 @@ def channel_validator(value: int, ch_type: str) -> int | None:
     else:
         channels = channel_type.output_channels
     if not value:
-        return
+        return None
     if int(value) in list(
         map(
             lambda tag: tag["index"],

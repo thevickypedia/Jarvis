@@ -33,7 +33,7 @@ def ip_address() -> str | None:
         socket_.connect(("8.8.8.8", 80))
     except OSError as error:
         logger.error(error)
-        return
+        return None
     ip_address_ = socket_.getsockname()[0]
     socket_.close()
     return ip_address_
@@ -114,9 +114,10 @@ def get_public_ip() -> str | None:
                     return ip_addr
         except (requests.RequestException, re.error, IndexError):
             continue
+    return None
 
 
-def get_and_store_ip_data(url: str, ip_addr: str) -> Dict[str, str]:
+def get_and_store_ip_data(url: str, ip_addr: str) -> Dict[str, str] | None:
     """Retrieve IP information and store it in YAML mapping.
 
     Args:
@@ -150,10 +151,8 @@ def public_ip_info() -> Dict[str, str]:
         if current_ts - timestamp < 86_400:
             return ip_data
     ip_addr = get_public_ip()
-    return (
-        get_and_store_ip_data("https://ipinfo.io/json", ip_addr)
-        or get_and_store_ip_data(f"http://ip-api.com/json/{ip_addr}", ip_addr)
-        or get_and_store_ip_data(f"https://ipinfo.io/{ip_addr}/json", ip_addr)
+    return get_and_store_ip_data("https://ipinfo.io/json", ip_addr) or get_and_store_ip_data(
+        f"https://ipinfo.io/{ip_addr}/json", ip_addr
     )
 
 
@@ -213,12 +212,12 @@ def get_connection_info(target: str = "SSID") -> str | None:
             logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)
-        return
+        return None
     if models.settings.os == enums.SupportedPlatforms.macOS:
         out, err = process.communicate()
         if error := process.returncode:
             logger.error("Failed to fetch %s with exit code [%s]: %s", target, error, err)
-            return
+            return None
         # noinspection PyTypeChecker
         return dict(
             map(str.strip, info.split(": ")) for info in out.decode("utf-8").splitlines()[:-1] if len(info.split()) == 2
@@ -231,8 +230,10 @@ def get_connection_info(target: str = "SSID") -> str | None:
     else:
         if process:
             return process.decode(encoding="UTF-8").strip()
+    return None
 
 
+# noinspection PyUnusedLocal
 def speed_test(*args) -> None:
     """Initiates speed test and says the ping rate, download and upload speed.
 

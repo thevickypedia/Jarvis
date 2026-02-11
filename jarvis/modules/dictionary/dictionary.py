@@ -1,4 +1,5 @@
 # noinspection PyUnresolvedReferences
+# TODO: Dictionary may be broken - moreover GPT can handle this
 """Module to get meanings of words from `wordnetweb.princeton.edu <http://wordnetweb.princeton.edu/perl/webwn?s=>`__.
 
 >>> Dictionary

@@ -6,14 +6,14 @@
 """
 
 import os
-from typing import Callable
+from typing import Any
 
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger
 
 
-def audio_converter_mac() -> Callable:
+def audio_converter_mac() -> Any:
     """Imports transcode from ftransc.
 
     Returns:
@@ -42,7 +42,7 @@ def audio_converter_win(input_filename: FilePath | str, output_audio_format: str
     ffmpeg_path = os.path.join("ffmpeg", "bin")
     if not os.path.exists(path=ffmpeg_path):
         logger.warning("ffmpeg codec is missing!")
-        return
+        return None
     os.environ["PATH"] += f";{ffmpeg_path}"
     from pydub import AudioSegment  # noqa
 
@@ -53,7 +53,7 @@ def audio_converter_win(input_filename: FilePath | str, output_audio_format: str
         audio = AudioSegment.from_wav(input_filename)
         output_filename = input_filename.replace(".wav", f".{output_audio_format}")
     else:
-        return
+        return None
     try:
         audio.export(input_filename, format=output_audio_format)
         os.remove(input_filename)

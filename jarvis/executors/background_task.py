@@ -46,11 +46,11 @@ def background_task_handler(phrase: str) -> None:
 
 
 def compare_tasks(dict1: dict, dict2: dict) -> bool:
-    """Compares tasks currently in background tasks yaml file and the tasks already loaded.
+    """Compares tasks currently in background tasks YAML file and the tasks already loaded.
 
     Args:
-        dict1: Takes either the task in yaml file or loaded task as an argument.
-        dict2: Takes either the task in yaml file or loaded task as an argument.
+        dict1: Takes either the task in YAML file or loaded task as an argument.
+        dict2: Takes either the task in YAML file or loaded task as an argument.
 
     Returns:
         bool:
@@ -62,6 +62,7 @@ def compare_tasks(dict1: dict, dict2: dict) -> bool:
         dict2.pop("ignore_hours")
     if OrderedDict(sorted(dict1.items())) == OrderedDict(sorted(dict2.items())):
         return True
+    return False
 
 
 def remove_corrupted(task: BackgroundTask | dict) -> None:

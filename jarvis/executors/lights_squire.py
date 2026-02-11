@@ -152,3 +152,4 @@ def party_mode(host: List[str], phrase: str) -> bool:
             text=f"Party mode is currently {state_} {models.env.title}! "
             "You can ask me to enable or disable party mode."
         )
+    return False

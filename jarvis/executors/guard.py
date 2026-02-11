@@ -21,7 +21,7 @@ from jarvis.modules.utils import shared, support, util
 TRACE = {"status": False}
 
 
-def get_state(log: bool = True) -> Tuple[int, str]:
+def get_state(log: bool = True) -> Tuple[int, str] | None:
     """Reads the state of guard column in the base db.
 
     Args:
@@ -39,6 +39,7 @@ def get_state(log: bool = True) -> Tuple[int, str]:
         return state
     else:
         logger.info("Security mode is currently disabled") if log else None
+        return None
 
 
 def put_state(state: bool) -> None:
@@ -49,6 +50,7 @@ def put_state(state: bool) -> None:
     """
     with models.db.connection as connection:
         cursor = connection.cursor()
+        # noinspection PySimplifyBooleanCheck
         if state is True:
             if shared.called_by_offline:
                 trigger = "GUARD_OFFLINE"
@@ -70,7 +72,7 @@ def stop_and_respond(stop: bool) -> None:
     """Stops security mode and responds accordingly.
 
     Args:
-        stop: Boolean flag to stop or simply repsond.
+        stop: Boolean flag to stop or simply respond.
     """
     if stop:
         put_state(state=False)
@@ -98,6 +100,7 @@ def politely_disable() -> None:
         put_state(state=False)
 
 
+# noinspection PyUnusedLocal
 def guard_disable(*args) -> None:
     """Checks the state of security mode, sets flag to False if currently enabled.
 
@@ -171,6 +174,7 @@ def security_runner(offline: bool = True) -> None:
             ).start()
 
 
+# noinspection PyUnusedLocal
 def guard_enable(*args) -> None:
     """Security Mode will enable camera and microphone in the background.
 

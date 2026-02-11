@@ -21,6 +21,7 @@ class Spectrum:
 
     SESSION = requests.Session()
     SESSION.auth = BearerAuth(token=models.env.listener_spectrum_key)
+    # noinspection HttpUrlsUsage
     BASE_PATH = f"http://{models.env.offline_host}:{models.env.offline_port}"
     ACTIVATE = BASE_PATH + routes.APIPath.listener_spectrum_wave.format(command="start")
     DEACTIVATE = BASE_PATH + routes.APIPath.listener_spectrum_wave.format(command="stop")

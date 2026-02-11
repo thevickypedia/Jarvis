@@ -146,7 +146,7 @@ class Runtime:
             raise ValueError("Timer was never started.")
         self.end_time = time.time()
 
-    def get(self) -> None | NoReturn:
+    def get(self) -> str | NoReturn:
         """Retrieve the elapsed time."""
         if not all((self.start_time, self.end_time)):
             raise ValueError("Runtime not captured. Ensure you call `stop()` before `get()`.")
@@ -224,6 +224,7 @@ class Env:
     def install_uv(self) -> None | NoReturn:
         """Installs ``uv`` package manager."""
         run_subprocess(f"{env.exec} -m pip install uv")
+        # noinspection PyDeprecation
         self.exec = shutil.which("uv")
         try:
             installer = sys.argv[0].split(os.path.sep)[-1]
@@ -351,7 +352,7 @@ class Requirements:
 requirements = Requirements()
 
 
-def os_specific_pip() -> List[str]:
+def os_specific_pip() -> List[str] | NoReturn:
     """Returns a list of pip installed packages."""
     src = [
         "dlib",
@@ -366,6 +367,7 @@ def os_specific_pip() -> List[str]:
         return src + ["gobject", "PyGObject"]
     if env.osname == "darwin":
         return src + ["ftransc", "pyobjc-framework-CoreWLAN"]
+    raise
 
 
 def thread_worker(commands: List[str]) -> bool:

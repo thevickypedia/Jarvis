@@ -35,7 +35,7 @@ class LGWebOS:
     Args:
         ip_address: IP address of the TV.
         client_key: Client Key to authenticate connection.
-        nickname: Identifier name for the TV as stored in the yaml file.
+        nickname: Identifier name for the TV as stored in the YAML file.
 
     Raises:
         TVError:
@@ -149,8 +149,7 @@ class LGWebOS:
             bool:
             True if powered on.
         """
-        if isinstance(self.get_volume(), int):
-            return True
+        return isinstance(self.get_volume(), int)
 
     def set_volume(self, target: int) -> None:
         """The argument is an integer from 1 to 100.

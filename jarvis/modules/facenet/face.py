@@ -40,11 +40,11 @@ def verify_image(filename: str | FilePath) -> bool:
     """
     try:
         Image.open(filename).verify()
+        if imghdr.what(file=filename).lower() in ("jpg", "png", "jpeg"):
+            return True
     except UnidentifiedImageError as error:
         logger.error(error)
-        return False
-    if imghdr.what(file=filename).lower() in ("jpg", "png", "jpeg"):
-        return True
+    return False
 
 
 def condition_check(filename: str | FilePath) -> bool:
@@ -66,6 +66,7 @@ def condition_check(filename: str | FilePath) -> bool:
     return True
 
 
+# noinspection PyUnresolvedReferences
 class FaceNet:
     """Module for image capture, face recognition and detection using defined tolerance level and specific model.
 
@@ -120,7 +121,7 @@ class FaceNet:
         face_recognition_mod = face_recognition_import()
         if not face_recognition_mod:
             logger.error("Requirement unsatisfied!!")
-            return
+            return None
         logger.debug("Initiating face recognition.")
         self.load_dataset(location=location)
         for _ in range(retry_count):
@@ -139,6 +140,7 @@ class FaceNet:
                 # if a match is found the directory name is rendered and returned as match value
                 if True in results:
                     return self.train_names[results.index(True)]
+        return None
 
     def face_detection(
         self,
@@ -197,6 +199,7 @@ class FaceNet:
                 self.capture_image(filename=filename)
                 if os.path.isfile(filename):
                     return True
+        return False
 
     def capture_image(self, filename: str = "cv2_open.jpg") -> None:
         """Captures an image and saves it locally.

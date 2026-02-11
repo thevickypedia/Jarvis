@@ -78,7 +78,7 @@ def create_reminder(
     speaker.speak(text=response)
 
 
-def find_name(phrase: str) -> str:
+def find_name(phrase: str) -> str | None:
     """Looks for names in contact file if there is any matching the phrase."""
     contacts = files.get_contacts()
     if (name := word_match.word_match(phrase=phrase, match_list=list(contacts.get("phone", {}).keys()))) or (
@@ -86,6 +86,7 @@ def find_name(phrase: str) -> str:
     ):
         logger.info("Reminder requested for third party: %s", name)
         return name
+    return None
 
 
 def get_reminder_state() -> List[str]:

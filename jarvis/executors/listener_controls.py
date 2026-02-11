@@ -47,6 +47,7 @@ def get_listener_state() -> bool:
         return True
     else:
         logger.debug("Listener is currently disabled")
+    return False
 
 
 @retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)

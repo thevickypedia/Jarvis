@@ -8,11 +8,13 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import util
 
 
+# noinspection PyUnusedLocal
 def form(*args) -> None:
     """Response for form."""
     speaker.speak(text="I am a program, I'm without form.")
 
 
+# noinspection PyUnusedLocal
 def greeting(*args) -> None:
     """Response for greeting."""
     speaker.speak(
@@ -26,6 +28,7 @@ def greeting(*args) -> None:
     )
 
 
+# noinspection PyUnusedLocal
 def capabilities(*args) -> None:
     """Response for capabilities."""
     speaker.speak(
@@ -38,21 +41,25 @@ def capabilities(*args) -> None:
     )
 
 
+# noinspection PyUnusedLocal
 def languages(*args) -> None:
     """Response for languages."""
     speaker.speak(text="Tricky question!. I'm configured in python, and I can speak English.")
 
 
+# noinspection PyUnusedLocal
 def whats_up(*args) -> None:
     """Response for what's up."""
     speaker.speak(text="My listeners are up. There is nothing I cannot process. So ask me anything..")
 
 
+# noinspection PyUnusedLocal
 def what(*args) -> None:
     """Response for what."""
     speaker.speak(text="The name is Jarvis. I'm just a pre-programmed virtual assistant.")
 
 
+# noinspection PyUnusedLocal
 def hi(*args) -> None:
     """Response for hi and hello."""
     speaker.speak(
@@ -66,11 +73,13 @@ def hi(*args) -> None:
     )
 
 
+# noinspection PyUnusedLocal
 def who(*args) -> None:
     """Response for whom."""
     speaker.speak(text="I am Jarvis. A virtual assistant designed by Mr.Raauv.")
 
 
+# noinspection PyUnusedLocal
 def age(*args) -> None:
     """Response for age."""
     relative_date = relativedelta(
@@ -93,6 +102,7 @@ def age(*args) -> None:
     speaker.speak(text=f"I'm {statement} old.")
 
 
+# noinspection PyUnusedLocal
 def about_me(*args) -> None:
     """Response for about me."""
     speaker.speak(

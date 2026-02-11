@@ -57,10 +57,13 @@ def startup() -> None:
         ) and not startup_script.stem.startswith("_"):
             starter = None
             if startup_script.suffix == ".py":
+                # noinspection PyDeprecation
                 starter = shutil.which(cmd="python")
             if startup_script.suffix == ".sh":
+                # noinspection PyDeprecation
                 starter = shutil.which(cmd="bash")
             if startup_script.suffix == ".zsh":
+                # noinspection PyDeprecation
                 starter = shutil.which(cmd="zsh")
             if not starter:
                 continue

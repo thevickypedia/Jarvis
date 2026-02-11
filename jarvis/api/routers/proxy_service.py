@@ -46,7 +46,7 @@ async def proxy_service_api(request: Request, origin: HttpUrl, output: str):
         request.headers.get("user-agent"),
     )
     try:
-        response = requests.get(url=origin, allow_redirects=True, verify=False)
+        response = requests.get(url=str(origin), allow_redirects=True, verify=False)
         if response.ok:
             if is_valid_media_type(output):
                 return Response(content=response.text, media_type=output)

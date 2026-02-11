@@ -38,7 +38,7 @@ def ordered_load(
 
     Returns:
         OrderedDict:
-        Dictionary after loading yaml file.
+        Dictionary after loading YAML file.
     """
 
     class OrderedLoader(Loader):
@@ -50,7 +50,7 @@ def ordered_load(
 
         pass
 
-    def construct_mapping(loader: Loader, node: MappingNode) -> collections.OrderedDict:
+    def construct_mapping(loader: "Loader", node: MappingNode) -> collections.OrderedDict:
         """Create a mapping for the constructor."""
         loader.flatten_mapping(node)
         return object_pairs_hook(loader.construct_pairs(node))
@@ -68,14 +68,14 @@ def ordered_dump(dump, stream=None, Dumper=yaml.SafeDumper, **kwds) -> None | st
     """Custom dumper to serialize OrderedDict.
 
     Args:
-        dump: Data to be dumped into yaml file.
+        dump: Data to be dumped into YAML file.
         stream: FileIO stream.
-        Dumper: Yaml dumper.
+        Dumper: YAML dumper.
         kwds: Keyword arguments like indent.
 
     Returns:
         Dumper:
-        Response from yaml Dumper.
+        Response from YAML Dumper.
     """
 
     class OrderedDumper(Dumper):
@@ -87,11 +87,11 @@ def ordered_dump(dump, stream=None, Dumper=yaml.SafeDumper, **kwds) -> None | st
 
         pass
 
-    def _dict_representer(dumper: Dumper, data: dict) -> MappingNode:
+    def _dict_representer(dumper: "Dumper", data: dict) -> MappingNode:
         """Overrides built-in representer.
 
         Args:
-            dumper: Yaml dumper.
+            dumper: YAML dumper.
             data: Data to be dumped.
 
         Returns:

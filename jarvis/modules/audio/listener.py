@@ -58,6 +58,7 @@ def listen(
             spectrum.activate(sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit)
             listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
             spectrum.deactivate(sound=sound)
+            # noinspection PyUnresolvedReferences
             recognized, confidence = recognizer.recognize_google(audio_data=listened, with_confidence=True)
             # SafetyNet: Should never meet the condition for called by offline
             if no_conf or shared.called_by_offline:
@@ -71,7 +72,7 @@ def listen(
                 if listen_recursive(source, 5, 5):
                     return recognized
         except (UnknownValueError, RequestError, WaitTimeoutError):
-            return
+            return None
         except EgressErrors as error:
             logger.error(error)
 
@@ -93,6 +94,8 @@ def listen_recursive(source: Microphone, timeout: int, phrase_time_limit: int) -
     listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
     playsound(sound=models.indicators.end, block=False)
     support.flush_screen()
+    # noinspection PyUnresolvedReferences
     recognized = recognizer.recognize_google(audio_data=listened)
     if word_match.word_match(phrase=recognized, match_list=("yes", "yeah", "yep", "yeh", "indeed")):
         return True
+    return False

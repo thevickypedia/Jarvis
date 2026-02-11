@@ -65,7 +65,7 @@ def get_location_from_coordinates(coordinates: tuple) -> Dict[str, str]:
 
 
 def write_current_location() -> None:
-    """Extracts location information from public IP address and writes it to a yaml file."""
+    """Extracts location information from public IP address and writes it to a YAML file."""
     data = files.get_location()
     address = data.get("address")
     if (
@@ -97,6 +97,7 @@ def write_current_location() -> None:
         )
 
 
+# noinspection PyUnusedLocal
 def location(*args) -> None:
     """Gets the user's current location."""
     current_location = files.get_location()

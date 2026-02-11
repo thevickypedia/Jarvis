@@ -84,7 +84,7 @@ def format_secret(secret: Any) -> list | dict | str | int | float | bool | None:
 
 
 def store_secret(key: str, value: Any) -> str:
-    """Stores the secret in the secure-send yaml file.
+    """Stores the secret in the secure-send YAML file.
 
     Args:
         key: Key for payload.

@@ -57,6 +57,7 @@ def rh_cron_schedule(extended: bool = False) -> expression.CronExpression:
         Crontab expression object running every 30 minutes during market hours based on the current timezone.
     """
     hours = market_hours(extended)
+    # noinspection PyDeprecation
     job = f"{shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_report.py')}"
     tz = util.get_timezone()
     if tz not in hours:
@@ -74,6 +75,7 @@ def sm_cron_schedule(include_weekends: bool = False) -> expression.CronExpressio
         CronExpression:
         Crontab expression object running every 15 minutes.
     """
+    # noinspection PyDeprecation
     job = f"{shutil.which(cmd='python')} {os.path.join(triggers.__path__[0], 'stock_monitor.py')}"
     if include_weekends:
         return expression.CronExpression(f"*/15 * * * * {job}")

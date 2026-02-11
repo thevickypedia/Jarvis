@@ -18,15 +18,15 @@ def tv_controller(
     client_key: str = None,
     key: str = None,
 ) -> None:
-    """Controller for Roku or LG tv actions.
+    """Controller for Roku or LG TV actions.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
         tv_ip: IP address of the television.
         identifier: String to control roku or LG WebOS.
-        nickname: Name as in the source yaml file.
+        nickname: Name as in the source YAML file.
         key: Key under which the TV information was stored in source file.
-        client_key: Client key to connect to the LG WebOS tv.
+        client_key: Client key to connect to the LG WebOS television.
     """
     phrase_lower = phrase.replace("TV", "").lower()
 

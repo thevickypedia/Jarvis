@@ -80,12 +80,13 @@ class Speaker:
                     "gender": voice.gender,
                 }
 
-    def get_voice_by_index(self, index: int) -> Dict[str, str | int]:
+    def get_voice_by_index(self, index: int) -> Dict[str, str | int] | None:
         """Yields all the available voices for the given index, converting attributes into dict."""
         logger.info("Getting voice for the index: '%s'", index)
         for voice in self.get_all_voices():
             if voice["index"] == index:
                 return voice
+        return None
 
     def get_voice_by_name(self, name: str) -> Generator[Dict[str, str | int]]:
         """Yields all the available voices matching the given name, converting attributes into dict."""

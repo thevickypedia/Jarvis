@@ -19,7 +19,7 @@ from jarvis.modules.models import models
 from jarvis.modules.utils import support, util
 
 
-def get_lights(data: dict) -> Dict[str, List[str]]:
+def get_lights(data: dict) -> Dict[str, List[str]] | None:
     """Extract lights' mapping from the data in smart devices.
 
     Args:
@@ -27,11 +27,12 @@ def get_lights(data: dict) -> Dict[str, List[str]]:
 
     Returns:
         Dict[str, List[str]]:
-        Return lights' information as stored in smart devices yaml mapping.
+        Return lights' information as stored in smart devices YAML mapping.
     """
     for key, value in data.items():
         if key.lower() in ("light", "lights"):
             return data[key]
+    return None
 
 
 class ThreadExecutor:

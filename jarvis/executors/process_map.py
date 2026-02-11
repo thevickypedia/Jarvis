@@ -48,6 +48,7 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
         }
     }
     if models.env.plot_mic:
+        # noinspection PyDeprecation
         statement = shutil.which(cmd="python") + " " + graph_mic.__file__
         # process map will be removed if plot_mic is disabled
         base_mapping[graph_mic.plot_mic.__name__] = {

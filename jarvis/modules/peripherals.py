@@ -27,6 +27,7 @@ if platform.system() == "Linux":
     with no_alsa_err():
         audio_engine = pyaudio.PyAudio()
 else:
+    # noinspection PyRedeclaration
     audio_engine = pyaudio.PyAudio()
 # audio_engine.open(output_device_index=6, output=True, channels=1, format=pyaudio.paInt16, rate=16000)
 _device_range = audio_engine.get_device_count()

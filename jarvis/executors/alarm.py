@@ -52,6 +52,7 @@ def check_overlap(new_alarm: Dict[str, str | bool], old_alarms: List[Dict[str, s
                 f"that overlaps with this one {models.env.title}!"
             )
             return True
+    return False
 
 
 def create_alarm(
@@ -143,6 +144,7 @@ def set_alarm(phrase: str) -> None:
             extracted_time = ["12:00 PM"]
         elif "night" in phrase:
             extracted_time = ["12:00 AM"]
+        # noinspection PyUnboundLocalVariable
         hour, minute, am_pm = util.split_time(input_=extracted_time[0])
         if int(hour) <= 12 and int(minute) <= 59:
             datetime_obj = datetime.strptime(f"{hour}:{minute} {am_pm}", "%I:%M %p")
@@ -317,6 +319,7 @@ def kill_alarm(phrase: str) -> None:
             extracted_time = ["12:00 PM"]
         elif "night" in phrase:
             extracted_time = ["12:00 AM"]
+        # noinspection PyUnboundLocalVariable
         hour, minute, am_pm = util.split_time(extracted_time[0])
         if int(hour) <= 12 and int(minute) <= 59:
             chosen_alarm = f"{hour}:{minute} {am_pm}"

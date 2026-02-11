@@ -76,6 +76,7 @@ def get_summary() -> str:
     return output
 
 
+# noinspection PyUnusedLocal
 def robinhood(*args) -> None:
     """Gets investment details from robinhood API."""
     if not all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]):

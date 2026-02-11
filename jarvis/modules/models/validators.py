@@ -87,6 +87,7 @@ class Validator:
                     raise DependencyError("No system voices found! Please use speech-synthesis API")
                 else:
                     warnings.warn("No system voices found! Please use speech-synthesis API!!")
+        return False
 
     def validate_camera_indices(self) -> Optional[int] | NoReturn:
         """Validate if the camera index is readable.

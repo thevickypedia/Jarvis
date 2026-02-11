@@ -34,9 +34,10 @@ def extract_contacts(name: str, key: str) -> int | EmailStr | str | None:
                 "%.2f didn't meet the threshold for any name in contacts.",
                 result["ratio"],
             )
-            return
+            return None
         identifier = result["text"]
         return contacts[key][identifier]
+    return None
 
 
 def send_notification(phrase: str) -> None:
@@ -98,9 +99,9 @@ def send_notification(phrase: str) -> None:
     logger.info("'{body}' -> '{to}' via '{method}'".format(body=body, to=to, method=method))
 
     if "mail" in method.lower():
-        initiate_email(body=body, to=to)
+        initiate_email(body=str(body), to=to)
     else:
-        initiate_sms(body=body, to=to)
+        initiate_sms(body=str(body), to=to)
 
 
 def initiate_sms(body: str, to: str | int) -> None:
@@ -177,7 +178,7 @@ def initiate_email(body: str, to: str) -> None:
 
     Args:
         body: Text that has to be sent.
-        to: Target name to fetch from the contacts file..
+        to: Target name to fetch from the contacts file.
 
     See Also:
           - Requires ``contacts.yaml`` to be present in ``fileio`` directory.

@@ -146,6 +146,7 @@ def events_gatherer() -> str:
     return event_status
 
 
+# noinspection PyUnusedLocal
 def events(*args) -> None:
     """Controller for events."""
     with models.db.connection as connection:

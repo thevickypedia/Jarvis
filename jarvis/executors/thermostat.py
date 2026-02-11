@@ -124,7 +124,7 @@ def get_auth_object() -> Zone | None:
                 speaker.speak(f"I'm sorry {models.env.title}! There are no thermostats found in your account.")
             case _:
                 speaker.speak(f"I'm sorry {models.env.title}! There was an unexpected error.")
-        return
+        return None
     # Check for expiry after informing about the error, since a retry logic is in place when device object is a string
     expiry = util.epoch_to_datetime(seconds=classes.Thermostat.expiration, format_="%B %d, %Y - %I:%M %p")
     if time.time() - classes.Thermostat.expiration >= 86_400:

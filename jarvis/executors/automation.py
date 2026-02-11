@@ -93,7 +93,7 @@ def auto_helper() -> str | None:
             rewrite_automator(write_data=automation_data)
             # Use return as python doesn't like dict size change between a loop
             # Since this function is called every second, there is no need for recursion
-            return
+            return None
         if isinstance(automation_schedule, dict):
             automation_schedule = [automation_schedule]
             automation_data[automation_time] = automation_schedule
@@ -105,7 +105,7 @@ def auto_helper() -> str | None:
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion
-                return
+                return None
             if not (exec_task := automation_info.get("task")):
                 logger.error("Following entry doesn't have a task.")
                 logger.error("%s - %s", automation_time, automation_schedule)
@@ -113,7 +113,7 @@ def auto_helper() -> str | None:
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion
-                return
+                return None
 
             if day := automation_info.get("day"):
                 today = datetime.today().strftime("%A").upper()
@@ -153,3 +153,4 @@ def auto_helper() -> str | None:
             automation_data[automation_time][index]["status"] = True
             rewrite_automator(write_data=automation_data)
             return exec_task
+    return None

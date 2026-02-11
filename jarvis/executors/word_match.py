@@ -16,6 +16,7 @@ def reverse_lookup(lookup: str, match_list: List | Tuple) -> str | None:
         # check at least one word in phrase matches the multi worded condition
         if word in reverse:
             return word
+    return None
 
 
 def forward_lookup(lookup: str | List | Tuple, match_list: List | Tuple) -> str | None:
@@ -23,6 +24,7 @@ def forward_lookup(lookup: str | List | Tuple, match_list: List | Tuple) -> str 
     for word in match_list:
         if word.lower() in lookup:
             return word
+    return None
 
 
 def word_match(phrase: str, match_list: List | Tuple, strict: bool = False) -> str | None:
@@ -38,7 +40,7 @@ def word_match(phrase: str, match_list: List | Tuple, strict: bool = False) -> s
         Returns the word that was matched.
     """
     if not all((phrase, match_list)):
-        return
+        return None
     # simply check at least one string in the match list is present in phrase
     if strict:
         lookup = phrase.lower().split()
@@ -47,3 +49,4 @@ def word_match(phrase: str, match_list: List | Tuple, strict: bool = False) -> s
         lookup = phrase.lower()
         if (fl := forward_lookup(lookup, match_list)) and reverse_lookup(lookup, match_list):
             return fl
+    return None

@@ -29,6 +29,7 @@ def two_factor(request: Request) -> bool:
     else:
         logger.warning("Use the env var bot_secret to secure the webhook interaction")
         return True
+    return False
 
 
 async def telegram_webhook(request: Request):

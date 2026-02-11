@@ -242,6 +242,7 @@ def google_home(device: str = None, file: str = None) -> None:
             speaker.speak(text=f"Enjoy your music {models.env.title}!", run=True)
 
 
+# noinspection PyUnusedLocal
 def flip_a_coin(*args) -> None:
     """Says ``heads`` or ``tails`` from a random choice."""
     playsound(sound=models.indicators.coin, block=True) if not shared.called_by_offline else None
@@ -286,6 +287,7 @@ def meaning(phrase: str) -> None:
             speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
 
 
+# noinspection PyUnusedLocal
 def notes(*args) -> None:
     """Listens to the user and saves it as a text file."""
     if (converted := listener.listen()) or "exit" in converted or "quit" in converted or "Xzibit" in converted:
@@ -331,6 +333,7 @@ def news(news_source: str = "fox") -> None:
         speaker.speak(run=True)
 
 
+# noinspection PyUnusedLocal
 def report(*args) -> None:
     """Initiates a list of functions, that I tend to check first thing in the morning."""
     support.write_screen(text="Starting today's report")
@@ -355,7 +358,7 @@ def celebrate(phrase: str = None) -> str | None:
         str:
         A string of the event observed today.
     """
-    countryname = None
+    countryname = countrycode = None
     if phrase:
         date, day, tense = support.extract_humanized_date(phrase)
         logger.info(f"Extracted humanized date: {date}")
@@ -396,6 +399,7 @@ def celebrate(phrase: str = None) -> str | None:
             return "Birthday"
     elif phrase:
         speaker.speak(text=f"There are no events to celebrate {day}, in {countryname}")
+    return None
 
 
 def abusive(phrase: str) -> None:
@@ -408,6 +412,7 @@ def abusive(phrase: str) -> None:
     speaker.speak(text="I don't respond to abusive words. Ask me nicely, you might get a response.")
 
 
+# noinspection PyUnusedLocal
 def photo(*args) -> str:
     """Captures a picture of the ambience using the connected camera.
 
@@ -462,6 +467,7 @@ def pypi_versions(package_name: str) -> List[str] | None:
         return pypi
 
 
+# noinspection PyUnusedLocal
 def version(*args) -> None:
     """Speaks the version information along with the current version on GitHub."""
     text = f"I'm currently running on version {module_version}"

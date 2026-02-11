@@ -44,9 +44,10 @@ def text_to_audio(text: str, filename: FilePath | str = None) -> FilePath | str 
         data, samplerate = soundfile.read(file=filename)
         soundfile.write(file=filename, data=data, samplerate=samplerate)
         return filename
+    return None
 
 
-def audio_to_text(filename: FilePath | str) -> str:
+def audio_to_text(filename: FilePath | str) -> str | None:
     """Converts audio to text using speech recognition.
 
     Args:
@@ -61,6 +62,7 @@ def audio_to_text(filename: FilePath | str) -> str:
         with file as source:
             audio = recognizer.record(source)
         os.remove(filename)
+        # noinspection PyUnresolvedReferences
         return recognizer.recognize_google(audio)
     except UnknownValueError:
         logger.error("Unrecognized audio or language.")

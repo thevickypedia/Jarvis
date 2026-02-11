@@ -134,7 +134,7 @@ def gen_frames(manager: Queue, index: int, available_cameras: List[str]) -> None
         manager.put(frame)
 
 
-def streamer() -> AsyncIterable[bytes]:
+async def streamer() -> AsyncIterable[bytes]:
     """Yields bytes string extracted from the multiprocessing queue, until the queue_manager is alive.
 
     Yields:

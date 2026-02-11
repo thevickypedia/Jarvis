@@ -161,6 +161,7 @@ async def stock_monitor_api(
         else:
             result = gmailconnector.validate_email(email_address=input_data.email, smtp_check=False)
             logger.debug(result.body)
+            # noinspection PySimplifyBooleanCheck
             if result.ok is False:
                 raise APIResponse(status_code=HTTPStatus.UNPROCESSABLE_ENTITY.real, detail=result.body)
             await send_otp_stock_monitor(email_address=input_data.email)

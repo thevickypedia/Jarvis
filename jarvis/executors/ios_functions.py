@@ -55,11 +55,10 @@ def location_services(device: AppleDevice) -> dict | None:
             )
         else:
             logger.error("Unable to retrieve location for the device: '%s'", device)
-            return
     except PyiCloudAPIResponseException as error:
         logger.error("Unable to retrieve location for the device: '%s'", device)
         logger.error(error)
-        return
+    return None
 
 
 def locate_device(target_device: AppleDevice) -> None:

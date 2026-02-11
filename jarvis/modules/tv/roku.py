@@ -33,7 +33,8 @@ class RokuECP:
     SESSION: requests.Session = requests.Session()
 
     def __init__(self, ip_address: str):
-        """Instantiates the roku tv and makes a test call."""
+        """Instantiates the Roku TV and makes a test call."""
+        # noinspection HttpUrlsUsage
         self.BASE_URL = f"http://{ip_address}:{self.PORT}"
         try:
             response = requests.get(url=self.BASE_URL)
@@ -52,7 +53,7 @@ class RokuECP:
             raise TVError
         self.startup()
 
-    def make_call(self, path: str, method: str) -> requests.Response:
+    def make_call(self, path: str, method: str) -> requests.Response | None:
         """Makes a session call using the path and method provided.
 
         Args:
@@ -67,6 +68,7 @@ class RokuECP:
             return self.SESSION.get(url=self.BASE_URL + path)
         if method == "POST":
             return self.SESSION.post(url=self.BASE_URL + path)
+        return None
 
     def get_state(self) -> bool:
         """Gets the TV state to determine whether it is powered on or off.
@@ -77,8 +79,7 @@ class RokuECP:
         """
         response = self.make_call(path="/query/device-info", method="GET")
         xml_parsed = ElementTree.fromstring(response.content)
-        if xml_parsed.find("power-mode").text:
-            return xml_parsed.find("power-mode").text == "PowerOn"
+        return xml_parsed.find("power-mode").text and xml_parsed.find("power-mode").text == "PowerOn"
 
     def startup(self) -> None:
         """Powers on the TV and launches Home screen."""
@@ -185,7 +186,7 @@ class RokuECP:
         if app_info is None:
             app_info = xml_parsed.find("app")
         if app_info is None:
-            return
+            return None
         logger.debug(
             dict(
                 id=app_info.get("id"),

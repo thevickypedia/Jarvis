@@ -30,6 +30,7 @@ def restricted(phrase: str) -> bool:
                     f"{string.capwords(category)} category is restricted via offline communicator."
                 )
                 return True
+    return False
 
 
 def get_func(phrase: str) -> str:

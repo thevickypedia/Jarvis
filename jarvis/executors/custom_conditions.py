@@ -46,3 +46,4 @@ def custom_conditions(phrase: str, function_map: OrderedDict[str, Callable]) -> 
     if executed:
         return True
     logger.debug("Custom map was present but did not match with the current request.")
+    return False

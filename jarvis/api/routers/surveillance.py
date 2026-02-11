@@ -106,7 +106,7 @@ async def monitor(token: str = None):
     Returns:
 
         HTMLResponse:
-        Renders the html page.
+        Renders the HTML page.
 
     See Also:
 

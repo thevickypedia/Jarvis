@@ -73,6 +73,7 @@ def all_day_event(dt_start: vDDDTypes, dt_end: vDDDTypes) -> bool:
         _ = dt_end.dt.hour or dt_end.dt.minute or dt_end.dt.second
     except AttributeError:
         return True
+    return False
 
 
 def parse_calendar(calendar_data: str, lookup_date: datetime.date) -> Generator[ICS]:

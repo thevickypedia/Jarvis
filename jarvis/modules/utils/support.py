@@ -41,7 +41,7 @@ days_in_week = (
 )
 
 
-def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
+def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str] | None:
     """Uses ``socket.gethostbyname_ex`` to translate a host name to IPv4 address format, extended interface.
 
     See Also:
@@ -88,6 +88,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str]:
                 return []
         else:
             return _ipaddr_list
+    return None
 
 
 def country_timezone() -> Dict[str, str]:
@@ -127,7 +128,7 @@ def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> s
 
 
 def unrecognized_dumper(train_data: dict) -> None:
-    """If none of the conditions are met, converted text is written to a yaml file for training purpose.
+    """If none of the conditions are met, converted text is written to a YAML file for training purpose.
 
     Args:
         train_data: Takes the dictionary that has to be written as an argument.
@@ -289,7 +290,7 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
             lookup_day = string.capwords(matched)
     if not lookup_day or lookup_day not in days_in_week:
         logger.error("Received incorrect lookup day: %s", lookup_day)
-        return
+        return None
     if "last" in phrase.lower():
         td = timedelta(days=-(7 - floating_days.index(lookup_day)))
         addon = f"last {lookup_day}"
@@ -301,10 +302,11 @@ def humanized_day_to_datetime(phrase: str) -> Tuple[datetime, str] | None:
         addon = f"this {lookup_day}"
     else:
         logger.error("Supports only 'last', 'next' and 'this' but received %s", phrase)
-        return
+        return None
     return datetime.today() + td, addon
 
 
+# noinspection PyTypeChecker
 def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[datetime.date, str, str] | None:
     """Converts most humanized date into datetime object.
 
@@ -364,6 +366,7 @@ def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[dateti
     if parsed_date.date() < today and fail_past:
         raise ValueError(f"{parsed_date!r} is in the past!")
 
+    # noinspection PyTypeChecker
     return (
         parsed_date.date(),
         f"{parsed_date.strftime('%A')}, ({parsed_date.strftime('%B')} "
@@ -480,6 +483,7 @@ def number_to_words(input_: int | str, capitalize: bool = False) -> str:
     return result[0].upper() + result[1:] if capitalize else result
 
 
+# noinspection PyTypeChecker
 def pluralize(count: int, word: str, to_words: bool = False, cap_word: bool = False) -> str:
     """Helper for ``time_converter`` function.
 
@@ -590,3 +594,4 @@ def connected_to_network() -> bool:
         logger.error("OSError [%d]: %s", error.errno, error.strerror)
     except Exception as error:
         logger.critical(error)
+    return False

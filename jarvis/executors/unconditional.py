@@ -14,7 +14,7 @@ from jarvis.modules.utils import support
 
 
 def google_maps(query: str) -> bool:
-    """Uses google's places api to get places nearby or any particular destination.
+    """Uses Google's places api to get places nearby or any particular destination.
 
     This function is triggered when the words in user's statement doesn't match with any predefined functions.
 
@@ -23,7 +23,7 @@ def google_maps(query: str) -> bool:
 
     Returns:
         bool:
-        Boolean True if Google's maps API is unable to fetch consumable results.
+        Boolean True if Google Maps API is unable to fetch consumable results.
     """
     if not models.env.maps_apikey:
         return False
@@ -129,3 +129,4 @@ def google_maps(query: str) -> bool:
                 continue
         else:
             return True
+    return False

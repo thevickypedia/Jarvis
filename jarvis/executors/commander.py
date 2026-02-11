@@ -60,15 +60,15 @@ def delay_condition(phrase: str, delay: int | float) -> None:
         logger.error(traceback.format_exc())
 
 
-def timed_delay(phrase: str) -> Tuple[str, int | float]:
+def timed_delay(phrase: str) -> Tuple[str, int | float] | None:
     """Checks pre-conditions if a delay is necessary.
 
     Args:
         phrase: Takes the phrase spoken as an argument.
 
     Returns:
-        bool:
-        Returns a boolean flag whether the time delay should be applied.
+        Tuple[str, int | float]:
+        Returns the task and delay as a tuple.
     """
     if not word_match.word_match(
         phrase=phrase, match_list=keywords.keywords["set_alarm"]
@@ -78,6 +78,7 @@ def timed_delay(phrase: str) -> Tuple[str, int | float]:
             delay = util.delay_calculator(phrase=split_[1].strip())
             resource_tracker.semaphores(delay_condition, kwargs={"phrase": task, "delay": delay})
             return task, delay
+    return None
 
 
 def initialize() -> None:

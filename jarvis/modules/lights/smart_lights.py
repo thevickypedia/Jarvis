@@ -122,7 +122,7 @@ class MagicHomeApi:
             self.sock.send(msg)
         except OSError as error:
             logger.error(error)
-            return
+            return None
         remaining = 14
         rx = bytearray()
         while remaining > 0:

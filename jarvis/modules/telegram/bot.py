@@ -43,6 +43,7 @@ def username_is_valid(username: str) -> bool:
     for user in models.env.bot_users:
         if secrets.compare_digest(user, username):
             return True
+    return False
 
 
 def greeting() -> str:
@@ -134,14 +135,14 @@ def _get_file(data_class: settings.Voice | settings.Document) -> bytes | None:
         json_response = json.loads(response.content)
     except json.JSONDecodeError as error:
         logger.error(error)
-        return
+        return None
     if not response.ok or not json_response.get("ok"):
         logger.error(response.content)
-        return
+        return None
     response = requests.get(url=FILE_CONTENT_URL.format(file_path=json_response["result"]["file_path"]))
     if not response.ok:
         logger.error(response.content)
-        return
+        return None
     return response.content
 
 
@@ -325,14 +326,14 @@ def poll_for_messages(offset: int) -> None | int:
         if response.status_code == 401:
             raise BotTokenInvalid(response.json())
         raise ConnectionError(response.json())
-    if not response.get("result"):
-        return None
-    for result in response["result"]:
-        if payload := result.get("message"):
-            process_request(payload)
-        else:
-            logger.error("Received empty payload!!")
-        return result["update_id"] + 1
+    if results := response.get("result"):
+        for result in results:
+            if payload := result.get("message"):
+                process_request(payload)
+            else:
+                logger.error("Received empty payload!!")
+            return result["update_id"] + 1
+    return None
 
 
 def process_request(payload: Dict[str, int | dict]) -> None:
@@ -390,8 +391,8 @@ def authenticate(chat: settings.Chat) -> bool:
         )
         return False
     if chat.id not in models.env.bot_chat_ids or not username_is_valid(username=chat.username):
-        logger.error("Unauthorized chatID [%d] or userName [%s]", chat.id, chat["username"])
-        send_message(chat_id=chat.id, response=f"401 Unauthorized user: ({chat['username']})")
+        logger.error("Unauthorized chatID [%d] or userName [%s]", chat.id, chat.username)
+        send_message(chat_id=chat.id, response=f"401 Unauthorized user: ({chat.username})")
         return False
     if not USER_TITLE.get(chat.username):
         USER_TITLE[chat.username] = get_title_by_name(name=chat.first_name)
@@ -417,6 +418,7 @@ def verify_timeout(chat: settings.Chat) -> bool:
         f"Request timed out\nRequested: {request_time}\n"
         f"Processed: {time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time()))}",
     )
+    return False
 
 
 def verify_stop(chat: settings.Chat, data_class: settings.Text) -> bool:
@@ -447,6 +449,7 @@ def verify_stop(chat: settings.Chat, data_class: settings.Text) -> bool:
             chat,
             "Jarvis cannot be stopped via offline communication without the 'override' keyword.",
         )
+    return False
 
 
 def process_photo(chat: settings.Chat, data_class: List[settings.PhotoFragment]) -> None:

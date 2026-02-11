@@ -24,7 +24,7 @@ def is_port_in_use(port: int) -> bool:
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
+def kill_port_pid(port: int, protocol: str = "tcp") -> bool:
     """Uses List all open files ``lsof`` to get the PID of the process that is listening on the given port and kills it.
 
     Args:
@@ -63,15 +63,15 @@ def kill_port_pid(port: int, protocol: str = "tcp") -> bool | None:
                     warnings.warn(
                         f"OPERATION DENIED: {called_function} from {called_file} tried to kill the running process."
                     )
-                    return
+                    return False
                 os.kill(pid, signal.SIGTERM)
                 logger.info("Killed PID: %d", pid)
                 return True
         logger.info("No active process running on %d", port)
-        return False
     except (subprocess.SubprocessError, subprocess.CalledProcessError) as error:
         if isinstance(error, subprocess.CalledProcessError):
             result = error.output.decode(encoding="UTF-8").strip()
             logger.error("[%d]: %s", error.returncode, result)
         else:
             logger.error(error)
+    return False

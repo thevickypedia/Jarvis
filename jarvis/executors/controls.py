@@ -89,6 +89,7 @@ def exit_process() -> None:
     )
 
 
+# noinspection PyUnusedLocal
 def sleep_control(*args) -> bool:
     """Locks the screen and reduces brightness to bare minimum."""
     Thread(target=pybrightness.decrease, args=(logger,)).start()
@@ -98,6 +99,7 @@ def sleep_control(*args) -> bool:
     return True
 
 
+# noinspection PyUnusedLocal
 def sentry(*args) -> bool:
     """Speaks sentry mode message and sets greeting value to false."""
     speaker.speak(text=f"Activating sentry mode, enjoy yourself {models.env.title}!")
@@ -106,6 +108,7 @@ def sentry(*args) -> bool:
     return True
 
 
+# noinspection PyUnusedLocal
 def kill(*args) -> None:
     """Kills active listener.
 
@@ -201,6 +204,7 @@ def terminator() -> NoReturn:
     os._exit(0)
 
 
+# noinspection PyUnusedLocal
 def shutdown(*args, proceed: bool = False) -> None:
     """Gets confirmation and turns off the machine.
 

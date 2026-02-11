@@ -22,7 +22,7 @@ def _loader(
     filepath: FilePath,
     default: List[Any] | Dict[str, Any] | OrderedDict | DefaultDict = None,
 ) -> List[Any] | Dict[str, Any]:
-    """Loads the given yaml file and returns the data.
+    """Loads the given YAML file and returns the data.
 
     Args:
         filepath: YAML filepath to load.
@@ -48,7 +48,7 @@ def _dumper(
     indent: int = 2,
     sort_keys: bool = False,
 ) -> None:
-    """Dumps the data into the given yaml filepath.
+    """Dumps the data into the given YAML filepath.
 
     Args:
         filepath: Filepath to dump.
@@ -207,7 +207,7 @@ def get_reminders() -> List[Dict[str, str]]:
 
 
 def put_reminders(data: List[Dict[str, str]]) -> None:
-    """Dumps the reminder data into the respective yaml file.
+    """Dumps the reminder data into the respective YAML file.
 
     Args:
         data: Data to be dumped.
@@ -221,7 +221,7 @@ def get_alarms() -> List[Dict[str, str | bool]]:
 
 
 def put_alarms(data: List[Dict[str, str | bool]]) -> None:
-    """Dumps the alarm data into the respective yaml file.
+    """Dumps the alarm data into the respective YAML file.
 
     Args:
         data: Data to be dumped.
@@ -253,7 +253,7 @@ def get_crontab() -> List[str]:
 
 
 def get_ip_info() -> Dict[str, Any]:
-    """Get IP information from a stored yaml file."""
+    """Get IP information from a stored YAML file."""
     return _loader(models.fileio.ip_info, default={})
 
 

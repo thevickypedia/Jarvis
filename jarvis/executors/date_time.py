@@ -40,6 +40,7 @@ def current_time(converted: str = None) -> None:
         speaker.speak(text=f"{datetime.now().strftime('%I:%M %p')}.")
 
 
+# noinspection PyUnusedLocal
 def current_date(*args) -> None:
     """Says today's date and adds the current time in speaker queue if report function was called."""
     dt_string = datetime.now().strftime("%A, %B")

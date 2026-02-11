@@ -19,7 +19,7 @@ from collections.abc import Generator
 from typing import List
 
 from fastapi.responses import RedirectResponse
-from pydantic import FilePath, PositiveInt
+from pydantic import PositiveInt
 
 import jarvis
 from jarvis.api.logger import logger
@@ -59,7 +59,7 @@ class ValidColors(StrEnum):
     blue = "blue"
 
 
-def should_include(filepath: FilePath) -> bool:
+def should_include(filepath: str) -> bool:
     """Check if the file has one of the desired extensions and if the directory is excluded.
 
     Args:
@@ -72,7 +72,7 @@ def should_include(filepath: FilePath) -> bool:
     return any(filepath.endswith(ext) for ext in FILE_EXTENSIONS)
 
 
-def count_lines(filepath: FilePath) -> PositiveInt:
+def count_lines(filepath: str) -> PositiveInt:
     """Opens a file and counts the number of lines in it.
 
     Args:

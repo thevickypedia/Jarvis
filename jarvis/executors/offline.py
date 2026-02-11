@@ -21,15 +21,17 @@ def ondemand_offline_automation(task: str) -> str | None:
         Returns the response if request was successful.
     """
     try:
+        # noinspection HttpUrlsUsage
         response = requests.post(
             url=f"http://{models.env.offline_host}:{models.env.offline_port}/offline-communicator",
             json={"command": task},
             auth=BearerAuth(token=models.env.offline_pass),
         )
+        response.raise_for_status()
+        if response.ok:
+            return response.json()["detail"].split("\n")[-1]
     except EgressErrors:
-        return
-    if response.ok:
-        return response.json()["detail"].split("\n")[-1]
+        return None
 
 
 def communicator(command: str, bg_flag: bool = False) -> str | HttpUrl:

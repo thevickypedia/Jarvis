@@ -43,7 +43,7 @@ def retry(
         """
 
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> Any | None:
             """Executes the wrapped function in a loop for the number of attempts mentioned.
 
             Args:
@@ -79,6 +79,7 @@ def retry(
             logger.error(f"{func.__name__} exceeded retry count::{attempts}")
             if return_exc and warn:
                 warnings.warn(f"{type(return_exc).__name__}: {return_exc.__str__()}")
+            return None
 
         return wrapper
 

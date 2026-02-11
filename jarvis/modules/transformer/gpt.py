@@ -93,10 +93,10 @@ def existing_response(request: str) -> str | None:
     # exclude if numbers present in new request
     if any(word.isdigit() for word in request):
         logger.debug("request: '%s' contains numbers in it, so skipping existing search", request)
-        return
+        return None
     if not (data := files.get_gpt_data()):
         logger.debug("GPT history is empty")
-        return
+        return None
 
     # unpack data and store the request: response, match ratio in a new dict
     new_req = request.lower()
@@ -114,7 +114,7 @@ def existing_response(request: str) -> str | None:
     # no identical requests found in history, and reuse threshold was not set
     if not models.env.ollama_reuse_threshold:
         logger.warning("No identical requests found in history, and reuse threshold was not set.")
-        return
+        return None
 
     # sort the new dict in reverse order so the closest match gets returned first
     ratios = collections.OrderedDict(sorted(ratios.items(), key=lambda kv: kv[1][1], reverse=True))
@@ -130,6 +130,7 @@ def existing_response(request: str) -> str | None:
                 existing_request,
             )
             return response_ratio[0]
+    return None
 
 
 def create_model_file() -> None:

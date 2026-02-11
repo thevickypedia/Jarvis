@@ -82,7 +82,7 @@ async def speech_synthesis(input_data: modals.SpeechSynthesisModal, raise_for_st
                 detail=HTTPStatus.NO_CONTENT.phrase,
             )
         else:
-            return
+            return None
     if not speaker.speech_synthesizer(
         text=text,
         timeout=input_data.timeout or len(text),
@@ -96,7 +96,7 @@ async def speech_synthesis(input_data: modals.SpeechSynthesisModal, raise_for_st
                 detail=HTTPStatus.INTERNAL_SERVER_ERROR.phrase,
             )
         else:
-            return
+            return None
     if os.path.isfile(path=models.fileio.speech_synthesis_wav):
         logger.debug("Speech synthesis file generated for '%s'", text)
         Thread(
@@ -113,3 +113,4 @@ async def speech_synthesis(input_data: modals.SpeechSynthesisModal, raise_for_st
     logger.error("File Not Found: %s", models.fileio.speech_synthesis_wav)
     if raise_for_status:
         raise APIResponse(status_code=HTTPStatus.NOT_FOUND.real, detail=HTTPStatus.NOT_FOUND.phrase)
+    return None

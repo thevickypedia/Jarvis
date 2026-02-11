@@ -59,6 +59,7 @@ def generate_graph(logger: logging.Logger, ticker: str, bars: int = 300) -> str 
     fig.savefig(graph_file, format="png")
     if os.path.isfile(graph_file):
         return graph_file
+    return None
 
 
 class StockMonitor:
@@ -110,6 +111,7 @@ class StockMonitor:
             try:
                 price_check = webull().get_quote(ticker)
                 if current_price := round(float(price_check.get("close") or price_check.get("open")), 2):
+                    # noinspection PyUnboundLocalVariable
                     prices[ticker]["price"] = float(current_price)
                 else:
                     raise ValueError(price_check)
@@ -198,7 +200,7 @@ class StockMonitor:
                             self.repeat_alerts.remove({alert_time: alert_entry})
                         except ValueError as err:
                             self.logger.error(err)
-                        return False  # notification should be triggered if condition matches
+        return False
 
     def send_notification(self) -> None:
         """Sends notification to the user when the stock price matches the requested condition."""

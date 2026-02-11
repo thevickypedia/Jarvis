@@ -167,6 +167,7 @@ def _kick_off() -> None:
     settings.plot_data = np.zeros((length, len(settings.channels)))
 
     # Add type hint when unpacking a tuple (lazy way to avoid variables)
+    # noinspection PyUnnecessaryCast
     fig, ax = cast(Tuple[Figure, Subplot], plt.subplots())
     fig.set_size_inches(settings.window_size)
     settings.lines = ax.plot(settings.plot_data)

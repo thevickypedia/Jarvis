@@ -64,7 +64,7 @@ class Settings(BaseModel):
     interactive: bool = sys.stdin.isatty()
     pid: PositiveInt = os.getpid()
     try:
-        pname: enums.ProcessNames = enums.ProcessNames[PROCESS_NAME]
+        pname: enums.ProcessNames = enums.ProcessNames(PROCESS_NAME)
     except KeyError:
         pname: str = PROCESS_NAME
     ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
@@ -174,7 +174,7 @@ class RecognizerSettings(BaseModel):
     non_speaking_duration: PositiveInt | float = 2
 
 
-# noinspection PyMethodParameters
+# noinspection PyMethodParameters,PyTypeHints
 class BackgroundTask(BaseModel):
     """Custom links model."""
 
@@ -435,7 +435,7 @@ class EnvConfig(BaseSettings):
     def validate_birthday(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
-            return
+            return None
         try:
             if datetime.strptime(value, "%d-%B"):
                 return value
@@ -446,7 +446,7 @@ class EnvConfig(BaseSettings):
     def validate_weather_alert(cls, value: str) -> str | None:
         """Validates date value to be in DD-MM format."""
         if not value:
-            return
+            return None
         try:
             # Convert datetime to string as the '07' for '%I' will pass validation but fail comparison
             if val := datetime.strptime(value, "%I:%M %p"):

@@ -34,6 +34,7 @@ def get_repos() -> Generator[Dict[str, str | bool]]:
         yield from response_json
 
 
+# noinspection PyUnusedLocal
 def github(*args) -> None:
     """Get GitHub account information."""
     if not models.env.git_token:

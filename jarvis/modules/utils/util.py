@@ -278,7 +278,7 @@ def delay_calculator(phrase: str) -> int | float:
     return count * delay
 
 
-def extract_nos(input_: str, method: type = float) -> int | float:
+def extract_nos(input_: str, method: type = float) -> int | float | None:
     """Extracts number part from a string.
 
     Args:
@@ -297,6 +297,7 @@ def extract_nos(input_: str, method: type = float) -> int | float:
                 method = int
         if method == int:
             return method("".join(value))
+    return None
 
 
 def format_nos(input_: float) -> int | float:

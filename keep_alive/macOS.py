@@ -48,7 +48,7 @@ LOGGER.setLevel(logging.DEBUG)
 LOGGER.addHandler(handler)
 
 
-def check_processes() -> bool | None:
+def check_processes() -> bool:
     """Check processes.yaml file to get the PID and check if it is running.
 
     Returns:
@@ -69,7 +69,7 @@ def check_processes() -> bool | None:
             return True
     except (KeyError, psutil.NoSuchProcess, AssertionError) as warning:
         LOGGER.warning(warning)
-        return False
+    return False
 
 
 def check_running_processes() -> bool:
@@ -90,6 +90,7 @@ def check_running_processes() -> bool:
 def run_in_terminal() -> None:
     """Triggers the entrypoint in a new terminal."""
     LOGGER.info("Initiating Jarvis.")
+    # noinspection PyDeprecation
     python = shutil.which("python") or sys.executable
     pyenv = python.replace("/bin/python", "/bin/activate")
     initiate = f"cd {BASE_PATH} && source {pyenv} && python {ENTRYPOINT}"
