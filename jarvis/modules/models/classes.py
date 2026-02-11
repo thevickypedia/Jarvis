@@ -256,7 +256,8 @@ class EnvConfig(BaseSettings):
     news_apikey: str | None = None
 
     # Machine learning model config
-    ollama_model: str = "llama3.2"
+    ollama_base_model: str = "phi4-mini"
+    ollama_custom_model: str = "jarvis-phi4"
     ollama_server: HttpUrl | None = None
     ollama_timeout: int = Field(5, le=30, ge=1)
     ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.5)
@@ -605,9 +606,6 @@ class FileIO(BaseModel):
 
     # On demand storage
     uploads: DirectoryPath = os.path.join(root, "uploads")
-
-    # Ollama
-    ollama_model_file: FilePath = os.path.join(root, "Modelfile")
 
 
 fileio = FileIO()

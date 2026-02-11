@@ -6520,8 +6520,13 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_model">
-<span class="sig-name descname"><span class="pre">ollama_model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_model" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_base_model">
+<span class="sig-name descname"><span class="pre">ollama_base_model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_base_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ollama_custom_model">
+<span class="sig-name descname"><span class="pre">ollama_custom_model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ollama_custom_model" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7077,11 +7082,6 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.uploads">
 <span class="sig-name descname"><span class="pre">uploads</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PathType</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">path_type</span></span><span class="o"><span class="pre">=</span></span><span class="pre">dir</span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.uploads" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.FileIO.ollama_model_file">
-<span class="sig-name descname"><span class="pre">ollama_model_file</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PathType</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">path_type</span></span><span class="o"><span class="pre">=</span></span><span class="pre">file</span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#jarvis.modules.models.classes.FileIO.ollama_model_file" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11106,15 +11106,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="jarvis.modules.templates.templates.Llama">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">Llama</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.Llama" title="Link to this definition">¶</a></dt>
-<dd><p>Modelfile template for ollama SDK.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Llama</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.ListenerSpectrum">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">ListenerSpectrum</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.ListenerSpectrum" title="Link to this definition">¶</a></dt>
 <dd><p>Load template paths for listener spectrum functionality.</p>
@@ -11149,12 +11140,6 @@ Whites can have a value of None.</p>
 <dt class="sig sig-object py" id="jarvis.modules.templates.templates.endpoint">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.endpoint" title="Link to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.EndpointTemplates" title="jarvis.modules.templates.templates.EndpointTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">EndpointTemplates</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.templates.templates.llama">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.templates.templates.</span></span><span class="sig-name descname"><span class="pre">llama</span></span><a class="headerlink" href="#jarvis.modules.templates.templates.llama" title="Link to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#jarvis.modules.templates.templates.Llama" title="jarvis.modules.templates.templates.Llama"><code class="xref py py-class docutils literal notranslate"><span class="pre">Llama</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -11210,7 +11195,6 @@ Whites can have a value of None.</p>
 <p>There are quite a few parameters that can be adjusted, to customize the model usage and interaction with Jarvis.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-gpt-integration">Params for Jarvis</a></p></li>
-<li><p><a class="reference external" href="https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values">Params for Ollama API (Modelfile)</a></p></li>
 </ul>
 <dl class="simple">
 <dt><strong>RAM Requirements</strong></dt><dd><ul class="simple">
@@ -11286,18 +11270,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.create_model_file">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">create_model_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.create_model_file" title="Link to this definition">¶</a></dt>
-<dd><p>Creates <code class="docutils literal notranslate"><span class="pre">Modelfile</span></code> if not found.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.customize_model">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">customize_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.customize_model" title="Link to this definition">¶</a></dt>
-<dd><p>Uses the CLI to customize the model.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.setup_local_instance">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">setup_local_instance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.setup_local_instance" title="Link to this definition">¶</a></dt>
 <dd><p>Attempts to set up ollama with a local instance.</p>
@@ -11310,6 +11282,12 @@ Whites can have a value of None.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Ollama</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama.create_custom_model">
+<span class="sig-name descname"><span class="pre">create_custom_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.create_custom_model" title="Link to this definition">¶</a></dt>
+<dd><p>Creates the custom model.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.Ollama.request_model">
 <span class="sig-name descname"><span class="pre">request_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.Ollama.request_model" title="Link to this definition">¶</a></dt>
@@ -12821,7 +12799,8 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.weather_endpoint"><code class="docutils literal notranslate"><span class="pre">EnvConfig.weather_endpoint</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.maps_apikey"><code class="docutils literal notranslate"><span class="pre">EnvConfig.maps_apikey</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.news_apikey"><code class="docutils literal notranslate"><span class="pre">EnvConfig.news_apikey</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_model"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_model</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_base_model"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_base_model</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_custom_model"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_custom_model</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_server"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_server</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_timeout"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_timeout</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ollama_reuse_threshold"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ollama_reuse_threshold</span></code></a></li>
@@ -12930,7 +12909,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.speech_synthesis_log"><code class="docutils literal notranslate"><span class="pre">FileIO.speech_synthesis_log</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.secure_send"><code class="docutils literal notranslate"><span class="pre">FileIO.secure_send</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.uploads"><code class="docutils literal notranslate"><span class="pre">FileIO.uploads</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.FileIO.ollama_model_file"><code class="docutils literal notranslate"><span class="pre">FileIO.ollama_model_file</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.Indicators"><code class="docutils literal notranslate"><span class="pre">Indicators</span></code></a><ul>
@@ -13436,7 +13414,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.EmailTemplates"><code class="docutils literal notranslate"><span class="pre">EmailTemplates</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.EndpointTemplates"><code class="docutils literal notranslate"><span class="pre">EndpointTemplates</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.GenericTemplates"><code class="docutils literal notranslate"><span class="pre">GenericTemplates</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.templates.templates.Llama"><code class="docutils literal notranslate"><span class="pre">Llama</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.ListenerSpectrum"><code class="docutils literal notranslate"><span class="pre">ListenerSpectrum</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.ListenerSpectrum.html"><code class="docutils literal notranslate"><span class="pre">ListenerSpectrum.html</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.ListenerSpectrum.javascript"><code class="docutils literal notranslate"><span class="pre">ListenerSpectrum.javascript</span></code></a></li>
@@ -13445,7 +13422,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.email"><code class="docutils literal notranslate"><span class="pre">email</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.generic"><code class="docutils literal notranslate"><span class="pre">generic</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.endpoint"><code class="docutils literal notranslate"><span class="pre">endpoint</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.templates.templates.llama"><code class="docutils literal notranslate"><span class="pre">llama</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.templates.templates.listener_spectrum"><code class="docutils literal notranslate"><span class="pre">listener_spectrum</span></code></a></li>
 </ul>
 </li>
@@ -13456,10 +13432,9 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#module-jarvis.modules.transformer.gpt">Transformer</a><ul>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.dump_history"><code class="docutils literal notranslate"><span class="pre">dump_history()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.existing_response"><code class="docutils literal notranslate"><span class="pre">existing_response()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.transformer.gpt.create_model_file"><code class="docutils literal notranslate"><span class="pre">create_model_file()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.transformer.gpt.customize_model"><code class="docutils literal notranslate"><span class="pre">customize_model()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.setup_local_instance"><code class="docutils literal notranslate"><span class="pre">setup_local_instance()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama"><code class="docutils literal notranslate"><span class="pre">Ollama</span></code></a><ul>
+<li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.create_custom_model"><code class="docutils literal notranslate"><span class="pre">Ollama.create_custom_model()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.request_model"><code class="docutils literal notranslate"><span class="pre">Ollama.request_model()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.generator"><code class="docutils literal notranslate"><span class="pre">Ollama.generator()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.transformer.gpt.Ollama.query"><code class="docutils literal notranslate"><span class="pre">Ollama.query()</span></code></a></li>

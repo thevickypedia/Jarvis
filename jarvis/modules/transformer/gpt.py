@@ -12,9 +12,6 @@ Notes:
     - `Params for Jarvis <https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables
       #ollama-gpt-integration>`__
 
-    - `Params for Ollama API (Modelfile) <https://github.com/ollama/ollama/blob/main/docs/modelfile.md
-      #valid-parameters-and-values>`__
-
 **RAM Requirements**
     - 8 GB to run the 7B models
     - 16 GB to run the 13B models
@@ -31,8 +28,6 @@ See Also:
 
 import collections
 import difflib
-import os
-import subprocess
 import time
 import warnings
 from collections.abc import Generator
@@ -43,14 +38,12 @@ from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import List, NoReturn
 
-import jinja2
 import ollama
 
 from jarvis.executors import files, static_responses
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
-from jarvis.modules.templates import templates
 from jarvis.modules.utils import support
 
 
@@ -133,48 +126,6 @@ def existing_response(request: str) -> str | None:
     return None
 
 
-def create_model_file() -> None:
-    """Creates ``Modelfile`` if not found."""
-    if not os.path.isfile(models.fileio.ollama_model_file):
-        logger.info(
-            "'%s' not found, creating one at '%s'",
-            os.path.basename(models.fileio.ollama_model_file),
-            os.path.basename(models.fileio.root),
-        )
-        logger.info("Feel free to modify this file in the future for custom instructions")
-        template = jinja2.Template(source=templates.llama.modelfile)
-        rendered = template.render(MODEL_NAME=models.env.ollama_model)
-        with open(models.fileio.ollama_model_file, "w") as file:
-            file.write(rendered)
-            file.flush()
-
-
-def customize_model() -> None:
-    """Uses the CLI to customize the model."""
-    create_model_file()
-    try:
-        assert os.path.isfile(models.fileio.ollama_model_file)
-        if os.system("command -v ollama > /dev/null 2>&1") == 0:
-            output = (
-                subprocess.check_output(
-                    [
-                        "ollama",
-                        "create",
-                        models.env.ollama_model,
-                        "-f",
-                        models.fileio.ollama_model_file,
-                    ],
-                    stderr=subprocess.STDOUT,
-                )
-                .decode()
-                .splitlines()
-            )
-            for line in output:
-                logger.info(line)
-    except (subprocess.CalledProcessError, AssertionError) as error:
-        logger.error(error)
-
-
 def setup_local_instance() -> None | NoReturn:
     """Attempts to set up ollama with a local instance."""
     try:
@@ -184,23 +135,33 @@ def setup_local_instance() -> None | NoReturn:
         logger.error("Ollama client is either not installed or not running, refer: https://ollama.com/download")
         raise ValueError(error.__str__())
     for model in llama_models:
-        if model.get("name") == models.env.ollama_model:
-            logger.info(f"Model {models.env.ollama_model!r} found")
+        if model.get("name") == models.env.ollama_base_model:
+            logger.info(f"Model {models.env.ollama_base_model!r} found")
             break
     else:
-        # To run manually: ollama run llama2
-        logger.info(f"Downloading {models.env.ollama_model!r}")
+        # To run manually: ollama pull phi4-mini
+        logger.info(f"Downloading {models.env.ollama_base_model!r}")
         try:
-            ollama.pull(models.env.ollama_model)
+            ollama.pull(models.env.ollama_base_model)
         except ollama.ResponseError as error:
             logger.error(error)
             warnings.warn(
-                f"\n\tInvalid model name: {models.env.ollama_model}\n"
+                f"\n\tInvalid model name: {models.env.ollama_base_model}\n"
                 "Refer https://github.com/ollama/ollama/blob/main/README.md#model-library for valid models",
                 UserWarning,
             )
             raise ValueError(error.__str__())
-    customize_model()
+
+
+SYSTEM_MESSAGE = """You are Jarvis, a virtual assistant designed by Mr. Rao.
+Answer only as Jarvis.
+
+Conversation Rules:
+1. Keep every response under 100 words.
+2. Respond in exactly one complete sentence.
+3. Use proper commas and full stops.
+4. Do not use emojis, special symbols, bullet points, or extra formatting.
+5. Be clear, confident, and concise."""
 
 
 class Ollama:
@@ -222,6 +183,17 @@ class Ollama:
         except Exception as error:
             logger.error(error)
             raise ValueError(error.__str__())
+        self.create_custom_model()
+
+    def create_custom_model(self) -> None:
+        """Creates the custom model."""
+        # TODO: Test if a custom model is actually required or these params can be set otherwise
+        self.client.create(
+            model=models.env.ollama_custom_model,
+            from_=models.env.ollama_base_model,
+            parameters=ollama.Options(temperature=0.6, top_p=0.85, num_predict=40, repeat_penalty=1.05, num_ctx=2048),
+            system=SYSTEM_MESSAGE,
+        )
 
     def request_model(self, request: str) -> Generator[str]:
         """Interacts with the model with a request and yields the response.
@@ -233,7 +205,7 @@ class Ollama:
             Streaming response from the model.
         """
         for res in self.client.generate(
-            model=models.env.ollama_model,
+            model=models.env.ollama_custom_model,
             prompt=request,
             stream=True,
             options=ollama.Options(num_predict=100),
@@ -261,7 +233,7 @@ class Ollama:
             logger.info("GPT: Rendering response from existing results.")
             speaker.speak(text=response)
             return
-        logger.debug("GPT: Generating response from: %s", models.env.ollama_model)
+        logger.debug("GPT: Generating response from: %s", models.env.ollama_custom_model)
         try:
             start_time = time.time()
             process = ThreadPool(processes=1).apply_async(self.generator, args=(phrase,))
@@ -269,7 +241,7 @@ class Ollama:
             token_gen = support.time_converter(time.time() - start_time)
             logger.info(
                 "GPT: Finished generating response from: %s in %s",
-                models.env.ollama_model,
+                models.env.ollama_custom_model,
                 token_gen,
             )
         except (ollama.ResponseError, ThreadTimeoutError) as error:
@@ -288,17 +260,17 @@ class Ollama:
 if models.startup_gpt:
     if models.env.ollama_reuse_threshold:
         start = (
-            f"Initiating GPT instance for {models.settings.pname!r} with a "
+            f"Initiating GPT instance for {models.settings.pname.value!r} with a "
             f"reuse threshold of '{models.env.ollama_reuse_threshold:.2f}'"
         )
     else:
-        start = f"Initiating GPT instance for {models.settings.pname}"
+        start = f"Initiating GPT instance for {models.settings.pname.value!r}"
     logger.info(start)
     if models.settings.pname == enums.ProcessNames.jarvis:
         support.write_screen(start)
     try:
         instance = Ollama()
-        finish = f"GPT instance has been loaded for {models.settings.pname!r}"
+        finish = f"GPT instance has been loaded for {models.settings.pname.value!r}"
         if models.settings.pname == enums.ProcessNames.jarvis:
             support.write_screen(finish)
         logger.info(finish)
