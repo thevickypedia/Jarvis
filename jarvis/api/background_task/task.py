@@ -3,19 +3,12 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from multiprocessing.pool import ThreadPool
 from typing import List
 
 from deepdiff import DeepDiff
 
 from jarvis.api.background_task import agent, bot
-from jarvis.executors import (
-    automation,
-    background_task,
-    connectivity,
-    crontab,
-    telegram,
-)
+from jarvis.executors import automation, background_task, connectivity, crontab
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import classes, models
 
@@ -105,6 +98,8 @@ async def background_tasks() -> None:
         if bot.telegram_beat.poll_for_messages:
             asyncio.create_task(bot.telegram_executor())
         if bot.telegram_beat.restart_loop:
+            # Avoid being called again when init is in progress
+            bot.telegram_beat.restart_loop = False
             asyncio.create_task(bot.init(3))
 
         # MARK: Re-check for any newly added tasks with logger disabled

@@ -1074,7 +1074,7 @@
 <span id="api-backgroundtasks-telegram"></span><h1>API - BackgroundTasks (Telegram)<a class="headerlink" href="#module-jarvis.api.background_task.bot" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failed_connections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_webhook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_for_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">TelegramBeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failed_connections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_for_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat" title="Link to this definition">¶</a></dt>
 <dd><p>Telegram beat class.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TelegramBeat</span>
 </pre></div>
@@ -1090,11 +1090,6 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.retry_webhook">
-<span class="sig-name descname"><span class="pre">retry_webhook</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.retry_webhook" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.api.background_task.bot.TelegramBeat.poll_for_messages">
 <span class="sig-name descname"><span class="pre">poll_for_messages</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#jarvis.api.background_task.bot.TelegramBeat.poll_for_messages" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1107,9 +1102,60 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.init">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_webhook_attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.bot.init" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize telegram API and decide to choose webhook vs long polling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_webhook_attempts</strong> – Maximum number of attempts to try webhook connection before starting long polling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.restart_loop">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">restart_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.bot.restart_loop" title="Link to this definition">¶</a></dt>
+<dd><p>Restart telegram polling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>after</strong> – Delay in seconds.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Stops telegram polling immediately.</p></li>
+<li><p>Sleeps for the mentioned delay.</p></li>
+<li><p>Sets the restart_loop flag to true.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.background_task.bot.terminate">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">terminate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.bot.terminate" title="Link to this definition">¶</a></dt>
+<dd><p>Terminate telegram polling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reason</strong> – Reason for termination.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.api.background_task.bot.telegram_executor">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.bot.</span></span><span class="sig-name descname"><span class="pre">telegram_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.bot.telegram_executor" title="Link to this definition">¶</a></dt>
 <dd><p>Poll for new Telegram messages.</p>
+<dl class="simple">
+<dt>Handles:</dt><dd><ul class="simple">
+<li><p>BotWebhookConflict: Handles dead webhook connection and restarts loop.</p></li>
+<li><p>BotInUse: Conflicting bot usage on webhook vs long polling.</p></li>
+<li><p>BotTokenInvalid: Handles invalid auth token by terminating session.</p></li>
+<li><p>EgressErrors: Dynamically handles failed connections.</p></li>
+<li><p>Exception: Broad exception handler to terminate loop for unknown errors.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -5686,7 +5732,7 @@
 <span id="telegram"></span><h1>Telegram<a class="headerlink" href="#module-jarvis.executors.telegram" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.telegram.get_webhook_origin">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">get_webhook_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.get_webhook_origin" title="Link to this definition">¶</a></dt>
 <dd><p>Get the telegram bot webhook origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -5703,7 +5749,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.telegram.telegram_api">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">webhook_trials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.telegram_api" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.executors.telegram.</span></span><span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">webhook_trials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.executors.telegram.telegram_api" title="Link to this definition">¶</a></dt>
 <dd><p>Initiates polling for new messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -8547,6 +8593,15 @@ If none are found, it falls back to the default file.</p>
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotInUse</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotInUse" title="Link to this definition">¶</a></dt>
 <dd><p>Error indicate bot token is being used else where.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotInUse</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="jarvis.modules.exceptions.BotTokenInvalid">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.exceptions.</span></span><span class="sig-name descname"><span class="pre">BotTokenInvalid</span></span><a class="headerlink" href="#jarvis.modules.exceptions.BotTokenInvalid" title="Link to this definition">¶</a></dt>
+<dd><p>Error indicate bot token is invalid.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">BotTokenInvalid</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -12059,11 +12114,13 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat"><code class="docutils literal notranslate"><span class="pre">TelegramBeat</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.offset"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.offset</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.failed_connections"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.failed_connections</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.retry_webhook"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.retry_webhook</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.poll_for_messages"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.poll_for_messages</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.TelegramBeat.restart_loop"><code class="docutils literal notranslate"><span class="pre">TelegramBeat.restart_loop</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.init"><code class="docutils literal notranslate"><span class="pre">init()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.restart_loop"><code class="docutils literal notranslate"><span class="pre">restart_loop()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.api.background_task.bot.terminate"><code class="docutils literal notranslate"><span class="pre">terminate()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.bot.telegram_executor"><code class="docutils literal notranslate"><span class="pre">telegram_executor()</span></code></a></li>
 </ul>
 </li>
@@ -13148,6 +13205,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.BotError"><code class="docutils literal notranslate"><span class="pre">BotError</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.BotWebhookConflict"><code class="docutils literal notranslate"><span class="pre">BotWebhookConflict</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.BotInUse"><code class="docutils literal notranslate"><span class="pre">BotInUse</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.exceptions.BotTokenInvalid"><code class="docutils literal notranslate"><span class="pre">BotTokenInvalid</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.StopSignal"><code class="docutils literal notranslate"><span class="pre">StopSignal</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.APIResponse"><code class="docutils literal notranslate"><span class="pre">APIResponse</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.exceptions.InvalidEnvVars"><code class="docutils literal notranslate"><span class="pre">InvalidEnvVars</span></code></a></li>

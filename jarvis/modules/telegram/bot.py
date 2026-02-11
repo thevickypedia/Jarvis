@@ -23,6 +23,7 @@ from jarvis.modules.audio import tts_stt
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import (
     BotInUse,
+    BotTokenInvalid,
     BotWebhookConflict,
     EgressErrors,
     InvalidArgument,
@@ -321,6 +322,8 @@ def poll_for_messages(offset: int) -> None | int:
             ):
                 raise BotWebhookConflict(err_desc)
             raise BotInUse(err_desc)
+        if response.status_code == 401:
+            raise BotTokenInvalid(response.json())
         raise ConnectionError(response.json())
     if not response.get("result"):
         return None

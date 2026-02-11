@@ -4,11 +4,16 @@ from dataclasses import dataclass
 import requests
 
 from jarvis.executors import telegram
-from jarvis.modules.exceptions import BotInUse, BotWebhookConflict, EgressErrors
+from jarvis.modules.exceptions import (
+    BotInUse,
+    BotTokenInvalid,
+    BotWebhookConflict,
+    EgressErrors,
+)
 from jarvis.modules.logger import logger
 from jarvis.modules.telegram import bot, webhook
 
-MAX_FAILED_CONNECTIONS = 30
+MAX_FAILED_CONNECTIONS = 10
 EXPONENTIAL_BACKOFF_FACTOR = 3
 
 
@@ -23,9 +28,6 @@ class TelegramBeat:
     offset: int = 0
     failed_connections: int = 0
 
-    # Loop sequence:
-    #   1. Try telegram webhook for 60s (default)
-    #   2. Start polling for new messages
     poll_for_messages: bool = False
     restart_loop: bool = False
 
@@ -33,14 +35,29 @@ class TelegramBeat:
 telegram_beat = TelegramBeat()
 
 
-async def init(ct: int = 20):
-    _flag = await telegram.telegram_api(webhook_trials=ct)
+async def init(max_webhook_attempts: int = 20) -> None:
+    """Initialize telegram API and decide to choose webhook vs long polling.
+
+    Args:
+        max_webhook_attempts: Maximum number of attempts to try webhook connection before starting long polling.
+    """
+    _flag = await telegram.telegram_api(webhook_trials=max_webhook_attempts)
     if _flag:
         logger.info("Polling for incoming messages...")
     telegram_beat.poll_for_messages = _flag
 
 
-async def restart_loop(after: int):
+async def restart_loop(after: int) -> None:
+    """Restart telegram polling.
+
+    Args:
+        after: Delay in seconds.
+
+    See Also:
+        - Stops telegram polling immediately.
+        - Sleeps for the mentioned delay.
+        - Sets the restart_loop flag to true.
+    """
     # Stop polling immediately in the main loop
     telegram_beat.poll_for_messages = False
     # Sleep for the # of seconds after which the loop should be restarted
@@ -49,11 +66,29 @@ async def restart_loop(after: int):
     telegram_beat.restart_loop = True
 
 
+async def terminate(reason: str) -> None:
+    """Terminate telegram polling.
+
+    Args:
+        reason: Reason for termination.
+    """
+    logger.info("Terminating telegram polling due to %s", reason)
+    telegram_beat.poll_for_messages = False
+    telegram_beat.restart_loop = False
+
+
 async def telegram_executor() -> None:
-    """Poll for new Telegram messages."""
+    """Poll for new Telegram messages.
+
+    Handles:
+        - BotWebhookConflict: Handles dead webhook connection and restarts loop.
+        - BotInUse: Conflicting bot usage on webhook vs long polling.
+        - BotTokenInvalid: Handles invalid auth token by terminating session.
+        - EgressErrors: Dynamically handles failed connections.
+        - Exception: Broad exception handler to terminate loop for unknown errors.
+    """
     try:
         # TODO: offset is not being rendered right - last message is remembered
-        #   Not fully back-tested
         offset = bot.poll_for_messages(telegram_beat.offset)
         if offset is not None:
             telegram_beat.offset = offset
@@ -64,8 +99,12 @@ async def telegram_executor() -> None:
         await restart_loop(after=1)
     except BotInUse as error:
         logger.error(error)
-        logger.info("Restarting message poll to take over..")
+        logger.info("Restarting for webhook to take over...")
         await restart_loop(after=1)
+    except BotTokenInvalid as error:
+        # TODO: Implement notification for un-recoverable errors
+        logger.error("ATTENTION: %s", error)
+        await terminate(reason=type(error).__name__)
     except EgressErrors as error:
         # ReadTimeout is just saying that there were no messages to read within the time specified
         if isinstance(error, requests.exceptions.ReadTimeout):
@@ -78,5 +117,6 @@ async def telegram_executor() -> None:
             logger.info("Restarting in %d seconds.", delay)
             await restart_loop(after=delay)
     except Exception as error:
-        logger.critical("ATTENTION: %s", error.__str__())
         # TODO: Implement notification for un-recoverable errors
+        logger.critical("ATTENTION: %s", error)
+        await terminate(reason=type(error).__name__)

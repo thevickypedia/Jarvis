@@ -102,6 +102,14 @@ class BotInUse(BotError):
     """
 
 
+class BotTokenInvalid(BotError):
+    """Error indicate bot token is invalid.
+
+    >>> BotTokenInvalid
+
+    """
+
+
 class StopSignal(KeyboardInterrupt):
     """Custom ``KeyboardInterrupt`` to handle manual interruption.
 
