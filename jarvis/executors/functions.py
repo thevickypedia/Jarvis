@@ -68,7 +68,6 @@ def function_mapping() -> OrderedDict[str, Callable]:
         location=location.location,
         locate=ios_functions.locate,
         read_gmail=communicator.read_gmail,
-        meaning=others.meaning,
         todo=todo_list.todo,
         kill_alarm=alarm.kill_alarm,
         set_alarm=alarm.set_alarm,

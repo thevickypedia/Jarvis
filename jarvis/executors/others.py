@@ -29,11 +29,8 @@ from jarvis.executors import (
     robinhood,
     todo_list,
     weather,
-    word_match,
 )
 from jarvis.modules.audio import listener, speaker
-from jarvis.modules.conditions import keywords
-from jarvis.modules.dictionary import dictionary
 from jarvis.modules.exceptions import CameraError
 from jarvis.modules.facenet import face
 from jarvis.modules.logger import logger
@@ -250,41 +247,6 @@ def flip_a_coin(*args) -> None:
         text=f"""{random.choice(['You got', 'It landed on',
                                  "It's"])} {random.choice(['heads', 'tails'])} {models.env.title}"""
     )
-
-
-def meaning(phrase: str) -> None:
-    """Gets meaning for a word skimmed from the user statement.
-
-    Args:
-        phrase: Takes the phrase spoken as an argument.
-    """
-    keyword = phrase.split()[-1] if phrase else None
-    if not keyword or keyword == "word":
-        speaker.speak(text="Please tell a keyword.", run=True)
-        response = listener.listen()
-        if not response or word_match.word_match(phrase=response, match_list=keywords.keywords["exit_"]):
-            return
-        meaning(phrase=response)
-    else:
-        if definition := dictionary.meaning(term=keyword):
-            n = 0
-            vowel = ["A", "E", "I", "O", "U"]
-            for key, value in definition.items():
-                insert = "an" if key[0] in vowel else "a"
-                repeated = " also " if n != 0 else " "
-                n += 1
-                mean = ", ".join(value[:2])
-                speaker.speak(text=f"{keyword} is{repeated}{insert} {key}, which means {mean}.")
-            if shared.called_by_offline:
-                return
-            speaker.speak(text=f"Do you wanna know how {keyword} is spelled?", run=True)
-            response = listener.listen()
-            if word_match.word_match(phrase=response, match_list=keywords.keywords["ok"]):
-                for letter in list(keyword.lower()):
-                    speaker.speak(text=letter)
-                speaker.speak(run=True)
-        else:
-            speaker.speak(text=f"I'm sorry {models.env.title}! I was unable to get meaning for the word: {keyword}")
 
 
 # noinspection PyUnusedLocal

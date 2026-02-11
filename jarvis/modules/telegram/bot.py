@@ -114,7 +114,6 @@ def intro() -> str:
         "do I have any emails?\n"
         "what is the weather in Detroit?\n"
         "get me the local news\n"
-        "what is the meaning of Legionnaire\n"
         "tell a joke\n"
         "flip a coin for me\n"
     )

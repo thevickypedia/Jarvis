@@ -92,7 +92,6 @@ def keyword_mapping() -> OrderedDict[str, List[str]]:
         location=["location", "where are you"],
         locate=["locate", "where is my", "where's my", "wheres my"],
         read_gmail=["email", "mail", "mails", "emails"],
-        meaning=["meaning", "dictionary", "definition", "meanings", "definitions"],
         todo=["plan", "to do", "to-do", "todo", "plans"],
         kill_alarm=[
             "stop alarm",

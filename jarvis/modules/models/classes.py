@@ -65,7 +65,7 @@ class Settings(BaseModel):
     pid: PositiveInt = os.getpid()
     try:
         pname: enums.ProcessNames = enums.ProcessNames(PROCESS_NAME)
-    except KeyError:
+    except (KeyError, ValueError):
         pname: str = PROCESS_NAME
     ram: PositiveInt | PositiveFloat = psutil.virtual_memory().total
     disk: PositiveInt | PositiveFloat = psutil.disk_usage("/").total

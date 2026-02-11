@@ -33,7 +33,7 @@ def capabilities(*args) -> None:
     """Response for capabilities."""
     speaker.speak(
         text="There is a lot I can do. For example: I can get you the weather at any location, news around "
-        "you, meanings of words, launch applications, create a to-do list, check your emails, get your "
+        "you, launch applications, create a to-do list, check your emails, get your "
         "system configuration, tell your investment details, locate your phone, find distance between "
         "places, set an alarm, play music on smart devices around you, control your TV, tell a joke, "
         "send a message, set reminders, scan and clone your GitHub repositories, and much more. "

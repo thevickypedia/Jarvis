@@ -5058,17 +5058,6 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.others.meaning">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.others.meaning" title="Link to this definition">¶</a></dt>
-<dd><p>Gets meaning for a word skimmed from the user statement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phrase</strong> – Takes the phrase spoken as an argument.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.others.notes">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.others.</span></span><span class="sig-name descname"><span class="pre">notes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.others.notes" title="Link to this definition">¶</a></dt>
 <dd><p>Listens to the user and saves it as a text file.</p>
@@ -9092,30 +9081,6 @@ Whites can have a value of None.</p>
 </dd></dl>
 
 </section>
-<section id="module-jarvis.modules.dictionary.dictionary">
-<span id="meanings"></span><h1>Meanings<a class="headerlink" href="#module-jarvis.modules.dictionary.dictionary" title="Link to this heading">¶</a></h1>
-<p>Module to get meanings of words from <a class="reference external" href="http://wordnetweb.princeton.edu/perl/webwn?s=">wordnetweb.princeton.edu</a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Dictionary</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.dictionary.dictionary.meaning">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.dictionary.dictionary.</span></span><span class="sig-name descname"><span class="pre">meaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.dictionary.dictionary.meaning" title="Link to this definition">¶</a></dt>
-<dd><p>Gets the meaning of a word from <a class="reference external" href="http://wordnetweb.princeton.edu/perl/webwn?s=">wordnetweb.princeton.edu</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>term</strong> – Word for which the meaning has to be fetched.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary of the part of speech and the meaning of the word.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="module-jarvis.modules.meetings.ics">
 <span id="meetings"></span><h1>Meetings<a class="headerlink" href="#module-jarvis.modules.meetings.ics" title="Link to this heading">¶</a></h1>
 <p>Module to parse meetings information from an ICS data.</p>
@@ -12637,7 +12602,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.executors.others.music"><code class="docutils literal notranslate"><span class="pre">music()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.others.google_home"><code class="docutils literal notranslate"><span class="pre">google_home()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.others.flip_a_coin"><code class="docutils literal notranslate"><span class="pre">flip_a_coin()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.others.meaning"><code class="docutils literal notranslate"><span class="pre">meaning()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.others.notes"><code class="docutils literal notranslate"><span class="pre">notes()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.others.news"><code class="docutils literal notranslate"><span class="pre">news()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.others.report"><code class="docutils literal notranslate"><span class="pre">report()</span></code></a></li>
@@ -13262,10 +13226,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.logger.multiprocessing_logger"><code class="docutils literal notranslate"><span class="pre">multiprocessing_logger()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.logger.log_file"><code class="docutils literal notranslate"><span class="pre">log_file()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.logger.custom_handler"><code class="docutils literal notranslate"><span class="pre">custom_handler()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-jarvis.modules.dictionary.dictionary">Meanings</a><ul>
-<li><a class="reference internal" href="#jarvis.modules.dictionary.dictionary.meaning"><code class="docutils literal notranslate"><span class="pre">meaning()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.modules.meetings.ics">Meetings</a><ul>

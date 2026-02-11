@@ -995,13 +995,6 @@ Logger
    :members:
    :exclude-members: APIConfig, AddProcessName
 
-Meanings
-========
-
-.. automodule:: jarvis.modules.dictionary.dictionary
-   :members:
-   :undoc-members:
-
 Meetings
 ========
 
