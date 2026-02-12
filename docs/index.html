@@ -11221,7 +11221,7 @@ Whites can have a value of None.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.transformer.gpt.existing_response">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.transformer.gpt.</span></span><span class="sig-name descname"><span class="pre">existing_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.transformer.gpt.existing_response" title="Link to this definition">¶</a></dt>
-<dd><p>Return existing response if new request closely matches historical requests.</p>
+<dd><p>Return existing response if the new prompt is an exact match or closely matches historical prompts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>request</strong> – Request from user.</p>
@@ -11229,10 +11229,15 @@ Whites can have a value of None.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<ul class="simple">
-<li><p>Reusing responses is not enabled by default.</p></li>
-<li><p>To enable reusing responses, set the env var <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code> to a value between 0.5 and 0.9</p></li>
-<li><p>This value will choose how close the request should match with a historic request before reusing the response.</p></li>
+<ul>
+<li><p>Reusing responses is enabled by default <strong>ONLY</strong> for identical prompts.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code> to generate a new response even for repeated prompts.</p></li>
+<li><div class="line-block">
+<div class="line">To enable reusing responses for close matches,</div>
+<div class="line">set the env var <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code> to a value between 0.1 and 0.9</div>
+</div>
+</li>
+<li><p>This value determines how similar a prompt must be to earlier prompts in order to reuse the existing response.</p></li>
 </ul>
 </div>
 <div class="admonition warning">

@@ -49,15 +49,17 @@ def dump_history(request: str, response: str) -> None:
 
 
 def existing_response(request: str) -> str | None:
-    """Return existing response if new request closely matches historical requests.
+    """Return existing response if the new prompt is an exact match or closely matches historical prompts.
 
     Args:
         request: Request from user.
 
     See Also:
-        - Reusing responses is not enabled by default.
-        - To enable reusing responses, set the env var ``OLLAMA_REUSE_THRESHOLD`` to a value between 0.5 and 0.9
-        - This value will choose how close the request should match with a historic request before reusing the response.
+        - Reusing responses is enabled by default **ONLY** for identical prompts.
+        - Set ``OLLAMA_REUSE_THRESHOLD`` to ``None`` to generate a new response even for repeated prompts.
+        - | To enable reusing responses for close matches,
+          | set the env var ``OLLAMA_REUSE_THRESHOLD`` to a value between 0.1 and 0.9
+        - This value determines how similar a prompt must be to earlier prompts in order to reuse the existing response.
 
     Warnings:
         - This can be a problem for phrases like:
@@ -72,6 +74,9 @@ def existing_response(request: str) -> str | None:
         str:
         Returns the closest matching response stored in historical transactions.
     """
+    # if set to None, generate a new response everytime even for repeated prompts
+    if models.env.ollama_reuse_threshold is None:
+        return None
     # exclude if numbers present in new request
     if any(word.isdigit() for word in request):
         logger.debug("request: '%s' contains numbers in it, so skipping existing search", request)
@@ -93,9 +98,12 @@ def existing_response(request: str) -> str | None:
             difflib.SequenceMatcher(a=ex_req, b=new_req).ratio(),
         )
 
-    # no identical requests found in history, and reuse threshold was not set
+    # no identical requests found in history, and reuse threshold was 0.0
     if not models.env.ollama_reuse_threshold:
-        logger.warning("No identical requests found in history, and reuse threshold was not set.")
+        logger.warning(
+            "No identical requests found in history, and reuse threshold was set to: %.2f",
+            models.env.ollama_reuse_threshold,
+        )
         return None
 
     # sort the new dict in reverse order so the closest match gets returned first
