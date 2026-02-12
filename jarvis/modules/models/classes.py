@@ -255,12 +255,12 @@ class EnvConfig(BaseSettings):
     maps_apikey: str | None = None
     news_apikey: str | None = None
 
-    # Machine learning model config
+    # Ollama model config
     ollama_base_model: str = "phi4-mini"
     ollama_custom_model: str = "jarvis-phi4"
     ollama_server: HttpUrl | None = None
     ollama_timeout: int = Field(5, le=30, ge=1)
-    ollama_reuse_threshold: float | None = Field(None, le=0.9, ge=0.5)
+    ollama_reuse_threshold: float | None = Field(0.0, le=0.9, ge=0.0)
 
     # Communication config
     gmail_user: EmailStr | None = None
