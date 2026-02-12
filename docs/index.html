@@ -11240,20 +11240,6 @@ Whites can have a value of None.</p>
 <li><p>This value determines how similar a prompt must be to earlier prompts in order to reuse the existing response.</p></li>
 </ul>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>This can be a problem for phrases like:</dt><dd><ul>
-<li><p><cite>what is the height of Mount Everest</cite></p></li>
-<li><p><cite>what is the height of Mount Rushmore</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>To get around this, refer <a class="reference external" href="https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-gpt-integration">env-variables section of the wiki page</a> about <code class="docutils literal notranslate"><span class="pre">OLLAMA_REUSE_THRESHOLD</span></code></p></li>
-</ul>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns the closest matching response stored in historical transactions.</p>

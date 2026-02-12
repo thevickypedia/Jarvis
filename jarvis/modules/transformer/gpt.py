@@ -61,15 +61,6 @@ def existing_response(request: str) -> str | None:
           | set the env var ``OLLAMA_REUSE_THRESHOLD`` to a value between 0.1 and 0.9
         - This value determines how similar a prompt must be to earlier prompts in order to reuse the existing response.
 
-    Warnings:
-        - This can be a problem for phrases like:
-            - `what is the height of Mount Everest`
-            - `what is the height of Mount Rushmore`
-
-        - To get around this, refer `env-variables section of the wiki page
-          <https://github.com/thevickypedia/Jarvis/wiki/2.-Environment-Variables#ollama-
-          gpt-integration>`__ about ``OLLAMA_REUSE_THRESHOLD``
-
     Returns:
         str:
         Returns the closest matching response stored in historical transactions.

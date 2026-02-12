@@ -311,28 +311,26 @@ def poll_for_messages(offset: int) -> None | int:
     """
     response = _make_request(url=BASE_URL + "/getUpdates", payload={"offset": offset, "timeout": 60})
     if response.ok:
-        response = response.json()
-    else:
-        if response.status_code == 409:
-            err_desc = response.json().get("description")
-            # If it has come to this, then webhook has already failed
-            if err_desc == (
-                "Conflict: can't use getUpdates method while webhook is active; "
-                "use deleteWebhook to delete the webhook first"
-            ):
-                raise BotWebhookConflict(err_desc)
-            raise BotInUse(err_desc)
-        if response.status_code == 401:
-            raise BotTokenInvalid(response.json())
-        raise ConnectionError(response.json())
-    if results := response.get("result"):
-        for result in results:
-            if payload := result.get("message"):
-                process_request(payload)
-            else:
-                logger.error("Received empty payload!!")
-            return result["update_id"] + 1
-    return None
+        if results := response.json().get("result"):
+            for result in results:
+                if payload := result.get("message"):
+                    process_request(payload)
+                else:
+                    logger.error("Received empty payload!!")
+                return result["update_id"] + 1
+        return None
+    if response.status_code == 409:
+        err_desc = response.json().get("description")
+        # If it has come to this, then webhook has already failed
+        if err_desc == (
+            "Conflict: can't use getUpdates method while webhook is active; "
+            "use deleteWebhook to delete the webhook first"
+        ):
+            raise BotWebhookConflict(err_desc)
+        raise BotInUse(err_desc)
+    if response.status_code == 401:
+        raise BotTokenInvalid(response.json())
+    raise ConnectionError(response.json())
 
 
 def process_request(payload: Dict[str, int | dict]) -> None:

@@ -563,11 +563,15 @@ def stop_process(pid: int) -> None:
     """
     try:
         proc = psutil.Process(pid=pid)
-        if proc.is_running():
-            proc.terminate()
-        time.sleep(0.5)
-        if proc.is_running():
-            proc.kill()
+        if not proc.is_running():
+            return
+        # Step 1: ask process to terminate gracefully
+        proc.terminate()  # SIGTERM on Unix, TerminateProcess on Windows
+        try:
+            proc.wait(timeout=5)  # wait up to `timeout` seconds
+        except psutil.TimeoutExpired:
+            # Step 2: process didn't exit -> force kill
+            proc.kill()  # SIGKILL on Unix, TerminateProcess on Windows
     except psutil.NoSuchProcess:
         pass
     except psutil.AccessDenied as error:

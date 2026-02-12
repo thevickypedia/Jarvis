@@ -88,7 +88,6 @@ async def telegram_executor() -> None:
         - Exception: Broad exception handler to terminate loop for unknown errors.
     """
     try:
-        # TODO: offset is not being rendered right - last message is remembered
         offset = bot.poll_for_messages(telegram_beat.offset)
         if offset is not None:
             telegram_beat.offset = offset
