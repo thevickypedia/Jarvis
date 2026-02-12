@@ -12,6 +12,34 @@ from jarvis.executors import automation, background_task, connectivity, crontab
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import classes, models
 
+FAIL_SAFE = {}
+
+
+def error_handler(task: asyncio.Task) -> None:
+    """Callback function for asynchronous tasks.
+
+    Args:
+        task: Takes the task as an argument.
+
+    See Also:
+        - Notifies the user and kills the specific task after 10 failures.
+        - Restarts the background task after 3 repeated failures.
+        - Logs a warning for any failures with less than 3 occurrences.
+    """
+    try:
+        task.result()
+    except Exception as error:
+        name = task.get_name()
+        FAIL_SAFE[name] = FAIL_SAFE.get(name, 0) + 1
+        if FAIL_SAFE[name] > 10:
+            logger.exception("Background task %s crashed", name, exc_info=error)
+            # TODO: Add a notification option
+        elif FAIL_SAFE[name] > 3:
+            logger.error("Background task %s crashed (%d)", name, FAIL_SAFE[name])
+            # TODO: Implement automatic restart for the entire API
+        else:
+            logger.warning("Background task %s crashed (%d)", name, FAIL_SAFE[name])
+
 
 @dataclass
 class StartTimes:
@@ -27,11 +55,10 @@ class StartTimes:
     telegram: float
 
 
-# TODO: Rename to pulse or beat
-#   TRACK ALL SPAWNS WITH ``.add_done_callback`` to a task and restart as needed
 async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
+    # TODO: Test and confirm that bg task logger doesn't conflict with API logs
 
     # Env vars are loaded only during startup, so run validations beforehand
     await automation.validate_weather_alert()
@@ -48,7 +75,10 @@ async def background_tasks() -> None:
     # Creates a start time for each task
     task_dict = {i: time.time() for i in range(len(tasks))}
 
-    asyncio.create_task(bot.init())
+    # TODO: Add a helper func to create tasks with callback
+    #   Test this and implement for all other async tasks
+    task = asyncio.create_task(bot.init(), name="bot.init")
+    task.add_done_callback(error_handler)
     while True:
         now = datetime.now()
 

@@ -955,6 +955,25 @@
 </section>
 <section id="module-jarvis.api.background_task.task">
 <span id="api-backgroundtasks-controller"></span><h1>API - BackgroundTasks (Controller)<a class="headerlink" href="#module-jarvis.api.background_task.task" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.api.background_task.task.error_handler">
+<span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.task.</span></span><span class="sig-name descname"><span class="pre">error_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Task</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.background_task.task.error_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Callback function for asynchronous tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task</strong> – Takes the task as an argument.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Notifies the user and kills the specific task after 10 failures.</p></li>
+<li><p>Restarts the background task after 3 repeated failures.</p></li>
+<li><p>Logs a warning for any failures with less than 3 occurrences.</p></li>
+</ul>
+</div>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.api.background_task.task.StartTimes">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.api.background_task.task.</span></span><span class="sig-name descname"><span class="pre">StartTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meetings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">telegram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.api.background_task.task.StartTimes" title="Link to this definition">¶</a></dt>
@@ -12078,6 +12097,7 @@ mac address given as a parameter.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.api.background_task.task">API - BackgroundTasks (Controller)</a><ul>
+<li><a class="reference internal" href="#jarvis.api.background_task.task.error_handler"><code class="docutils literal notranslate"><span class="pre">error_handler()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes"><code class="docutils literal notranslate"><span class="pre">StartTimes</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.events"><code class="docutils literal notranslate"><span class="pre">StartTimes.events</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.background_task.task.StartTimes.meetings"><code class="docutils literal notranslate"><span class="pre">StartTimes.meetings</span></code></a></li>
