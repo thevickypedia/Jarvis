@@ -191,3 +191,37 @@ def ntfy_send(topic: str, title: str, message: str) -> bool:
         return False
     logger.info(response.json())
     return True
+
+
+def notify(subject: str, body: str) -> None:
+    """Attempts to send a notification through multiple channels.
+
+    Args:
+        subject: Subject of the notification.
+        body: Description of the notification.
+
+    Order:
+        1. Ntfy
+        2. Email
+        3. SMS
+    """
+    if models.env.ntfy_topic:
+        if ntfy_send(topic=models.env.ntfy_topic, title=subject, message=body):
+            logger.info("Ntfy notification has been sent.")
+            return
+    if all((models.env.gmail_user, models.env.gmail_pass)):
+        if models.env.recipient:
+            if send_email(subject=subject, body=body, recipient=models.env.recipient):
+                logger.info("Email notification has been sent.")
+                return
+        if models.env.phone_number:
+            if send_sms(
+                user=models.env.gmail_user,
+                password=models.env.gmail_pass,
+                subject=subject,
+                body=body,
+                number=models.env.phone_number,
+            ):
+                logger.info("SMS notification has been sent.")
+                return
+    logger.error("Unable to notify the user.")

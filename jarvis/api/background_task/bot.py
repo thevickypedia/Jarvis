@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import requests
 
-from jarvis.executors import telegram
+from jarvis.executors import communicator, telegram
 from jarvis.modules.exceptions import (
     BotInUse,
     BotTokenInvalid,
@@ -101,8 +101,8 @@ async def telegram_executor() -> None:
         logger.info("Restarting for webhook to take over...")
         await restart_loop(after=1)
     except BotTokenInvalid as error:
-        # TODO: Implement notification for un-recoverable errors
         logger.error("ATTENTION: %s", error)
+        communicator.notify(subject="JARVIS: Telegram", body=f"Telegram task failed due to {type(error).__name__}")
         await terminate(reason=type(error).__name__)
     except EgressErrors as error:
         # ReadTimeout is just saying that there were no messages to read within the time specified
@@ -116,6 +116,6 @@ async def telegram_executor() -> None:
             logger.info("Restarting in %d seconds.", delay)
             await restart_loop(after=delay)
     except Exception as error:
-        # TODO: Implement notification for un-recoverable errors
         logger.critical("ATTENTION: %s", error)
+        communicator.notify(subject="JARVIS: Telegram", body=f"Telegram task failed due to {type(error).__name__}")
         await terminate(reason=type(error).__name__)

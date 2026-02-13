@@ -8,7 +8,13 @@ from typing import Callable, List
 from deepdiff import DeepDiff
 
 from jarvis.api.background_task import agent, bot
-from jarvis.executors import automation, background_task, connectivity, crontab
+from jarvis.executors import (
+    automation,
+    background_task,
+    communicator,
+    connectivity,
+    crontab,
+)
 from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import classes, models
 
@@ -34,7 +40,10 @@ def error_handler(task: asyncio.Task) -> None:
         FAIL_SAFE[name] = FAIL_SAFE.get(name, 0) + 1
         if FAIL_SAFE[name] > 10:
             logger.exception("Background task %s crashed", name, exc_info=error)
-            # TODO: Add a notification option
+            communicator.notify(
+                subject="JARVIS: BackgroundTask", body=f"Background task {name!r} crashed due to {type(error).__name__}"
+            )
+            # TODO: Figure out a way to cancel all futures for the task
         elif FAIL_SAFE[name] > 3:
             logger.error("Background task %s crashed (%d)", name, FAIL_SAFE[name])
             # TODO: Implement automatic restart for the entire API
@@ -74,7 +83,6 @@ class StartTimes:
 async def background_tasks() -> None:
     """Trigger for background tasks, cron jobs, automation, alarms, reminders, events and meetings sync."""
     multiprocessing_logger(filename=os.path.join("logs", "background_tasks_%d-%m-%Y.log"))
-    # TODO: Test and confirm that bg task logger doesn't conflict with API logs
 
     # Env vars are loaded only during startup, so run validations beforehand
     await automation.validate_weather_alert()

@@ -3590,6 +3590,28 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.communicator.notify">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.communicator.</span></span><span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.communicator.notify" title="Link to this definition">¶</a></dt>
+<dd><p>Attempts to send a notification through multiple channels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subject</strong> – Subject of the notification.</p></li>
+<li><p><strong>body</strong> – Description of the notification.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Order:</dt><dd><ol class="arabic simple">
+<li><p>Ntfy</p></li>
+<li><p>Email</p></li>
+<li><p>SMS</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-jarvis.executors.comm_squire">
 <span id="communicator-squire"></span><h1>Communicator Squire<a class="headerlink" href="#module-jarvis.executors.comm_squire" title="Link to this heading">¶</a></h1>
@@ -12470,6 +12492,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.executors.communicator.send_sms"><code class="docutils literal notranslate"><span class="pre">send_sms()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.communicator.send_email"><code class="docutils literal notranslate"><span class="pre">send_email()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.communicator.ntfy_send"><code class="docutils literal notranslate"><span class="pre">ntfy_send()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.communicator.notify"><code class="docutils literal notranslate"><span class="pre">notify()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.comm_squire">Communicator Squire</a><ul>
