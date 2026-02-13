@@ -39,6 +39,7 @@ async def proxy_service_api(request: Request, origin: HttpUrl, output: str):
         origin: Origin URL as query string.
         output: Output media type.
     """
+    # TODO: Improve security for proxy server - currently it is wide open
     logger.info(
         "Connection received from %s via %s using %s",
         request.client.host,

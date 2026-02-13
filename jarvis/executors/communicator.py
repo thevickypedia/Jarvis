@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 import gmailconnector
 import jinja2
 import requests
@@ -69,12 +71,12 @@ def send_sms(user: str, password: str, number: str | int, body: str, subject: st
         - Boolean flag to indicate the SMS was sent successfully.
         - Error response from gmail-connector.
     """
-    if not all([models.env.gmail_user, models.env.gmail_pass]):
-        logger.warning("Gmail username and password not found.")
+    gmail_user = user or models.env.gmail_user
+    gmail_pass = password or models.env.gmail_pass
+    number = number or models.env.phone_number
+    if not all((gmail_user, gmail_pass, number)):
+        logger.warning("Gmail username, password, and phone number are mandatory for SMS notifications.")
         support.no_env_vars()
-        return False
-    if not any([models.env.phone_number, number]):
-        logger.error("No phone number was stored in env vars to trigger a notification.")
         return False
     if not subject:
         subject = "Message from Jarvis" if number == models.env.phone_number else f"Message from {models.env.name}"
@@ -103,10 +105,10 @@ def send_email(
     title: str = None,
     attachment: str = None,
 ) -> bool | str:
-    """Sends an email using an email template formatted as html.
+    """Sends an email using an email template formatted as HTML.
 
     Args:
-        body: Message to be inserted as html body in the email.
+        body: Message to be inserted as HTML body in the email.
         sender: Sender name of the email.
         subject: Subject of the email.
         recipient: Email address to which the mail has to be sent.
@@ -123,8 +125,11 @@ def send_email(
         - Boolean flag to indicate the email was sent successfully.
         - Error response from gmail-connector.
     """
-    if not all([models.env.gmail_user, models.env.gmail_pass]):
-        logger.warning("Gmail username and password not found.")
+    gmail_user = gmail_user or models.env.gmail_user
+    gmail_pass = gmail_pass or models.env.gmail_pass
+    recipient = recipient or models.env.recipient
+    if not all((gmail_user, gmail_pass, recipient)):
+        logger.warning("Gmail username, password, and recipient are mandatory for email notifications.")
         support.no_env_vars()
         return False
     if not subject:
@@ -172,7 +177,7 @@ def ntfy_send(topic: str, title: str, message: str) -> bool:
         "X-Title": title,
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    endpoint = f"{models.env.ntfy_url}{topic}"
+    endpoint = urljoin(models.env.ntfy_url, topic)
     try:
         response = requests.post(
             url=endpoint,
