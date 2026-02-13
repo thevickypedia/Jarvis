@@ -37,7 +37,7 @@ from jarvis.modules.utils import support
 
 
 def dump_history(request: str, response: str) -> None:
-    """Dump responses from GPT into a yaml file for future response.
+    """Dump responses from GPT into a YAML file for future response.
 
     Args:
         request: Request from user.

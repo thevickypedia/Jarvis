@@ -46,7 +46,7 @@ def rewrite_keywords() -> None:
                     f"\nSomething went wrong. {models.fileio.keywords!r} appears to be empty."
                     f"\nRe-sourcing {models.fileio.keywords!r} from base."
                 )
-        # compare as sorted, since this will allow changing the order of keywords in the yaml file
+        # compare as sorted, since this will allow changing the order of keywords in the YAML file
         elif sorted(list(data.keys())) == sorted(list(keywords_src.keys())) and data.values() and all(data.values()):
             keywords.keywords = data
             load_ignores(data)

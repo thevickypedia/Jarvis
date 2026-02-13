@@ -60,13 +60,13 @@ changed = dict(
 
 
 async def save_for_reference() -> None:
-    """Saves the original config and new config in a yaml file."""
+    """Saves the original config and new config in a YAML file."""
     with open("speech_recognition_values.yaml", "w") as file:
         yaml.dump(data={"defaults": defaults, "modified": changed}, stream=file)
 
 
 async def main() -> None:
-    """Initiates yaml dump in an asynchronous call and initiates listener in a never ending loop."""
+    """Initiates YAML dump in an asynchronous call and initiates listener in a never ending loop."""
     await asyncio.create_task(save_for_reference())
     with MICROPHONE as source:
         while True:

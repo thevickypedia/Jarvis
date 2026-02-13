@@ -82,7 +82,7 @@ class StockMonitor:
             self.repeat_alerts = []
 
     def at_exit(self):
-        """Removes bin file created by webull client and updates the repeat alerts yaml mapping."""
+        """Removes bin file created by webull client and updates the repeat alerts YAML mapping."""
         stockmonitor_squire.put_daily_alerts(params=self.repeat_alerts)
         os.remove("did.bin") if os.path.isfile("did.bin") else None
 
