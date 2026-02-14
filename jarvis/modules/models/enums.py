@@ -24,6 +24,7 @@ class ProcessNames(StrEnum):
     startup_script = "startup_script"
     crontab_executor = "crontab_executor"
 
+    offline = "OFFLINE"
     plot_mic = "plot_mic"
     jarvis_api = "jarvis_api"
     telegram_api = "telegram_api"

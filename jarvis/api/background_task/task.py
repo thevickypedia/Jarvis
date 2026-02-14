@@ -3,6 +3,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
+from threading import Timer
 from typing import Callable, List
 
 from deepdiff import DeepDiff
@@ -13,10 +14,11 @@ from jarvis.executors import (
     background_task,
     communicator,
     connectivity,
+    controls,
     crontab,
 )
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import classes, models
+from jarvis.modules.models import classes, enums, models
 
 FAIL_SAFE = {}
 
@@ -39,14 +41,20 @@ def error_handler(task: asyncio.Task) -> None:
     except Exception as error:
         FAIL_SAFE[name] = FAIL_SAFE.get(name, 0) + 1
         if FAIL_SAFE[name] > 10:
-            logger.exception("Background task %s crashed", name, exc_info=error)
-            communicator.notify(
-                subject="JARVIS: BackgroundTask", body=f"Background task {name!r} crashed due to {type(error).__name__}"
-            )
-            # TODO: Figure out a way to cancel all futures for the task
+            logger.exception("Background task %s crashed for more than 10 times", name, exc_info=error)
+            try:
+                communicator.notify(
+                    subject="JARVIS: BackgroundTask",
+                    body=f"Background task {name!r} crashed due to {type(error).__name__}",
+                )
+                # TODO: Figure out a way to cancel all futures for the task
+            except Exception as error:
+                logger.error("Failed to send crash notification: %s", error)
+            Timer(
+                interval=3, function=controls.db_restart_entry, kwargs=dict(caller=enums.ProcessNames.jarvis_api)
+            ).start()
         elif FAIL_SAFE[name] > 3:
             logger.error("Background task %s crashed (%d)", name, FAIL_SAFE[name])
-            # TODO: Implement automatic restart for the entire API
         else:
             logger.warning("Background task %s crashed (%d)", name, FAIL_SAFE[name])
 
@@ -89,16 +97,17 @@ async def background_tasks() -> None:
     await agent.init_meetings()
     if not all((models.env.wifi_ssid, models.env.wifi_password)):
         classes.wifi_connection = None
-
     tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks())
     cron_jobs: List[crontab.expression.CronExpression] = list(crontab.validate_jobs())
 
+    # Load start up times
     t_now = time.time()
     start_times = StartTimes(t_now, t_now, t_now, t_now)
 
     # Creates a start time for each task
     task_dict = {i: time.time() for i in range(len(tasks))}
 
+    # Instantiate telegram bot - webhook vs long polling
     create_task(bot.init)
     while True:
         now = datetime.now()
@@ -108,14 +117,14 @@ async def background_tasks() -> None:
             start_times.pulse = time.time()
 
             # MARK: Trigger background tasks
-            create_task(agent.background_executor, **dict(tasks=tasks, task_dict=task_dict, now=now))
+            create_task(agent.background_executor, tasks=tasks, task_dict=task_dict, now=now)
 
             # MARK: Trigger cron jobs
-            create_task(agent.crontab_executor, **dict(cron_jobs=cron_jobs))
+            create_task(agent.crontab_executor, cron_jobs=cron_jobs)
 
             # MARK: Trigger automation
             if exec_task := automation.auto_helper():
-                create_task(agent.automation_executor, **dict(exec_task=exec_task))
+                create_task(agent.automation_executor, exec_task=exec_task)
 
             # MARK: Trigger Wi-Fi checker
             if classes.wifi_connection:
@@ -128,7 +137,7 @@ async def background_tasks() -> None:
                 and start_times.events + models.env.sync_events <= time.time()
             ):
                 start_times.events = time.time()
-                create_task(agent.db_writer, **dict(picker="events"))
+                create_task(agent.db_writer, picker="events")
 
             # MARK: Sync meetings from the ICS url provided
             if (
@@ -137,13 +146,13 @@ async def background_tasks() -> None:
                 and start_times.meetings + models.env.sync_meetings <= time.time()
             ):
                 start_times.meetings = time.time()
-                create_task(agent.db_writer, **dict(picker="meetings"))
+                create_task(agent.db_writer, picker="meetings")
 
             # MARK: Trigger alarms
-            create_task(agent.alarm_executor, (now,))
+            create_task(agent.alarm_executor, now)
 
             # MARK: Trigger reminders
-            create_task(agent.reminder_executor, (now,))
+            create_task(agent.reminder_executor, now)
 
         # MARK: Poll for telegram messages
         if bot.telegram_beat.poll_for_messages:
@@ -151,7 +160,7 @@ async def background_tasks() -> None:
         if bot.telegram_beat.restart_loop:
             # Avoid being called again when init is in progress
             bot.telegram_beat.restart_loop = False
-            create_task(bot.init, (3,))
+            create_task(bot.init, 3)
 
         # MARK: Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

@@ -3850,11 +3850,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.controls.db_restart_entry">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">db_restart_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.controls.db_restart_entry" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.controls.</span></span><span class="sig-name descname"><span class="pre">db_restart_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caller</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames" title="jarvis.modules.models.enums.ProcessNames"><span class="pre">ProcessNames</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.controls.db_restart_entry" title="Link to this definition">¶</a></dt>
 <dd><p>Writes an entry to the DB to restart the caller.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>caller</strong> – Name of the process that has to be restarted.</p>
+<dd class="field-odd"><p><strong>caller</strong> – ProcessName enum that has to be restarted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -7249,6 +7249,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.crontab_executor">
 <span class="sig-name descname"><span class="pre">crontab_executor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'crontab_executor'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.crontab_executor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.offline">
+<span class="sig-name descname"><span class="pre">offline</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OFFLINE'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.offline" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -13041,6 +13046,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.pre_commit"><code class="docutils literal notranslate"><span class="pre">ProcessNames.pre_commit</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.startup_script"><code class="docutils literal notranslate"><span class="pre">ProcessNames.startup_script</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.crontab_executor"><code class="docutils literal notranslate"><span class="pre">ProcessNames.crontab_executor</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.offline"><code class="docutils literal notranslate"><span class="pre">ProcessNames.offline</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.plot_mic"><code class="docutils literal notranslate"><span class="pre">ProcessNames.plot_mic</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.jarvis_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.jarvis_api</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.telegram_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.telegram_api</span></code></a></li>

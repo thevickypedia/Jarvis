@@ -119,17 +119,18 @@ def kill(*args) -> None:
     raise StopSignal
 
 
-def db_restart_entry(caller: str) -> None:
+def db_restart_entry(caller: enums.ProcessNames) -> None:
     """Writes an entry to the DB to restart the caller.
 
     Args:
-        caller: Name of the process that has to be restarted.
+        caller: ProcessName enum that has to be restarted.
     """
+    logger.debug("Adding restart entry into the DB for: %s", caller)
     with models.db.connection as connection:
         cursor = connection.cursor()
         cursor.execute(
             "INSERT or REPLACE INTO restart (flag, caller) VALUES (?,?);",
-            (True, caller),
+            (True, caller.value),
         )
         cursor.connection.commit()
 
@@ -142,7 +143,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
         quiet: Take a boolean flag to restart without warning.
     """
     if quiet:  # restarted by child processes due internal errors
-        caller = sys._getframe(1).f_code.co_name  # noqa
+        caller = enums.ProcessNames(sys._getframe(1).f_code.co_name)  # noqa
         logger.info("Restarting '%s'", caller)
         db_restart_entry(caller=caller)
         return
@@ -152,7 +153,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
                 logger.info("Restarting all background processes!")
                 # set as timer, so that process doesn't get restarted without returning response to user
                 # without timer, the process will keep getting restarted in a loop
-                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller="OFFLINE")).start()
+                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller=enums.ProcessNames.offline)).start()
                 speaker.speak(text="Restarting all background processes!")
                 return
             if avail := list(files.get_processes().keys()):
@@ -165,7 +166,7 @@ def restart_control(phrase: str = None, quiet: bool = False) -> None:
                 logger.info("Restarting %s", func)
                 # set as timer, so that process doesn't get restarted without returning response to user
                 # without timer, the process will keep getting restarted in a loop
-                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller=func)).start()
+                Timer(interval=5, function=db_restart_entry, kwargs=dict(caller=enums.ProcessNames(func))).start()
                 speaker.speak(text=f"Restarting the background process {func!r}")
             else:
                 speaker.speak(text=f"Please specify a function name. Available: {util.comma_separator(avail)}")

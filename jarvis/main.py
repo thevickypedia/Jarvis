@@ -60,7 +60,7 @@ def restart_checker() -> None:
     """Operations performed during internal/external request to restart."""
     if flag := support.check_restart():
         logger.info("Restart condition is set to %s by %s", flag[0], flag[1])
-        if flag[1] == "OFFLINE":
+        if flag[1] == enums.ProcessNames.offline:
             processor.stop_processes()
             logger.propagate = False
             for _handler in logger.handlers:
