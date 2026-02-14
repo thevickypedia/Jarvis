@@ -157,11 +157,14 @@ class Activator:
                     self.executor()
                 if models.settings.limited:
                     continue
-                restart_checker()
-                if flag := support.check_stop():
-                    logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
-                    self.stop()
-                    controls.terminator()
+                try:
+                    restart_checker()
+                    if flag := support.check_stop():
+                        logger.info("Stopper condition is set to %s by %s", flag[0], flag[1])
+                        self.stop()
+                        controls.terminator()
+                except Exception as error:
+                    logger.warning(error)
         except StopSignal:
             controls.exit_process()
             self.audio_stream = None

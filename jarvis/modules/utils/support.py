@@ -7,6 +7,7 @@
 import math
 import os
 import socket
+import sqlite3
 import string
 import sys
 import time
@@ -26,6 +27,7 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
+from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util
 
 ENGINE = inflect.engine()
@@ -375,6 +377,7 @@ def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[dateti
     )
 
 
+@retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
 def check_stop() -> List[str]:
     """Checks for entries in the stopper table in base db.
 
