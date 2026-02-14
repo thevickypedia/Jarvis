@@ -9,7 +9,6 @@ class APIPath(StrEnum):
     """Endpoint for each API endpoint."""
 
     root = "/"
-    proxy = "/proxy"
     health = "/health"
     keywords = "/keywords"
     get_file = "/get-file"
@@ -51,7 +50,6 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
         investment,
         listener_spectrum,
         offline,
-        proxy_service,
         secure_send,
         speech_synthesis,
         stats,
@@ -131,12 +129,6 @@ def get_all_routes() -> List[APIRoute | APIWebSocketRoute]:
             endpoint=stock_analysis.get_signals,
             methods=["GET"],
             path=APIPath.get_signals,
-        ),
-        APIRoute(
-            endpoint=proxy_service.proxy_service_api,
-            methods=["GET"],
-            path=APIPath.proxy,
-            include_in_schema=False,
         ),
         APIRoute(
             endpoint=basics.redirect_index,
