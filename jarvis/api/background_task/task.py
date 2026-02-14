@@ -3,7 +3,6 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from threading import Timer
 from typing import Callable, List
 
 from deepdiff import DeepDiff
@@ -14,12 +13,12 @@ from jarvis.executors import (
     background_task,
     communicator,
     connectivity,
-    controls,
     crontab,
 )
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import classes, enums, models
+from jarvis.modules.models import classes, models
 
+MAX_TOLERANCE = 10
 FAIL_SAFE = {}
 
 
@@ -34,29 +33,31 @@ def error_handler(task: asyncio.Task) -> None:
         - Restarts the background task after 3 repeated failures.
         - Logs a warning for any failures with less than 3 occurrences.
     """
-    name = task.get_name()
+    task_name = task.get_name()
     try:
         task.result()
-        logger.debug("Execution completed for the task: %s", name)
+        logger.debug("Execution completed for the task: %s", task_name)
     except Exception as error:
-        FAIL_SAFE[name] = FAIL_SAFE.get(name, 0) + 1
-        if FAIL_SAFE[name] > 10:
-            logger.exception("Background task %s crashed for more than 10 times", name, exc_info=error)
+        FAIL_SAFE[task_name] = FAIL_SAFE.get(task_name, 0) + 1
+        attempt = FAIL_SAFE[task_name]
+        if attempt > MAX_TOLERANCE:
+            logger.exception(
+                "Background task %s crashed %d times, future tasks will be ignored",
+                task_name,
+                MAX_TOLERANCE,
+                exc_info=error,
+            )
             try:
                 communicator.notify(
                     subject="JARVIS: BackgroundTask",
-                    body=f"Background task {name!r} crashed due to {type(error).__name__}",
+                    body=f"Background task {task_name!r} crashed {attempt}: {type(error).__name__}",
                 )
-                # TODO: Figure out a way to cancel all futures for the task
             except Exception as error:
                 logger.error("Failed to send crash notification: %s", error)
-            Timer(
-                interval=3, function=controls.db_restart_entry, kwargs=dict(caller=enums.ProcessNames.jarvis_api)
-            ).start()
-        elif FAIL_SAFE[name] > 3:
-            logger.error("Background task %s crashed (%d)", name, FAIL_SAFE[name])
+        elif attempt > 3:
+            logger.error("Background task %s crashed (%d)", task_name, attempt)
         else:
-            logger.warning("Background task %s crashed (%d)", name, FAIL_SAFE[name])
+            logger.warning("Background task %s crashed (%d)", task_name, attempt)
 
 
 def create_task(func: Callable, *args, **kwargs) -> None:
@@ -66,11 +67,14 @@ def create_task(func: Callable, *args, **kwargs) -> None:
         func: Callable object to create a task for.
     """
     if hasattr(func, "__module__") and hasattr(func, "__qualname__"):
-        name = f"{func.__module__}.{func.__qualname__}".replace("jarvis.", "")
+        task_name = f"{func.__module__}.{func.__qualname__}".replace("jarvis.", "")
     else:
-        name = func.__name__
-    logger.debug("Creating a task for the coroutine: %s", name)
-    task = asyncio.create_task(func(*args, **kwargs), name=name)
+        task_name = func.__name__
+    if FAIL_SAFE.get(task_name, 0) > 10:
+        logger.debug("Background task %s could not be recovered, ignoring task creation", task_name)
+        return
+    logger.debug("Creating a task for the coroutine: %s", task_name)
+    task = asyncio.create_task(func(*args, **kwargs), name=task_name)
     task.add_done_callback(error_handler)
 
 
