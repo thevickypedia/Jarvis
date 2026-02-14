@@ -169,20 +169,16 @@ def ntfy_send(topic: str, title: str, message: str) -> bool:
         bool:
         Boolean flag to indicate the results
     """
-    if not all([models.env.ntfy_username, models.env.ntfy_password]):
-        logger.warning("Ntfy username and password not found.")
-        support.no_env_vars()
+    if not all((models.env.ntfy_url, topic)):
         return False
-    headers = {
-        "X-Title": title,
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-    endpoint = urljoin(models.env.ntfy_url, topic)
+    endpoint = urljoin(str(models.env.ntfy_url), topic)
+    session = requests.Session()
+    if all([models.env.ntfy_username, models.env.ntfy_password]):
+        session.auth = (models.env.ntfy_username, models.env.ntfy_password)
+    session.headers = {"X-Title": title, "Content-Type": "application/x-www-form-urlencoded"}
     try:
-        response = requests.post(
+        response = session.post(
             url=endpoint,
-            auth=(models.env.ntfy_username, models.env.ntfy_password),
-            headers=headers,
             data=message,
         )
         response.raise_for_status()
@@ -207,12 +203,10 @@ def notify(subject: str, body: str) -> None:
     """
     if models.env.ntfy_topic:
         if ntfy_send(topic=models.env.ntfy_topic, title=subject, message=body):
-            logger.info("Ntfy notification has been sent.")
             return
     if all((models.env.gmail_user, models.env.gmail_pass)):
         if models.env.recipient:
             if send_email(subject=subject, body=body, recipient=models.env.recipient):
-                logger.info("Email notification has been sent.")
                 return
         if models.env.phone_number:
             if send_sms(
@@ -222,6 +216,5 @@ def notify(subject: str, body: str) -> None:
                 body=body,
                 number=models.env.phone_number,
             ):
-                logger.info("SMS notification has been sent.")
                 return
     logger.error("Unable to notify the user.")
