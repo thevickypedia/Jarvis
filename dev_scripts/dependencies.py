@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, Iterable, List
 from urllib.error import HTTPError
 
 from display import echo
-from version import Version
+from version import InvalidVersion, Version
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -116,7 +116,7 @@ def get_package_and_version(
     else:
         # Now extract the version from the remaining part of the string
         # noinspection RegExpUnnecessaryNonCapturingGroup,RegExpRedundantEscape,RegExpSimplifiable
-        version_match = re.search(r"[\d]+\.[\d]+(?:\.[\d]+)?(?:[\.\*]*)", input_string)
+        version_match = re.search(r"\d+\.\d+(?:\.\d+)*", input_string)
         version = version_match.group(0) if version_match else None
     return dict(package_name=pkg_name, current_version=version)
 
@@ -220,6 +220,8 @@ def entrypoint():
     overall = 0
     outdated = 0
     for versioned in versioned_requirements:
+        version_dict = versioned.__dict__
+        version_dict.pop("filepath", 1)
         overall += 1
         if gha and not versioned.current_version:
             # Since the requirements will not be installed in GHA
@@ -231,16 +233,23 @@ def entrypoint():
             except PackageNotFoundError:
                 continue
             versioned.current_version = version.version
-        if versioned.current_version.endswith("*"):
-            current_version = versioned.current_version.rstrip(".*")
-            latest_version = ".".join(versioned.latest_version.split(".")[:-1])
-        else:
-            current_version = versioned.current_version
-            latest_version = versioned.latest_version
-        if Version(latest_version) > Version(current_version):
+        try:
+            if versioned.current_version.endswith("*"):
+                current_version = Version(versioned.current_version.rstrip(".*"))
+                latest_version = Version(".".join(versioned.latest_version.split(".")[:-1]))
+            else:
+                current_version = Version(versioned.current_version)
+                latest_version = Version(versioned.latest_version)
+        except InvalidVersion:
+            if gha:
+                print(
+                    f"::warning title=Invalid Version::{version_dict}", file=sys.stderr
+                )
+            else:
+                echo.warning(json.dumps(versioned.__dict__, indent=4))
+            continue
+        if latest_version > current_version:
             outdated += 1
-            version_dict = versioned.__dict__
-            version_dict.pop("filepath", 1)
             if gha:
                 print(
                     f"::warning title=Outdated Version::{version_dict}", file=sys.stderr
