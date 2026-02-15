@@ -41,7 +41,6 @@ async def authenticate_robinhood():
         [
             models.env.robinhood_user,
             models.env.robinhood_pass,
-            models.env.robinhood_pass,
             models.env.robinhood_endpoint_auth,
         ]
     ):
@@ -123,7 +122,6 @@ async def robinhood_report(request: Request, access_token: Optional[str] = Heade
     if not all(
         [
             models.env.robinhood_user,
-            models.env.robinhood_pass,
             models.env.robinhood_pass,
             models.env.robinhood_endpoint_auth,
         ]

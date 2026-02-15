@@ -70,7 +70,6 @@ def validate_jobs(log: bool = True) -> Generator[expression.CronExpression]:
             (
                 models.env.robinhood_user,
                 models.env.robinhood_pass,
-                models.env.robinhood_pass,
             )
         ):
             yield scheduler.rh_cron_schedule(extended=True)

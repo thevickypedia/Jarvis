@@ -2,7 +2,7 @@
 
 import math
 import os
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import requests
 import robin_stocks.robinhood as rh
@@ -42,6 +42,32 @@ def get_stock_info(ticker: str) -> Dict[str, Any] | None:
     return None
 
 
+def get_positions() -> List[Dict[str, Any]]:
+    """Get position information from Robinhood.
+
+    Returns:
+        List[Dict[str, Any]]:
+        Returns a list of key-value pairs containing traded positions.
+    """
+    with BlockPrint():
+        rh.login(
+            username=models.env.robinhood_user,
+            password=models.env.robinhood_pass,
+        )
+        return rh.get_all_positions()
+
+
+def get_portfolio() -> Dict[str, Any]:
+    """Gets the information associated with the portfolios profile.
+
+    Returns:
+        Dict[str, Any]:
+        Returns key-value pairs with portfolio information.
+    """
+    with BlockPrint():
+        return rh.load_portfolio_profile()
+
+
 def get_summary() -> str:
     """Fetches all necessary information about the user's investment portfolio.
 
@@ -49,18 +75,12 @@ def get_summary() -> str:
         str:
         A string value of total purchased stocks and resultant profit/loss.
     """
-    with BlockPrint():
-        rh.login(
-            username=models.env.robinhood_user,
-            password=models.env.robinhood_pass,
-        )
-        result = rh.get_all_positions()
     shares_total = []
     loss_total = []
     profit_total = []
     n = 0
     n_ = 0
-    for data in result:
+    for data in get_positions():
         ticker = data["symbol"]
         buy = round(float(data["average_buy_price"]), 2)
         shares_count = int(data["quantity"].split(".")[0])
@@ -82,8 +102,7 @@ def get_summary() -> str:
         else:
             profit_total.append(difference)
 
-    with BlockPrint():
-        portfolio = rh.load_portfolio_profile()
+    portfolio = get_portfolio()
     net_worth = round(float(portfolio["equity"]))
     withdrawable_amount = round(float(portfolio["withdrawable_amount"]))
     total_buy = round(math.fsum(shares_total))
@@ -106,8 +125,8 @@ def get_summary() -> str:
 # noinspection PyUnusedLocal
 def robinhood(*args) -> None:
     """Gets investment details from robinhood API."""
-    if not all([models.env.robinhood_user, models.env.robinhood_pass, models.env.robinhood_qr]):
-        logger.warning("Robinhood username, password or QR code not found.")
+    if not all([models.env.robinhood_user, models.env.robinhood_pass]):
+        logger.warning("Robinhood username or password.")
         support.no_env_vars()
         return
 

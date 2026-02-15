@@ -4,14 +4,13 @@ import logging
 import math
 import os
 from datetime import datetime
-from typing import Any, Dict, Tuple
+from typing import Tuple
 
 import jinja2
-import requests
 import robin_stocks.robinhood as rh
 from blockstdout import BlockPrint
 
-from jarvis.modules.exceptions import EgressErrors
+from jarvis.executors import robinhood
 
 rh.set_output(open(os.devnull, "w"))
 
@@ -28,36 +27,7 @@ class Investment:
     def __init__(self, logger: logging.Logger):
         """Authenticates Robinhood object and gathers the portfolio information to store it in a variable."""
         self.logger = logger
-        with BlockPrint():
-            rh.login(
-                username=models.env.robinhood_user,
-                password=models.env.robinhood_pass,
-            )
-            self.result = rh.get_all_positions()
-
-    def get_stock_info(self, ticker: str) -> Dict[str, Any] | None:
-        """Get raw stock information from Robinhood for a particular ticker.
-
-        Args:
-            ticker: Stock ticker.
-
-        Returns:
-            Dict[str, Any]:
-            Returns a dictionary of stock information from Robinhood.
-        """
-        with BlockPrint():
-            if raw_details := rh.get_quotes(ticker)[0]:
-                raw_details["simple_name"] = "N/A"
-                try:
-                    if simple_name := requests.get(url=raw_details["instrument"]).json()["simple_name"]:
-                        raw_details["simple_name"] = simple_name
-                        return raw_details
-                except EgressErrors as error:
-                    self.logger.error(error, exc_info=True)
-                return raw_details
-            else:
-                self.logger.error("Unable to retrieve stock information for the ticker: %s", ticker)
-        return None
+        self.result = robinhood.get_positions()
 
     def watcher(self) -> Tuple[str, str, str, str, str]:
         """Gathers all the information and wraps into parts of strings to create an HTML file.
@@ -77,7 +47,7 @@ class Investment:
             num_stocks += 1
             num_shares += shares_count
             ticker = data["symbol"]
-            if not (raw_details := self.get_stock_info(ticker)):
+            if not (raw_details := robinhood.get_stock_info(ticker)):
                 continue
             stock_name = raw_details["simple_name"]
             buy = round(float(data["average_buy_price"]), 2)
@@ -111,8 +81,7 @@ class Investment:
             loss_output += value[1]
             loss_total.append(value[0])
 
-        with BlockPrint():
-            portfolio = rh.load_portfolio_profile()
+        portfolio = robinhood.get_portfolio()
         port_msg = (
             f"\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n"
             f"Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n"
@@ -161,7 +130,9 @@ class Investment:
             Returns a tuple of each watch list item and a Unicode character to indicate if the price went up or down.
         """
         r1, r2 = "", ""
-        self.logger.info("Gathering watchlist.")
+        if not models.env.robinhood_watchlist:
+            return r1, r2
+        self.logger.info("Gathering watchlist information for: %s", models.env.robinhood_watchlist)
         with BlockPrint():
             if watchlist := rh.get_watchlist_by_name(models.env.robinhood_watchlist):
                 watchlist_results = watchlist["results"]
@@ -179,7 +150,7 @@ class Investment:
                     historic_data = rh.get_stock_historicals(ticker, "10minute", "day")
             if not (numbers := [round(float(each_item["close_price"]), 2) for each_item in historic_data]):
                 return r1, r2
-            if not (raw_details := self.get_stock_info(ticker)):
+            if not (raw_details := robinhood.get_stock_info(ticker)):
                 continue
             stock_name = raw_details["simple_name"]
             price = round(float(raw_details["last_trade_price"]), 2)

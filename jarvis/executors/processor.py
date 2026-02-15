@@ -15,6 +15,7 @@ def clear_db() -> None:
         for attr in models.tables.model_fields:
             table = getattr(models.tables, attr)
             if table.keep:
+                logger.info("Retaining data from %s", table)
                 continue
             # Use f-string or %s as table names cannot be parametrized
             data = cursor.execute(f"SELECT * FROM {table.name}").fetchall()

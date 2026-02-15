@@ -3162,23 +3162,6 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="jarvis.api.triggers.stock_report.Investment.get_stock_info">
-<span class="sig-name descname"><span class="pre">get_stock_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.get_stock_info" title="Link to this definition">¶</a></dt>
-<dd><p>Get raw stock information from Robinhood for a particular ticker.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ticker</strong> – Stock ticker.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a dictionary of stock information from Robinhood.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="jarvis.api.triggers.stock_report.Investment.watcher">
 <span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.watcher" title="Link to this definition">¶</a></dt>
 <dd><p>Gathers all the information and wraps into parts of strings to create an HTML file.</p>
@@ -5531,6 +5514,34 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.robinhood.get_positions">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">get_positions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.robinhood.get_positions" title="Link to this definition">¶</a></dt>
+<dd><p>Get position information from Robinhood.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns a list of key-value pairs containing traded positions.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.robinhood.get_portfolio">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">get_portfolio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.robinhood.get_portfolio" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the information associated with the portfolios profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns key-value pairs with portfolio information.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -12467,7 +12478,6 @@ mac address given as a parameter.</p>
 </li>
 <li><a class="reference internal" href="#module-jarvis.api.triggers.stock_report">Triggers - StockReport</a><ul>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment"><code class="docutils literal notranslate"><span class="pre">Investment</span></code></a><ul>
-<li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.get_stock_info"><code class="docutils literal notranslate"><span class="pre">Investment.get_stock_info()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.watcher"><code class="docutils literal notranslate"><span class="pre">Investment.watcher()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.watchlist"><code class="docutils literal notranslate"><span class="pre">Investment.watchlist()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.gatherer"><code class="docutils literal notranslate"><span class="pre">Investment.gatherer()</span></code></a></li>
@@ -12751,6 +12761,8 @@ mac address given as a parameter.</p>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a><ul>
 <li><a class="reference internal" href="#jarvis.executors.robinhood.get_stock_info"><code class="docutils literal notranslate"><span class="pre">get_stock_info()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.robinhood.get_positions"><code class="docutils literal notranslate"><span class="pre">get_positions()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.robinhood.get_portfolio"><code class="docutils literal notranslate"><span class="pre">get_portfolio()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.robinhood.get_summary"><code class="docutils literal notranslate"><span class="pre">get_summary()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.robinhood.robinhood"><code class="docutils literal notranslate"><span class="pre">robinhood()</span></code></a></li>
 </ul>
