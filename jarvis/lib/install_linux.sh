@@ -23,21 +23,24 @@ sudo apt install -y gnome-screensaver brightnessctl v4l-utils
 # Install Linux specifics
 ${PY_EXECUTABLE} pip install pvporcupine==1.9.5
 
-# CMake must be installed to build dlib
-python -m pip uninstall --no-cache-dir cmake # Remove cmake distro installed by pip
-sudo apt install cmake                       # Install cmake from apt repository
-# shellcheck disable=SC2154
-if [ "$pyversion" -eq 310 ]; then
-  ${PY_EXECUTABLE} pip install dlib==19.24.0
-fi
-if [ "$pyversion" -eq 311 ]; then
-  ${PY_EXECUTABLE} pip install dlib==19.24.4
-fi
-
-# Install as stand alone as face recognition depends on dlib
-${PY_EXECUTABLE} pip install opencv-python==4.9.0.80 face-recognition==1.3.0
-
 ${PY_EXECUTABLE} pip install gobject==0.1.0 PyGObject==3.48.2
 
 # Install as stand alone as playsound depends on gobject
-${PY_EXECUTABLE} pip install playsound==1.3.0
+${PY_EXECUTABLE} pip install playsound==1.2.2
+
+# TODO: Find a replacement for face-recognition module or leave it as an optional feature
+#set +e   # disable exit-on-error
+#
+## CMake must be installed to build dlib
+#python -m pip uninstall --no-cache-dir cmake # Remove cmake distro installed by pip
+#sudo apt install cmake                       # Install cmake from apt repository
+## shellcheck disable=SC2154
+#if [ "$pyversion" -eq 310 ]; then
+#  ${PY_EXECUTABLE} pip install dlib==19.24.0
+#fi
+#if [ "$pyversion" -eq 311 ]; then
+#  ${PY_EXECUTABLE} pip install dlib==19.24.4
+#fi
+#
+## Install as stand alone as face recognition depends on dlib
+#${PY_EXECUTABLE} pip install face-recognition==1.3.0

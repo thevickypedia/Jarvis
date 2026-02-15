@@ -2,4 +2,4 @@
 gmail-connector>=1.0.2
 py3-tts>=3.5
 pycontrols>=0.0.4
-VaultAPI-Client>=0.1.1
+VaultAPI-Client>=0.2.0
