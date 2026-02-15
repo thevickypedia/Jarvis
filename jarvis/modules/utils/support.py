@@ -27,7 +27,6 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger
 from jarvis.modules.models import enums, models
-from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, util
 
 ENGINE = inflect.engine()
@@ -377,20 +376,43 @@ def extract_humanized_date(phrase: str, fail_past: bool = False) -> Tuple[dateti
     )
 
 
-@retry.retry(attempts=3, interval=2, exclude_exc=sqlite3.OperationalError)
-def check_stop() -> List[str]:
+def clear_stopper_entry(cursor: sqlite3.Cursor, connection: sqlite3.Connection) -> None:
+    """Tries to delete the all content from the stopper table in a true loop.
+
+    Args:
+        cursor: Cursor object from sqlite3.Connection.
+        connection: Connection object from sqlite3.Connection.
+
+    See Also:
+        The DELETE operation has to run right after the flag has been retrieved.
+        This is to prevent Jarvis from shutting down the next time when started.
+        A ``@retry`` logic will not work, since restarting the function will restart ``SELECT`` as well.
+    """
+    for _ in range(3):
+        try:
+            cursor.execute("DELETE FROM stopper")
+            connection.commit()
+            break
+        except sqlite3.Error as error:
+            logger.warning(error)
+        time.sleep(1)
+    else:
+        logger.error("Failed to delete entries from the stopper table.")
+
+
+def check_stop() -> List[str] | None:
     """Checks for entries in the stopper table in base db.
 
     Returns:
-        list:
+        List[str]:
         Returns the flag, caller from the stopper table.
     """
     with models.db.connection as connection:
         cursor = connection.cursor()
-        flag = cursor.execute("SELECT flag, caller FROM stopper").fetchone()
-        cursor.execute("DELETE FROM stopper")
-        connection.commit()
-    return flag
+        if flag := cursor.execute("SELECT flag, caller FROM stopper").fetchone():
+            clear_stopper_entry(cursor, connection)
+            return flag
+    return None
 
 
 def exit_message() -> str:
