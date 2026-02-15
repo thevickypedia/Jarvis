@@ -39,6 +39,7 @@ def ip_address() -> str | None:
     return ip_address_
 
 
+# TODO: Remove vpn_checker
 def vpn_checker() -> bool | str:
     """Uses simple check on network id to see if it is connected to local host or not.
 

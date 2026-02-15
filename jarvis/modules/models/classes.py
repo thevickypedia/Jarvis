@@ -299,7 +299,7 @@ class EnvConfig(BaseSettings):
     # Robinhood config
     robinhood_user: EmailStr | None = None
     robinhood_pass: str | None = None
-    robinhood_qr: str | None = None
+    robinhood_watchlist: str | None = None
     robinhood_endpoint_auth: str | None = None
 
     # GitHub config

@@ -1,4 +1,3 @@
-import os
 import sqlite3
 from multiprocessing import Process
 from typing import Dict, List
@@ -6,19 +5,7 @@ from typing import Dict, List
 from jarvis.executors import process_map
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
-from jarvis.modules.retry import retry
 from jarvis.modules.utils import shared, support, util
-
-
-@retry.retry(attempts=3, interval=2, warn=True)
-def delete_db() -> None:
-    """Delete base db if exists. Called upon restart or shut down."""
-    if os.path.isfile(models.fileio.base_db):
-        logger.info("Removing %s", models.fileio.base_db)
-        os.remove(models.fileio.base_db)
-    if os.path.isfile(models.fileio.base_db):
-        raise FileExistsError(f"{models.fileio.base_db} still exists!")
-    return
 
 
 def clear_db() -> None:

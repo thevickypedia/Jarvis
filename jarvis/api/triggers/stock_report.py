@@ -2,13 +2,18 @@
 
 import logging
 import math
+import os
 from datetime import datetime
-from typing import Tuple
+from typing import Any, Dict, Tuple
 
 import jinja2
 import requests
-from pyrh import Robinhood
-from pyrh.exceptions import PyrhException
+import robin_stocks.robinhood as rh
+from blockstdout import BlockPrint
+
+from jarvis.modules.exceptions import EgressErrors
+
+rh.set_output(open(os.devnull, "w"))
 
 
 class Investment:
@@ -22,20 +27,37 @@ class Investment:
 
     def __init__(self, logger: logging.Logger):
         """Authenticates Robinhood object and gathers the portfolio information to store it in a variable."""
-        rh = Robinhood(
-            username=models.env.robinhood_user,
-            password=models.env.robinhood_pass,
-            mfa=models.env.robinhood_qr,
-        )
-        rh.login()
-        raw_result = rh.positions()
         self.logger = logger
-        if result := raw_result.get("results"):
-            self.result = result
-        else:
-            self.logger.error(raw_result.get("detail", raw_result))
-            self.result = []
-        self.rh = rh
+        with BlockPrint():
+            rh.login(
+                username=models.env.robinhood_user,
+                password=models.env.robinhood_pass,
+            )
+            self.result = rh.get_all_positions()
+
+    def get_stock_info(self, ticker: str) -> Dict[str, Any] | None:
+        """Get raw stock information from Robinhood for a particular ticker.
+
+        Args:
+            ticker: Stock ticker.
+
+        Returns:
+            Dict[str, Any]:
+            Returns a dictionary of stock information from Robinhood.
+        """
+        with BlockPrint():
+            if raw_details := rh.get_quotes(ticker)[0]:
+                raw_details["simple_name"] = "N/A"
+                try:
+                    if simple_name := requests.get(url=raw_details["instrument"]).json()["simple_name"]:
+                        raw_details["simple_name"] = simple_name
+                        return raw_details
+                except EgressErrors as error:
+                    self.logger.error(error, exc_info=True)
+                return raw_details
+            else:
+                self.logger.error("Unable to retrieve stock information for the ticker: %s", ticker)
+        return None
 
     def watcher(self) -> Tuple[str, str, str, str, str]:
         """Gathers all the information and wraps into parts of strings to create an HTML file.
@@ -47,20 +69,17 @@ class Investment:
         shares_total, loss_dict, profit_dict = [], {}, {}
         num_stocks, num_shares = 0, 0
         self.logger.info("Gathering portfolio.")
+
         for data in self.result:
             shares_count = int(data["quantity"].split(".")[0])
             if not shares_count:
                 continue
             num_stocks += 1
             num_shares += shares_count
-            share_id = str(data["instrument"].split("/")[-2])
-            try:
-                raw_details = self.rh.get_quote(share_id)
-                stock_name = requests.get(url=raw_details["instrument"]).json()["simple_name"]
-            except PyrhException as error:
-                self.logger.error(error)
+            ticker = data["symbol"]
+            if not (raw_details := self.get_stock_info(ticker)):
                 continue
-            ticker = raw_details["symbol"]
+            stock_name = raw_details["simple_name"]
             buy = round(float(data["average_buy_price"]), 2)
             total = round(shares_count * float(buy), 2)
             shares_total.append(total)
@@ -92,15 +111,16 @@ class Investment:
             loss_output += value[1]
             loss_total.append(value[0])
 
-        portfolio = self.rh.portfolio()
+        with BlockPrint():
+            portfolio = rh.load_portfolio_profile()
         port_msg = (
             f"\nTotal Profit: ${round(math.fsum(profit_total), 2):,}\n"
             f"Total Loss: ${round(math.fsum(loss_total), 2):,}\n\n"
             "The above values might differ from overall profit/loss if multiple shares "
             "of the stock were purchased at different prices."
         )
-        net_worth = round(float(portfolio.equity), 2)
-        withdrawable_amount = round(float(portfolio.withdrawable_amount))
+        net_worth = round(float(portfolio["equity"]), 2)
+        withdrawable_amount = round(float(portfolio["withdrawable_amount"]))
         output = f"Total number of stocks purchased: {num_stocks:,}\n"
         output += f"Total number of shares owned: {num_shares:,}\n"
         output += f"\nCurrent value of your total investment is: ${net_worth:,}"
@@ -119,7 +139,7 @@ class Investment:
         else:
             rh_text += f"profit of ${round(total_diff):,} {models.env.title}"
             output += f"\n\nOverall Profit: ${total_diff:,}"
-        yesterday_close = round(float(portfolio.equity_previous_close), 2)
+        yesterday_close = round(float(portfolio["equity_previous_close"]), 2)
         two_day_diff = round(float(net_worth - yesterday_close), 2)
         output += f"\n\nYesterday's closing value: ${yesterday_close:,}"
         if two_day_diff < 0:
@@ -138,49 +158,40 @@ class Investment:
 
         Returns:
             Tuple[str, str]:
-            Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.
+            Returns a tuple of each watch list item and a Unicode character to indicate if the price went up or down.
         """
         r1, r2 = "", ""
         self.logger.info("Gathering watchlist.")
-        watchlist = [
-            self.rh.get_url(item["instrument"])
-            for item in self.rh.get_url(url="https://api.robinhood.com/watchlists/Default").get("results", [])
-        ]
-        if not watchlist:
-            return r1, r2
+        with BlockPrint():
+            if watchlist := rh.get_watchlist_by_name(models.env.robinhood_watchlist):
+                watchlist_results = watchlist["results"]
+            else:
+                return r1, r2
         instruments = [data["instrument"] for data in self.result] if strict else []
-        for item in watchlist:
+        for item in watchlist_results:
             if strict and item["url"] in instruments:
                 continue
-            stock = item["symbol"]
-            if interval == "hour":
-                historic_data = self.rh.get_historical_quotes(stock, "hour", "day")
-            else:
-                historic_data = self.rh.get_historical_quotes(stock, "10minute", "day")
-            historic_results = historic_data["results"]
-            numbers = [
-                round(float(close_price["close_price"]), 2)
-                for each_item in historic_results
-                for close_price in each_item["historicals"]
-            ]
-            if not numbers:
+            ticker = item["symbol"]
+            with BlockPrint():
+                if interval == "hour":
+                    historic_data = rh.get_stock_historicals(ticker, "hour", "day")
+                else:
+                    historic_data = rh.get_stock_historicals(ticker, "10minute", "day")
+            if not (numbers := [round(float(each_item["close_price"]), 2) for each_item in historic_data]):
                 return r1, r2
-            try:
-                raw_details = self.rh.get_quote(stock)
-                stock_name = requests.get(raw_details["instrument"]).json()["simple_name"]
-            except PyrhException as error:
-                self.logger.error(error)
+            if not (raw_details := self.get_stock_info(ticker)):
                 continue
+            stock_name = raw_details["simple_name"]
             price = round(float(raw_details["last_trade_price"]), 2)
             difference = round(float(price - numbers[-1]), 2)
             if price < numbers[-1]:
                 r1 += (
-                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: '
+                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{ticker}" target="_bottom">{ticker}</a>: '
                     f"{price:,} &#8595 {difference}\n"
                 )
             else:
                 r2 += (
-                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{stock}" target="_bottom">{stock}</a>: '
+                    f'{stock_name}\t<a href="https://robinhood.com/stocks/{ticker}" target="_bottom">{ticker}</a>: '
                     f"{price:,} &#8593 {difference}\n"
                 )
         return r1, r2
@@ -190,7 +201,6 @@ class Investment:
         if not self.result:
             return
         current_time = datetime.now()
-
         port_head, profit, loss, overall_result, summary = self.watcher()
         s1, s2 = self.watchlist()
         self.logger.info("Generating HTMl file.")
@@ -228,7 +238,7 @@ class Investment:
         """Runs gatherer to call other dependent methods."""
         try:
             self.gatherer()
-        except EgressErrors as error:
+        except Exception as error:
             self.logger.error(error)
 
 
@@ -240,7 +250,6 @@ if __name__ == "__main__":
 
     current_process().name = "StockReport"
     from jarvis.executors import crontab
-    from jarvis.modules.exceptions import EgressErrors
     from jarvis.modules.logger import logger as main_logger
     from jarvis.modules.logger import multiprocessing_logger
     from jarvis.modules.models import models

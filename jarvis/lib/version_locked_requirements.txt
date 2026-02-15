@@ -9,9 +9,8 @@ PyAudio==0.2.14
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyhtcc==0.1.57
 pyicloud==2.3.0
-# TODO: Project is not maintained and currently broken - find a viable replacement
-pyrh @ git+https://github.com/robinhood-unofficial/pyrh.git@e301e8018abc1f8afe5d7aeaebdfa188783a4772
 pywebostv==0.8.9
+robin-stocks==3.4.0
 sounddevice==0.5.5
 SpeechRecognition==3.14.5
 speedtest-cli==2.1.3

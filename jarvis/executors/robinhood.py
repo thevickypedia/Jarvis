@@ -1,14 +1,45 @@
 """Initiates robinhood client to get the portfolio details."""
 
 import math
+import os
+from typing import Any, Dict
 
-from pyrh import Robinhood
-from pyrh.exceptions import AuthenticationError, PyrhException
+import requests
+import robin_stocks.robinhood as rh
+from blockstdout import BlockPrint
 
 from jarvis.modules.audio import speaker
+from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
 from jarvis.modules.models import models
 from jarvis.modules.utils import support
+
+rh.set_output(open(os.devnull, "w"))
+
+
+def get_stock_info(ticker: str) -> Dict[str, Any] | None:
+    """Get raw stock information from Robinhood for a particular ticker.
+
+    Args:
+        ticker: Stock ticker.
+
+    Returns:
+        Dict[str, Any]:
+        Returns a dictionary of stock information from Robinhood.
+    """
+    with BlockPrint():
+        if raw_details := rh.get_quotes(ticker)[0]:
+            raw_details["simple_name"] = "N/A"
+            try:
+                if simple_name := requests.get(url=raw_details["instrument"]).json()["simple_name"]:
+                    raw_details["simple_name"] = simple_name
+                    return raw_details
+            except EgressErrors as error:
+                logger.error(error, exc_info=True)
+            return raw_details
+        else:
+            logger.error("Unable to retrieve stock information for the ticker: %s", ticker)
+    return None
 
 
 def get_summary() -> str:
@@ -18,21 +49,19 @@ def get_summary() -> str:
         str:
         A string value of total purchased stocks and resultant profit/loss.
     """
-    rh = Robinhood(
-        username=models.env.robinhood_user,
-        password=models.env.robinhood_pass,
-        mfa=models.env.robinhood_qr,
-    )
-    rh.login()
-    raw_result = rh.positions()
-    result = raw_result["results"]
+    with BlockPrint():
+        rh.login(
+            username=models.env.robinhood_user,
+            password=models.env.robinhood_pass,
+        )
+        result = rh.get_all_positions()
     shares_total = []
     loss_total = []
     profit_total = []
     n = 0
     n_ = 0
     for data in result:
-        share_id = str(data["instrument"].split("/")[-2])
+        ticker = data["symbol"]
         buy = round(float(data["average_buy_price"]), 2)
         shares_count = int(data["quantity"].split(".")[0])
         if shares_count != 0:
@@ -40,10 +69,7 @@ def get_summary() -> str:
             n_ = n_ + shares_count
         else:
             continue
-        try:
-            raw_details = rh.get_quote(share_id)
-        except PyrhException as error:
-            logger.error(error)
+        if not (raw_details := get_stock_info(ticker)):
             continue
         total = round(shares_count * float(buy), 2)
         shares_total.append(total)
@@ -56,9 +82,10 @@ def get_summary() -> str:
         else:
             profit_total.append(difference)
 
-    portfolio = rh.portfolio()
-    net_worth = round(float(portfolio.equity))
-    withdrawable_amount = round(float(portfolio.withdrawable_amount))
+    with BlockPrint():
+        portfolio = rh.load_portfolio_profile()
+    net_worth = round(float(portfolio["equity"]))
+    withdrawable_amount = round(float(portfolio["withdrawable_amount"]))
     total_buy = round(math.fsum(shares_total))
     total_diff = round(net_worth - total_buy) - withdrawable_amount
 
@@ -94,11 +121,7 @@ def robinhood(*args) -> None:
         return
     try:
         summary = get_summary()
-    except AuthenticationError as error:
-        logger.error(error)
-        speaker.speak(text=f"I'm sorry {models.env.title}! I ran into an authentication error.")
-        return
-    except PyrhException as error:
+    except Exception as error:
         logger.error(error)
         speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to fetch your investment summary.")
         return

@@ -3162,6 +3162,23 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="jarvis.api.triggers.stock_report.Investment.get_stock_info">
+<span class="sig-name descname"><span class="pre">get_stock_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.get_stock_info" title="Link to this definition">¶</a></dt>
+<dd><p>Get raw stock information from Robinhood for a particular ticker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ticker</strong> – Stock ticker.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of stock information from Robinhood.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="jarvis.api.triggers.stock_report.Investment.watcher">
 <span class="sig-name descname"><span class="pre">watcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.api.triggers.stock_report.Investment.watcher" title="Link to this definition">¶</a></dt>
 <dd><p>Gathers all the information and wraps into parts of strings to create an HTML file.</p>
@@ -3187,7 +3204,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a tuple of each watch list item and a unicode character to indicate if the price went up or down.</p>
+<dd class="field-even"><p>Returns a tuple of each watch list item and a Unicode character to indicate if the price went up or down.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tuple[str, str]</p>
@@ -5206,12 +5223,6 @@
 <section id="module-jarvis.executors.processor">
 <span id="processor"></span><h1>Processor<a class="headerlink" href="#module-jarvis.executors.processor" title="Link to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.processor.delete_db">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.processor.</span></span><span class="sig-name descname"><span class="pre">delete_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.processor.delete_db" title="Link to this definition">¶</a></dt>
-<dd><p>Delete base db if exists. Called upon restart or shut down.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.processor.clear_db">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.processor.</span></span><span class="sig-name descname"><span class="pre">clear_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.processor.clear_db" title="Link to this definition">¶</a></dt>
 <dd><p>Deletes entries from all databases except for the tables assigned to hold data forever.</p>
@@ -5507,6 +5518,23 @@
 <section id="module-jarvis.executors.robinhood">
 <span id="robinhood"></span><h1>Robinhood<a class="headerlink" href="#module-jarvis.executors.robinhood" title="Link to this heading">¶</a></h1>
 <p>Initiates robinhood client to get the portfolio details.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.robinhood.get_stock_info">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">get_stock_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.robinhood.get_stock_info" title="Link to this definition">¶</a></dt>
+<dd><p>Get raw stock information from Robinhood for a particular ticker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ticker</strong> – Stock ticker.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a dictionary of stock information from Robinhood.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.robinhood.get_summary">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.robinhood.</span></span><span class="sig-name descname"><span class="pre">get_summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.robinhood.get_summary" title="Link to this definition">¶</a></dt>
@@ -6665,8 +6693,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.robinhood_qr">
-<span class="sig-name descname"><span class="pre">robinhood_qr</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.robinhood_qr" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.robinhood_watchlist">
+<span class="sig-name descname"><span class="pre">robinhood_watchlist</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.robinhood_watchlist" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7569,11 +7597,6 @@ If none are found, it falls back to the default file.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.ics">
 <span class="sig-name descname"><span class="pre">ics</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></span><a class="headerlink" href="#jarvis.modules.models.tables.Tables.ics" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="jarvis.modules.models.tables.Tables.vpn">
-<span class="sig-name descname"><span class="pre">vpn</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.models.tables.Table" title="jarvis.modules.models.tables.Table"><span class="pre">Table</span></a></span><a class="headerlink" href="#jarvis.modules.models.tables.Tables.vpn" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -12444,6 +12467,7 @@ mac address given as a parameter.</p>
 </li>
 <li><a class="reference internal" href="#module-jarvis.api.triggers.stock_report">Triggers - StockReport</a><ul>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment"><code class="docutils literal notranslate"><span class="pre">Investment</span></code></a><ul>
+<li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.get_stock_info"><code class="docutils literal notranslate"><span class="pre">Investment.get_stock_info()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.watcher"><code class="docutils literal notranslate"><span class="pre">Investment.watcher()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.watchlist"><code class="docutils literal notranslate"><span class="pre">Investment.watchlist()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.api.triggers.stock_report.Investment.gatherer"><code class="docutils literal notranslate"><span class="pre">Investment.gatherer()</span></code></a></li>
@@ -12691,7 +12715,6 @@ mac address given as a parameter.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.processor">Processor</a><ul>
-<li><a class="reference internal" href="#jarvis.executors.processor.delete_db"><code class="docutils literal notranslate"><span class="pre">delete_db()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.processor.clear_db"><code class="docutils literal notranslate"><span class="pre">clear_db()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.processor.create_process_mapping"><code class="docutils literal notranslate"><span class="pre">create_process_mapping()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.processor.start_processes"><code class="docutils literal notranslate"><span class="pre">start_processes()</span></code></a></li>
@@ -12727,6 +12750,7 @@ mac address given as a parameter.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.robinhood">Robinhood</a><ul>
+<li><a class="reference internal" href="#jarvis.executors.robinhood.get_stock_info"><code class="docutils literal notranslate"><span class="pre">get_stock_info()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.robinhood.get_summary"><code class="docutils literal notranslate"><span class="pre">get_summary()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.robinhood.robinhood"><code class="docutils literal notranslate"><span class="pre">robinhood()</span></code></a></li>
 </ul>
@@ -12922,7 +12946,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.icloud_recovery"><code class="docutils literal notranslate"><span class="pre">EnvConfig.icloud_recovery</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_user"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_user</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_pass"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_pass</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_qr"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_qr</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_watchlist"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_watchlist</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.robinhood_endpoint_auth"><code class="docutils literal notranslate"><span class="pre">EnvConfig.robinhood_endpoint_auth</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.git_token"><code class="docutils literal notranslate"><span class="pre">EnvConfig.git_token</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.tcc_username"><code class="docutils literal notranslate"><span class="pre">EnvConfig.tcc_username</span></code></a></li>
@@ -13113,7 +13137,6 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.party"><code class="docutils literal notranslate"><span class="pre">Tables.party</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.fernet"><code class="docutils literal notranslate"><span class="pre">Tables.fernet</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.ics"><code class="docutils literal notranslate"><span class="pre">Tables.ics</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.vpn"><code class="docutils literal notranslate"><span class="pre">Tables.vpn</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.guard"><code class="docutils literal notranslate"><span class="pre">Tables.guard</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.robinhood"><code class="docutils literal notranslate"><span class="pre">Tables.robinhood</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.tables.Tables.restart"><code class="docutils literal notranslate"><span class="pre">Tables.restart</span></code></a></li>
