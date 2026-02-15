@@ -102,6 +102,14 @@ def country_timezone() -> Dict[str, str]:
     return timezone_country
 
 
+def terminal_columns() -> int:
+    """Returns the number of columns in the current terminal or a default value."""
+    try:
+        return os.get_terminal_size().columns
+    except (OSError, AttributeError, ValueError):
+        return 80
+
+
 def get_capitalized(phrase: str, ignore: Iterable = None, dot: bool = True) -> str | None:
     """Looks for words starting with an upper-case letter.
 
@@ -471,7 +479,7 @@ def write_screen(text: Any) -> None:
         return
     text = str(text).strip()
     if models.settings.interactive:
-        term_size = os.get_terminal_size().columns
+        term_size = terminal_columns()
         sys.stdout.write(f"\r{' ' * term_size}")
         if len(text) > term_size:
             # Get 90% of the text size and ONLY print that on screen
@@ -488,7 +496,7 @@ def flush_screen() -> None:
         Writes new set of empty strings for the size of the terminal if ran using one.
     """
     if models.settings.interactive:
-        sys.stdout.write(f"\r{' ' * os.get_terminal_size().columns}")
+        sys.stdout.write(f"\r{' ' * terminal_columns()}")
     else:
         sys.stdout.write("\r")
 

@@ -36,6 +36,14 @@ else:
 uv_install = {"option": os.environ.get("UV_INSTALL", "-1").lower() in ("1", "true", "yes")}
 
 
+def terminal_columns() -> int:
+    """Returns the number of columns in the current terminal or a default value."""
+    try:
+        return os.get_terminal_size().columns
+    except (OSError, AttributeError, ValueError):
+        return 80
+
+
 def convert_seconds(seconds: int | float, n_elem: int = 2) -> str:
     """Calculate years, months, days, hours, minutes, seconds, and milliseconds from given input.
 
@@ -155,12 +163,12 @@ class Runtime:
 
 def pretext() -> str:
     """Pre-text to gain reader's attention in the terminal."""
-    return "".join(["*" for _ in range(os.get_terminal_size().columns)])
+    return "".join(["*" for _ in range(terminal_columns())])
 
 
 def center(text: str) -> str:
     """Aligns text to center of the terminal and returns it."""
-    return text.center(os.get_terminal_size().columns)
+    return text.center(terminal_columns())
 
 
 def get_arch() -> str | NoReturn:
