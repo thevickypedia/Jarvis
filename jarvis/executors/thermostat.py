@@ -36,7 +36,7 @@ if models.startup_thermostat:
         logger.info("Creating a new thermostat connection for '%s'", models.settings.pname)
         Thread(target=create_connection).start()
 else:
-    logger.info("Startup disabled for thermostat")
+    logger.debug("Startup disabled for thermostat")
 
 
 def get_thermostat(device: Zone, phrase: str) -> None:

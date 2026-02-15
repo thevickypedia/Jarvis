@@ -258,5 +258,5 @@ if models.startup_gpt:
             support.write_screen(f"Failed to load GPT instance: {start_error.__str__()!r}")
             time.sleep(3)
 else:
-    logger.info("Startup disabled for GPT")
+    logger.debug("Startup disabled for GPT")
     instance = None

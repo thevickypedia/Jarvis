@@ -99,7 +99,7 @@ def get_files() -> Generator[str]:
                 yield file_path
 
 
-@cache.timed_cache(max_age=900)
+@cache.timed_cache(max_age=3600)
 def total_lines_of_code() -> PositiveInt:
     """Cached function to calculate the total lines of code.
 
@@ -111,7 +111,7 @@ def total_lines_of_code() -> PositiveInt:
     return sum(count_lines(file) for file in get_files())
 
 
-@cache.timed_cache(max_age=900)
+@cache.timed_cache(max_age=3600)
 def total_files() -> PositiveInt:
     """Cached function to calculate the total number of files.
 
