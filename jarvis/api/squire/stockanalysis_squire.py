@@ -1,3 +1,4 @@
+import io
 import os
 import string
 import time
@@ -5,15 +6,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import Callable, Iterable, List
 
+import pandas as pd
 import requests
 import yaml
-from bs4 import BeautifulSoup
 from webull import webull
 
 from jarvis.api.logger import logger
 from jarvis.api.models import settings
-from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.models import models
+from jarvis.modules.utils import util
 
 
 def ticker_gatherer(character: str) -> None:
@@ -22,20 +23,32 @@ def ticker_gatherer(character: str) -> None:
     Args:
         character: ASCII character (alphabet) with which the stock ticker name starts.
     """
-    try:
-        response = requests.get(url=f"https://www.eoddata.com/stocklist/NASDAQ/{character}.htm")
-    except EgressErrors as error:
-        logger.error(error)
-        return
-    scrapped = BeautifulSoup(response.text, "html.parser")
-    d1 = scrapped.find_all("tr", {"class": "ro"})
-    d2 = scrapped.find_all("tr", {"class": "re"})
-    for link in d1:
-        td1 = link.findAll("td")
-        settings.trader.stock_list[td1[0].text] = td1[1].text
-    for link in d2:
-        td2 = link.findAll("td")
-        settings.trader.stock_list[td2[0].text] = td2[1].text
+    logger.debug("Getting tickers for the character: %s", character)
+
+    url = f"https://www.eoddata.com/stocklist/NASDAQ/{character}.htm"
+
+    # Fetch page
+    response = requests.get(url, headers=util.browser_headers(referer="https://www.eoddata.com/"))
+    response.raise_for_status()
+
+    html_file = io.StringIO(response.text)
+    tables = pd.read_html(html_file)
+
+    # Automatically find the table with 'Code' and 'Name' columns
+    df = None
+    for table in tables:
+        # Strip extra spaces
+        cols = [c.strip() for c in table.columns]
+        if "Code" in cols and "Name" in cols:
+            df = table
+            break
+
+    if df is None:
+        raise ValueError("No table found with 'Code' and 'Name' columns")
+
+    df = df[["Code", "Name"]]
+    # noinspection PyTypeChecker,PyUnresolvedReferences
+    settings.trader.stock_list.update(dict(zip(df["Code"], df["Name"])))
 
 
 def thread_worker(function_to_call: Callable, iterable: List | Iterable, workers: int = None) -> None:
@@ -94,7 +107,9 @@ def nasdaq() -> None:
                 return
     logger.info("Gathering stock list from webull.")
     try:
-        settings.trader.stock_list = [ticker.get("symbol") for ticker in webull().get_all_tickers()]
+        all_tickers = webull().get_all_tickers()
+        assert all_tickers.get("code") != "API_DISABLED", "Webull API did not return stock tickers"
+        settings.trader.stock_list = [ticker.get("symbol") for ticker in all_tickers]
     except Exception as error:
         logger.error(error)
     if settings.trader.stock_list:

@@ -393,3 +393,36 @@ def get_free_port() -> int:
         sock.bind(("", 0))
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return sock.getsockname()[1]
+
+
+def browser_headers(referer: str) -> Dict[str, str]:
+    """Get browser headers.
+
+    Args:
+        referer: Referer string.
+
+    Returns:
+        Dict[str, str]:
+        Dictionary of browser headers.
+    """
+    mozilla = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+    apple_webkit = "AppleWebKit/537.36 (KHTML, like Gecko)"
+    chrome = "Chrome/145.0.0.0"
+    safari = "Safari/537.36"
+    return {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.7",
+        "cache-control": "max-age=0",
+        "priority": "u=0, i",
+        "sec-ch-ua": '"Not:A-Brand";v="99", "Brave";v="145", "Chromium";v="145"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "sec-gpc": "1",
+        "upgrade-insecure-requests": "1",
+        "referer": referer,
+        "user-agent": f"{mozilla} {apple_webkit} {chrome} {safari}",
+    }
