@@ -1,9 +1,6 @@
 name: matrix-publisher
 
 on:
-  release:
-    types:
-      - published
   push:
     branches:
       - master

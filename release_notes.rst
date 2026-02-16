@@ -1,6 +1,68 @@
 Release Notes
 =============
 
+v8.0.0a0 (02/15/2026)
+---------------------
+- `9581728 <https://github.com/thevickypedia/Jarvis/commit/958172838afe6d419d470b4bb084232d4efd63ad>`_ chore: Release ``v8.0.0a0``
+- `438fe26 <https://github.com/thevickypedia/Jarvis/commit/438fe2653eb2d8f6c1c382deb57c72e5554c681c>`_ refactor: Improve reusability across robinhood on-demand vs scheduled summary
+- `9f70b53 <https://github.com/thevickypedia/Jarvis/commit/9f70b5341cfdd9e7e52d0ee04fdf7c51095cdbcf>`_ fix: Replace ``pyrh`` with ``robin_stocks`` to get portfolio information
+- `53524ae <https://github.com/thevickypedia/Jarvis/commit/53524aed591f1644494ef086537edddb2eb715ba>`_ fix: Include an exception handler when retrieving terminal size
+- `9c2d94f <https://github.com/thevickypedia/Jarvis/commit/9c2d94f723ac0b990477b945a8110b7bdcfe3f1a>`_ fix: Update dev scripts to handle versions with extra decimals and invalid version
+- `d582fe5 <https://github.com/thevickypedia/Jarvis/commit/d582fe5d5306a5b9f46f6b17858bea5adf87da4b>`_ perf: Increase caching age for line of code and number of files functions
+- `3acce6f <https://github.com/thevickypedia/Jarvis/commit/3acce6fc36302d4cedc6d37b2cb62fba2180ff6c>`_ fix: Resolve a bug in the stock analysis - ticker gatherer
+- `1fc665a <https://github.com/thevickypedia/Jarvis/commit/1fc665aabbdae222bf229d681524a73f37d35d7f>`_ perf: Replace retry logic for ``stopper`` table with a controlled loop with exception handlers
+- `56455b9 <https://github.com/thevickypedia/Jarvis/commit/56455b9170ac42caa767c675f3d6db734ecac0dc>`_ perf: Upgrade possible dependencies and improve build stability
+- `c94f8f8 <https://github.com/thevickypedia/Jarvis/commit/c94f8f84810f1bf458b7196ed3231fbc07023dea>`_ perf: Remove proxy service feature to improve security
+- `c76a683 <https://github.com/thevickypedia/Jarvis/commit/c76a6834054760ae659c44f58f2f58ed63fdfb78>`_ fix: Ensure main process doesn't crash due to DB errors
+- `82bb5cf <https://github.com/thevickypedia/Jarvis/commit/82bb5cf1d2f67ab79b7b8ba4478679823bf10f4e>`_ perf: Replace self restart for background task with a task shutdown action
+- `2161dfd <https://github.com/thevickypedia/Jarvis/commit/2161dfd64f684512f28a8ec3d04afd8e8d071eab>`_ feat: Include self restart functionality when background tasks fail repeatedly
+- `e6bac1f <https://github.com/thevickypedia/Jarvis/commit/e6bac1fd72f2236b148596e9f20e42afd8345714>`_ fix: Avoid ``TypeError`` when joining Ntfy url and topic
+- `dec4d99 <https://github.com/thevickypedia/Jarvis/commit/dec4d993c2ab1aebef4104aecf433d43e63eae39>`_ feat: Notify user when a background task or telegram polling crashes
+- `1cc59fa <https://github.com/thevickypedia/Jarvis/commit/1cc59fa197ef4870d60e0cd7a3f86c8b2a628138>`_ refactor: Remove redundant checks for username and password for notification service
+- `4847f9b <https://github.com/thevickypedia/Jarvis/commit/4847f9be3ff170764724362b5d433fce9733b218>`_ refactor: Add a helper function to create async tasks with callback attached
+- `9507efd <https://github.com/thevickypedia/Jarvis/commit/9507efdc315a27343df8b7eb4c7b0b1ea2fe039f>`_ perf: Implement a tracking mechanism for async tasks with automatic restarts and notifications
+- `485d67c <https://github.com/thevickypedia/Jarvis/commit/485d67c625e75b65b2f128f06a11f1f150942d02>`_ fix: Shutdown background tasks gracefully with ``SIGTERM`` before sending ``SIGKILL`` with a timeout
+- `2a6f306 <https://github.com/thevickypedia/Jarvis/commit/2a6f306d03ec57c51f7f315fd7e18f4d16d2eec0>`_ docs: Update runbook
+- `0916466 <https://github.com/thevickypedia/Jarvis/commit/091646668be5bfe27b06946903be6f6ff4eea5e4>`_ perf: Re-use existing response from GPT history for identical requests by default
+- `9783c11 <https://github.com/thevickypedia/Jarvis/commit/9783c1188615f011f663d99c478ff88e9e97a91c>`_ docs: Update runbook
+- `d827e25 <https://github.com/thevickypedia/Jarvis/commit/d827e2583b0ebbbbe5fec27d0a7de7aa9213b636>`_ fix: Avoid ``AttributeError`` in a thread when ``gpt_history.yaml`` file does not exist
+- `0e745d7 <https://github.com/thevickypedia/Jarvis/commit/0e745d77ce89e898b56930f8430ff267d21baba8>`_ fix: Add singular form for ``get`` AWS SSM params
+- `ec39f90 <https://github.com/thevickypedia/Jarvis/commit/ec39f9070db8ce7ccfe0f82cd623a13ea7eb8b94>`_ refactor: Remove the use of ``Modelfile`` and use the client to create custom model with parameters for GPT
+- `c163de9 <https://github.com/thevickypedia/Jarvis/commit/c163de9246dca0096581ef05d8596e430f4a4fd0>`_ perf: Improve instructions to GPT models
+- `5b9377d <https://github.com/thevickypedia/Jarvis/commit/5b9377d57db782abec4eff49575b779687c79531>`_ perf: Remove dictionary feature and let GPT handle it as part of fallback
+- `775c72a <https://github.com/thevickypedia/Jarvis/commit/775c72aa464cbfce4c2556b795c1151bcc940d7f>`_ lint: Resolve all warnings from ``Pylance``
+- `6038f5d <https://github.com/thevickypedia/Jarvis/commit/6038f5d5d6ece26a5631da071f3b134874a00a14>`_ fix: Handle unlimited task distribution for long polling in background tasks
+- `c28042e <https://github.com/thevickypedia/Jarvis/commit/c28042ed7e02be2a59f6f82f562b7aae30121db6>`_ perf: Setup self-restart ability for telegram polling and remove un-awaited restart loop
+- `25c2d6e <https://github.com/thevickypedia/Jarvis/commit/25c2d6e5c8ed18e0d56f12e53b331dae51b42ef2>`_ refactor: Move telegram specific code to a dedicated module
+- `526c416 <https://github.com/thevickypedia/Jarvis/commit/526c4168adcbd26440d64c1c94298a9b4ad7eb83>`_ perf: Shorten ttl for telegram polling and remove ``dry_run`` flag for bg tasks
+- `5d0585f <https://github.com/thevickypedia/Jarvis/commit/5d0585f82b7e5086b8bd935ca95d10461f04d517>`_ docs: Update runbook
+- `ce7afc5 <https://github.com/thevickypedia/Jarvis/commit/ce7afc5bacc5d694b73f7968b692d5e6656ec085>`_ lint: Update line limit for ``black`` in ``pre-commit``
+- `054cc83 <https://github.com/thevickypedia/Jarvis/commit/054cc83e4698d455925099501fd431e23bc6b967>`_ perf: Remove top-level overhead for Wi-Fi connection
+- `60ac596 <https://github.com/thevickypedia/Jarvis/commit/60ac5962b0a4987c466031d0bbaf51179c304e81>`_ perf: Remove awaiting Wi-Fi checker in background tasks
+- `f880d52 <https://github.com/thevickypedia/Jarvis/commit/f880d52ac5111608e5b39175566559e832b58688>`_ perf: Move each executor from background tasks to an async task
+- `23df534 <https://github.com/thevickypedia/Jarvis/commit/23df534722e6b591d29648f938f43f81cf58a9ff>`_ refactor: Move all things background tasks into the api module
+- `06c4f06 <https://github.com/thevickypedia/Jarvis/commit/06c4f06c54599da9a365ecba855b05f7cf7592e1>`_ perf: Integrate fallback telegram polling into background task
+- `e9be43f <https://github.com/thevickypedia/Jarvis/commit/e9be43f8d33d34fc2e3afe6b41f823161e31b368>`_ perf: Switch distance context for offline vs voice interactions
+- `e34d8e3 <https://github.com/thevickypedia/Jarvis/commit/e34d8e3edd41442e77195a537a167ac303bb2613>`_ docs: Update runbook
+- `4c8ddef <https://github.com/thevickypedia/Jarvis/commit/4c8ddef3c6274f77dea7898155c4c0b0700460ec>`_ fix: Rename ``executors.connection`` to ``executors.connectivity`` to avoid module naming conflict
+- `2b19364 <https://github.com/thevickypedia/Jarvis/commit/2b1936482000a9368edd2adde6b194e8618bdc9c>`_ perf: Replace dedicated process for background tasks with asyncio
+- `730899c <https://github.com/thevickypedia/Jarvis/commit/730899cebba0ab550872eb34d631197d82110680>`_ docs: Update runbook
+- `c22716c <https://github.com/thevickypedia/Jarvis/commit/c22716ccfb5da2306f454185c5f00c15dc06a032>`_ refactor: Remove car integration
+- `f55b30b <https://github.com/thevickypedia/Jarvis/commit/f55b30bfe1faaa60d0c90a0f750da2a5328a5eca>`_ docs: Update runbook
+- `b5914fe <https://github.com/thevickypedia/Jarvis/commit/b5914fec153a853e44b34e9a8d63b6606e07da1f>`_ refactor: Remove simulation feature
+- `8d3934a <https://github.com/thevickypedia/Jarvis/commit/8d3934a676e7de814382ae56e50b8d4858d15df7>`_ docs: Update runbook
+- `e613feb <https://github.com/thevickypedia/Jarvis/commit/e613feb07cdc02aae69a467929820294890107fa>`_ perf: Upgrade ``sphinx`` version
+- `2677749 <https://github.com/thevickypedia/Jarvis/commit/2677749a361e83fd68f928faad815bbe7123955a>`_ refactor: Remove ``vpn-server`` integration
+- `5292a5e <https://github.com/thevickypedia/Jarvis/commit/5292a5eec1e1cb90b9a84ea5688ffb95abb887ae>`_ fix: Handle missing ``face_recognition`` module due to issues with ``dlib``
+- `1120a65 <https://github.com/thevickypedia/Jarvis/commit/1120a65287f08410b86704b926339aab350993d6>`_ feat: Update keyword mapping to apply the same settings for tv and projector
+- `a504f0a <https://github.com/thevickypedia/Jarvis/commit/a504f0a02003e88355e4f5a5cd4e209e1be7e05a>`_ fix: Avoid URL parse error when using an external Ollama server
+- `70d733a <https://github.com/thevickypedia/Jarvis/commit/70d733a2a4306cd306caf78e4ca46e30083ac888>`_ refactor: Replace all hard coded process names with enums
+- `83243f1 <https://github.com/thevickypedia/Jarvis/commit/83243f138afe3458ac11b63b4c35fd0a9a632761>`_ docs: Update runbook
+- `dec38fe <https://github.com/thevickypedia/Jarvis/commit/dec38fe8617f493b42e35c267f22bc5daaea8d0f>`_ fix: Avoid startup errors for GPT instance and improve error handling
+- `02e7596 <https://github.com/thevickypedia/Jarvis/commit/02e759621fa19a1701031e4e26ce90e49d4079df>`_ refactor: Parse HTML response from ICS calendar request before logging
+- `542e867 <https://github.com/thevickypedia/Jarvis/commit/542e867ecc2196383136d9ddc3b323a5cd4f5b89>`_ perf: Remove ``__pycache__`` deletion during startup
+- `ce6f0b2 <https://github.com/thevickypedia/Jarvis/commit/ce6f0b27c355d6d4cd48b5f08f5e8f5c2f5b267b>`_ chore: Update release notes for v7.1.2.post1
+
 v7.1.2.post1 (10/14/2025)
 -------------------------
 - `0bcf1cd <https://github.com/thevickypedia/Jarvis/commit/0bcf1cd0c58c42781014427dcd99f9e1b61878fc>`_ chore: Release ``v7.1.2.post1``
