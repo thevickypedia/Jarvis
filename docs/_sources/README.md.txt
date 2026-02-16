@@ -47,6 +47,7 @@
 [![markdown][label-actions-markdown]][gha_md_valid]
 [![update-release-notes][label-actions-release]][gha_release_notes]
 [![pages][label-actions-pages]][gha_pages]
+[![stale][label-actions-stale]][gha_stale]
 
 **jarvis-ironman**
 
@@ -222,6 +223,7 @@ Licensed under the [MIT License][license]
 [gha_release_notes]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml
 [gha_codeql]: https://github.com/thevickypedia/Jarvis/actions/workflows/codeql.yml
 [gha_resolver]: https://github.com/thevickypedia/Jarvis/actions/workflows/version.yml
+[gha_stale]: https://github.com/thevickypedia/Jarvis/actions/workflows/issue.yml
 [webpage]: https://vigneshrao.com/
 [webpage_contact]: https://vigneshrao.com/contact
 [Anaconda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
@@ -269,6 +271,7 @@ Licensed under the [MIT License][license]
 [label-actions-release]: https://github.com/thevickypedia/Jarvis/actions/workflows/release_notes.yml/badge.svg
 [label-actions-codeql]: https://github.com/thevickypedia/Jarvis/actions/workflows/codeql.yml/badge.svg
 [label-actions-resolver]: https://github.com/thevickypedia/Jarvis/actions/workflows/version.yml/badge.svg
+[label-actions-stale]: https://github.com/thevickypedia/Jarvis/actions/workflows/issue.yml/badge.svg
 
 [label-pypi-jarvis-ironman]: https://img.shields.io/pypi/v/jarvis-ironman
 [label-pypi-format-jarvis-ironman]: https://img.shields.io/pypi/format/jarvis-ironman
