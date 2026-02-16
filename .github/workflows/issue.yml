@@ -1,0 +1,35 @@
+name: close-stale-issues
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: thevickypedia-default
+    steps:
+      - name: Close stale issues
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Mark as stale after 30 days of inactivity
+          days-before-stale: 30
+
+          # Close immediately after being marked stale
+          days-before-close: 0
+
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            recent activity in the last 30 days.
+            If this is still relevant, please comment and it will be reopened.
+
+          close-issue-message: >
+            Closing this issue due to inactivity. Feel free to reopen if needed.
+
+          stale-pr-message: ""
+          days-before-pr-stale: -1
