@@ -1,4 +1,5 @@
 import os
+from collections.abc import Generator
 from datetime import datetime, timedelta
 
 from deepdiff import DeepDiff
@@ -74,10 +75,10 @@ async def validate_weather_alert() -> None:
             files.put_automation(data=automation_data)
 
 
-def auto_helper() -> str | None:
+def auto_helper() -> Generator[str]:
     """Runs in a thread to help the automator function in the main module.
 
-    Returns:
+    Yields:
         str:
         Task to be executed.
     """
@@ -93,7 +94,7 @@ def auto_helper() -> str | None:
             rewrite_automator(write_data=automation_data)
             # Use return as python doesn't like dict size change between a loop
             # Since this function is called every second, there is no need for recursion
-            return None
+            return
         if isinstance(automation_schedule, dict):
             automation_schedule = [automation_schedule]
             automation_data[automation_time] = automation_schedule
@@ -105,7 +106,7 @@ def auto_helper() -> str | None:
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion
-                return None
+                return
             if not (exec_task := automation_info.get("task")):
                 logger.error("Following entry doesn't have a task.")
                 logger.error("%s - %s", automation_time, automation_schedule)
@@ -113,28 +114,31 @@ def auto_helper() -> str | None:
                 rewrite_automator(write_data=automation_data)
                 # Use return as python doesn't like dict size change between a loop
                 # Since this function is called every second, there is no need for recursion
-                return None
+                return
 
             if day := automation_info.get("day"):
                 today = datetime.today().strftime("%A").upper()
                 if isinstance(day, list):
-                    if today not in [d.upper() for d in day]:
+                    valid_days = [d.upper() for d in day]
+                    if "WEEKDAY" in valid_days:
+                        valid_days += ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]
+                    if "WEEKEND" in valid_days:
+                        valid_days += ["SATURDAY", "SUNDAY"]
+                    if today not in valid_days:
                         continue
                 elif isinstance(day, str):
                     day = day.upper()
-                    if day == "WEEKEND" and today in ["SATURDAY", "SUNDAY"]:
-                        pass
-                    elif day == "WEEKDAY" and today in [
+                    if day == "WEEKEND" and today not in ["SATURDAY", "SUNDAY"]:
+                        continue
+                    elif day == "WEEKDAY" and today not in [
                         "MONDAY",
                         "TUESDAY",
                         "WEDNESDAY",
                         "THURSDAY",
                         "FRIDAY",
                     ]:
-                        pass
-                    elif today == day:
-                        pass
-                    else:
+                        continue
+                    elif day not in ["WEEKEND", "WEEKDAY"] and today != day:
                         continue
 
             if automation_time != datetime.now().strftime("%I:%M %p"):
@@ -152,5 +156,4 @@ def auto_helper() -> str | None:
                 continue
             automation_data[automation_time][index]["status"] = True
             rewrite_automator(write_data=automation_data)
-            return exec_task
-    return None
+            yield exec_task

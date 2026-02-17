@@ -127,7 +127,7 @@ async def background_tasks() -> None:
             create_task(agent.crontab_executor, cron_jobs=cron_jobs)
 
             # MARK: Trigger automation
-            if exec_task := automation.auto_helper():
+            for exec_task in automation.auto_helper():
                 create_task(agent.automation_executor, exec_task=exec_task)
 
             # MARK: Trigger Wi-Fi checker
