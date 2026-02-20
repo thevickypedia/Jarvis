@@ -234,11 +234,13 @@ class EnvConfig(BaseSettings):
     title: str = "sir"
     name: str = "Vignesh"
     website: HttpUrl | List[HttpUrl] = Field(default_factory=list)
-    plot_mic: bool = True
+
+    # Self-hosted notification service
     ntfy_url: HttpUrl | None = None
     ntfy_username: str | None = None
     ntfy_password: str | None = None
     ntfy_topic: str | None = None
+
     notify_reminders: enums.ReminderOptions | List[enums.ReminderOptions] = enums.ReminderOptions.all
 
     # Author specific

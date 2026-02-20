@@ -10,10 +10,7 @@ from jarvis.modules.models import enums, models
 from jarvis.modules.utils import util
 
 # set to be accessible only via offline communicators
-if models.settings.pname in (
-    enums.ProcessNames.jarvis_api,
-    enums.ProcessNames.telegram_api,
-):
+if models.settings.pname == enums.ProcessNames.jarvis_api:
     SECRET_STORAGE = {"aws": [], "local": []}
     SESSION = boto3.Session()
     SECRET_CLIENT = SESSION.client(service_name="secretsmanager")

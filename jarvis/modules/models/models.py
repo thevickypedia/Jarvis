@@ -205,7 +205,6 @@ if settings.pname in (
     ProcessNames.jarvis,
     ProcessNames.pre_commit,
     ProcessNames.startup_script,
-    ProcessNames.plot_mic,
     ProcessNames.crontab_executor,
 ):
     _main_process_validations()

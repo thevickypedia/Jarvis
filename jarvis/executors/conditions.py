@@ -88,15 +88,7 @@ def conditions(phrase: str) -> None:
                 "restart_control",
                 "shutdown",
             ):
-                if (
-                    models.settings.pname
-                    in (
-                        enums.ProcessNames.background_tasks,
-                        enums.ProcessNames.telegram_api,
-                        enums.ProcessNames.jarvis_api,
-                    )
-                    and category == "restart_control"
-                ):
+                if models.settings.pname == enums.ProcessNames.jarvis_api and category == "restart_control":
                     logger.info(
                         "Allowing '%s' through the category '%s', for the process: '%s'",
                         phrase,
@@ -119,7 +111,6 @@ def conditions(phrase: str) -> None:
     # GPT instance available only for communicable processes
     if models.settings.pname not in (
         enums.ProcessNames.jarvis,
-        enums.ProcessNames.telegram_api,
         enums.ProcessNames.jarvis_api,
     ):
         logger.warning("%s reached unrecognized category", models.settings.pname)

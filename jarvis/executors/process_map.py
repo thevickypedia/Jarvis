@@ -1,22 +1,11 @@
-import os
-import shutil
-from datetime import datetime
 from multiprocessing import Process
-from typing import Dict, List, NoReturn
+from typing import Dict, List
 
 import yaml
 
 from jarvis.api.server import jarvis_api
-from jarvis.executors import crontab
 from jarvis.modules.logger import logger
-from jarvis.modules.microphone import graph_mic
 from jarvis.modules.models import enums, models
-
-
-def assert_process_names() -> None | NoReturn:
-    """Assert process names with actual function names."""
-    assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
-    assert graph_mic.plot_mic.__name__ == enums.ProcessNames.plot_mic
 
 
 def base() -> Dict[str, Dict[str, Process | List[str]]]:
@@ -26,7 +15,8 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
         Dict[str, Dict[str, Process | List[str]]]:
         Nested dictionary of process mapping.
     """
-    base_mapping = {
+    assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
+    return {
         # process map will not be removed
         jarvis_api.__name__: {
             "process": Process(target=jarvis_api),
@@ -47,22 +37,6 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
             ],
         }
     }
-    if models.env.plot_mic:
-        # noinspection PyDeprecation
-        statement = shutil.which(cmd="python") + " " + graph_mic.__file__
-        # process map will be removed if plot_mic is disabled
-        base_mapping[graph_mic.plot_mic.__name__] = {
-            "process": Process(
-                target=crontab.executor,
-                kwargs={
-                    "statement": statement,
-                    "log_file": datetime.now().strftime(os.path.join("logs", "mic_plotter_%d-%m-%Y.log")),
-                    "process_name": graph_mic.plot_mic.__name__,
-                },
-            ),
-            "impact": ["Realtime microphone usage plotter"],
-        }
-    return base_mapping
 
 
 def get() -> Dict[str, Dict[int, List[str]]]:
