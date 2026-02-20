@@ -17,7 +17,6 @@ from jarvis.executors import (
     internet,
     listener_controls,
     location,
-    process_map,
     processor,
 )
 from jarvis.modules.audio import listener, speaker
@@ -97,10 +96,7 @@ class Activator:
         logger.info("Initiating hot-word detector with sensitivity: %s", label)
         self.detector = pvporcupine.create(**constructor())
         self.audio_stream = self.open_stream()
-        if models.settings.limited:
-            self.label = f"Awaiting: [{label}] - Limited Mode"
-        else:
-            self.label = f"Awaiting: [{label}]"
+        self.label = f"Awaiting: [{label}]"
 
     def open_stream(self) -> pyaudio.Stream:
         """Initializes an audio stream.
@@ -155,8 +151,6 @@ class Activator:
                 )
                 if result >= 0:
                     self.executor()
-                if models.settings.limited:
-                    continue
                 try:
                     restart_checker()
                     if flag := support.check_stop():
@@ -180,8 +174,7 @@ class Activator:
             - Closes audio stream.
             - Releases port audio resources.
         """
-        if not models.settings.limited:
-            processor.stop_processes()
+        processor.stop_processes()
         processor.clear_db()
         logger.info("Releasing resources acquired by Porcupine.")
         self.detector.delete()
@@ -221,16 +214,6 @@ def start() -> None:
                     run=True,
                 )
     support.write_screen(text=f"Current Process ID: {models.settings.pid}\tCurrent Volume: {models.env.volume}")
-    if models.settings.limited:
-        # Write processes mapping file before calling start_processes with func_name flag,
-        # as passing the flag will look for the file's presence
-        process_map.add({"jarvis": {models.settings.pid: ["Main Process"]}})
-        if models.settings.os != enums.SupportedPlatforms.macOS:
-            shared.processes = processor.start_processes(func_name="speech_synthesis_api")
-            # Enable speech synthesis for speaker
-            if not models.env.speech_synthesis_timeout:
-                models.env.speech_synthesis_timeout = 10
-    else:
-        shared.processes = processor.start_processes()
+    shared.processes = processor.start_processes()
     location.write_current_location()
     activator.start()

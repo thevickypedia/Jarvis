@@ -117,9 +117,6 @@ def set_alarm(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if models.settings.limited:
-        speaker.speak(text="Alarm features are currently unavailable, as you're running on restricted mode.")
-        return
     phrase = phrase.lower()
     if "minute" in phrase:
         if minutes := util.extract_nos(input_=phrase, method=int):

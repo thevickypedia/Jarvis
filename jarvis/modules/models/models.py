@@ -177,17 +177,6 @@ def _global_validations() -> None:
             env.ics_url = None
             warnings.warn("'ICS_URL' should end with .ics")
 
-    # Forces limited version if env var is set, otherwise it is enforced based on the number of cores
-    if env.limited:
-        settings.limited = True
-    # If env var is set as False to brute force full version on a device with < 4 processors
-    if env.limited is False:
-        settings.limited = False
-    if settings.limited is True and env.weather_alert:
-        warnings.warn("weather alert cannot function on limited mode")
-    if env.author_mode and settings.limited:
-        warnings.warn("'author_mode' cannot be set when 'limited' mode is enabled, disabling author mode.")
-
     env.camera_index = validator.validate_camera_indices()
     validator.validate_speech_synthesis_voices()
     _distance_temperature_brute_force()

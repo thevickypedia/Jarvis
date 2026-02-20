@@ -71,7 +71,6 @@ class Settings(BaseModel):
     disk: PositiveInt | PositiveFloat = psutil.disk_usage("/").total
     physical_cores: PositiveInt = psutil.cpu_count(logical=False)
     logical_cores: PositiveInt = psutil.cpu_count(logical=True)
-    limited: bool = True if physical_cores < 4 else False
     invoker: str = pathlib.PurePath(sys.argv[0]).stem
 
     device: str = re.sub(r"\..*", "", platform.node() or socket.gethostname())
@@ -212,7 +211,6 @@ class EnvConfig(BaseSettings):
     # System config
     home: DirectoryPath = os.path.expanduser("~")
     volume: PositiveInt = 50
-    limited: bool = False
     root_user: str = getpass.getuser()
     root_password: str | None = Field(None, validation_alias=AliasChoices("root_password", "password"))
 
