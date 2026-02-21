@@ -26,6 +26,7 @@ class ProcessNames(StrEnum):
 
     offline = "OFFLINE"
     jarvis_api = "jarvis_api"
+    ui_process = "ui_process"
     telegram_api = "telegram_api"
     background_tasks = "background_tasks"
 

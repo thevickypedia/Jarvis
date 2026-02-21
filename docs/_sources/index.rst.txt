@@ -673,6 +673,13 @@ Weather
    :members:
    :undoc-members:
 
+Widget
+======
+
+.. automodule:: jarvis.executors.widget
+   :members:
+   :undoc-members:
+
 Word Match
 ==========
 
@@ -1142,6 +1149,13 @@ WakeOnLAN
 =========
 
 .. automodule:: jarvis.modules.wakeonlan.wakeonlan
+   :members:
+   :undoc-members:
+
+Widget
+======
+
+.. autoclass:: jarvis.modules.microphone.widget.WavePattern(QWidget)
    :members:
    :undoc-members:
 

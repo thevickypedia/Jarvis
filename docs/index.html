@@ -5965,6 +5965,54 @@
 </dd></dl>
 
 </section>
+<section id="module-jarvis.executors.widget">
+<span id="widget"></span><h1>Widget<a class="headerlink" href="#module-jarvis.executors.widget" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.widget.start">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.widget.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.widget.start" title="Link to this definition">¶</a></dt>
+<dd><p>Run the UI event loop process for the WavePattern visualizer.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">Creates a QApplication instance, initializes the WavePattern window,</div>
+<div class="line">and listens for control commands from a multiprocessing connection.</div>
+</div>
+</li>
+<li><p>This function is intended to run in a dedicated process.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A multiprocessing connection used to receive control commands from another process.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Supported commands:</dt><dd><ul class="simple">
+<li><p>“start”: Begin wave animation.</p></li>
+<li><p>“stop”: Begin wave settling animation.</p></li>
+</ul>
+</dd>
+<dt>Behavior:</dt><dd><ul class="simple">
+<li><p>Starts a Qt application event loop.</p></li>
+<li><p>Displays the WavePattern window.</p></li>
+<li><p>Uses a QTimer to periodically poll the pipe connection.</p></li>
+<li><p>Processes all pending commands without blocking the UI thread.</p></li>
+<li><p>Stops polling and logs an error if the controller disconnects.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>SystemExit</strong> – </p></li>
+<li><p><strong>Raised when the Qt application event loop exits.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-jarvis.executors.word_match">
 <span id="word-match"></span><h1>Word Match<a class="headerlink" href="#module-jarvis.executors.word_match" title="Link to this heading">¶</a></h1>
 <p>Module for keyword classification algorithm.</p>
@@ -7100,6 +7148,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.ui_process">
+<span class="sig-name descname"><span class="pre">ui_process</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ui_process'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.ui_process" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.telegram_api">
 <span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'telegram_api'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.telegram_api" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7913,7 +7966,7 @@ If none are found, it falls back to the default file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.audio.wave.Spectrum.activate">
-<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.activate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.activate" title="Link to this definition">¶</a></dt>
 <dd><p>Activate the listener spectrum by making a request to the activate URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -7921,6 +7974,7 @@ If none are found, it falls back to the default file.</p>
 <li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 <li><p><strong>timeout</strong> – Custom timeout for functions expecting a longer wait time.</p></li>
 <li><p><strong>phrase_time_limit</strong> – Custom time limit for functions expecting a longer user input.</p></li>
+<li><p><strong>connection</strong> – Multiprocessing connection object to start widget wave.</p></li>
 </ul>
 </dd>
 </dl>
@@ -7928,11 +7982,14 @@ If none are found, it falls back to the default file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.audio.wave.Spectrum.deactivate">
-<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.deactivate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.deactivate" title="Link to this definition">¶</a></dt>
 <dd><p>Deactivate the listener spectrum by making a request to the deactivate URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
+<li><p><strong>connection</strong> – Multiprocessing connection object to stop widget wave.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -11829,6 +11886,102 @@ mac address given as a parameter.</p>
 </dd></dl>
 
 </section>
+<section id="id34">
+<h1>Widget<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.widget.</span></span><span class="sig-name descname"><span class="pre">WavePattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">QWidget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern" title="Link to this definition">¶</a></dt>
+<dd><p>Event driven wave pattern to display listener state.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">WavePattern</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern.start" title="Link to this definition">¶</a></dt>
+<dd><p>Start the wave animation.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul>
+<li><div class="line-block">
+<div class="line">Transitions the widget state to “running” and starts the animation</div>
+<div class="line">timer if it is not already active.</div>
+</div>
+</li>
+<li><p>The amplitude smoothly ramps up toward the target amplitude during animation.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern.stop" title="Link to this definition">¶</a></dt>
+<dd><p>Stop the wave animation.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Transitions the widget state to “settling” and starts the animation timer if needed.</p></li>
+<li><p>During settling, the amplitude smoothly decays toward zero.</p></li>
+<li><p>The timer automatically stops once the amplitude becomes negligible.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern.animate">
+<span class="sig-name descname"><span class="pre">animate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern.animate" title="Link to this definition">¶</a></dt>
+<dd><p>Advance the animation by one frame. After updating animation parameters, schedules a repaint.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>This method is triggered by the QTimer timeout signal.
+Behavior depends on the current state:</p>
+<ul>
+<li><p>“running”: Increases phase and smoothly interpolates the current amplitude toward the target amplitude.</p></li>
+<li><div class="line-block">
+<div class="line">“settling”: Increases phase and exponentially decays the amplitude toward zero.</div>
+<div class="line">Stops the timer once the amplitude becomes minimal.</div>
+</div>
+</li>
+<li><p>“idle”: No animation updates occur.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern.paintEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Render the animated wave pattern.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p>Paints multiple layered sine waves with a Gaussian envelope centered vertically in the widget.</p></li>
+<li><p>Each layer uses a horizontal linear gradient and additive blending to create a glowing visual effect.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> – The paint event containing region information.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Drawing process:</dt><dd><ul class="simple">
+<li><p>Clears the background to black.</p></li>
+<li><p>Enables antialiasing for smoother curves.</p></li>
+<li><p>Uses additive composition mode for glow effect.</p></li>
+<li><p>Draws multiple layered wave paths with decreasing amplitudes.</p></li>
+<li><p>Applies gradient fills to each wave layer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.widget.WavePattern.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;WavePattern&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QWidget&quot;:</span> <span class="pre">)</span></span><a class="headerlink" href="#jarvis.modules.microphone.widget.WavePattern.staticMetaObject" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="test-cases">
 <h1>———-Test Cases———-<a class="headerlink" href="#test-cases" title="Link to this heading">¶</a></h1>
 </section>
@@ -12660,6 +12813,10 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.executors.weather_monitor.monitor"><code class="docutils literal notranslate"><span class="pre">monitor()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-jarvis.executors.widget">Widget</a><ul>
+<li><a class="reference internal" href="#jarvis.executors.widget.start"><code class="docutils literal notranslate"><span class="pre">start()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-jarvis.executors.word_match">Word Match</a><ul>
 <li><a class="reference internal" href="#jarvis.executors.word_match.reverse_lookup"><code class="docutils literal notranslate"><span class="pre">reverse_lookup()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.word_match.forward_lookup"><code class="docutils literal notranslate"><span class="pre">forward_lookup()</span></code></a></li>
@@ -12888,6 +13045,7 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.crontab_executor"><code class="docutils literal notranslate"><span class="pre">ProcessNames.crontab_executor</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.offline"><code class="docutils literal notranslate"><span class="pre">ProcessNames.offline</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.jarvis_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.jarvis_api</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.ui_process"><code class="docutils literal notranslate"><span class="pre">ProcessNames.ui_process</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.telegram_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.telegram_api</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.background_tasks"><code class="docutils literal notranslate"><span class="pre">ProcessNames.background_tasks</span></code></a></li>
 </ul>
@@ -13448,6 +13606,17 @@ mac address given as a parameter.</p>
 <li><a class="reference internal" href="#jarvis.modules.wakeonlan.wakeonlan.WakeOnLan.DEFAULT_PORT"><code class="docutils literal notranslate"><span class="pre">WakeOnLan.DEFAULT_PORT</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.wakeonlan.wakeonlan.WakeOnLan.create_packet"><code class="docutils literal notranslate"><span class="pre">WakeOnLan.create_packet()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.wakeonlan.wakeonlan.WakeOnLan.send_packet"><code class="docutils literal notranslate"><span class="pre">WakeOnLan.send_packet()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id34">Widget</a><ul>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern"><code class="docutils literal notranslate"><span class="pre">WavePattern</span></code></a><ul>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern.start"><code class="docutils literal notranslate"><span class="pre">WavePattern.start()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern.stop"><code class="docutils literal notranslate"><span class="pre">WavePattern.stop()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern.animate"><code class="docutils literal notranslate"><span class="pre">WavePattern.animate()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern.paintEvent"><code class="docutils literal notranslate"><span class="pre">WavePattern.paintEvent()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.widget.WavePattern.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">WavePattern.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 </ul>
