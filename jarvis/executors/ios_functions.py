@@ -49,7 +49,7 @@ def location_services(device: AppleDevice) -> dict | None:
         Dictionary of location information.
     """
     try:
-        if raw_location := device.location():
+        if raw_location := device.location:
             return location.get_location_from_coordinates(
                 coordinates=(raw_location["latitude"], raw_location["longitude"])
             )
@@ -137,7 +137,7 @@ def locate(phrase: str) -> None:
     else:
         speaker.speak(text=f"Your {before_keyword} should be ringing now {models.env.title}!")
     speaker.speak(text="Would you like to get the location details?", run=True)
-    if not (phrase_location := listener.listen()):
+    if not (phrase_location := listener.listen(timeout=3, phrase_time_limit=5)):
         return
     elif not word_match.word_match(phrase=phrase_location, match_list=keywords.keywords["ok"]):
         return
@@ -145,7 +145,7 @@ def locate(phrase: str) -> None:
     locate_device(target_device=target_device)
     if models.env.icloud_recovery:
         speaker.speak(text="I can also enable lost mode. Would you like to do it?", run=True)
-        phrase_lost = listener.listen()
+        phrase_lost = listener.listen(timeout=3, phrase_time_limit=5)
         if word_match.word_match(phrase=phrase_lost, match_list=keywords.keywords["ok"]):
             target_device.lost_device(number=models.env.icloud_recovery, text="Return my phone immediately.")
             speaker.speak(text="I've enabled lost mode on your phone.")
