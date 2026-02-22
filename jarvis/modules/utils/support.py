@@ -12,7 +12,6 @@ import string
 import sys
 import time
 from datetime import datetime, timedelta, timezone
-from http.client import HTTPSConnection
 from typing import Any, Dict, Iterable, List, Tuple
 
 import dateutil.tz
@@ -26,7 +25,7 @@ from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
 from jarvis.modules.logger import logger, multiprocessing_logger
-from jarvis.modules.models import enums, models
+from jarvis.modules.models import models
 from jarvis.modules.utils import shared, util
 
 ENGINE = inflect.engine()
@@ -75,7 +74,7 @@ def hostname_to_ip(hostname: str, localhost: bool = True) -> List[str] | None:
         return _ipaddr_list
     else:
         if localhost:
-            ip_addr = internet.ip_address()
+            ip_addr = internet.private_ip()
             if _ipaddr_list[0].split(".")[0] == ip_addr.split(".")[0]:
                 return _ipaddr_list
             else:
@@ -609,29 +608,6 @@ def stop_process(pid: int) -> None:
         pass
     except psutil.AccessDenied as error:
         logger.error(error)
-
-
-def connected_to_network() -> bool:
-    """Function to check internet connection status.
-
-    Returns:
-        bool:
-        True if connection is active, False otherwise.
-    """
-    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        if models.settings.os == enums.SupportedPlatforms.windows:
-            # Recreate a new connection everytime
-            connection = HTTPSConnection("8.8.8.8", timeout=5)
-            connection.request("HEAD", "/")
-        else:
-            socket_.connect(("8.8.8.8", 80))
-        return True
-    except OSError as error:
-        logger.error("OSError [%d]: %s", error.errno, error.strerror)
-    except Exception as error:
-        logger.critical(error)
-    return False
 
 
 def pre_processor(func_name: str, impact_list: List[str]) -> None:

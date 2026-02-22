@@ -190,7 +190,7 @@ def start() -> None:
     controls.starter()
     # Instantiate the object here, so validations go through first
     activator = Activator()
-    if internet.ip_address() and internet.public_ip_info():
+    if internet.private_ip() and internet.public_ip_info():
         support.write_screen(text=f"INTERNET::Connected to {internet.get_connection_info() or 'the internet'}.")
     else:
         support.write_screen("Trying to toggle WiFi")

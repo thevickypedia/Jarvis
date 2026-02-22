@@ -4386,8 +4386,8 @@
 <section id="module-jarvis.executors.internet">
 <span id="internet"></span><h1>Internet<a class="headerlink" href="#module-jarvis.executors.internet" title="Link to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.internet.ip_address">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">ip_address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.ip_address" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.internet.private_ip">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">private_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.private_ip" title="Link to this definition">¶</a></dt>
 <dd><p>Uses simple check on network id to see if it is connected to local host or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -4395,20 +4395,6 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.internet.vpn_checker">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">vpn_checker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="headerlink" href="#jarvis.executors.internet.vpn_checker" title="Link to this definition">¶</a></dt>
-<dd><p>Uses simple check on network id to see if it is connected to local host or not.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns a <code class="docutils literal notranslate"><span class="pre">False</span></code> flag if VPN is detected, else the IP address.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool or str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4431,8 +4417,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.internet.get_public_ip">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">get_public_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.get_public_ip" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.internet.public_ip">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.internet.</span></span><span class="sig-name descname"><span class="pre">public_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.internet.public_ip" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves public IP address from various sources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -9818,20 +9804,6 @@ A <code class="docutils literal notranslate"><span class="pre">&#64;retry</span>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.modules.utils.support.connected_to_network">
-<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">connected_to_network</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.connected_to_network" title="Link to this definition">¶</a></dt>
-<dd><p>Function to check internet connection status.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if connection is active, False otherwise.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.modules.utils.support.pre_processor">
 <span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">pre_processor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impact_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.pre_processor" title="Link to this definition">¶</a></dt>
 <dd><p>Pre-processor for initiating a dedicated process for microphone plotter and wake word detection widget.</p>
@@ -12798,10 +12770,9 @@ Behavior depends on the current state:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.internet">Internet</a><ul>
-<li><a class="reference internal" href="#jarvis.executors.internet.ip_address"><code class="docutils literal notranslate"><span class="pre">ip_address()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.internet.vpn_checker"><code class="docutils literal notranslate"><span class="pre">vpn_checker()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.internet.private_ip"><code class="docutils literal notranslate"><span class="pre">private_ip()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.internet.check_ip_version"><code class="docutils literal notranslate"><span class="pre">check_ip_version()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.executors.internet.get_public_ip"><code class="docutils literal notranslate"><span class="pre">get_public_ip()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.internet.public_ip"><code class="docutils literal notranslate"><span class="pre">public_ip()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.internet.get_and_store_ip_data"><code class="docutils literal notranslate"><span class="pre">get_and_store_ip_data()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.internet.public_ip_info"><code class="docutils literal notranslate"><span class="pre">public_ip_info()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.internet.ip_info"><code class="docutils literal notranslate"><span class="pre">ip_info()</span></code></a></li>
@@ -13554,7 +13525,6 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.time_converter"><code class="docutils literal notranslate"><span class="pre">time_converter()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.remove_file"><code class="docutils literal notranslate"><span class="pre">remove_file()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.stop_process"><code class="docutils literal notranslate"><span class="pre">stop_process()</span></code></a></li>
-<li><a class="reference internal" href="#jarvis.modules.utils.support.connected_to_network"><code class="docutils literal notranslate"><span class="pre">connected_to_network()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.pre_processor"><code class="docutils literal notranslate"><span class="pre">pre_processor()</span></code></a></li>
 </ul>
 </li>

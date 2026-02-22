@@ -103,7 +103,8 @@ def television(phrase: str) -> None:
         Thread(target=support.unrecognized_dumper, args=[{"TV": phrase}]).start()
         return
 
-    if not internet.vpn_checker():
+    if not internet.private_ip():
+        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to get the private IP address.")
         return
 
     if (smart_devices := files.get_smart_devices()) and (tv_mapping := get_tv(data=smart_devices)):

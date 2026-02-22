@@ -167,7 +167,8 @@ def google_home(device: str = None, file: str = None) -> None:
         device: Name of the Google home device on which the music has to be played.
         file: Scanned audio file to be played.
     """
-    if not (network_id := internet.vpn_checker()):
+    if not (ip_address := internet.private_ip()):
+        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to get the private IP address.")
         return
 
     if not shared.called_by_offline:
@@ -175,7 +176,7 @@ def google_home(device: str = None, file: str = None) -> None:
             text=f"Scanning your IP range for Google Home devices {models.env.title}!",
             run=True,
         )
-    network_id = ".".join(network_id.split(".")[:3])
+    network_id = ".".join(ip_address.split(".")[:3])
 
     def ip_scan(host_id: int) -> Tuple[str, str] | None:
         """Scans the IP range using the received args as host id in an IP address.

@@ -6,6 +6,7 @@ import subprocess
 import time
 import urllib.error
 import urllib.request
+from http.client import HTTPSConnection
 from multiprocessing import Process
 from typing import Dict
 
@@ -21,50 +22,30 @@ from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, support
 
 
-def ip_address() -> str | None:
+def private_ip(raise_error: bool = False) -> str | None:
     """Uses simple check on network id to see if it is connected to local host or not.
 
     Returns:
         str:
         Private IP address of host machine.
     """
-    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        socket_.connect(("8.8.8.8", 80))
+        if models.settings.os == enums.SupportedPlatforms.windows:
+            connection = HTTPSConnection("8.8.8.8", timeout=3)
+            connection.request("HEAD", "/")
+            ip_address_ = connection.getresponse().read().decode().strip()
+            connection.close()
+        else:
+            socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            socket_.connect(("8.8.8.8", 80))
+            ip_address_ = socket_.getsockname()[0]
+            socket_.close()
     except OSError as error:
+        if raise_error:
+            raise
         logger.error(error)
         return None
-    ip_address_ = socket_.getsockname()[0]
-    socket_.close()
     return ip_address_
-
-
-# TODO: Remove vpn_checker
-def vpn_checker() -> bool | str:
-    """Uses simple check on network id to see if it is connected to local host or not.
-
-    Returns:
-        bool or str:
-        Returns a ``False`` flag if VPN is detected, else the IP address.
-    """
-    if not (ip_address_ := ip_address()):
-        speaker.speak(text=f"I was unable to connect to the internet {models.env.title}! Please check your connection.")
-        return False
-    if ip_address_.startswith("192") or ip_address_.startswith("127"):
-        return ip_address_
-    else:
-        if info := public_ip_info():
-            speaker.speak(
-                text=f"You have your VPN turned on {models.env.title}! A connection has been detected to "
-                f"{info.get('ip')} at {info.get('city')} {info.get('region')}, "
-                f"maintained by {info.get('org')}. Please note that none of the home integrations will "
-                "work with VPN enabled."
-            )
-        else:
-            speaker.speak(
-                text=f"I was unable to connect to the internet {models.env.title}! " "Please check your connection."
-            )
-        return False
 
 
 def check_ip_version(ip_addr: str) -> bool:
@@ -86,7 +67,7 @@ def check_ip_version(ip_addr: str) -> bool:
     return False
 
 
-def get_public_ip() -> str | None:
+def public_ip() -> str | None:
     """Retrieves public IP address from various sources.
 
     Returns:
@@ -151,7 +132,7 @@ def public_ip_info() -> Dict[str, str]:
         timestamp = ip_data.get("timestamp", current_ts)
         if current_ts - timestamp < 86_400:
             return ip_data
-    ip_addr = get_public_ip()
+    ip_addr = public_ip()
     return get_and_store_ip_data("https://ipinfo.io/json", ip_addr) or get_and_store_ip_data(
         f"https://ipinfo.io/{ip_addr}/json", ip_addr
     )
@@ -164,20 +145,20 @@ def ip_info(phrase: str) -> None:
         phrase: Takes the phrase spoken as an argument.
     """
     if "public" in phrase.lower():
-        if not ip_address():
+        if not private_ip():
             speaker.speak(text=f"You are not connected to the internet {models.env.title}!")
             return
         if ssid := get_connection_info():
             ssid = f"for the connection {ssid} "
         else:
             ssid = ""
-        if public_ip := public_ip_info():
-            output = f"My public IP {ssid}is {public_ip.get('ip')}"
+        if public_ip_addr := public_ip_info():
+            output = f"My public IP {ssid}is {public_ip_addr.get('ip')}"
         else:
             output = f"I was unable to fetch the public IP {models.env.title}!"
     else:
-        if private_ip := ip_address():
-            output = f"My local IP address for {socket.gethostname().split('.')[0]} is {private_ip}"
+        if private_ip_addr := private_ip():
+            output = f"My private IP address for {socket.gethostname().split('.')[0]} is {private_ip_addr}"
         else:
             output = f"I was unable to fetch the private IP address {models.env.title}!"
     speaker.speak(text=output)

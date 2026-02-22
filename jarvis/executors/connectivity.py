@@ -1,11 +1,10 @@
-import socket
 import threading
-from http.client import HTTPSConnection
 
 import pywifi
 
+from jarvis.executors import internet
 from jarvis.modules.logger import logger
-from jarvis.modules.models import classes, enums, models
+from jarvis.modules.models import classes, models
 
 
 async def wifi() -> None:
@@ -15,18 +14,8 @@ async def wifi() -> None:
         WiFiConnection:
         Returns the connection object to keep alive, None to stop calling this function.
     """
-    socket_ = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        if models.settings.os == enums.SupportedPlatforms.windows:
-            # Recreate a new connection everytime
-            connection = HTTPSConnection("8.8.8.8", timeout=3)
-            connection.request("HEAD", "/")
-            ip_addr = connection.getresponse().read().decode().strip()
-            connection.close()
-        else:
-            socket_.connect(("8.8.8.8", 80))
-            ip_addr = socket_.getsockname()[0]
-            socket_.close()
+        ip_addr = internet.private_ip(raise_error=True)
         if classes.wifi_connection.unknown_errors:
             logger.info("Connection established with IP: %s. Resetting flags.", ip_addr)
             classes.wifi_connection.unknown_errors = 0

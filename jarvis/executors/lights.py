@@ -116,7 +116,8 @@ def lights(phrase: str) -> None:
     Args:
         phrase: Takes the phrase spoken as an argument.
     """
-    if not internet.vpn_checker():
+    if not internet.private_ip():
+        speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to get the private IP address.")
         return
 
     if (smart_devices := files.get_smart_devices()) and (lights_map := get_lights(data=smart_devices)):
