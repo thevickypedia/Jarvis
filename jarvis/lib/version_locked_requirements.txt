@@ -1,6 +1,6 @@
 googlehomepush==0.1.0
-holidays==0.90
-icalendar==7.0.0
+holidays==0.91
+icalendar==7.0.1
 jlrpy==1.7.1
 newsapi-python==0.2.7
 opencv-python==4.13.0.92
@@ -8,7 +8,7 @@ packaging==26.0
 PyAudio==0.2.14
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyhtcc==0.1.57
-pyicloud==2.3.0
+pyicloud==2.4.1
 pywebostv==0.8.9
 robin-stocks==3.4.0
 sounddevice==0.5.5

@@ -264,17 +264,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="jarvis.lib.installer.thread_worker">
-<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#jarvis.lib.installer.thread_worker" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">thread_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.thread_worker" title="Link to this definition">¶</a></dt>
 <dd><p>Thread worker that runs subprocess commands in parallel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>commands</strong> – List of commands to be executed simultaneously.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a boolean flag to indicate if there was a failure.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> – Yields the requirement that failed to install.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -289,6 +286,41 @@
 <dt class="sig sig-object py" id="jarvis.lib.installer.main_uninstall">
 <span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">main_uninstall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.lib.installer.main_uninstall" title="Link to this definition">¶</a></dt>
 <dd><p>Uninstalls all the main packages installed from pypi repository.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.extract_requirement">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">extract_requirement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.extract_requirement" title="Link to this definition">¶</a></dt>
+<dd><p>Extract requirements from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – Requirement file path.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>str</em> – Yields each requirement as a string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.lib.installer.stage_install">
+<span class="sig-prename descclassname"><span class="pre">jarvis.lib.installer.</span></span><span class="sig-name descname"><span class="pre">stage_install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extras</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.lib.installer.stage_install" title="Link to this definition">¶</a></dt>
+<dd><p>Stage install command for each requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Requirement path.</p></li>
+<li><p><strong>ope</strong> – Operation to perform. Can be <code class="docutils literal notranslate"><span class="pre">install</span></code> or <code class="docutils literal notranslate"><span class="pre">uninstall</span></code></p></li>
+<li><p><strong>extras</strong> – Extra flags like <code class="docutils literal notranslate"><span class="pre">--no-cache-dir</span></code> or <code class="docutils literal notranslate"><span class="pre">--upgrade</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of commands for staged requirements.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -12185,6 +12217,8 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.lib.installer.thread_worker"><code class="docutils literal notranslate"><span class="pre">thread_worker()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.lib.installer.dev_uninstall"><code class="docutils literal notranslate"><span class="pre">dev_uninstall()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.lib.installer.main_uninstall"><code class="docutils literal notranslate"><span class="pre">main_uninstall()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.lib.installer.extract_requirement"><code class="docutils literal notranslate"><span class="pre">extract_requirement()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.lib.installer.stage_install"><code class="docutils literal notranslate"><span class="pre">stage_install()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.lib.installer.os_agnostic"><code class="docutils literal notranslate"><span class="pre">os_agnostic()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.lib.installer.init"><code class="docutils literal notranslate"><span class="pre">init()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.lib.installer.dev_install"><code class="docutils literal notranslate"><span class="pre">dev_install()</span></code></a></li>

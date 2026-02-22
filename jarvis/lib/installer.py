@@ -23,12 +23,15 @@ import string
 import subprocess
 import sys
 import time
+from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from multiprocessing.pool import ThreadPool
 from typing import List, NoReturn
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
+WORKERS = os.cpu_count()
 if os.environ.get("JARVIS_VERBOSITY", "-1") == "1":
     verbose = " --verbose"
 else:
@@ -378,27 +381,28 @@ def os_specific_pip() -> List[str] | NoReturn:
     raise
 
 
-def thread_worker(commands: List[str]) -> bool:
+def thread_worker(commands: List[str]) -> Generator[str]:
     """Thread worker that runs subprocess commands in parallel.
 
     Args:
         commands: List of commands to be executed simultaneously.
 
-    Returns:
-        bool:
-        Returns a boolean flag to indicate if there was a failure.
+    Yields:
+        str:
+        Yields the requirement that failed to install.
     """
     futures = {}
-    with ThreadPoolExecutor(max_workers=len(commands)) as executor:
+    with ThreadPoolExecutor(max_workers=WORKERS) as executor:
         for iterator in commands:
             future = executor.submit(run_subprocess, iterator)
             futures[future] = iterator
-    failed = False
     for future in as_completed(futures):
         if future.exception():
-            failed = True
-            logger.error(f"Thread processing for {futures[future]!r} received an exception: {future.exception()!r}")
-    return failed
+            logger.error(f"Thread processing for {futures[future]!r} received an exception")
+            if match := re.search(r"'(.*?)'", futures[future]):
+                yield match.group(1)
+            else:
+                raise
 
 
 def dev_uninstall() -> None:
@@ -439,23 +443,75 @@ def main_uninstall() -> None:
     logger.info(pretext())
 
 
+def extract_requirement(filepath: str) -> Generator[str]:
+    """Extract requirements from a file.
+
+    Args:
+        filepath: Requirement file path.
+
+    Yields:
+        str:
+        Yields each requirement as a string.
+    """
+    with open(filepath) as file:
+        for line in file:
+            if requirement := line.strip():
+                if requirement.startswith("#"):
+                    continue
+                if "#" in requirement:
+                    requirement = requirement.split("#")[0].strip()
+                yield requirement
+
+
+def stage_install(path: str, ope: str, extras: List[str]) -> List[str]:
+    """Stage install command for each requirement.
+
+    Args:
+        path: Requirement path.
+        ope: Operation to perform. Can be ``install`` or ``uninstall``
+        extras: Extra flags like ``--no-cache-dir`` or ``--upgrade``
+
+    Returns:
+        List[str]:
+        List of commands for staged requirements.
+    """
+    return [
+        f"{env.exec} pip {ope}{verbose} {' '.join(extras)} {requirement!r}" for requirement in extract_requirement(path)
+    ]
+
+
 def os_agnostic() -> None:
     """Function to handle os-agnostic installations."""
     logger.info(pretext())
     logger.info(center("Installing OS agnostic dependencies"))
     logger.info(pretext())
     with Runtime() as runtime:
-        exception = thread_worker(
-            [
-                f"{env.exec} pip install{verbose} --no-cache -r {requirements.pinned}",
-                f"{env.exec} pip install{verbose} --no-cache -r {requirements.locked}",
-                f"{env.exec} pip install{verbose} --no-cache --upgrade -r {requirements.upgrade}",
-            ]
+        a = ThreadPool(processes=1).apply_async(
+            func=thread_worker,
+            args=(stage_install(path=requirements.pinned, ope="install", extras=["--no-cache-dir"]),),
         )
+        b = ThreadPool(processes=1).apply_async(
+            func=thread_worker,
+            args=(stage_install(path=requirements.locked, ope="install", extras=["--no-cache-dir"]),),
+        )
+        c = ThreadPool(processes=1).apply_async(
+            func=thread_worker,
+            args=(stage_install(path=requirements.upgrade, ope="install", extras=["--no-cache-dir", "--upgrade"]),),
+        )
+        lists = {
+            requirements.pinned: list(a.get()),
+            requirements.locked: list(b.get()),
+            requirements.upgrade: list(c.get()),
+        }
     logger.info(pretext())
-    if exception:
-        logger.error(center("One or more installation threads have failed!!"))
+    if any(lists.values()):
+        failed = sum(len(v) for v in lists.values())
+        logger.error(center(f"{failed} installation thread(s) failed!!"))
         logger.error(center("Please set JARVIS_VERBOSITY=1 and retry to identify root cause."))
+        for name, value in lists.items():
+            if value:
+                failed_req = "\n".join(value)
+                print(f"\n{name}:\n\t\t{failed_req}")
     else:
         logger.info(center(f"Installation completed in {runtime.get()}"))
     logger.info(pretext())
@@ -487,8 +543,8 @@ def init() -> None:
         env.install_uv()
     else:
         env.exec += " -m"
-    # fixme: Pinned version of setuptools to avoid deprecation warning due to import pkg_resources in dlib
-    #   Future plan is to replace face recognition script with docker container (enable remote evaluation)
+    # NOTE: Pinned version of setuptools
+    #   'pyobjc' requires 'pkg_resources' but it was removed in 'setuptools 81+'
     run_subprocess(f"{env.exec} pip install{verbose} setuptools==76.0.0")
     run_subprocess(f"{env.exec} pip install{verbose} --upgrade pip wheel")
 
