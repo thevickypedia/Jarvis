@@ -1,6 +1,20 @@
 Release Notes
 =============
 
+v8.1.0 (02/22/2026)
+-------------------
+- `a44bda3 <https://github.com/thevickypedia/Jarvis/commit/a44bda3bbf90ff2fb8b8314277531a0eebdf6c49>`_ chore: Release ``v8.1.0``
+- `65fb506 <https://github.com/thevickypedia/Jarvis/commit/65fb506114c6b31566579ae1afc7bb941da1462b>`_ fix: Replace iOS device location's function call with a property call
+- `16271fd <https://github.com/thevickypedia/Jarvis/commit/16271fd7ca7799fdc60e809557d1d74f969aabec>`_ perf: Improve installation stability, print exactly which module failed to install and bump dependency versions
+- `05ef754 <https://github.com/thevickypedia/Jarvis/commit/05ef7548a38f577d7883a256cd40aaf9021b4ecb>`_ perf: Re-use private IP address fetcher and remove ``vpn_checker`` as a preflight check for home IOT automation
+- `fb76e07 <https://github.com/thevickypedia/Jarvis/commit/fb76e0777c068ab6918cde1194cda0456426fbfd>`_ fix: Update process map payload to a list of impact
+- `d2c70ba <https://github.com/thevickypedia/Jarvis/commit/d2c70ba2f010b5212dceee8298e945c5d5621d21>`_ feat: Bring back microphone plotter with better tracking and re-usability
+- `23688a6 <https://github.com/thevickypedia/Jarvis/commit/23688a60b050cdf0797d7fd831cb7b9b4bdc17cb>`_ feat: Add a default widget to track listener status
+- `269f525 <https://github.com/thevickypedia/Jarvis/commit/269f525ede67012e2f3fab176a8f610503683dce>`_ refactor: Remove ``limited`` option
+- `4d4a0bd <https://github.com/thevickypedia/Jarvis/commit/4d4a0bd7cb96829da1f1246b2f3d8d838256a560>`_ refactor: Remove plot mic functionality
+- `b13e0ad <https://github.com/thevickypedia/Jarvis/commit/b13e0ad738811e14db47c6c4c38a40103730c13f>`_ fix: Avoid skipping a task in automation when another task at the same time has the ``day`` key
+- `15fee51 <https://github.com/thevickypedia/Jarvis/commit/15fee516909c440d4223c49653c5c08b017585aa>`_ chore: Update release notes for v8.0.0
+
 v8.0.0 (02/15/2026)
 -------------------
 - `6910a0d <https://github.com/thevickypedia/Jarvis/commit/6910a0d3826d0562adc6c56c0cf833e70ea60121>`_ chore: Release ``v8.0.0``
