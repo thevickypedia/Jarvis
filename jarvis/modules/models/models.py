@@ -192,6 +192,7 @@ elif env.temperature_unit == TemperatureUnits.METRIC:
 
 if settings.pname in (
     ProcessNames.jarvis,
+    ProcessNames.plot_mic,
     ProcessNames.pre_commit,
     ProcessNames.startup_script,
     ProcessNames.crontab_executor,

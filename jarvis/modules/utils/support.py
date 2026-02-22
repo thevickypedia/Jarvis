@@ -25,7 +25,7 @@ from dateutil import parser, relativedelta
 from jarvis.executors import internet, others, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import keywords
-from jarvis.modules.logger import logger
+from jarvis.modules.logger import logger, multiprocessing_logger
 from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared, util
 
@@ -632,3 +632,34 @@ def connected_to_network() -> bool:
     except Exception as error:
         logger.critical(error)
     return False
+
+
+def pre_processor(func_name: str, purpose: str) -> None:
+    """Pre-processor for initiating a dedicated process for microphone plotter and wake word detection widget.
+
+    Args:
+        func_name: Function name to update in the database.
+        purpose: Usage of the function to update the impact in process mapping.
+    """
+    multiprocessing_logger(filename=os.path.join("logs", f"{func_name}_%d-%m-%Y.log"))
+
+    subprocess_id = os.getpid()
+    logger.info("Updating process ID [%d] in [%s] children table.", subprocess_id, func_name)
+    with models.db.connection as connection:
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE children SET {func_name}=null")
+        cursor.execute(f"INSERT or REPLACE INTO children ({func_name}) VALUES (?);", (subprocess_id,))
+        connection.commit()
+
+    logger.info("Updating process ID [%d] in [%s] processes mapping.", subprocess_id, func_name)
+    if os.path.isfile(models.fileio.processes):
+        with open(models.fileio.processes) as file:
+            dump = yaml.load(stream=file, Loader=yaml.FullLoader) or {}
+        if not dump.get(func_name):
+            logger.critical("ATTENTION::Missing %s's process ID in '%s'" % (func_name, models.fileio.processes))
+        # WATCH OUT: for changes in docstring in "processor.py -> create_process_mapping() -> Handles -> plot_mic"
+        dump[func_name] = {subprocess_id: purpose}
+        with open(models.fileio.processes, "w") as file:
+            yaml.dump(data=dump, stream=file)
+    else:
+        logger.critical("ATTENTION::Missing '%s'", models.fileio.processes)

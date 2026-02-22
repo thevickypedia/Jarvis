@@ -5,8 +5,6 @@
 
 """
 
-from multiprocessing import Pipe, Process
-
 from playsound import playsound
 from pydantic import PositiveFloat, PositiveInt
 from speech_recognition import (
@@ -17,7 +15,7 @@ from speech_recognition import (
     WaitTimeoutError,
 )
 
-from jarvis.executors import files, widget, word_match
+from jarvis.executors import files, word_match
 from jarvis.modules.audio import speaker, wave
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
@@ -28,7 +26,6 @@ recognizer = Recognizer()
 spectrum = wave.Spectrum()
 microphone = Microphone(device_index=models.env.microphone_index)
 
-parent_conn = None
 if models.settings.pname == enums.ProcessNames.jarvis:
     recognizer_settings = files.get_recognizer()
     recognizer.energy_threshold = recognizer_settings.energy_threshold
@@ -36,9 +33,6 @@ if models.settings.pname == enums.ProcessNames.jarvis:
     recognizer.phrase_threshold = recognizer_settings.phrase_threshold
     recognizer.dynamic_energy_threshold = recognizer_settings.dynamic_energy_threshold
     recognizer.non_speaking_duration = recognizer_settings.non_speaking_duration
-    parent_conn, child_conn = Pipe()
-    process = Process(target=widget.start, args=(child_conn,))
-    process.start()
 
 
 def listen(
@@ -61,9 +55,9 @@ def listen(
     """
     with microphone as source:
         try:
-            spectrum.activate(sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit, connection=parent_conn)
+            spectrum.activate(sound=sound, timeout=timeout, phrase_time_limit=phrase_time_limit)
             listened = recognizer.listen(source=source, timeout=timeout, phrase_time_limit=phrase_time_limit)
-            spectrum.deactivate(sound=sound, connection=parent_conn)
+            spectrum.deactivate(sound=sound)
             # noinspection PyUnresolvedReferences
             recognized, confidence = recognizer.recognize_google(audio_data=listened, with_confidence=True)
             # SafetyNet: Should never meet the condition for called by offline

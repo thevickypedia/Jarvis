@@ -1,11 +1,24 @@
-from multiprocessing import Process
-from typing import Dict, List
+import os
+import shutil
+from datetime import datetime
+from multiprocessing import Pipe, Process
+from typing import Dict, List, NoReturn
 
 import yaml
 
 from jarvis.api.server import jarvis_api
+from jarvis.executors import crontab, widget
 from jarvis.modules.logger import logger
+from jarvis.modules.microphone import plotter
 from jarvis.modules.models import enums, models
+from jarvis.modules.utils import shared
+
+
+def assert_process_names() -> None | NoReturn:
+    """Assert process names with actual function names."""
+    assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
+    assert plotter.plot_mic.__name__ == enums.ProcessNames.plot_mic
+    assert widget.listener_widget.__name__ == enums.ProcessNames.listener_widget
 
 
 def base() -> Dict[str, Dict[str, Process | List[str]]]:
@@ -15,8 +28,7 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
         Dict[str, Dict[str, Process | List[str]]]:
         Nested dictionary of process mapping.
     """
-    assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
-    return {
+    base_mapping = {
         # process map will not be removed
         jarvis_api.__name__: {
             "process": Process(target=jarvis_api),
@@ -37,6 +49,29 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
             ],
         }
     }
+    if models.env.plot_mic:
+        # noinspection PyDeprecation
+        statement = shutil.which(cmd="python") + " " + plotter.__file__
+        # process map will be removed if plot_mic is disabled
+        base_mapping[plotter.plot_mic.__name__] = {
+            "process": Process(
+                target=crontab.executor,
+                kwargs={
+                    "statement": statement,
+                    "log_file": datetime.now().strftime(os.path.join("logs", "mic_plotter_%d-%m-%Y.log")),
+                    "process_name": plotter.plot_mic.__name__,
+                },
+            ),
+            "impact": ["Realtime microphone usage plotter"],
+        }
+    if models.env.listener_widget:
+        parent_conn, child_conn = Pipe()
+        base_mapping[widget.listener_widget.__name__] = {
+            "process": Process(target=widget.listener_widget, args=(child_conn,)),
+            "impact": ["Listener widget"],
+        }
+        shared.widget_connection = parent_conn
+    return base_mapping
 
 
 def get() -> Dict[str, Dict[int, List[str]]]:

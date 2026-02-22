@@ -46,6 +46,7 @@ class Tables(BaseModel):
             "guard",
             "surveillance",
             "plot_mic",
+            "listener_widget",
             "undefined",
         ),
     )

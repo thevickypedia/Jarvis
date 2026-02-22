@@ -5,7 +5,6 @@ from playsound import playsound
 from pydantic import PositiveFloat, PositiveInt
 
 from jarvis.api.routers import routes
-from jarvis.executors.widget import Connection
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.exceptions import EgressErrors
 from jarvis.modules.logger import logger
@@ -45,7 +44,6 @@ class Spectrum:
         sound: bool,
         timeout: PositiveInt | PositiveFloat,
         phrase_time_limit: PositiveInt | PositiveFloat,
-        connection: Connection = None,
     ) -> None:
         """Activate the listener spectrum by making a request to the activate URL.
 
@@ -53,23 +51,21 @@ class Spectrum:
             sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
             timeout: Custom timeout for functions expecting a longer wait time.
             phrase_time_limit: Custom time limit for functions expecting a longer user input.
-            connection: Multiprocessing connection object to start widget wave.
         """
-        connection.send("start") if connection else None
+        shared.widget_connection.send("start") if shared.widget_connection else None
         if models.env.listener_spectrum_key and not shared.called_by_offline:
             Thread(target=self.make_request, args=(self.ACTIVATE,), daemon=True).start()
         if sound:
             playsound(sound=models.indicators.start, block=False)
         support.write_screen(text=f"Listener activated [{timeout}: {phrase_time_limit}]")
 
-    def deactivate(self, sound: bool, connection: Connection = None) -> None:
+    def deactivate(self, sound: bool) -> None:
         """Deactivate the listener spectrum by making a request to the deactivate URL.
 
         Args:
             sound: Flag whether to play the listener indicator sound. Defaults to True unless set to False.
-            connection: Multiprocessing connection object to stop widget wave.
         """
-        connection.send("stop") if connection else None
+        shared.widget_connection.send("stop") if shared.widget_connection else None
         if models.env.listener_spectrum_key and not shared.called_by_offline:
             Thread(target=self.make_request, args=(self.DEACTIVATE,), daemon=True).start()
         if sound:

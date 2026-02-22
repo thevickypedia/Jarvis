@@ -1,20 +1,14 @@
 import sys
 
-if sys.platform != "win32":
-    # noinspection PyProtectedMember
-    from multiprocessing.connection import Connection
-else:
-    # noinspection PyProtectedMember
-    from multiprocessing.connection import PipeConnection as Connection
-
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
 
 from jarvis.modules.logger import logger
 from jarvis.modules.microphone import widget
+from jarvis.modules.utils import shared, support
 
 
-def start(connection: Connection) -> None:
+def listener_widget(connection: shared.Connection) -> None:
     """Run the UI event loop process for the WavePattern visualizer.
 
     See Also:
@@ -40,8 +34,10 @@ def start(connection: Connection) -> None:
         SystemExit:
         Raised when the Qt application event loop exits.
     """
+    support.pre_processor(func_name=listener_widget.__name__, purpose="Listener widget for wake word detection")
     app = QApplication(sys.argv)
     window = widget.WavePattern()
+    logger.info("Displaying the WavePattern window.")
     window.show()
 
     def check_pipe() -> None:
@@ -63,12 +59,17 @@ def start(connection: Connection) -> None:
             Caught internally if the controller process disconnects.
         """
         try:
-            while connection.poll():  # Only read if data exists
+            # Only read if data exists
+            while connection.poll():
                 cmd = connection.recv()
                 if cmd == "start":
+                    logger.debug("Starting wave animation.")
                     window.start()
                 elif cmd == "stop":
+                    logger.debug("Stopping wave animation.")
                     window.stop()
+                else:
+                    logger.error("Unknown command received: %s", cmd)
         except EOFError:
             logger.error("Controller disconnected")
             timer.stop()

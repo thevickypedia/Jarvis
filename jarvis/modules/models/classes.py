@@ -232,6 +232,7 @@ class EnvConfig(BaseSettings):
     title: str = "sir"
     name: str = "Vignesh"
     website: HttpUrl | List[HttpUrl] = Field(default_factory=list)
+    plot_mic: bool = True
 
     # Self-hosted notification service
     ntfy_url: HttpUrl | None = None
@@ -316,6 +317,7 @@ class EnvConfig(BaseSettings):
     listener_timeout: PositiveFloat | PositiveInt = 3
     listener_phrase_limit: PositiveFloat | PositiveInt = 5
     listener_spectrum_key: str | None = None
+    listener_widget: bool = True
     recognizer_confidence: float | PositiveInt = Field(0, le=1, ge=0)
 
     # Telegram config

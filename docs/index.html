@@ -661,6 +661,136 @@
 </dd></dl>
 
 </section>
+<section id="module-jarvis.modules.microphone.plotter">
+<span id="realtime-microphone-usage"></span><h1>Realtime Microphone Usage<a class="headerlink" href="#module-jarvis.modules.microphone.plotter" title="Link to this heading">¶</a></h1>
+<p>Module to plot realtime microphone spectrum using matplotlib.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GraphMic</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://python-sounddevice.readthedocs.io/en/0.3.14/examples.html#plot-microphone-signal-s-in-real-time">sound device readthedocs</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings" title="Link to this definition">¶</a></dt>
+<dd><p>Wraps all the required options in an object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Settings</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.channels">
+<span class="sig-name descname"><span class="pre">channels</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.channels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.device">
+<span class="sig-name descname"><span class="pre">device</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.device" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.window">
+<span class="sig-name descname"><span class="pre">window</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.window" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.interval">
+<span class="sig-name descname"><span class="pre">interval</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.interval" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.samplerate">
+<span class="sig-name descname"><span class="pre">samplerate</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.samplerate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.down_sample">
+<span class="sig-name descname"><span class="pre">down_sample</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.down_sample" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.window_size">
+<span class="sig-name descname"><span class="pre">window_size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.window_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.rate">
+<span class="sig-name descname"><span class="pre">rate</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.dark_mode">
+<span class="sig-name descname"><span class="pre">dark_mode</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.dark_mode" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.mapping">
+<span class="sig-name descname"><span class="pre">mapping</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.mapping" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Line2D</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.lines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.Settings.plot_data">
+<span class="sig-name descname"><span class="pre">plot_data</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.Settings.plot_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.list_devices">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">list_devices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DeviceList</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.list_devices" title="Link to this definition">¶</a></dt>
+<dd><p>List audion devices.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.audio_callback">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">audio_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackFlags</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.audio_callback" title="Link to this definition">¶</a></dt>
+<dd><p>This is called (from a separate thread) for each audio block.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.update_plot">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Line2D</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.update_plot" title="Link to this definition">¶</a></dt>
+<dd><p>This is called by matplotlib for each plot update.</p>
+<ul>
+<li><div class="line-block">
+<div class="line">Typically, audio callbacks happen more frequently than plot updates,</div>
+<div class="line">therefore the queue tends to contain multiple blocks of audio data.</div>
+</div>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter.plot_mic">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">plot_mic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplerate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter.plot_mic" title="Link to this definition">¶</a></dt>
+<dd><p>Loads all the arguments into a dict and kicks off the mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channels</strong> – Input channels to plot (default: the first [1])</p></li>
+<li><p><strong>device</strong> – Input device (numeric ID or substring)</p></li>
+<li><p><strong>window</strong> – Visible time slot (default: 200 ms)</p></li>
+<li><p><strong>interval</strong> – Minimum time between plot updates (default: 30 ms)</p></li>
+<li><p><strong>samplerate</strong> – Sampling rate of audio device</p></li>
+<li><p><strong>down_sample</strong> – Display every Nth sample (default: 10)</p></li>
+<li><p><strong>window_size</strong> – Size of the spectrum window (default: 7 inches in width, 5 inches in height)</p></li>
+<li><p><strong>rate</strong> – How quick the graph should be moving on screen (lower is slower, 1000 is pretty quick)</p></li>
+<li><p><strong>dark_mode</strong> – Sets graph background to almost black</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.microphone.plotter._kick_off">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.microphone.plotter.</span></span><span class="sig-name descname"><span class="pre">_kick_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.microphone.plotter._kick_off" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the live microphone signal(s) with matplotlib.</p>
+</dd></dl>
+
+</section>
 <section id="main-module">
 <h1>———-Main Module———-<a class="headerlink" href="#main-module" title="Link to this heading">¶</a></h1>
 </section>
@@ -5134,6 +5264,12 @@
 <section id="module-jarvis.executors.process_map">
 <span id="process-map"></span><h1>Process Map<a class="headerlink" href="#module-jarvis.executors.process_map" title="Link to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="jarvis.executors.process_map.assert_process_names">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">assert_process_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">NoReturn</span></span></span><a class="headerlink" href="#jarvis.executors.process_map.assert_process_names" title="Link to this definition">¶</a></dt>
+<dd><p>Assert process names with actual function names.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="jarvis.executors.process_map.base">
 <span class="sig-prename descclassname"><span class="pre">jarvis.executors.process_map.</span></span><span class="sig-name descname"><span class="pre">base</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Process</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#jarvis.executors.process_map.base" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a base mapping with all the processes handled by Jarvis.</p>
@@ -5968,8 +6104,8 @@
 <section id="module-jarvis.executors.widget">
 <span id="widget"></span><h1>Widget<a class="headerlink" href="#module-jarvis.executors.widget" title="Link to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="jarvis.executors.widget.start">
-<span class="sig-prename descclassname"><span class="pre">jarvis.executors.widget.</span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.widget.start" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="jarvis.executors.widget.listener_widget">
+<span class="sig-prename descclassname"><span class="pre">jarvis.executors.widget.</span></span><span class="sig-name descname"><span class="pre">listener_widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.executors.widget.listener_widget" title="Link to this definition">¶</a></dt>
 <dd><p>Run the UI event loop process for the WavePattern visualizer.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -6403,6 +6539,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.plot_mic">
+<span class="sig-name descname"><span class="pre">plot_mic</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.plot_mic" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.ntfy_url">
 <span class="sig-name descname"><span class="pre">ntfy_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HttpUrl</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.ntfy_url" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -6650,6 +6791,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_spectrum_key">
 <span class="sig-name descname"><span class="pre">listener_spectrum_key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_spectrum_key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.classes.EnvConfig.listener_widget">
+<span class="sig-name descname"><span class="pre">listener_widget</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#jarvis.modules.models.classes.EnvConfig.listener_widget" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7143,6 +7289,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.plot_mic">
+<span class="sig-name descname"><span class="pre">plot_mic</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'plot_mic'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.plot_mic" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.jarvis_api">
 <span class="sig-name descname"><span class="pre">jarvis_api</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'jarvis_api'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.jarvis_api" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7155,6 +7306,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">.env</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.telegram_api">
 <span class="sig-name descname"><span class="pre">telegram_api</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'telegram_api'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.telegram_api" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jarvis.modules.models.enums.ProcessNames.listener_widget">
+<span class="sig-name descname"><span class="pre">listener_widget</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'listener_widget'</span></span><a class="headerlink" href="#jarvis.modules.models.enums.ProcessNames.listener_widget" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -7966,7 +8122,7 @@ If none are found, it falls back to the default file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.audio.wave.Spectrum.activate">
-<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.activate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phrase_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.activate" title="Link to this definition">¶</a></dt>
 <dd><p>Activate the listener spectrum by making a request to the activate URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -7974,7 +8130,6 @@ If none are found, it falls back to the default file.</p>
 <li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
 <li><p><strong>timeout</strong> – Custom timeout for functions expecting a longer wait time.</p></li>
 <li><p><strong>phrase_time_limit</strong> – Custom time limit for functions expecting a longer user input.</p></li>
-<li><p><strong>connection</strong> – Multiprocessing connection object to start widget wave.</p></li>
 </ul>
 </dd>
 </dl>
@@ -7982,14 +8137,11 @@ If none are found, it falls back to the default file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="jarvis.modules.audio.wave.Spectrum.deactivate">
-<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Connection</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.deactivate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.audio.wave.Spectrum.deactivate" title="Link to this definition">¶</a></dt>
 <dd><p>Deactivate the listener spectrum by making a request to the deactivate URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p></li>
-<li><p><strong>connection</strong> – Multiprocessing connection object to stop widget wave.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>sound</strong> – Flag whether to play the listener indicator sound. Defaults to True unless set to False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -9675,6 +9827,20 @@ A <code class="docutils literal notranslate"><span class="pre">&#64;retry</span>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jarvis.modules.utils.support.pre_processor">
+<span class="sig-prename descclassname"><span class="pre">jarvis.modules.utils.support.</span></span><span class="sig-name descname"><span class="pre">pre_processor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#jarvis.modules.utils.support.pre_processor" title="Link to this definition">¶</a></dt>
+<dd><p>Pre-processor for initiating a dedicated process for microphone plotter and wake word detection widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func_name</strong> – Function name to update in the database.</p></li>
+<li><p><strong>purpose</strong> – Usage of the function to update the impact in process mapping.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -12102,6 +12268,29 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.microphone.recognizer.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-jarvis.modules.microphone.plotter">Realtime Microphone Usage</a><ul>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.channels"><code class="docutils literal notranslate"><span class="pre">Settings.channels</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.device"><code class="docutils literal notranslate"><span class="pre">Settings.device</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.window"><code class="docutils literal notranslate"><span class="pre">Settings.window</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.interval"><code class="docutils literal notranslate"><span class="pre">Settings.interval</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.samplerate"><code class="docutils literal notranslate"><span class="pre">Settings.samplerate</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.down_sample"><code class="docutils literal notranslate"><span class="pre">Settings.down_sample</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.window_size"><code class="docutils literal notranslate"><span class="pre">Settings.window_size</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.rate"><code class="docutils literal notranslate"><span class="pre">Settings.rate</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.dark_mode"><code class="docutils literal notranslate"><span class="pre">Settings.dark_mode</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.mapping"><code class="docutils literal notranslate"><span class="pre">Settings.mapping</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.lines"><code class="docutils literal notranslate"><span class="pre">Settings.lines</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.Settings.plot_data"><code class="docutils literal notranslate"><span class="pre">Settings.plot_data</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.list_devices"><code class="docutils literal notranslate"><span class="pre">list_devices()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.audio_callback"><code class="docutils literal notranslate"><span class="pre">audio_callback()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.update_plot"><code class="docutils literal notranslate"><span class="pre">update_plot()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter.plot_mic"><code class="docutils literal notranslate"><span class="pre">plot_mic()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.microphone.plotter._kick_off"><code class="docutils literal notranslate"><span class="pre">_kick_off()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#main-module">———-Main Module———-</a></li>
 <li><a class="reference internal" href="#module-jarvis.main">Jarvis</a><ul>
 <li><a class="reference internal" href="#jarvis.main.constructor"><code class="docutils literal notranslate"><span class="pre">constructor()</span></code></a></li>
@@ -12704,6 +12893,7 @@ Behavior depends on the current state:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.process_map">Process Map</a><ul>
+<li><a class="reference internal" href="#jarvis.executors.process_map.assert_process_names"><code class="docutils literal notranslate"><span class="pre">assert_process_names()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.process_map.base"><code class="docutils literal notranslate"><span class="pre">base()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.process_map.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.executors.process_map.add"><code class="docutils literal notranslate"><span class="pre">add()</span></code></a></li>
@@ -12814,7 +13004,7 @@ Behavior depends on the current state:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.widget">Widget</a><ul>
-<li><a class="reference internal" href="#jarvis.executors.widget.start"><code class="docutils literal notranslate"><span class="pre">start()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.executors.widget.listener_widget"><code class="docutils literal notranslate"><span class="pre">listener_widget()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.executors.word_match">Word Match</a><ul>
@@ -12890,6 +13080,7 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.title"><code class="docutils literal notranslate"><span class="pre">EnvConfig.title</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.name"><code class="docutils literal notranslate"><span class="pre">EnvConfig.name</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.website"><code class="docutils literal notranslate"><span class="pre">EnvConfig.website</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.plot_mic"><code class="docutils literal notranslate"><span class="pre">EnvConfig.plot_mic</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ntfy_url"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ntfy_url</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ntfy_username"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ntfy_username</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.ntfy_password"><code class="docutils literal notranslate"><span class="pre">EnvConfig.ntfy_password</span></code></a></li>
@@ -12940,6 +13131,7 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.listener_timeout"><code class="docutils literal notranslate"><span class="pre">EnvConfig.listener_timeout</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.listener_phrase_limit"><code class="docutils literal notranslate"><span class="pre">EnvConfig.listener_phrase_limit</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.listener_spectrum_key"><code class="docutils literal notranslate"><span class="pre">EnvConfig.listener_spectrum_key</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.listener_widget"><code class="docutils literal notranslate"><span class="pre">EnvConfig.listener_widget</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.recognizer_confidence"><code class="docutils literal notranslate"><span class="pre">EnvConfig.recognizer_confidence</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.bot_token"><code class="docutils literal notranslate"><span class="pre">EnvConfig.bot_token</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.classes.EnvConfig.bot_chat_ids"><code class="docutils literal notranslate"><span class="pre">EnvConfig.bot_chat_ids</span></code></a></li>
@@ -13044,9 +13236,11 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.startup_script"><code class="docutils literal notranslate"><span class="pre">ProcessNames.startup_script</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.crontab_executor"><code class="docutils literal notranslate"><span class="pre">ProcessNames.crontab_executor</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.offline"><code class="docutils literal notranslate"><span class="pre">ProcessNames.offline</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.plot_mic"><code class="docutils literal notranslate"><span class="pre">ProcessNames.plot_mic</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.jarvis_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.jarvis_api</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.ui_process"><code class="docutils literal notranslate"><span class="pre">ProcessNames.ui_process</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.telegram_api"><code class="docutils literal notranslate"><span class="pre">ProcessNames.telegram_api</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.listener_widget"><code class="docutils literal notranslate"><span class="pre">ProcessNames.listener_widget</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.models.enums.ProcessNames.background_tasks"><code class="docutils literal notranslate"><span class="pre">ProcessNames.background_tasks</span></code></a></li>
 </ul>
 </li>
@@ -13361,6 +13555,7 @@ Behavior depends on the current state:</p>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.remove_file"><code class="docutils literal notranslate"><span class="pre">remove_file()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.stop_process"><code class="docutils literal notranslate"><span class="pre">stop_process()</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.utils.support.connected_to_network"><code class="docutils literal notranslate"><span class="pre">connected_to_network()</span></code></a></li>
+<li><a class="reference internal" href="#jarvis.modules.utils.support.pre_processor"><code class="docutils literal notranslate"><span class="pre">pre_processor()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.modules.utils.util">Utilities</a><ul>

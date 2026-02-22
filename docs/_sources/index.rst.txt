@@ -50,6 +50,12 @@ Speech To Text
    :members:
    :undoc-members:
 
+Realtime Microphone Usage
+=========================
+.. automodule:: jarvis.modules.microphone.plotter
+   :members:
+   :undoc-members:
+
 ----------Main Module----------
 ===============================
 Jarvis

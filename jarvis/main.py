@@ -2,7 +2,6 @@ import string
 import struct
 import time
 import traceback
-from datetime import datetime
 from typing import Dict, List
 
 import pvporcupine
@@ -116,7 +115,6 @@ class Activator:
 
     def executor(self) -> None:
         """Calls the listener for actionable phrase and runs the speaker node for response."""
-        logger.debug("Wake word detected at %s", datetime.now().strftime("%c"))
         if listener_controls.get_listener_state():
             playsound(sound=models.indicators.acknowledgement, block=False)
         audio_engine.close(stream=self.audio_stream)
