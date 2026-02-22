@@ -634,12 +634,12 @@ def connected_to_network() -> bool:
     return False
 
 
-def pre_processor(func_name: str, purpose: str) -> None:
+def pre_processor(func_name: str, impact_list: List[str]) -> None:
     """Pre-processor for initiating a dedicated process for microphone plotter and wake word detection widget.
 
     Args:
         func_name: Function name to update in the database.
-        purpose: Usage of the function to update the impact in process mapping.
+        impact_list: Usage of the function to update the impact in process mapping.
     """
     multiprocessing_logger(filename=os.path.join("logs", f"{func_name}_%d-%m-%Y.log"))
 
@@ -658,7 +658,7 @@ def pre_processor(func_name: str, purpose: str) -> None:
         if not dump.get(func_name):
             logger.critical("ATTENTION::Missing %s's process ID in '%s'" % (func_name, models.fileio.processes))
         # WATCH OUT: for changes in docstring in "processor.py -> create_process_mapping() -> Handles -> plot_mic"
-        dump[func_name] = {subprocess_id: purpose}
+        dump[func_name] = {subprocess_id: impact_list}
         with open(models.fileio.processes, "w") as file:
             yaml.dump(data=dump, stream=file)
     else:

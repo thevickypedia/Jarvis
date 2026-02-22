@@ -110,7 +110,7 @@ def plot_mic(
         rate: How quick the graph should be moving on screen (lower is slower, 1000 is pretty quick)
         dark_mode: Sets graph background to almost black
     """
-    support.pre_processor(func_name=plot_mic.__name__, purpose="Realtime microphone usage plotter")
+    support.pre_processor(func_name=plot_mic.__name__, impact_list=["Realtime microphone usage plotter"])
     logger.info("Feeding all arguments into dict.")
     if not channels:
         channels = [1]

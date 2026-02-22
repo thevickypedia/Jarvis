@@ -34,7 +34,7 @@ def listener_widget(connection: shared.Connection) -> None:
         SystemExit:
         Raised when the Qt application event loop exits.
     """
-    support.pre_processor(func_name=listener_widget.__name__, purpose="Listener widget for wake word detection")
+    support.pre_processor(func_name=listener_widget.__name__, impact_list=["Listener widget for wake word detection"])
     app = QApplication(sys.argv)
     window = widget.WavePattern()
     logger.info("Displaying the WavePattern window.")

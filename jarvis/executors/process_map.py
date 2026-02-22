@@ -68,7 +68,7 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
         parent_conn, child_conn = Pipe()
         base_mapping[widget.listener_widget.__name__] = {
             "process": Process(target=widget.listener_widget, args=(child_conn,)),
-            "impact": ["Listener widget"],
+            "impact": ["Listener widget for wake word detection"],
         }
         shared.widget_connection = parent_conn
     return base_mapping
