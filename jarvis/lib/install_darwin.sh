@@ -50,20 +50,3 @@ if [[ "$architecture" == "arm64" ]]; then
 else
   ${PY_EXECUTABLE} pip install pvporcupine==1.9.5
 fi
-
-# TODO: Find a replacement for face-recognition module or leave it as an optional feature
-#set +e   # disable exit-on-error
-#
-## Uninstall any remaining cmake packages from pypi before brew installing it to avoid conflict
-#python -m pip uninstall --no-cache --no-cache-dir cmake && brew install cmake
-#
-## shellcheck disable=SC2154
-#if [ "$pyversion" -eq 310 ]; then
-#  ${PY_EXECUTABLE} pip install dlib==19.24.0
-#fi
-#if [ "$pyversion" -eq 311 ]; then
-#  ${PY_EXECUTABLE} pip install dlib==19.24.4
-#fi
-#
-## Install as stand alone as face recognition depends on dlib
-#${PY_EXECUTABLE} pip install face-recognition==1.3.0

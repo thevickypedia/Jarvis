@@ -27,7 +27,7 @@ def detected_face() -> None:
         "Please tell me a name if you'd like to recognize this face in the future, or simply say exit.",
         run=True,
     )
-    phrase = listener.listen()
+    phrase = listener.listen(timeout=3, phrase_time_limit=5)
     if not phrase or "exit" in phrase or "quit" in phrase or "Xzibit" in phrase:
         os.remove("cv2_open.jpg")
         speaker.speak(text="I've deleted the image.", run=True)
@@ -49,7 +49,7 @@ def faces(phrase: str) -> None:
     support.flush_screen()
     if word_match.word_match(phrase=phrase, match_list=("detect", "detection", "faces", "look")):
         try:
-            face_detection = FaceNet().face_detection(retry_count=5)
+            face_detection = FaceNet().detector(retry_count=5)
         except FileNotFoundError as error:
             logger.error(error)
             speaker.speak(text=f"I'm sorry {models.env.title}! I wasn't able to initiate face detection.")
@@ -68,7 +68,7 @@ def faces(phrase: str) -> None:
             )
             support.write_screen(text="Looking for faces to recognize.")
             try:
-                result = FaceNet().face_recognition(location=TRAINING_DIR)
+                result = FaceNet().recognizer(location=TRAINING_DIR)
             except CameraError:
                 support.flush_screen()
                 logger.error("Unable to access the camera.")
@@ -87,7 +87,7 @@ def faces(phrase: str) -> None:
                 text=f"No named training modules were found {models.env.title}. Switching to face detection",
                 run=True,
             )
-        if FaceNet().face_detection(filename=FACE_DETECTION_TEMP_FILE):
+        if FaceNet().detector(filename=FACE_DETECTION_TEMP_FILE):
             detected_face()
         else:
             speaker.speak(

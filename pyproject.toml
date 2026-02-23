@@ -57,7 +57,7 @@ requires      = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.optional-dependencies]
-dev = ["sphinx==5.1.1", "pre-commit", "recommonmark", "pytest", "gitverse"]
+dev = ["sphinx", "pre-commit", "recommonmark", "pytest", "gitverse"]
 
 [project.urls]
 API             = "https://jarvis.vigneshrao.com"

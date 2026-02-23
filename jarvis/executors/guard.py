@@ -148,10 +148,10 @@ def security_runner(offline: bool = True) -> None:
             logger.info("Conversation::%s", converted)
         try:
             if not models.env.debug:  # Skip face recognition when DEBUG mode is enabled
-                if recognized := face_object.face_recognition(location=os.path.realpath("train"), retry_count=1):
+                if recognized := face_object.recognizer(location=os.path.realpath("train"), retry_count=1):
                     logger.warning("Located '%s' when guardian mode was enabled.", recognized)
                     continue
-            if not face_object.face_detection(filename=face_detected, mirror=True):
+            if not face_object.detector(filename=face_detected, mirror=True):
                 face_detected = None
         except Exception as error:  # Catch wide exceptions here to prevent guardian mode from getting disabled
             logger.error(error)

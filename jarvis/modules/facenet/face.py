@@ -7,6 +7,7 @@
 
 import imghdr
 import os
+import sys
 
 import cv2
 from cv2.data import haarcascades
@@ -14,18 +15,45 @@ from PIL import Image, UnidentifiedImageError
 from pydantic import FilePath
 
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import enums, models
 
 
-def face_recognition_import() -> object | None:
-    """Imports the face_recognition module."""
-    try:
-        import face_recognition
+def legacy_install() -> str:
+    """Returns the legacy install command with rest to the operating system and the python version."""
+    if models.settings.os == enums.SupportedPlatforms.macOS:
+        base = "brew"
+    elif models.settings.os == enums.SupportedPlatforms.windows:
+        base = "conda"
+    else:
+        base = "sudo apt"
+    install_cmd = f"pip uninstall --no-cache-dir cmake && {base} install cmake"
+    if sys.version_info.minor == 10:
+        install_cmd += " && pip install dlib==19.24.0 face-recognition==1.3.0"
+    if sys.version_info.minor == 11:
+        install_cmd += " && pip install dlib==19.24.4 face-recognition==1.3.0"
+    return install_cmd
 
-        return face_recognition
-    except ImportError as error:
-        logger.error(error)
-        logger.warning("face_recognition module not found. Please install it to use the FaceNet module.")
+
+def fr_warning() -> str:
+    """Returns a detailed warning message and instructions to troubleshoot."""
+    _pre_text = "*" * 120
+    warning = _pre_text
+    warning += "\n\nTroubleshooting steps:"
+    warning += "\n\t1. pip install git+https://github.com/ageitgey/face_recognition.git"
+    warning += "\n\t2. Refer: https://gist.github.com/ageitgey/629d75c1baac34dfa5ca2a1928a7aeaf"
+    warning += "\n\t3. brew install dlib && pip install face_recognition"
+    warning += "\n\n> Option 3 applies only for macOS and may or my not work\n\n"
+    warning += f"If none of the solutions work, try: {legacy_install()}\n\n"
+    warning += _pre_text
+    return warning
+
+
+try:
+    import face_recognition
+except (ModuleNotFoundError, ImportError):
+    face_recognition = None
+    if models.settings.pname == enums.ProcessNames.jarvis:
+        logger.warning(f"face_recognition module not found!\n\n{fr_warning()}")
 
 
 def verify_image(filename: str | FilePath) -> bool:
@@ -77,6 +105,7 @@ class FaceNet:
         If unable to connect to the camera.
     """
 
+    # TODO: Allow config via env vars
     LEARNING_RATE = 0.6  # tolerance level - keep switching this until you find perfection in recognition
     MODEL = "hog"  # model using which the images are matched
 
@@ -87,8 +116,7 @@ class FaceNet:
 
     def load_dataset(self, location: str) -> None:
         """Loads the dataset."""
-        face_recognition_mod = face_recognition_import()
-        if not face_recognition_mod:
+        if not face_recognition:
             logger.error("Requirement unsatisfied!!")
             return
         logger.debug("Loading dataset to classify existing images.")
@@ -96,19 +124,21 @@ class FaceNet:
             if not os.path.isdir(os.path.join(location, char_dir)):
                 continue
             for file_name in os.listdir(os.path.join(location, char_dir)):
-                if not condition_check(filename=os.path.join(location, char_dir, file_name)):
+                img_file = os.path.join(location, char_dir, file_name)
+                if not condition_check(filename=img_file):
+                    logger.warning("%s did not qualify for training", img_file)
                     continue
                 # loads all the files within the named repo
-                img = face_recognition_mod.load_image_file(os.path.join(location, char_dir, file_name))
+                img = face_recognition.load_image_file(img_file)
                 # generates face encoding matrix
-                if encoded := face_recognition_mod.face_encodings(img):
+                if encoded := face_recognition.face_encodings(img):
                     encoded = encoded[0]
                     # loads ended values to match
                     self.train_faces.append(encoded)
                     # loads the names of each named subdirectories
                     self.train_names.append(char_dir)
 
-    def face_recognition(self, location: str | FilePath, retry_count: int = 20) -> str | None:
+    def recognizer(self, location: str | FilePath, retry_count: int = 20) -> str | None:
         """Recognizes faces from the training dataset - images in the ``train`` directory.
 
         Returns:
@@ -118,12 +148,12 @@ class FaceNet:
             str:
             Name of the enclosing directory in case of a recognized face.
         """
-        face_recognition_mod = face_recognition_import()
-        if not face_recognition_mod:
+        if not face_recognition:
             logger.error("Requirement unsatisfied!!")
             return None
         logger.debug("Initiating face recognition.")
         self.load_dataset(location=location)
+        logger.debug("Finished loading training dataset")
         for _ in range(retry_count):
             # reads video from web cam
             ret, img = self.validation_video.read()
@@ -131,18 +161,18 @@ class FaceNet:
                 logger.warning("Unable to read from camera index: %d", models.env.camera_index or 0)
                 continue
             # gets image from the video read above
-            identifier = face_recognition_mod.face_locations(img, model=self.MODEL)
+            identifier = face_recognition.face_locations(img, model=self.MODEL)
             # creates an encoding for the image
-            encoded_ = face_recognition_mod.face_encodings(img, identifier)
+            encoded_ = face_recognition.face_encodings(img, identifier)
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
-                results = face_recognition_mod.compare_faces(self.train_faces, face_encoding, self.LEARNING_RATE)
+                results = face_recognition.compare_faces(self.train_faces, face_encoding, self.LEARNING_RATE)
                 # if a match is found the directory name is rendered and returned as match value
                 if True in results:
                     return self.train_names[results.index(True)]
         return None
 
-    def face_detection(
+    def detector(
         self,
         retry_count: int = 20,
         mirror: bool = False,

@@ -412,9 +412,7 @@ def dev_uninstall() -> None:
     logger.info(center("Uninstalling dev dependencies"))
     logger.info(pretext())
     with Runtime() as runtime:
-        run_subprocess(
-            f"{env.exec} pip uninstall{verbose} --no-cache-dir sphinx==5.1.1 pre-commit recommonmark gitverse"
-        )
+        run_subprocess(f"{env.exec} pip uninstall{verbose} --no-cache-dir sphinx pre-commit recommonmark gitverse")
     logger.info(pretext())
     logger.info(center(f"Cleanup completed in {runtime.get()}!"))
     logger.info(pretext())
