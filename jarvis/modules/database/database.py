@@ -1,16 +1,56 @@
-"""Module for database controls.
-
->>> Database
-
-"""
-
 import logging
 import os
 import random
 import sqlite3
-from typing import List, Tuple
+from types import TracebackType
+from typing import List, Tuple, Type
 
-from pydantic import FilePath
+
+class DatabaseConnection:
+    """Context manager for SQLite database connections.
+
+    >>> DatabaseConnection
+
+    """
+
+    def __init__(self, datastore: str, timeout: int):
+        """Instantiates the database connection.
+
+        Args:
+            datastore: Filepath of the database file.
+            timeout: Connection timeout in seconds.
+        """
+        self.datastore = datastore
+        self.timeout = timeout
+        self.connection: sqlite3.Connection | None = None
+
+    def __enter__(self) -> sqlite3.Connection:
+        """Creates and returns a database connection.
+
+        Returns:
+            sqlite3.Connection: An active connection to the database.
+        """
+        self.connection = sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=self.timeout)
+        return self.connection
+
+    def __exit__(
+        self,
+        exc_type: Type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        """Commits or rolls back the transaction and closes the connection.
+
+        Args:
+            exc_type: Exception type, if an exception was raised, otherwise ``None``.
+            exc_val: Exception value, if an exception was raised, otherwise ``None``.
+            exc_tb: Exception traceback, if an exception was raised, otherwise ``None``.
+        """
+        if exc_type:
+            self.connection.rollback()
+        else:
+            self.connection.commit()
+        self.connection.close()
 
 
 class Database:
@@ -23,7 +63,7 @@ class Database:
         timeout: Timeout for the connection to database.
     """
 
-    def __init__(self, database: FilePath | str, timeout: int = 3):
+    def __init__(self, database: str, timeout: int = 3):
         """Instantiates the class ``Database`` with the given datastore and timeout options.
 
         Args:
@@ -36,14 +76,14 @@ class Database:
         self.timeout = timeout
 
     @property
-    def connection(self) -> sqlite3.Connection:
+    def connection(self) -> DatabaseConnection:
         """Creates a database connection.
 
         Returns:
-            sqlite3.Connection:
-            Returns a ``sqlite3.Connection`` object.
+            DatabaseConnection:
+            Returns a ``DatabaseConnection`` object and ensures it is committed and closed after execution.
         """
-        return sqlite3.connect(database=self.datastore, check_same_thread=False, timeout=self.timeout)
+        return DatabaseConnection(self.datastore, self.timeout)
 
     def create_table(self, table_name: str, columns: List[str] | Tuple[str], primary_key: str = None) -> None:
         """Creates the table with the required columns.

@@ -8535,13 +8535,18 @@ If none are found, it falls back to the default file.</p>
 </section>
 <section id="module-jarvis.modules.database.database">
 <span id="database"></span><h1>Database<a class="headerlink" href="#module-jarvis.modules.database.database" title="Link to this heading">¶</a></h1>
-<p>Module for database controls.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
+<dl class="py class">
+<dt class="sig sig-object py" id="jarvis.modules.database.database.DatabaseConnection">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">DatabaseConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.DatabaseConnection" title="Link to this definition">¶</a></dt>
+<dd><p>Context manager for SQLite database connections.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DatabaseConnection</span>
 </pre></div>
 </div>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PathType</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">path_type</span></span><span class="o"><span class="pre">=</span></span><span class="pre">file</span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.Database" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jarvis.modules.database.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#jarvis.modules.database.database.Database" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a connection to the base DB.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Database</span>
 </pre></div>
@@ -8556,14 +8561,14 @@ If none are found, it falls back to the default file.</p>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="jarvis.modules.database.database.Database.connection">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">connection</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Connection</span></span><a class="headerlink" href="#jarvis.modules.database.database.Database.connection" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">connection</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#jarvis.modules.database.database.DatabaseConnection" title="jarvis.modules.database.database.DatabaseConnection"><span class="pre">DatabaseConnection</span></a></span><a class="headerlink" href="#jarvis.modules.database.database.Database.connection" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a database connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Returns a <code class="docutils literal notranslate"><span class="pre">sqlite3.Connection</span></code> object.</p>
+<dd class="field-odd"><p>Returns a <code class="docutils literal notranslate"><span class="pre">DatabaseConnection</span></code> object and ensures it is committed and closed after execution.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>sqlite3.Connection</p>
+<dd class="field-even"><p><a class="reference internal" href="#jarvis.modules.database.database.DatabaseConnection" title="jarvis.modules.database.database.DatabaseConnection">DatabaseConnection</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -13433,6 +13438,7 @@ Behavior depends on the current state:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-jarvis.modules.database.database">Database</a><ul>
+<li><a class="reference internal" href="#jarvis.modules.database.database.DatabaseConnection"><code class="docutils literal notranslate"><span class="pre">DatabaseConnection</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.database.database.Database"><code class="docutils literal notranslate"><span class="pre">Database</span></code></a><ul>
 <li><a class="reference internal" href="#jarvis.modules.database.database.Database.connection"><code class="docutils literal notranslate"><span class="pre">Database.connection</span></code></a></li>
 <li><a class="reference internal" href="#jarvis.modules.database.database.Database.create_table"><code class="docutils literal notranslate"><span class="pre">Database.create_table()</span></code></a></li>
