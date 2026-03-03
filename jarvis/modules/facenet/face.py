@@ -105,10 +105,6 @@ class FaceNet:
         If unable to connect to the camera.
     """
 
-    # TODO: Allow config via env vars
-    LEARNING_RATE = 0.6  # tolerance level - keep switching this until you find perfection in recognition
-    MODEL = "hog"  # model using which the images are matched
-
     def __init__(self):
         """Instantiates the ``Processor`` object and sources the camera hardware."""
         self.validation_video = cv2.VideoCapture(models.env.camera_index or 0)
@@ -161,12 +157,16 @@ class FaceNet:
                 logger.warning("Unable to read from camera index: %d", models.env.camera_index or 0)
                 continue
             # gets image from the video read above
-            identifier = face_recognition.face_locations(img, model=self.MODEL)
+            identifier = face_recognition.face_locations(img, model=models.env.face_recognition_model)
             # creates an encoding for the image
-            encoded_ = face_recognition.face_encodings(img, identifier)
+            encoded_ = face_recognition.face_encodings(face_image=img, known_face_locations=identifier)
             for face_encoding, face_location in zip(encoded_, identifier):
                 # using learning_rate, the encoding is matched against the encoded matrix for images in named directory
-                results = face_recognition.compare_faces(self.train_faces, face_encoding, self.LEARNING_RATE)
+                results = face_recognition.compare_faces(
+                    known_face_encodings=self.train_faces,
+                    face_encoding_to_check=face_encoding,
+                    tolerance=models.env.face_recognition_learning_rate,
+                )
                 # if a match is found the directory name is rendered and returned as match value
                 if True in results:
                     return self.train_names[results.index(True)]

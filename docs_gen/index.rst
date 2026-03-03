@@ -766,6 +766,12 @@ Enums
 
 ====
 
+.. autoclass:: jarvis.modules.models.enums.FaceRecognitionModel(Enum)
+   :members:
+   :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_
+
+====
+
 .. autoclass:: jarvis.modules.models.enums.ReminderOptions(Enum)
    :members:
    :exclude-members: _generate_next_value_, _member_names_, _member_map_, _member_type_, _value2member_map_

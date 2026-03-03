@@ -60,6 +60,13 @@ class StartupOptions(StrEnum):
     thermostat = "thermostat"
 
 
+class FaceRecognitionModel(StrEnum):
+    """Face recognition model supported by Jarvis."""
+
+    hog = "hog"
+    cnn = "cnn"
+
+
 class TemperatureUnits(StrEnum):
     """Types of temperature units supported by Jarvis.
 

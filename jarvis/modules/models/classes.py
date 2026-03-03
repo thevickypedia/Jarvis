@@ -45,6 +45,7 @@ from pyhtcc import Zone
 from jarvis import indicators, scripts
 from jarvis.modules.exceptions import InvalidEnvVars, UnsupportedOS
 from jarvis.modules.models import enums, env_file, squire
+from jarvis.modules.models.enums import FaceRecognitionModel
 
 AUDIO_DRIVER = pyttsx3.init()
 platform_info: List[str] = platform.platform(terse=True).split("-")
@@ -345,6 +346,10 @@ class EnvConfig(BaseSettings):
     # WiFi config
     wifi_ssid: str | None = None
     wifi_password: str | None = None
+
+    # Face Recognition
+    face_recognition_learning_rate: int | float = Field(0.5, le=1, ge=0)
+    face_recognition_model: enums.FaceRecognitionModel = FaceRecognitionModel.hog
 
     wake_words: List[str] = Field(["jarvis"])
 
