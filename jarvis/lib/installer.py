@@ -11,7 +11,7 @@ See Also:
 
 Warnings:
     - Unlike other pypi packages, ``pip install jarvis-ironman`` will only download the package.
-    - Running ``jarvis install`` is what actually installs all the dependent packages.
+    - Running ``jarvis install`` is what actually installs all the dependencies.
 """
 
 import logging

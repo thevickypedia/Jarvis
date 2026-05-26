@@ -199,10 +199,25 @@ class BackgroundTask(BaseModel):
 
 # noinspection PyMethodParameters
 class EnvConfig(BaseSettings):
-    """Configure all env vars and validate using ``pydantic`` to share across modules.
+    """Configures all the env vars and validate using ``pydantic`` to share across modules.
 
     >>> EnvConfig
 
+    Attributes:
+        distance_unit: Unit in which speed/distance should be measured. Defaults to `miles`
+        temperature_unit: Unit in which temperature should be measured. Defaults to `fahrenheit`
+        home: Home directory path.
+        volume: Default volume for the Jarivs' voice. - Defaults to `50`
+        root_user: Current username.
+        root_password: System password to run `sudo` commands on `Linux` machines.
+        voice_name: Name of the voice supported by the OperatingSystem. Defaults to the author's favorite.
+        speech_rate: Speed/rate at which the text should be spoken. Defaults to the value from `py3-tts` module.
+            To add more voices:
+                macOS:
+                    System Preferences → Accessibility → Spoken Content → System voice → Manage Voices...
+                Windows:
+                    Settings → Time & Language → Speech → Manage voices → Add voices
+        camera_index: Camera index that has to be used. Run camera.py to get the index value of each camera.
     """
 
     # Custom units
@@ -211,7 +226,7 @@ class EnvConfig(BaseSettings):
 
     # System config
     home: DirectoryPath = os.path.expanduser("~")
-    volume: PositiveInt = 50
+    volume: PositiveInt = Field(50, le=100, ge=1)
     root_user: str = getpass.getuser()
     root_password: str | None = Field(None, validation_alias=AliasChoices("root_password", "password"))
 

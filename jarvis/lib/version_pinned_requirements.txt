@@ -1,32 +1,32 @@
 aiofiles==25.1.*
 aiohttp==3.13.*
-boto3==1.42.*
+boto3==1.43.*
 bs4==0.0.*
 certifi  # Follows year based versioning
-deepdiff==8.6.*
-fastapi==0.129.*
+deepdiff==9.1.*
+fastapi==0.136.*
 geopy==2.4.*
 httpcore==1.0.*
 httpx==0.28.*
 inflect==7.5.*
 Jinja2==3.1.*
-lxml==6.0.*
+lxml==6.1.*
 matplotlib==3.10.*
 numpy==1.26.*
 ollama==0.6.*
-Pillow==12.1.*
+Pillow==12.2.*
 psutil==7.2.*
-pydantic==2.12.*
-pydantic-settings==2.13.*
-PyJWT==2.11.*
-PySide6==6.10.*
+pydantic==2.13.*
+pydantic-settings==2.14.*
+PyJWT==2.13.*
+PySide6==6.11.*
 python-dateutil==2.9.*
 python-dotenv==1.2.*
 python-multipart==0.0.*
 pytz  # Follows year based versioning
 PyYAML==6.0.*
-requests==2.32.*
+requests==2.34.*
 soundfile==0.13.*
-uvicorn==0.41.*
+uvicorn==0.48.*
 wave==0.0.*  # 0.1.0 is breaking because mysql-python@1.2.5 depends on `ConfigParser` which is python2
 websockets==16.0.*

@@ -1,5 +1,5 @@
 # pypi modules created/maintained by the author: Vignesh Rao
 gmail-connector>=1.0.2
-py3-tts>=3.5
+py3-tts>=4.0
 pycontrols>=0.0.4
 VaultAPI-Client>=0.2.0
