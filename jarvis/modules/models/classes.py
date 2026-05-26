@@ -18,10 +18,8 @@ from ipaddress import IPv4Address
 from multiprocessing import current_process
 from multiprocessing.pool import ThreadPool
 from typing import Dict, List, Optional
-from uuid import UUID
 
 import dotenv
-import jlrpy
 import psutil
 import pyttsx3
 import yaml
@@ -128,25 +126,6 @@ class Thermostat(BaseModel):
 
     device: Optional[Zone | str] = None
     expiration: Optional[float] = None
-
-    class Config:
-        """Config to allow arbitrary types."""
-
-        arbitrary_types_allowed = True
-
-
-class VehicleConnection(BaseModel):
-    """Wrapper to create and store vehicle connection.
-
-    >>> VehicleConnection
-
-    """
-
-    vin: Optional[str] = None
-    device_id: Optional[str] = None
-    expiration: Optional[float] = None
-    control: Optional[jlrpy.Vehicle] = None
-    refresh_token: Optional[str | UUID] = None
 
     class Config:
         """Config to allow arbitrary types."""

@@ -701,17 +701,11 @@ Classes
 
 .. automodule:: jarvis.modules.models.classes
    :members:
-   :exclude-members: Settings, VehicleConnection, RecognizerSettings, BackgroundTask, EnvConfig, FileIO, Indicators, WiFiConnection, Thermostat
+   :exclude-members: Settings, RecognizerSettings, BackgroundTask, EnvConfig, FileIO, Indicators, WiFiConnection, Thermostat
 
 ====
 
 .. autoclass:: jarvis.modules.models.classes.Settings(pydantic.BaseSettings)
-   :members:
-   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
-
-====
-
-.. autoclass:: jarvis.modules.models.classes.VehicleConnection(pydantic.BaseModel)
    :members:
    :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
 
