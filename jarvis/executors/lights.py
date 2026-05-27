@@ -1,5 +1,7 @@
+import itertools as it
 import random
 import time
+import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # noinspection PyProtectedMember
@@ -8,6 +10,8 @@ from multiprocessing.pool import ThreadPool
 from threading import Thread
 from typing import Callable, Dict, List
 
+from pydantic import ValidationError
+
 from jarvis.executors import files, internet
 from jarvis.executors import lights_squire as squire
 from jarvis.executors import word_match
@@ -15,7 +19,7 @@ from jarvis.modules.audio import speaker
 from jarvis.modules.conditions import conversation
 from jarvis.modules.lights import preset_values
 from jarvis.modules.logger import logger
-from jarvis.modules.models import models
+from jarvis.modules.models import models, smart
 from jarvis.modules.utils import support, util
 
 
@@ -110,6 +114,62 @@ class ThreadExecutor:
             speaker.speak(text=f"I'm sorry {models.env.title}! {response}")
 
 
+def map_lights_by_location(lights_map: dict, locations: List[str] = None) -> Dict[str, List[str]]:
+    """Resolve IP addresses of the chosen location and create a mapping of light location and the list of IP addresses.
+
+    Args:
+        lights_map: Source data for all lights in smart devices YAML file.
+        locations: List of locations to resolve IP addresses from.
+
+    Returns:
+        Dict[str, List[str]]:
+        Returns a dictionary of key-value pairs with location as key and list of IP addresses as value.
+    """
+    if not locations:
+        logger.debug("No location was set, assuming ALL!")
+        locations = list(lights_map.keys())
+    mapping = {}
+    for location, __device in lights_map.items():
+        try:
+            device = smart.LightsModel(**__device)
+        except ValidationError as error:
+            logger.error(error)
+            mapping[location] = ["0.0.0.0"]  # Add placeholder IP to respond accordingly
+            continue
+
+        if location in locations:
+            logger.debug("[%s] matched (by key) for lights control", location)
+        elif device.category in locations:
+            logger.debug("[%s] matched (by category) for lights control", location)
+        else:
+            continue
+
+        if device.ipaddresses:
+            # 1. Convert list of IP addresses into string
+            mapping[location] = list(map(str, device.ipaddresses))
+        elif device.hostnames:
+            # TODO: IP resolutions take 1-2s, this is delay propagates exponentially - implement parallelism
+            # 2. Resolve hostnames to IP address
+            for hostname in device.hostnames:
+                if resolved := support.hostname_to_ip(hostname):
+                    logger.debug("Resolved IP %s for hostname %s", resolved, hostname)
+                else:
+                    logger.debug("Unable to resolve IP for %s", hostname)
+                    resolved = ["0.0.0.0"]  # Add placeholder IP to respond accordingly
+                if mapping.get(location):
+                    mapping[location].extend(resolved)
+                else:
+                    mapping[location] = resolved
+        else:
+            # 3. Neither 'hostnames' nor 'ipaddresses' is available to proceed
+            warning = f"{location!r} does not include hostnames or ipaddresses"
+            logger.warning(warning)
+            warnings.warn(warning, UserWarning)
+            mapping[location] = ["0.0.0.0"]  # Add placeholder IP to respond accordingly
+
+    return mapping
+
+
 def lights(phrase: str) -> None:
     """Controller for smart lights.
 
@@ -120,8 +180,8 @@ def lights(phrase: str) -> None:
         speaker.speak(f"I'm sorry {models.env.title}! I wasn't able to get the private IP address.")
         return
 
-    if (smart_devices := files.get_smart_devices()) and (lights_map := get_lights(data=smart_devices)):
-        logger.debug(lights_map)
+    if (smart_devices := files.get_smart_devices()) and (source_data := get_lights(data=smart_devices)):
+        logger.debug(source_data)
     else:
         logger.warning(
             "Smart devices are not configured for lights in %s",
@@ -142,18 +202,16 @@ def lights(phrase: str) -> None:
             phrase_location = phrase
             for word in remove:
                 phrase_location = phrase_location.replace(word, "")
-            exclusion = util.get_closest_match(text=phrase_location.strip(), match_list=list(lights_map.keys()))
-            host_names: List[str] = util.remove_duplicates(
-                input_=util.matrix_to_flat_list([lights_map[light] for light in lights_map if light != exclusion])
-            )
-            host_names_len = len(host_names)
-            logger.debug("%d lights' excluding %s", host_names_len, exclusion)
+            locations = source_data.keys()
+            exclusion = util.get_closest_match(text=phrase_location.strip(), match_list=list(locations))
+            filtered_locations: List[str] = [location for location in locations if location != exclusion]
+            loc_mapped = map_lights_by_location(source_data, filtered_locations)
+            lights_len = len(loc_mapped)
+            logger.debug("%d lights' excluding %s", lights_len, exclusion)
         else:
-            host_names: List[str] = util.remove_duplicates(
-                input_=util.matrix_to_flat_list(input_=[v for k, v in lights_map.items() if v])
-            )
-            host_names_len = len(host_names)
-            logger.debug("All lights: %d", host_names_len)
+            loc_mapped = map_lights_by_location(source_data)
+            lights_len = len(loc_mapped)
+            logger.debug("All lights: %d", lights_len)
     else:
         remove = util.matrix_to_flat_list(input_=squire.word_map.values()) + [
             "lights",
@@ -162,61 +220,47 @@ def lights(phrase: str) -> None:
         phrase_location = phrase
         for word in remove:
             phrase_location = phrase_location.replace(word, "")
-        light_location = util.get_closest_match(text=phrase_location.strip(), match_list=list(lights_map.keys()))
-        host_names: List[str] = lights_map[light_location]
-        host_names_len = len(host_names)
-        logger.info("%d lights' location: %s", host_names_len, light_location)
-    host_names = util.remove_none(input_=host_names)
+        light_location = util.get_closest_match(text=phrase_location.strip(), match_list=list(source_data.keys()))
+        loc_mapped = map_lights_by_location(source_data, [light_location])
+        lights_len = len(loc_mapped)
+        logger.info("%d lights' location: %s", lights_len, light_location)
 
-    # extract IP addresses for hostnames that are required
-    for _light_location, _light_hostname in lights_map.items():
-        lights_map[_light_location] = []
-        for hostname in _light_hostname:
-            if hostname in host_names:
-                if resolved := support.hostname_to_ip(hostname=hostname):
-                    logger.debug("Resolved IP %s for hostname %s", resolved, hostname)
-                else:
-                    logger.debug("Unable to resolve IP for %s", hostname)
-                    resolved = ["0.0.0.0"]  # Add placeholder IP to respond accordingly
-                lights_map[_light_location].extend(resolved)
-    executor = ThreadExecutor(mapping=lights_map)
-
-    plural = "lights" if host_names_len > 1 else "light"
+    executor = ThreadExecutor(mapping=loc_mapped)
+    plural = "lights" if lights_len > 1 else "light"
     if word_match.word_match(phrase, squire.word_map["turn_on"]):
         tone = "white" if "white" in phrase else "cool"
         if "turn on" in phrase:
-            speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning on {host_names_len} {plural}")
+            speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning on {lights_len} {plural}")
         else:
             speaker.speak(
-                text=f"{random.choice(conversation.acknowledgement)}! Setting {host_names_len} {plural} to {tone}!"
+                text=f"{random.choice(conversation.acknowledgement)}! Setting {lights_len} {plural} to {tone}!"
             )
         executor.avail_check(function_to_call=squire.cool)
     elif word_match.word_match(phrase, squire.word_map["turn_off"]):
-        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning off {host_names_len} {plural}")
+        speaker.speak(text=f"{random.choice(conversation.acknowledgement)}! Turning off {lights_len} {plural}")
         if state := squire.check_status():
             support.stop_process(pid=int(state[0]))
         if word_match.word_match(phrase, squire.word_map["reset"]):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
         executor.avail_check(function_to_call=squire.turn_off)
     elif word_match.word_match(phrase, squire.word_map["party_mode"]):
-        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
+        host_ip = list(it.chain.from_iterable(loc_mapped.values()))
         if squire.party_mode(host=host_ip, phrase=phrase):
             Thread(target=executor.thread_worker, args=[squire.cool]).run()
             Thread(target=executor.thread_worker, args=[squire.turn_off]).start()
     elif word_match.word_match(phrase, squire.word_map["warm"]):
         if "yellow" in phrase:
             speaker.speak(
-                text=f"{random.choice(conversation.acknowledgement)}! " f"Setting {host_names_len} {plural} to yellow!"
+                text=f"{random.choice(conversation.acknowledgement)}! " f"Setting {lights_len} {plural} to yellow!"
             )
         else:
-            speaker.speak(text=f"Sure {models.env.title}! Setting {host_names_len} {plural} to warm!")
+            speaker.speak(text=f"Sure {models.env.title}! Setting {lights_len} {plural} to warm!")
         executor.avail_check(function_to_call=squire.warm)
     elif color := word_match.word_match(phrase=phrase, match_list=list(preset_values.PRESET_VALUES.keys())):
         speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! "
-            f"I've changed {host_names_len} {plural} to {color}!"
+            text=f"{random.choice(conversation.acknowledgement)}! " f"I've changed {lights_len} {plural} to {color}!"
         )
-        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
+        host_ip = list(it.chain.from_iterable(loc_mapped.values()))
         for light_ip in host_ip:
             squire.preset(
                 host=light_ip,
@@ -237,12 +281,12 @@ def lights(phrase: str) -> None:
             if level is None:
                 level = 100
         speaker.speak(
-            text=f"{random.choice(conversation.acknowledgement)}! " f"I've set {host_names_len} {plural} to {level}%!"
+            text=f"{random.choice(conversation.acknowledgement)}! " f"I've set {lights_len} {plural} to {level}%!"
         )
         level = round((255 * level) / 100)
         Thread(target=executor.thread_worker, args=[squire.turn_off]).run()
         time.sleep(1)
-        host_ip = util.remove_duplicates(input_=util.matrix_to_flat_list(input_=list(lights_map.values())))
+        host_ip = list(it.chain.from_iterable(loc_mapped.values()))
         for light_ip in host_ip:
             squire.lumen(host=light_ip, rgb=level)
     else:

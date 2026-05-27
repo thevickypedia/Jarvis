@@ -4,10 +4,12 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 from typing import Dict, List, Tuple
 
+from pydantic import ValidationError
+
 from jarvis.executors import files, internet, tv_controls, word_match
 from jarvis.modules.audio import speaker
 from jarvis.modules.logger import logger
-from jarvis.modules.models import enums, models
+from jarvis.modules.models import enums, models, smart
 from jarvis.modules.utils import shared, support
 from jarvis.modules.wakeonlan import wakeonlan
 
@@ -129,13 +131,23 @@ def television(phrase: str) -> None:
     logger.info("Chosen TVs: %s", tv_iterate)
     for target_tv in tv_iterate:
         logger.info("Iterating over: %s", target_tv)
-        tv_name = tv_map[target_tv].get("hostname")
-        tv_mac = tv_map[target_tv].get("mac_address")
-        tv_client_key = tv_map[target_tv].get("client_key")
+        try:
+            tv_model = smart.TvModel(**tv_map[target_tv])
+        except ValidationError as error:
+            logger.error(error)
+            speaker.speak(
+                text=f"I'm sorry {models.env.title}! An invalid configuration was detected "
+                f"for {target_tv} in smart devices file."
+            )
+            continue
+
+        tv_name = tv_model.hostname
+        tv_mac = tv_model.mac_address
+        tv_client_key = tv_model.client_key
 
         if not all((tv_name, tv_mac)):
             speaker.speak(
-                text=f"I'm sorry {models.env.title}! " f"I was unable to find the {target_tv}'s name or MAC address."
+                text=f"I'm sorry {models.env.title}! I was unable to find the {target_tv}'s name or MAC address."
             )
             continue
 

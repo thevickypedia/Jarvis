@@ -75,7 +75,7 @@ def part_of_day() -> str:
     return "Night"
 
 
-def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Dict[str, float] | str:
+def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> Any:
     """Get the closest matching word from a list of words.
 
     Args:
@@ -84,7 +84,7 @@ def get_closest_match(text: str, match_list: list, get_ratio: bool = False) -> D
         get_ratio: Boolean flag to return the closest match along with the ratio, as a dict.
 
     Returns:
-        Dict[str, float] | str:
+        Any:
         Returns the text that matches closest in the list or a dictionary of the closest match and the match ratio.
     """
     closest_match = [{"text": key, "ratio": difflib.SequenceMatcher(a=text, b=key).ratio()} for key in match_list]

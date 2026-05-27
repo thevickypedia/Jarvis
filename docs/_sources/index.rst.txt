@@ -843,6 +843,19 @@ Models
    :members:
    :undoc-members:
 
+Smart
+=====
+
+.. autoclass:: jarvis.modules.models.smart.LightsModel(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
+====
+
+.. autoclass:: jarvis.modules.models.smart.TvModel(pydantic.BaseModel)
+   :members:
+   :exclude-members: _abc_impl, model_config, model_fields, model_computed_fields
+
 Squire
 ======
 
