@@ -116,7 +116,7 @@ def get_package_and_version(
     else:
         # Now extract the version from the remaining part of the string
         # noinspection RegExpUnnecessaryNonCapturingGroup,RegExpRedundantEscape,RegExpSimplifiable
-        version_match = re.search(r"\d+\.\d+(?:\.\d+)*", input_string)
+        version_match = re.search(r"\d+\.\d+(?:\.\d+|\.\*)*", input_string)
         version = version_match.group(0) if version_match else None
     return dict(package_name=pkg_name, current_version=version)
 
@@ -235,6 +235,7 @@ def entrypoint():
             versioned.current_version = version.version
         try:
             if versioned.current_version.endswith("*"):
+                # If the version ends with wildcard, then strip out the micro/patch version to compare apples to apples
                 current_version = Version(versioned.current_version.rstrip(".*"))
                 latest_version = Version(".".join(versioned.latest_version.split(".")[:-1]))
             else:
