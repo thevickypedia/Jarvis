@@ -30,7 +30,7 @@ class ProcessNames(StrEnum):
     ui_process = "ui_process"
     telegram_api = "telegram_api"
     listener_widget = "listener_widget"
-    background_tasks = "background_tasks"
+    background_task = "background_task"
 
 
 class SupportedPlatforms(StrEnum):

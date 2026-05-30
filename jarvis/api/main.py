@@ -21,10 +21,13 @@ async def lifespan(_: FastAPI):
     if models.env.author_mode:
         Thread(target=stockanalysis_squire.nasdaq).start()
     entrypoint.startup()
-    logger.info("Initiating background tasks...")
-    bg_task = asyncio.create_task(task.background_tasks())
+    if models.env.async_background_task:
+        logger.info("Initiating background tasks...")
+        bg_task = asyncio.create_task(task.background_tasks())
     yield
-    bg_task.cancel()
+    if models.env.async_background_task:
+        bg_task.cancel()
+    logger.info("Shutting down API server.")
 
 
 # Initiate API

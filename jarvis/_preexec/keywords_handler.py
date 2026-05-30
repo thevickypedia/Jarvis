@@ -3,6 +3,7 @@ import warnings
 from collections import OrderedDict
 
 import yaml
+from deepdiff import DeepDiff
 
 from jarvis.modules.builtin_overrides import ordered_dump, ordered_load
 from jarvis.modules.conditions import conversation, keywords
@@ -52,11 +53,15 @@ def rewrite_keywords() -> None:
             load_ignores(data)
             return
         else:  # Mismatch in keys
-            warnings.warn(
-                "\nData mismatch between base keywords and custom keyword mapping."
-                "\nPlease note: This mapping file is only to change the value for keywords, not the key(s) itself."
-                f"\nRe-sourcing {models.fileio.keywords!r} from base."
-            )
+            warning = ""
+            if diff := DeepDiff(data, keywords_src, ignore_order=True):
+                warning += (
+                    "\nData mismatch between base keywords and custom keyword mapping."
+                    f"\nDifference: {diff}"
+                    "\nNOTE: This mapping file is only to change the value for keywords, not the key(s) itself.\n"
+                )
+            warning += f"Re-sourcing {models.fileio.keywords!r} from base."
+            warnings.warn(warning)
 
     with open(models.fileio.keywords, "w") as dst_file:
         ordered_dump(keywords_src, stream=dst_file, indent=4)

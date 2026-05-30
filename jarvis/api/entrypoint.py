@@ -1,7 +1,6 @@
 import os
 import pathlib
 import shutil
-import socket
 from datetime import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,7 +21,7 @@ def get_cors_params() -> dict:
         middleware_class=CORSMiddleware,
         allow_origins=origins,
         allow_credentials=True,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=[
             "host",
             "user-agent",  # Default headers

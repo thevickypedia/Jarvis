@@ -1,3 +1,4 @@
+import asyncio
 import os
 import shutil
 from datetime import datetime
@@ -6,6 +7,7 @@ from typing import Dict, List, NoReturn
 
 import yaml
 
+from jarvis.api.background_task import task
 from jarvis.api.server import jarvis_api
 from jarvis.executors import crontab, widget
 from jarvis.modules.logger import logger
@@ -14,10 +16,17 @@ from jarvis.modules.models import enums, models
 from jarvis.modules.utils import shared
 
 
+def background_task() -> None | NoReturn:
+    """Runs background tasks in a separate process."""
+    logger.info("Initiating background tasks...")
+    asyncio.run(task.background_tasks())
+
+
 def assert_process_names() -> None | NoReturn:
     """Assert process names with actual function names."""
     assert jarvis_api.__name__ == enums.ProcessNames.jarvis_api
     assert plotter.plot_mic.__name__ == enums.ProcessNames.plot_mic
+    assert background_task.__name__ == enums.ProcessNames.background_task
     assert widget.listener_widget.__name__ == enums.ProcessNames.listener_widget
 
 
@@ -28,27 +37,45 @@ def base() -> Dict[str, Dict[str, Process | List[str]]]:
         Dict[str, Dict[str, Process | List[str]]]:
         Nested dictionary of process mapping.
     """
-    base_mapping = {
-        # process map will not be removed
-        jarvis_api.__name__: {
-            "process": Process(target=jarvis_api),
-            "impact": [
-                "Offline communicator",
-                "Robinhood portfolio report",
-                "Jarvis UI",
-                "Stock monitor",
-                "Surveillance",
-                "Telegram",
-                "Home automation",
-                "Alarms",
-                "Reminders",
-                "Meetings and Events sync",
-                "Wi-Fi connector",
-                "Cron jobs",
-                "Background tasks",
-            ],
-        }
+    base_impact = {
+        enums.ProcessNames.background_task: [
+            "Home automation",
+            "Alarms",
+            "Reminders",
+            "Meetings and Events sync",
+            "Wi-Fi connector",
+            "Cron jobs",
+        ],
+        enums.ProcessNames.jarvis_api: [
+            "Offline communicator",
+            "Robinhood portfolio report",
+            "Jarvis UI",
+            "Stock monitor",
+            "Surveillance",
+            "Telegram",
+        ],
     }
+    # process map will not be removed
+    if models.env.async_background_task:
+        # Runs background task along with the API server in the same process, with an async task
+        base_mapping = {
+            jarvis_api.__name__: {
+                "process": Process(target=jarvis_api),
+                "impact": base_impact[enums.ProcessNames.jarvis_api] + base_impact[enums.ProcessNames.background_task],
+            }
+        }
+    else:
+        # Runs background task in a separate process, with its own process map entry
+        base_mapping = {
+            jarvis_api.__name__: {
+                "process": Process(target=jarvis_api),
+                "impact": base_impact[enums.ProcessNames.jarvis_api],
+            },
+            background_task.__name__: {
+                "process": Process(target=background_task),
+                "impact": base_impact[enums.ProcessNames.background_task],
+            },
+        }
     if models.env.plot_mic:
         # noinspection PyDeprecation
         statement = shutil.which(cmd="python") + " " + plotter.__file__

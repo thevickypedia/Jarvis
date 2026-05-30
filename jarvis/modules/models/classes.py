@@ -241,6 +241,7 @@ class EnvConfig(BaseSettings):
     # Author specific
     author_mode: bool = False
     startup_options: enums.StartupOptions | List[enums.StartupOptions] = enums.StartupOptions.none
+    async_background_task: bool = False
 
     # Third party api config
     weather_apikey: str | None = None
