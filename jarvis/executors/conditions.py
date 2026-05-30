@@ -72,7 +72,7 @@ def conditions(phrase: str) -> None:
                     continue
 
             # Stand alone - Internally used [skip for both main and offline processes]
-            if category in ("avoid", "ok", "exit_", "ngrok", "secrets"):
+            if category in ("avoid", "ok", "exit_", "secrets"):
                 continue
 
             # Requires manual intervention [skip for offline communicator]

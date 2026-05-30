@@ -1,7 +1,7 @@
 import requests
 from pydantic import HttpUrl
 
-from jarvis.executors import conditions, internet, others, word_match
+from jarvis.executors import conditions, others, word_match
 from jarvis.modules.auth_bearer import BearerAuth
 from jarvis.modules.conditions import keywords
 from jarvis.modules.exceptions import EgressErrors
@@ -47,12 +47,6 @@ def communicator(command: str, bg_flag: bool = False) -> str | HttpUrl:
     """
     shared.called_by_offline = True
     shared.called_by_bg_tasks = bg_flag
-    # Specific for offline communication and not needed for live conversations
-    if word_match.word_match(phrase=command, match_list=keywords.keywords["ngrok"]):
-        if public_url := internet.get_tunnel():
-            return public_url
-        else:
-            raise LookupError("Failed to retrieve the public URL")
     if word_match.word_match(phrase=command, match_list=keywords.keywords["photo"]):
         return others.photo()
     # Call condition instead of split_phrase as the 'and' and 'also' filter will overwrite the first response

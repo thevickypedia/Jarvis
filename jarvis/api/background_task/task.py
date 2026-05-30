@@ -164,7 +164,7 @@ async def background_tasks() -> None:
         if bot.telegram_beat.restart_loop:
             # Avoid being called again when init is in progress
             bot.telegram_beat.restart_loop = False
-            create_task(bot.init, 3)
+            create_task(bot.init)
 
         # MARK: Re-check for any newly added tasks with logger disabled
         new_tasks: List[classes.BackgroundTask] = list(background_task.validate_tasks(log=False))

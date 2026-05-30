@@ -35,13 +35,9 @@ class TelegramBeat:
 telegram_beat = TelegramBeat()
 
 
-async def init(max_webhook_attempts: int = 20) -> None:
-    """Initialize telegram API and decide to choose webhook vs long polling.
-
-    Args:
-        max_webhook_attempts: Maximum number of attempts to try webhook connection before starting long polling.
-    """
-    _flag = await telegram.telegram_api(webhook_trials=max_webhook_attempts)
+async def init() -> None:
+    """Initialize telegram API and decide to choose webhook vs long polling."""
+    _flag = await telegram.telegram_api()
     if _flag:
         logger.info("Polling for incoming messages...")
     telegram_beat.poll_for_messages = _flag

@@ -38,7 +38,7 @@ def delete_webhook(base_url: str | HttpUrl, logger: logging.Logger) -> Dict[str,
     return None
 
 
-def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger) -> None:
+def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging.Logger) -> bool | None:
     """Set webhook.
 
     References:
@@ -66,7 +66,8 @@ def set_webhook(base_url: HttpUrl | str, webhook: HttpUrl | str, logger: logging
         response.raise_for_status()
         if response.ok:
             logger.info("Webhook has been set to: %s", webhook)
-            return response.json()
+            logger.info(response.json())
+            return response.ok
     except EgressErrors as error:
         logger.error(error)
     return None
