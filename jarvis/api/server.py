@@ -49,6 +49,7 @@ def jarvis_api() -> None:
         "ws_ping_interval": 20.0,
         "ws_ping_timeout": 20.0,
         "workers": models.env.workers,
+        "forwarded_allow_ips": list(map(str, models.env.proxy_servers)),
     }
 
     logger.debug(argument_dict)

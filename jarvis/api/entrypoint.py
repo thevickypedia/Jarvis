@@ -15,14 +15,7 @@ from jarvis.modules.models import enums, models
 def get_cors_params() -> dict:
     """Allow CORS: Cross-Origin Resource Sharing to allow restricted resources on the API."""
     logger.info("Setting CORS policy.")
-    origins = [
-        f"http://localhost:{models.env.offline_port}",
-        f"http://0.0.0.0:{models.env.offline_port}",
-        f"http://{socket.gethostname()}:{models.env.offline_port}",
-        f"http://{socket.gethostbyname('localhost')}:{models.env.offline_port}",
-    ]
-    for website in models.env.website:
-        origins.extend([f"http://{website.host}", f"https://{website.host}"])
+    origins = list(map(lambda x: str(x).rstrip("/"), models.env.cors_domains))
     logger.info("Allowed origins: %s", ", ".join(origins))
 
     return dict(

@@ -226,7 +226,8 @@ class EnvConfig(BaseSettings):
     birthday: str | None = None
     title: str = "sir"
     name: str = "Vignesh"
-    website: HttpUrl | List[HttpUrl] = Field(default_factory=list)
+    cors_domains: HttpUrl | List[HttpUrl] = Field(default_factory=list)
+    proxy_servers: IPv4Address | List[IPv4Address] = Field(default_factory=list)
     plot_mic: bool = True
 
     # Self-hosted notification service
@@ -391,9 +392,16 @@ class EnvConfig(BaseSettings):
             )
         return value
 
-    @field_validator("website", mode="after", check_fields=True)
-    def validate_websites(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
-        """Validate websites."""
+    @field_validator("cors_domains", mode="after", check_fields=True)
+    def validate_cors_domains(cls, value: HttpUrl | List[HttpUrl]) -> List[HttpUrl]:
+        """Validate CORS domains."""
+        if isinstance(value, list):
+            return value
+        return [value]
+
+    @field_validator("proxy_servers", mode="after", check_fields=True)
+    def validate_proxy_servers(cls, value: IPv4Address | List[IPv4Address]) -> List[HttpUrl]:
+        """Validate proxy servers."""
         if isinstance(value, list):
             return value
         return [value]
