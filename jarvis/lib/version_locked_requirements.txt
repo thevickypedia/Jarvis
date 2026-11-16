@@ -5,7 +5,7 @@ icalendar==7.1.2
 newsapi-python==0.2.7
 opencv-python==4.13.0.92
 packaging==26.2
-protobuf==3.20.3
+protobuf==5.29.6
 PyAudio==0.2.14
 PyChromecast==2.3.0  # Do not upgrade, as googlehomepush module relies on this version
 pyhtcc==0.1.57
